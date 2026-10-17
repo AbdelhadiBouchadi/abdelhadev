@@ -1,6 +1,6 @@
 // Rules behind `pnpm check:tokens` (docs/quality.md). Pure functions so tests/unit can cover them.
 //
-// 1. No colour literals outside src/styles/ (hex, rgb/hsl/hwb/lab/lch/oklab/oklch/color()).
+// 1. No colour literals outside src/styles/ (hex, rgb/hsl/hwb/lab/lch/oklab/oklch/color(), 0xrrggbb).
 // 2. No easing or duration literals outside src/lib/motion.ts and src/styles/: cubic-bezier(),
 //    string eases, numeric duration/delay/stagger, CSS time values in transitions and animations,
 //    Tailwind duration-/delay-/ease- classes that are not token based.
@@ -14,6 +14,8 @@ const COLOUR = [
   // but "#abc" in a URL fragment would be: fragments like that are rare and easy to rename).
   /(?<![\w&])#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})(?![\w-])/gi,
   /\b(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color)\(/gi,
+  // Numeric colours, as three.js takes them (0xffb48a).
+  /\b0x[0-9a-f]{6}\b/gi,
 ];
 
 const MOTION = [

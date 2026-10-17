@@ -16,6 +16,7 @@ describe("colour rule", () => {
     `background: rgba(43, 29, 26, .12)`,
     `color: hsl(20 50% 50%)`,
     `color: oklch(0.7 0.1 40)`,
+    `new THREE.Color(0xffb48a)`,
   ])("flags %s", (code) => {
     expect(colourViolations(code)).toHaveLength(1);
   });
