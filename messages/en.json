@@ -1,0 +1,78 @@
+{
+  "meta": {
+    "homeTitle": "Full-stack developer in Agadir",
+    "description": "Abdelhadi Bouchadi, full-stack developer in Agadir, Morocco. Management systems, AI web apps, client platforms and websites."
+  },
+  "common": {
+    "skipLink": "Skip to content",
+    "footer": {
+      "copyright": "© {year} {name}, auto-entrepreneur",
+      "legal": "Legal notice",
+      "nav": "Footer"
+    },
+    "localeSwitch": "Français"
+  },
+  "pages": {
+    "home": {
+      "title": "Abdelhadi Bouchadi, full-stack developer in Agadir",
+      "lead": "I build web applications people rely on every day: management systems, AI web apps, client platforms and websites."
+    },
+    "work": {
+      "title": "Work",
+      "lead": "This page will show my projects, starting with DentaFlow."
+    },
+    "case": {
+      "lead": "The {name} case study will be on this page."
+    },
+    "about": {
+      "title": "About",
+      "lead": "I am a full-stack developer in Agadir. This page will show how I work."
+    },
+    "contact": {
+      "title": "Contact",
+      "lead": "The form and WhatsApp will be available on this page."
+    },
+    "legal": {
+      "title": "Legal notice",
+      "lead": "The full legal notice will be published on this page before launch."
+    },
+    "notFound": {
+      "title": "Page not found",
+      "lead": "This address does not lead to a page.",
+      "back": "Back to the home page"
+    },
+    "lab": {
+      "title": "Design lab",
+      "lead": "A working page to compare the tokens, type and brand with the prototype. It goes away in step 03.",
+      "tokens": "Colour tokens",
+      "day": "Day",
+      "night": "Night",
+      "type": "Type scale",
+      "brand": "Brand",
+      "buttons": "Button",
+      "button": "Contact"
+    }
+  },
+  "projects": {
+    "dentaflow": {
+      "name": "DentaFlow",
+      "kind": "Dental clinic management"
+    },
+    "hms": {
+      "name": "HMS",
+      "kind": "Hospital management system"
+    },
+    "meetai": {
+      "name": "MeetAI",
+      "kind": "AI web app"
+    },
+    "flowshop": {
+      "name": "FlowShop",
+      "kind": "E-commerce"
+    },
+    "cote-royale": {
+      "name": "Côte Royale",
+      "kind": "Website"
+    }
+  }
+}
