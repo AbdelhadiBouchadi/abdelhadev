@@ -25,3 +25,5 @@ next-env.d.ts
 npm-debug.log*
 .pnpm-debug.log*
 .vercel
+
+results.sarif
