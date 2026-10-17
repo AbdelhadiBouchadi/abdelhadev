@@ -8,7 +8,7 @@ French is the default language (`/fr`), English the second (`/en`).
 
 ## Stack
 
-Next.js 16 (App Router), React 19, TypeScript (strict), Tailwind CSS 4, next-intl, GSAP with `@gsap/react`, Lenis, React Three Fiber (home scene only, lazy), zod, Vitest, Playwright with axe, Lighthouse CI. Hosted on Vercel. No database, no CMS.
+Next.js 16 (App Router), React 19, TypeScript (strict), Tailwind CSS 4, next-intl, GSAP with `@gsap/react`, Lenis, plain three.js (home scene only, lazy), zod, Vitest, Playwright with axe, Lighthouse CI. Hosted on Vercel. No database, no CMS.
 
 ## Run it
 

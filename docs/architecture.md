@@ -6,7 +6,7 @@
 2. Server first. Sections are Server Components that render content and pass it to small client primitives that animate it.
 3. One source per fact: identity in `lib/site.ts`, copy in `messages/`, structured data in `lib/content/`, colours in `styles/tokens.css`, easings and durations in `lib/motion.ts`.
 4. Reusable motion lives in `primitives/`. A section composes primitives; it writes its own GSAP only for a choreography unique to that section.
-5. Heavy things are opt-in: three.js loads only on the home page, after the shell, through a dynamic import.
+5. Heavy things are opt-in: plain three.js (no React Three Fiber) loads only on the home page through a dynamic import whose download starts early.
 
 ## Folder layout
 
@@ -41,7 +41,7 @@ abdelhadev/
 │   │   ├── brand/      Mark.tsx, Wordmark.tsx, wordmark-paths.ts (generated)
 │   │   ├── layout/     Header.tsx, MobileNav.tsx, Footer.tsx, Loader.tsx, Cursor.tsx, Sky.tsx, SkipLink.tsx
 │   │   ├── sections/   home/, work/, case/, about/, contact/
-│   │   ├── three/      HeroScene.tsx (+ its parts), loaded with next/dynamic, ssr: false
+│   │   ├── three/      HeroScene.tsx (+ its parts), plain three.js, loaded with next/dynamic, ssr: false
 │   │   └── ui/         Button.tsx, Chip.tsx, Field.tsx, Screen.tsx (placeholder screen)
 │   ├── primitives/     SmoothScroll, TransitionProvider, TransitionLink, SplitReveal, WordsLight,
 │   │                   MaskReveal, StickyStage, Magnetic, FitText, LineDraw, ToneSection
@@ -73,7 +73,7 @@ abdelhadev/
 | `primitives` | `hooks`, `lib`, `i18n` (navigation only) |
 | `components/ui`, `components/brand` | `lib` |
 | `hooks` | `lib` |
-| `lib` | external packages only |
+| `lib` | external packages and `@/i18n/routing` (nothing else from the app) |
 
 All cross-folder imports use the `@/` alias.
 

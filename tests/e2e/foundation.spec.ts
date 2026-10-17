@@ -1,6 +1,7 @@
 // Foundation acceptance: locale redirects, sitemap and robots, metadata files, the lab.
 import { expect, test } from "@playwright/test";
 import { ROUTES } from "./routes";
+import { shellIdle, visited } from "./shell-helpers";
 
 test.describe("locale redirect on /", () => {
   const cases: { name: string; headers: Record<string, string>; to: string }[] = [
@@ -90,7 +91,9 @@ test("unknown pages are a localised 404", async ({ page }) => {
 
 test.describe("lab", () => {
   test("is noindex and screenshots the tokens, type and brand", async ({ page }, info) => {
+    await visited(page);
     await page.goto("/fr/lab");
+    await shellIdle(page);
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
       "content",
       "noindex, nofollow",

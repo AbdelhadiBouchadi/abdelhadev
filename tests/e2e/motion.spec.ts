@@ -1,0 +1,179 @@
+// Motion evidence for the owner (AGENTS.md, "Quality gates"): short videos and end-state
+// screenshots of the shell's motion in test-results/motion/, to compare with docs/prototype.
+// Recorded once, from the 1440 project; each clip opens its own context at the size it shows.
+import { mkdirSync } from "node:fs";
+import { test, type Browser, type BrowserContextOptions, type Page } from "@playwright/test";
+import { shellIdle } from "./shell-helpers";
+
+const OUT = "test-results/motion";
+const DESKTOP = { width: 1440, height: 900 };
+const PHONE = { width: 390, height: 844 };
+
+test.describe.configure({ mode: "serial" });
+test.beforeEach(() => {
+  test.skip(test.info().project.name !== "1440", "recorded once");
+  test.setTimeout(90_000);
+  mkdirSync(OUT, { recursive: true });
+});
+
+async function record(
+  browser: Browser,
+  name: string,
+  size: { width: number; height: number },
+  run: (page: Page) => Promise<void>,
+  { visitedSession = true, phone = false }: { visitedSession?: boolean; phone?: boolean } = {},
+) {
+  const options: BrowserContextOptions = {
+    viewport: size,
+    recordVideo: { dir: `${OUT}/raw`, size },
+    ...(phone ? { isMobile: true, hasTouch: true, deviceScaleFactor: 2 } : {}),
+  };
+  const context = await browser.newContext(options);
+  const page = await context.newPage();
+  if (visitedSession) await page.addInitScript(() => sessionStorage.setItem("abd-visited", "1"));
+  await run(page);
+  await page.screenshot({ path: `${OUT}/${name}.png` });
+  await context.close();
+  await page.video()?.saveAs(`${OUT}/${name}.webm`);
+}
+
+/** Smooth wheel scroll through Lenis, in steps, so the video shows the motion. */
+async function wheel(page: Page, dy: number, steps = 12) {
+  for (let i = 0; i < steps; i++) {
+    await page.mouse.wheel(0, dy / steps);
+    await page.waitForTimeout(60);
+  }
+  await page.waitForTimeout(700);
+}
+
+const toLabNight = (page: Page) =>
+  page.locator("#lab-night").evaluate((el) => el.getBoundingClientRect().top + window.scrollY);
+
+test("first-visit loader to page, desktop and 390", async ({ browser }) => {
+  for (const [name, size] of [
+    ["loader-first-1440", DESKTOP],
+    ["loader-first-390", PHONE],
+  ] as const) {
+    await record(
+      browser,
+      name,
+      size,
+      async (page) => {
+        await page.goto("/fr");
+        await shellIdle(page);
+        await page.waitForTimeout(600);
+      },
+      { visitedSession: false, phone: size === PHONE },
+    );
+  }
+});
+
+test("route curtain out and in", async ({ browser }) => {
+  await record(browser, "curtain-1440", DESKTOP, async (page) => {
+    await page.goto("/fr");
+    await shellIdle(page);
+    await page.locator(".nav-pill").getByRole("link", { name: "Projets" }).click();
+    await page.waitForURL(/\/fr\/projets$/);
+    await shellIdle(page);
+    await page.waitForTimeout(500);
+  });
+});
+
+test("header hide and return", async ({ browser }) => {
+  await record(browser, "header-hide-1440", DESKTOP, async (page) => {
+    await page.goto("/fr/lab");
+    await shellIdle(page);
+    await page.mouse.move(700, 450);
+    await wheel(page, 900);
+    await wheel(page, -250, 6);
+  });
+});
+
+test("tone switch, day to night on the lab page", async ({ browser }) => {
+  await record(browser, "tone-switch-1440", DESKTOP, async (page) => {
+    await page.goto("/fr/lab");
+    await shellIdle(page);
+    await page.mouse.move(700, 450);
+    const night = await toLabNight(page);
+    await wheel(page, night - 300, 16);
+    await wheel(page, -200, 6);
+    await wheel(page, 500, 8);
+  });
+});
+
+test("mobile pill", async ({ browser }) => {
+  await record(
+    browser,
+    "mobile-pill-390",
+    PHONE,
+    async (page) => {
+      await page.goto("/fr/projets");
+      await shellIdle(page);
+      await page.evaluate(() => {
+        window.scrollTo({ top: document.documentElement.scrollHeight, behavior: "smooth" });
+      });
+      await page.waitForTimeout(1500);
+      await page.locator("nav.pill").getByRole("link", { name: "À propos" }).tap();
+      await page.waitForURL(/\/fr\/a-propos$/);
+      await shellIdle(page);
+      await page.waitForTimeout(500);
+    },
+    { phone: true },
+  );
+});
+
+test("cursor label", async ({ browser }) => {
+  await record(browser, "cursor-label-1440", DESKTOP, async (page) => {
+    await page.goto("/fr/lab");
+    await shellIdle(page);
+    const night = await toLabNight(page);
+    await page.mouse.move(700, 450);
+    await wheel(page, night - 100, 10);
+    const box = await page.locator('[data-lab-cursor="night"]').boundingBox();
+    if (!box) throw new Error("cursor target not laid out");
+    await page.mouse.move(200, 200, { steps: 10 });
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2, { steps: 25 });
+    await page.waitForTimeout(900);
+    await page.mouse.move(box.x + box.width + 120, box.y - 60, { steps: 20 });
+    await page.waitForTimeout(600);
+  });
+});
+
+test("magnetic button", async ({ browser }) => {
+  await record(browser, "magnetic-1440", DESKTOP, async (page) => {
+    await page.goto("/fr/lab");
+    await shellIdle(page);
+    const night = await toLabNight(page);
+    await page.mouse.move(700, 450);
+    await wheel(page, night - 100, 10);
+    const button = page.locator("#lab-night [data-magnetic]");
+    const box = await button.boundingBox();
+    if (!box) throw new Error("button not laid out");
+    const cx = box.x + box.width / 2;
+    const cy = box.y + box.height / 2;
+    await page.mouse.move(cx - 60, cy - 40, { steps: 10 });
+    for (const [dx, dy] of [
+      [-30, -16],
+      [30, 16],
+      [30, -16],
+      [-30, 16],
+      [0, 0],
+    ] as const) {
+      await page.mouse.move(cx + dx, cy + dy, { steps: 12 });
+      await page.waitForTimeout(250);
+    }
+    await page.mouse.move(cx + 260, cy + 160, { steps: 12 });
+    await page.waitForTimeout(800);
+  });
+});
+
+test("footer reveal", async ({ browser }) => {
+  await record(browser, "footer-reveal-1440", DESKTOP, async (page) => {
+    await page.goto("/fr");
+    await shellIdle(page);
+    await page.mouse.move(700, 450);
+    const height = await page.evaluate(() => document.documentElement.scrollHeight);
+    await wheel(page, height, 24);
+    await page.waitForTimeout(900);
+  });
+});

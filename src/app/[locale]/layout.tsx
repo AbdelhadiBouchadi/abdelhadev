@@ -1,15 +1,24 @@
 import type { Metadata, Viewport } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getTranslations } from "next-intl/server";
+import { Cursor } from "@/components/layout/Cursor";
 import { Footer } from "@/components/layout/Footer";
+import { Header } from "@/components/layout/Header";
+import { Loader } from "@/components/layout/Loader";
+import { MobileNav } from "@/components/layout/MobileNav";
 import { SkipLink } from "@/components/layout/SkipLink";
 import { resolveLocale } from "@/i18n/locale";
 import { routing } from "@/i18n/routing";
 import { BOOT_SCRIPT } from "@/lib/boot";
 import { fontVariables } from "@/lib/fonts";
 import { baseMetadata } from "@/lib/seo";
+import { SHELL_CONTENT_ATTR } from "@/lib/shell";
 import { cssToken } from "@/lib/tokens";
+import { SmoothScroll } from "@/primitives/SmoothScroll";
+import { TransitionProvider } from "@/primitives/TransitionProvider";
 import "@/styles/globals.css";
+
+const shellContent = { [SHELL_CONTENT_ATTR]: "" };
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -39,9 +48,20 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
       </head>
       <body>
         <NextIntlClientProvider>
-          <SkipLink />
-          <main id="main">{children}</main>
-          <Footer />
+          {/* Client providers wrap server-rendered children; the layout stays a Server Component. */}
+          <SmoothScroll>
+            <TransitionProvider>
+              <Loader />
+              <SkipLink />
+              <Header />
+              <MobileNav />
+              <Cursor />
+              <main id="main" {...shellContent}>
+                {children}
+              </main>
+              <Footer />
+            </TransitionProvider>
+          </SmoothScroll>
         </NextIntlClientProvider>
       </body>
     </html>

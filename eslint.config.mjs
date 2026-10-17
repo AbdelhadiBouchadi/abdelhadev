@@ -18,7 +18,7 @@ const pkg = (names, message) => ({
 const BANNED_LIBRARIES = [
   pkg(["framer-motion", "motion"], "GSAP is the only animation engine."),
   pkg(["locomotive-scroll"], "Smooth scroll is Lenis (src/lib/lenis.ts)."),
-  pkg(["@splinetool/[^/]+"], "No Spline runtime: the 3D scene is React Three Fiber."),
+  pkg(["@splinetool/[^/]+"], "No Spline runtime: the 3D scene is plain three.js."),
   pkg(["lottie-web", "lottie-react", "react-lottie[\\w-]*", "@lottiefiles/[^/]+"], "No Lottie."),
   pkg(["jquery"], "No jQuery."),
   pkg(
@@ -86,8 +86,10 @@ const BOUNDARIES = {
         "@/app/*",
         "@/app/**",
         "@/actions/*",
+        "@/i18n/*",
+        "!@/i18n/routing",
       ],
-      "lib imports nothing from components, primitives, hooks, app or actions.",
+      "lib may import @/i18n/routing and nothing else from the app.",
     ),
   ],
   "src/i18n": [
@@ -207,6 +209,20 @@ const INLINE_SVG = {
     "Inline <svg> lives in src/components/brand/ or src/components/sections/**/diagrams/. Icons come from lucide-react.",
 };
 
+// The same colour rule as `pnpm check:tokens`, surfaced in the editor: a string that is a hex
+// colour or contains a colour function. Colour values live in src/styles/tokens.css only.
+const COLOUR_PATTERN = String.raw`/^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$|\b(?:rgba?|hsla?|hwb|oklch|oklab)\(/`;
+const COLOUR_LITERAL = [
+  {
+    selector: `Literal[value=${COLOUR_PATTERN}]`,
+    message: "Colour values live in src/styles/tokens.css. Use a token.",
+  },
+  {
+    selector: `TemplateElement[value.raw=${COLOUR_PATTERN}]`,
+    message: "Colour values live in src/styles/tokens.css. Use a token.",
+  },
+];
+
 export default defineConfig([
   ...nextVitals,
   ...nextTs,
@@ -234,7 +250,7 @@ export default defineConfig([
       "@typescript-eslint/consistent-type-imports": ["error", { fixStyle: "inline-type-imports" }],
       "import/no-default-export": "off",
       "no-restricted-imports": restrictedImports(),
-      "no-restricted-syntax": ["error", INLINE_SVG],
+      "no-restricted-syntax": ["error", INLINE_SVG, ...COLOUR_LITERAL],
       "react/button-has-type": "error",
     },
   },
@@ -254,7 +270,12 @@ export default defineConfig([
   },
   {
     files: ["src/components/brand/**/*.tsx", "src/components/sections/**/diagrams/**/*.tsx"],
-    rules: { "no-restricted-syntax": "off" },
+    rules: { "no-restricted-syntax": ["error", ...COLOUR_LITERAL] },
+  },
+  {
+    // Tests assert real colour values (the manifest, the token checker's own cases).
+    files: ["tests/**/*.ts"],
+    rules: { "no-restricted-syntax": ["error", INLINE_SVG] },
   },
   {
     // Node scripts and configs.

@@ -16,7 +16,7 @@ French is the default language, English the second. Arabic comes later.
 - Do not expand scope. List anything you notice outside the scope in your reply.
 - Before replying, run exactly the commands in `.github/workflows/ci.yml`, in order. Never report a gate as passing that you did not run.
 - Say plainly what you did not verify.
-- Conventional Commits, small and focused, with the attribution lines the harness provides.
+- You never run git add, commit or push; the owner commits. Propose a commit split in your reply.
 
 ## Where the design comes from
 
@@ -31,11 +31,11 @@ The approved design is an interactive prototype in `docs/prototype/` (open `inde
 
 Before visual UI work, invoke the `frontend-design` skill. Before animation code, invoke the GSAP skills that apply (core, timeline, ScrollTrigger, plugins, React, performance). Your reply lists each skill used and one decision it changed. A skill never overrides this file, the docs or a prompt.
 
-Look up current APIs through Context7 before using Next.js 16, next-intl, Tailwind 4, React Three Fiber, GSAP or Lenis. Do not write from memory.
+Look up current APIs through Context7 before using Next.js 16, next-intl, Tailwind 4, three.js, GSAP or Lenis. Do not write from memory.
 
 ## Stack (fixed)
 
-Next.js 16 (App Router), React 19, TypeScript strict, Tailwind CSS 4, next-intl, GSAP with `@gsap/react` (ScrollTrigger, SplitText, CustomEase, DrawSVGPlugin), Lenis, React Three Fiber with drei (home scene only, always lazy-loaded), lucide-react (UI icons), zod, Resend, pnpm, Vitest, Playwright with axe, Lighthouse CI, ESLint flat config with Prettier. Hosting on Vercel. No database, no CMS.
+Next.js 16 (App Router), React 19, TypeScript strict, Tailwind CSS 4, next-intl, GSAP with `@gsap/react` (ScrollTrigger, SplitText, CustomEase, DrawSVGPlugin), Lenis, three.js (plain `three`, no React Three Fiber or drei; one home scene, always lazy-loaded), lucide-react (UI icons), zod, Resend, pnpm, Vitest, Playwright with axe, Lighthouse CI, ESLint flat config with Prettier. Hosting on Vercel. No database, no CMS.
 
 Not allowed: framer-motion or `motion`, Locomotive, Spline runtime, Lottie, a second animation, icon or UI kit, CSS-in-JS, jQuery, `any`. Adding any other runtime dependency needs the owner's approval in the prompt.
 
@@ -50,7 +50,7 @@ src/
     brand/             Mark, Wordmark, generated SVG path data
     layout/            Header, MobileNav, Footer, Loader, Cursor, Sky
     sections/          page sections grouped by page: home/, work/, case/, about/, contact/
-    three/             React Three Fiber scenes (lazy, client only)
+    three/             the three.js home scene (lazy, client only)
     ui/                Button, Chip, Field and other static building blocks
   primitives/          reusable GSAP-animated components
   hooks/               shared hooks
@@ -62,7 +62,7 @@ public/                brand/ and media/
 brand/                 logo source kit and generator (not shipped)
 ```
 
-Imports go one way: `app` → `components/sections` → `components/layout`, `components/ui`, `components/brand`, `primitives`, `three` → `hooks`, `lib`, `i18n`. Never upward, never sideways between page section folders. `lib` imports nothing from `components`, `primitives` or `hooks`.
+Imports go one way: `app` → `components/sections` → `components/layout`, `components/ui`, `components/brand`, `primitives`, `three` → `hooks`, `lib`, `i18n`. Never upward, never sideways between page section folders. `lib` may import `@/i18n/routing` and nothing else from the app.
 
 ## TypeScript and React
 
@@ -83,6 +83,7 @@ Imports go one way: `app` → `components/sections` → `components/layout`, `co
 - GSAP is the only animation engine. Plugins are registered once in `src/lib/gsap.ts`. The house ease `warm` (CustomEase `0.625, 0.05, 0, 1`) is defined there.
 - Every animation: `useGSAP` with a scope, inside `gsap.matchMedia()` with a reduced-motion branch, cleaned up on unmount. Never kill all ScrollTriggers.
 - Scroll storytelling is scrubbed (`scrub: 0.8`) inside sticky stages. Time-based animation is for intros, hovers, menus, the loader and route transitions.
+- Never put Tailwind transform utilities (translate, scale, rotate) on an element GSAP animates; wrap it or use a child.
 - Prefer `transform` and `opacity`. `clip-path` is allowed for media reveals. Never animate layout properties.
 - Content is never hidden without JavaScript: hidden start states are CSS under `html.motion` (set before first paint) and the page is complete when JavaScript or the animation library is missing.
 - Reduced motion: no smooth scroll, no scrubs, no 3D movement; everything visible and still.

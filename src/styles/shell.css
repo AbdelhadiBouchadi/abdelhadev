@@ -1,0 +1,369 @@
+/* The shell's state-driven rules (header, mobile pill, loader, cursor, footer wordmark), ported
+   from docs/prototype/assets/site.css. Tokens only: colours from tokens.css (translucent fills are
+   color-mix of a token), durations and the ease from the motion tokens. Logical properties
+   throughout, except the cursor, which follows physical pointer coordinates.
+
+   In the components layer, so these rules win over the tone backgrounds in the base layer (as the
+   later rules do in the prototype) and Tailwind utilities still win over them. */
+@layer components {
+  /* ---------- header ---------- */
+  .site-header {
+    position: fixed;
+    inset-block-start: 0;
+    inset-inline: 0;
+    z-index: 30;
+    padding-block-start: env(safe-area-inset-top, 0px);
+    color: var(--ink);
+    transition:
+      color var(--dur-base) var(--ease-warm),
+      transform var(--dur-header) var(--ease-warm);
+  }
+  .site-header[data-tone="night"] {
+    color: var(--moon);
+  }
+  .site-header.is-hidden {
+    transform: translateY(-110%);
+  }
+  .site-header-row {
+    height: var(--header-h);
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 24px;
+  }
+  .brand {
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    text-decoration: none;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 20px;
+    letter-spacing: -0.02em;
+    font-variation-settings:
+      "wdth" 88,
+      "opsz" 24;
+  }
+
+  /* The pill keeps the prototype's 48 px height; links are 44 px tall (the tap target) inside a
+     2 px padding instead of 40 px inside 4 px. */
+  .nav-pill {
+    display: flex;
+    gap: 4px;
+    padding: 2px;
+    border-radius: var(--r-pill);
+    background: color-mix(in srgb, var(--ink) 6%, transparent);
+    transition: background-color var(--dur-base) var(--ease-warm);
+  }
+  .site-header[data-tone="night"] .nav-pill {
+    background: color-mix(in srgb, var(--moon) 10%, transparent);
+  }
+  .nav-pill a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    padding-inline: 18px;
+    border-radius: var(--r-pill);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    transition:
+      background-color var(--dur-quick) var(--ease-warm),
+      color var(--dur-quick) var(--ease-warm);
+  }
+  .nav-pill a:hover {
+    background: color-mix(in srgb, var(--ink) 7%, transparent);
+  }
+  .site-header[data-tone="night"] .nav-pill a:hover {
+    background: color-mix(in srgb, var(--moon) 10%, transparent);
+  }
+  .nav-pill a[aria-current] {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .site-header[data-tone="night"] .nav-pill a[aria-current] {
+    background: var(--moon);
+    color: var(--night);
+  }
+
+  .header-end {
+    justify-self: end;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+  .clock-chip {
+    font-size: 14px;
+    color: var(--ink-soft);
+    font-variant-numeric: tabular-nums;
+    transition: color var(--dur-base) var(--ease-warm);
+  }
+  .site-header[data-tone="night"] .clock-chip {
+    color: var(--moon-soft);
+  }
+
+  /* Locale switch ("FR / EN"): not in the prototype. Header size matches the clock chip. */
+  .header-locale {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-size: 14px;
+    text-decoration: none;
+    color: var(--ink-soft);
+    transition: color var(--dur-base) var(--ease-warm);
+  }
+  .site-header[data-tone="night"] .header-locale {
+    color: var(--moon-soft);
+  }
+  .locale-switch [data-current] {
+    font-weight: 600;
+    color: var(--ink);
+  }
+  [data-tone="night"] .locale-switch [data-current] {
+    color: var(--moon);
+  }
+
+  /* ---------- mobile pill nav ---------- */
+  .pill {
+    position: fixed;
+    z-index: 30;
+    inset-inline: 0;
+    inset-block-end: calc(14px + env(safe-area-inset-bottom, 0px));
+    width: max-content;
+    margin-inline: auto;
+    display: none;
+    align-items: center;
+    gap: 4px;
+    padding: 5px;
+    border-radius: var(--r-pill);
+    background: color-mix(in srgb, var(--ink) 90%, transparent);
+    color: var(--paper);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 10px 30px color-mix(in srgb, var(--ink) 18%, transparent);
+    transition:
+      background-color var(--dur-base) var(--ease-warm),
+      color var(--dur-base) var(--ease-warm);
+  }
+  .pill[data-tone="night"] {
+    background: color-mix(in srgb, var(--moon) 92%, transparent);
+    color: var(--night);
+  }
+  .pill a {
+    min-height: 44px;
+    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding-inline: 18px;
+    border-radius: var(--r-pill);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .pill a[aria-current] {
+    background: color-mix(in srgb, var(--paper) 14%, transparent);
+  }
+  .pill[data-tone="night"] a[aria-current] {
+    background: color-mix(in srgb, var(--night) 8%, transparent);
+  }
+  .pill .pill-home {
+    padding: 0;
+    width: 44px;
+    background: var(--paper);
+  }
+  .pill[data-tone="night"] .pill-home {
+    background: var(--night);
+  }
+
+  @media (max-width: 760px) {
+    .site-header-row {
+      grid-template-columns: 1fr auto;
+    }
+    .nav-pill,
+    .clock-chip,
+    .header-locale {
+      display: none;
+    }
+    .pill {
+      display: inline-flex;
+    }
+  }
+
+  /* ---------- loader (dawn) and route curtain ---------- */
+  .loader {
+    display: none;
+  }
+  html.js .loader {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    pointer-events: auto;
+  }
+  html.js.loader-off .loader {
+    display: none;
+  }
+  .loader-panel {
+    position: absolute;
+    inset-block: -2px;
+    inset-inline: 0;
+    background: var(--night);
+    color: var(--moon);
+    display: grid;
+    place-items: center;
+    will-change: transform;
+  }
+  /* The prototype's glow core is a deeper orange than --glow; it is approximated with --glow. */
+  .loader-glow {
+    position: absolute;
+    inset-inline-start: 50%;
+    inset-block-end: -55vmax;
+    width: 130vmax;
+    height: 90vmax;
+    margin-inline-start: -65vmax;
+    border-radius: 50%;
+    background: radial-gradient(
+      closest-side,
+      color-mix(in srgb, var(--glow) 38%, transparent),
+      color-mix(in srgb, var(--glow) 12%, transparent) 55%,
+      transparent 75%
+    );
+    pointer-events: none;
+    /* Its own layer: the counter, bar and sun repaint every frame over it, and re-rastering a
+       viewport-sized gradient each frame was most of the loader's main-thread cost. */
+    will-change: transform;
+  }
+  .loader-center {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: 28px;
+    width: min(78vw, 560px);
+  }
+  .loader-mark {
+    display: block;
+    width: clamp(72px, 9vw, 112px);
+  }
+  .loader-word {
+    color: var(--moon);
+  }
+  html.motion .loader-word path {
+    opacity: 0;
+  }
+  .loader-meta {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: calc(28px + env(safe-area-inset-bottom, 0px));
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    padding-inline-start: max(var(--gutter), env(safe-area-inset-left, 0px));
+    padding-inline-end: max(var(--gutter), env(safe-area-inset-right, 0px));
+    font-size: 14px;
+    color: var(--moon-soft);
+  }
+  .loader-count {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: clamp(28px, 3vw, 44px);
+    letter-spacing: -0.02em;
+    color: var(--moon);
+    font-variant-numeric: tabular-nums;
+    font-variation-settings:
+      "wdth" 85,
+      "opsz" 48;
+  }
+  .loader-bar {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 0;
+    height: 3px;
+    background: var(--glow);
+    transform-origin: 0 50%;
+    transform: scaleX(0);
+    will-change: transform;
+  }
+
+  /* ---------- cursor ---------- */
+  /* Physical left/top on purpose: GSAP places it at the pointer's clientX and clientY. */
+  .cursor {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 90;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 14px;
+    min-width: 14px;
+    margin: -7px 0 0 -7px;
+    padding: 0;
+    border-radius: var(--r-pill);
+    background: var(--majorelle);
+    color: var(--sheet);
+    font: 600 13px/1 var(--text);
+    white-space: nowrap;
+    opacity: 0;
+    transition:
+      height var(--dur-cursor) var(--ease-warm),
+      padding var(--dur-cursor) var(--ease-warm),
+      margin var(--dur-cursor) var(--ease-warm),
+      background-color var(--dur-cursor) var(--ease-warm),
+      opacity var(--dur-fade);
+  }
+  .cursor.is-on {
+    opacity: 1;
+  }
+  .cursor-label {
+    max-width: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition:
+      max-width var(--dur-cursor) var(--ease-warm),
+      opacity var(--dur-fade);
+  }
+  .cursor.is-label {
+    height: 38px;
+    padding: 0 16px;
+    margin: -19px 0 0 14px;
+  }
+  .cursor.is-label .cursor-label {
+    max-width: 240px;
+    opacity: 1;
+  }
+  .cursor[data-tone="night"] {
+    background: var(--glow);
+    color: var(--night);
+  }
+  @media (hover: none), (pointer: coarse) {
+    .cursor {
+      display: none;
+    }
+  }
+
+  /* ---------- footer wordmark ---------- */
+  .footer-word-wrap {
+    line-height: 0;
+  }
+  .footer-word {
+    color: var(--glow);
+    font-family: var(--display);
+    font-weight: 800;
+    letter-spacing: -0.05em;
+    line-height: 0.78;
+    font-size: clamp(64px, 17vw, 320px);
+    font-variation-settings:
+      "wdth" 100,
+      "opsz" 96;
+  }
+  /* Its resting offset (prototype translateY(14%)) when GSAP does not move it. Under motion GSAP
+     owns the transform from the start, so no CSS transform competes with it. */
+  html:not(.motion) .footer-word {
+    translate: 0 14%;
+  }
+}

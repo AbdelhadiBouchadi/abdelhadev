@@ -1,11 +1,9 @@
 /* Metadata helpers: metadata base, title template, alternates per locale, robots that follow
    INDEXABLE. JSON-LD builders arrive in 09. */
 import type { Metadata } from "next";
-import { getPathname } from "@/i18n/navigation";
 import { routing, type Locale } from "@/i18n/routing";
+import { localizedPath, type RouteHref as Href } from "@/lib/paths";
 import { INDEXABLE, SITE } from "@/lib/site";
-
-type Href = Parameters<typeof getPathname>[0]["href"];
 
 export function absoluteUrl(path: string): string {
   return new URL(path, SITE.url).toString();
@@ -17,9 +15,9 @@ export function alternates(
   locale: Locale,
 ): { canonical: string; languages: Record<string, string> } {
   const languages: Record<string, string> = {};
-  for (const l of routing.locales) languages[l] = absoluteUrl(getPathname({ href, locale: l }));
-  languages["x-default"] = absoluteUrl(getPathname({ href, locale: routing.defaultLocale }));
-  return { canonical: absoluteUrl(getPathname({ href, locale })), languages };
+  for (const l of routing.locales) languages[l] = absoluteUrl(localizedPath(l, href));
+  languages["x-default"] = absoluteUrl(localizedPath(routing.defaultLocale, href));
+  return { canonical: absoluteUrl(localizedPath(locale, href)), languages };
 }
 
 export const robots: NonNullable<Metadata["robots"]> = INDEXABLE
