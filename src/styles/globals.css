@@ -1,0 +1,218 @@
+@import "tailwindcss";
+@import "./tokens.css";
+
+/* Only tokens exist as utilities: Tailwind's default palette, radii, shadows, easings and
+   breakpoints are cleared, then mapped to the tokens in tokens.css. */
+@theme inline {
+  --color-*: initial;
+  --radius-*: initial;
+  --shadow-*: initial;
+  --inset-shadow-*: initial;
+  --drop-shadow-*: initial;
+  --text-shadow-*: initial;
+  --ease-*: initial;
+  --animate-*: initial;
+  --font-*: initial;
+  --container-*: initial;
+  --breakpoint-*: initial;
+
+  --color-paper: var(--paper);
+  --color-sheet: var(--sheet);
+  --color-sand: var(--sand);
+  --color-sand-2: var(--sand-2);
+  --color-sunset: var(--sunset);
+  --color-glow: var(--glow);
+  --color-rose: var(--rose);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-line: var(--line);
+  --color-night: var(--night);
+  --color-night-2: var(--night-2);
+  --color-night-3: var(--night-3);
+  --color-moon: var(--moon);
+  --color-moon-soft: var(--moon-soft);
+  --color-line-night: var(--line-night);
+  --color-majorelle: var(--majorelle);
+  --color-majorelle-soft: var(--majorelle-soft);
+  --color-danger: var(--danger);
+
+  --radius-screen: var(--r-screen);
+  --radius-media: var(--r-media);
+  --radius-frame: var(--r-frame);
+  --radius-card: var(--r-card);
+  --radius-sheet: var(--r-sheet);
+  --radius-pill: var(--r-pill);
+
+  --font-display: var(--display);
+  --font-text: var(--text);
+
+  /* The utility reads the token of the same name; tokens.css is unlayered, so it wins. */
+  --ease-warm: var(--ease-warm);
+  --default-transition-duration: var(--dur-base);
+  --default-transition-timing-function: var(--ease-warm);
+
+  /* Prototype breakpoints: mobile nav under 761, single column under 901, two-column head from 1081. */
+  --breakpoint-nav: 761px;
+  --breakpoint-split: 901px;
+  --breakpoint-wide: 1081px;
+  --breakpoint-frame: 1440px;
+}
+
+/* ---------- base (prototype) ---------- */
+@layer base {
+  [hidden] {
+    display: none !important;
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--text);
+    font-size: 17px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: clip;
+  }
+  img,
+  svg {
+    max-width: 100%;
+  }
+  a {
+    color: inherit;
+  }
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+    color: inherit;
+  }
+  :focus-visible {
+    outline: 2px solid var(--majorelle);
+    outline-offset: 4px;
+    border-radius: 6px;
+  }
+  [data-tone="night"] :focus-visible {
+    outline-color: var(--glow);
+  }
+
+  /* Lenis */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+
+  /* Tones are art-directed per section; there is no theme toggle. */
+  [data-tone="day"] {
+    background: var(--paper);
+    color: var(--ink);
+  }
+  [data-tone="night"] {
+    background: var(--night);
+    color: var(--moon);
+  }
+  [data-tone="sheet"] {
+    background: var(--sheet);
+    color: var(--ink);
+  }
+
+  /* Page intro elements stay hidden only while motion runs and the loader has not finished.
+     Without JavaScript or with reduced motion, html never gets .motion, so content shows. */
+  html.motion:not(.ready) [data-intro] {
+    visibility: hidden;
+  }
+}
+
+/* ---------- layout ---------- */
+@utility wrap {
+  width: 100%;
+  max-width: var(--frame);
+  margin-inline: auto;
+  padding-inline-start: max(var(--gutter), env(safe-area-inset-left, 0px));
+  padding-inline-end: max(var(--gutter), env(safe-area-inset-right, 0px));
+}
+
+@utility sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@utility muted {
+  color: var(--ink-soft);
+  [data-tone="night"] & {
+    color: var(--moon-soft);
+  }
+}
+
+/* ---------- type (prototype clamp values) ---------- */
+@utility display {
+  font-family: var(--display);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 0.98;
+  font-variation-settings:
+    "wdth" 86,
+    "opsz" 96;
+  text-wrap: balance;
+  margin: 0;
+}
+@utility h-xl {
+  font-size: clamp(44px, 8.4vw, 148px);
+  line-height: 0.92;
+}
+@utility h-lg {
+  font-size: clamp(38px, 6vw, 100px);
+}
+@utility h-md {
+  font-size: clamp(30px, 3.8vw, 58px);
+  line-height: 1.02;
+}
+@utility h-sm {
+  font-size: clamp(24px, 2.2vw, 32px);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-variation-settings:
+    "wdth" 92,
+    "opsz" 32;
+}
+@utility statement {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  font-size: clamp(30px, 4.4vw, 66px);
+  line-height: 1.07;
+  max-width: 17em;
+  font-variation-settings:
+    "wdth" 94,
+    "opsz" 72;
+  text-wrap: pretty;
+}
+@utility lead {
+  font-size: clamp(18px, 1.4vw, 21px);
+  line-height: 1.5;
+  max-width: 44ch;
+  margin: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Tone variant: `night:` applies inside a [data-tone="night"] ancestor, like the prototype's
+   `[data-tone="night"] .btn` rules. */
+@custom-variant night (&:where([data-tone="night"], [data-tone="night"] *));

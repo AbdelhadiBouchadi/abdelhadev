@@ -1,0 +1,78 @@
+{
+  "meta": {
+    "homeTitle": "Développeur full-stack à Agadir",
+    "description": "Abdelhadi Bouchadi, développeur full-stack à Agadir, Maroc. Systèmes de gestion, applications web avec IA, plateformes clients et sites."
+  },
+  "common": {
+    "skipLink": "Aller au contenu",
+    "footer": {
+      "copyright": "© {year} {name}, auto-entrepreneur",
+      "legal": "Mentions légales",
+      "nav": "Pied de page"
+    },
+    "localeSwitch": "English"
+  },
+  "pages": {
+    "home": {
+      "title": "Abdelhadi Bouchadi, développeur full-stack à Agadir",
+      "lead": "Je construis des applications web sur lesquelles on compte chaque jour : systèmes de gestion, applications web avec IA, plateformes clients et sites."
+    },
+    "work": {
+      "title": "Projets",
+      "lead": "Cette page présentera mes projets, DentaFlow en premier."
+    },
+    "case": {
+      "lead": "L'étude de cas de {name} sera présentée sur cette page."
+    },
+    "about": {
+      "title": "À propos",
+      "lead": "Je suis développeur full-stack à Agadir. Cette page présentera ma façon de travailler."
+    },
+    "contact": {
+      "title": "Contact",
+      "lead": "Le formulaire et WhatsApp seront disponibles sur cette page."
+    },
+    "legal": {
+      "title": "Mentions légales",
+      "lead": "Les mentions légales complètes seront publiées sur cette page avant le lancement."
+    },
+    "notFound": {
+      "title": "Page introuvable",
+      "lead": "Cette adresse ne mène à aucune page.",
+      "back": "Retour à l'accueil"
+    },
+    "lab": {
+      "title": "Laboratoire",
+      "lead": "Page de travail pour comparer les jetons, la typographie et la marque avec le prototype. Elle disparaît à l'étape 03.",
+      "tokens": "Jetons de couleur",
+      "day": "Jour",
+      "night": "Nuit",
+      "type": "Échelle typographique",
+      "brand": "Marque",
+      "buttons": "Bouton",
+      "button": "Contact"
+    }
+  },
+  "projects": {
+    "dentaflow": {
+      "name": "DentaFlow",
+      "kind": "Gestion de cabinet dentaire"
+    },
+    "hms": {
+      "name": "HMS",
+      "kind": "Système de gestion hospitalière"
+    },
+    "meetai": {
+      "name": "MeetAI",
+      "kind": "Application web avec IA"
+    },
+    "flowshop": {
+      "name": "FlowShop",
+      "kind": "E-commerce"
+    },
+    "cote-royale": {
+      "name": "Côte Royale",
+      "kind": "Site web"
+    }
+  }
+}
