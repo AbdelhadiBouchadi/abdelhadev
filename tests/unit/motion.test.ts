@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { DURATION, LENIS, LOADER, SCRUB, WARM_CURVE } from "@/lib/motion";
+import { DURATION, LENIS, LOADER, LOADER_EXIT_TOTAL, SCRUB, WARM_CURVE } from "@/lib/motion";
 
 const tokens = readFileSync(new URL("../../src/styles/tokens.css", import.meta.url), "utf8");
 
@@ -35,8 +35,15 @@ describe("motion.ts mirrors the CSS motion tokens", () => {
     expect(LOADER).toMatchObject({
       floorFirstMs: 1600,
       floorRouteMs: 700,
-      ceilingMs: 4500,
+      ceilingMs: 3300,
+      tasksDeadlineMs: 2850,
       weights: { fonts: 3, load: 2, image: 1, scene: 3 },
     });
+  });
+
+  it("starts the exit early enough that the overlay is gone within 5 s (decision T7)", () => {
+    expect(LOADER_EXIT_TOTAL).toBeCloseTo(1.45);
+    expect(LOADER.tasksDeadlineMs + DURATION.progressEnd * 1000).toBe(LOADER.ceilingMs);
+    expect(LOADER.ceilingMs + LOADER_EXIT_TOTAL * 1000).toBeLessThanOrEqual(5000);
   });
 });

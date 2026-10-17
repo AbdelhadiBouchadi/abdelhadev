@@ -1,12 +1,13 @@
 import type { Metadata, Viewport } from "next";
 import { NextIntlClientProvider } from "next-intl";
-import { getTranslations } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { Cursor } from "@/components/layout/Cursor";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { Loader } from "@/components/layout/Loader";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { SkipLink } from "@/components/layout/SkipLink";
+import { pickClientMessages } from "@/i18n/client-messages";
 import { resolveLocale } from "@/i18n/locale";
 import { routing } from "@/i18n/routing";
 import { BOOT_SCRIPT } from "@/lib/boot";
@@ -39,6 +40,7 @@ export const viewport: Viewport = {
 
 export default async function LocaleLayout({ children, params }: LayoutProps<"/[locale]">) {
   const locale = await resolveLocale(params);
+  const clientMessages = pickClientMessages(await getMessages());
   return (
     // The boot script adds classes to <html> before hydration, hence suppressHydrationWarning.
     <html lang={locale} className={fontVariables} suppressHydrationWarning>
@@ -47,7 +49,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
         <script dangerouslySetInnerHTML={{ __html: BOOT_SCRIPT }} />
       </head>
       <body>
-        <NextIntlClientProvider>
+        <NextIntlClientProvider messages={clientMessages}>
           {/* Client providers wrap server-rendered children; the layout stays a Server Component. */}
           <SmoothScroll>
             <TransitionProvider>
