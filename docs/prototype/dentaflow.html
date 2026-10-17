@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DentaFlow · Abdelhadev prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,300..800&family=Instrument+Sans:wdth,wght@75..100,400..700&display=swap"><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png"><link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="stylesheet" href="assets/site.css">
+<script>
+(function () {
+  var d = document.documentElement;
+  d.classList.add("js");
+  if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) d.classList.add("motion");
+  try { if (sessionStorage.getItem("abd-arriving")) { d.classList.add("arriving"); sessionStorage.removeItem("abd-arriving"); } } catch (e) {}
+  setTimeout(function () { if (!d.classList.contains("ready")) { d.classList.add("loader-off", "ready"); d.classList.remove("motion", "sky"); } }, 7000);
+})();
+</script>
+</head>
+<body data-page="case">
+<div class="loader" aria-hidden="false">
+  <div class="loader-panel">
+    <div class="loader-glow"></div>
+    <div class="loader-center">
+      <svg class="loader-mark" viewBox="0 0 64 64" aria-hidden="true">
+        <defs><clipPath id="loader-above"><rect x="0" y="0" width="64" height="35"/></clipPath></defs>
+        <g clip-path="url(#loader-above)"><circle class="sun-disc" cx="32" cy="35" r="19" fill="#FFB48A" transform="translate(0 19)"/></g>
+        <rect class="horizon" x="6" y="38.5" width="52" height="5" rx="2.5" fill="#3D52D5"/>
+        <rect class="reflection" x="18" y="47.5" width="28" height="4.5" rx="2.25" fill="#AEB7F4" opacity=".7"/>
+      </svg>
+      <svg class="loader-word" viewBox="0 0 496.0 72.0" aria-hidden="true"><path id="g0" d="M0.5 68.0 23.0 2.0H41.80L64.10 68.0H48.5L32.5 13.79H32.0L16.0 68.0ZM12.60 55.6V45.2H53.80V55.6Z"/><path id="g1" d="M95.60 69.4Q91.0 69.4 87.55 67.35Q84.10 65.3 81.80 61.3Q79.5 57.3 78.4 51.4H77.7L77.9 68.0H65.2L65.30 48.09L65.2 -1.5H79.7V13.5Q79.7 16.19 79.45 19.39Q79.2 22.59 78.75 26.04Q78.30 29.5 77.7 33.19H78.60Q79.5 26.69 81.80 22.44Q84.10 18.19 87.75 16.14Q91.4 14.09 96.20 14.09Q102.10 14.09 106.5 17.09Q110.9 20.09 113.30 26.09Q115.70 32.1 115.70 41.2Q115.70 50.9 113.05 57.09Q110.4 63.3 105.80 66.35Q101.20 69.4 95.60 69.4ZM90.80 57.7Q94.10 57.7 96.4 55.65Q98.70 53.6 99.9 50.09Q101.10 46.59 101.10 42.3Q101.10 37.8 99.95 34.2Q98.80 30.6 96.50 28.45Q94.20 26.29 90.7 26.29Q88.9 26.29 87.15 26.99Q85.4 27.69 84.05 29.04Q82.7 30.4 81.7 32.3Q80.7 34.19 80.15 36.55Q79.60 38.9 79.60 41.59V42.3Q79.60 45.7 80.45 48.55Q81.30 51.4 82.80 53.45Q84.30 55.5 86.35 56.6Q88.4 57.7 90.80 57.7Z"/><path id="g2" d="M138.10 69.4Q132.4 69.4 127.85 66.35Q123.30 63.3 120.60 57.09Q117.9 50.9 117.9 41.3Q117.9 32.19 120.35 26.14Q122.80 20.09 127.2 17.09Q131.6 14.09 137.5 14.09Q142.3 14.09 145.9 16.09Q149.5 18.09 151.8 22.34Q154.10 26.59 155.0 33.3H155.9Q155.4 29.5 154.9 26.09Q154.4 22.69 154.15 19.59Q153.9 16.5 153.9 13.89V-1.5H168.4L168.3 48.4L168.4 68.0H155.70L156.0 51.4H155.20Q154.10 57.3 151.8 61.35Q149.5 65.4 146.10 67.4Q142.70 69.4 138.10 69.4ZM142.8 57.7Q145.20 57.7 147.3 56.6Q149.4 55.5 150.85 53.4Q152.3 51.3 153.15 48.5Q154.0 45.7 154.0 42.3V41.59Q154.0 38.9 153.45 36.55Q152.9 34.19 151.9 32.3Q150.9 30.4 149.5 29.04Q148.10 27.69 146.40 26.99Q144.70 26.29 142.8 26.29Q139.5 26.29 137.15 28.45Q134.8 30.6 133.65 34.15Q132.5 37.7 132.5 42.2Q132.5 46.5 133.7 50.05Q134.9 53.6 137.2 55.65Q139.5 57.7 142.8 57.7Z"/><path id="g3" d="M197.70 69.4Q190.60 69.4 185.65 67.30Q180.70 65.2 177.60 61.5Q174.50 57.8 173.10 53.0Q171.70 48.2 171.70 42.7Q171.70 37.0 173.15 31.84Q174.60 26.69 177.60 22.69Q180.60 18.69 185.40 16.39Q190.20 14.09 196.70 14.09Q203.20 14.09 207.90 16.34Q212.60 18.59 215.45 22.59Q218.3 26.59 219.25 31.94Q220.20 37.3 219.3 43.7L180.60 44.3V36.2L208.3 35.6L206.3 40.3Q206.8 35.69 205.90 32.39Q205.00 29.09 202.75 27.34Q200.50 25.59 196.70 25.59Q192.70 25.59 190.25 27.64Q187.8 29.69 186.70 33.39Q185.60 37.09 185.60 42.0Q185.60 50.5 188.65 54.5Q191.70 58.5 197.8 58.5Q200.60 58.5 202.45 57.75Q204.3 57.0 205.45 55.65Q206.60 54.3 207.05 52.5Q207.50 50.7 207.40 48.59L220.60 49.4Q220.8 52.9 219.75 56.45Q218.70 60.0 216.05 62.9Q213.40 65.8 208.85 67.6Q204.3 69.4 197.70 69.4Z"/><path id="g4" d="M223.60 68.0V-1.5H238.00V68.0Z"/><path id="g5" d="M242.8 68.0V41.4L242.70 -1.5H257.2V11.89Q257.2 13.89 256.95 17.24Q256.7 20.59 256.25 24.44Q255.8 28.29 255.35 31.99Q254.9 35.69 254.6 38.5H255.6Q256.4 29.9 258.7 24.49Q261.0 19.09 264.85 16.59Q268.7 14.09 274.1 14.09Q282.6 14.09 286.70 20.19Q290.8 26.29 290.8 38.4V68.0H276.4V39.09Q276.4 32.69 274.65 29.74Q272.9 26.79 269.1 26.79Q265.6 26.79 262.95 29.34Q260.3 31.9 258.75 37.2Q257.2 42.5 257.2 50.7V68.0Z"/><path id="g6" d="M308.90 69.4Q304.8 69.4 301.25 67.95Q297.7 66.5 295.45 63.4Q293.2 60.3 293.2 55.1Q293.2 50.3 295.05 47.25Q296.90 44.2 300.1 42.4Q303.3 40.59 307.1 39.59Q310.90 38.59 314.8 37.9Q320.1 36.9 322.75 36.34Q325.40 35.8 326.3 34.95Q327.2 34.1 327.2 32.6Q327.2 29.19 324.8 27.44Q322.40 25.69 318.5 25.69Q316.2 25.69 313.8 26.54Q311.40 27.4 309.85 29.59Q308.3 31.79 308.3 35.69L295.40 34.6Q295.40 28.59 297.45 24.64Q299.5 20.69 303.0 18.39Q306.5 16.09 310.70 15.09Q314.90 14.09 319.0 14.09Q326.40 14.09 331.35 16.84Q336.3 19.59 338.8 24.89Q341.3 30.19 341.3 37.9V47.4Q341.3 50.8 341.3 54.25Q341.3 57.7 341.35 61.15Q341.40 64.6 341.40 68.0H328.7Q328.8 64.2 328.9 60.3Q329.0 56.4 329.0 52.2H328.40Q327.90 56.9 325.3 60.8Q322.7 64.7 318.5 67.05Q314.3 69.4 308.90 69.4ZM314.5 58.7Q316.5 58.7 318.75 57.85Q321.0 57.0 322.9 55.25Q324.8 53.5 326.0 50.65Q327.2 47.8 327.2 43.7L327.3 41.4L329.90 40.9Q329.1 42.3 327.05 43.09Q325.0 43.9 322.5 44.34Q320.0 44.8 317.4 45.3Q314.8 45.8 312.6 46.59Q310.40 47.4 309.05 48.84Q307.7 50.3 307.7 52.8Q307.7 55.6 309.6 57.15Q311.5 58.7 314.5 58.7Z"/><path id="g7" d="M364.5 69.4Q358.8 69.4 354.25 66.35Q349.7 63.3 347.0 57.09Q344.3 50.9 344.3 41.3Q344.3 32.19 346.75 26.14Q349.2 20.09 353.6 17.09Q358.0 14.09 363.90 14.09Q368.7 14.09 372.3 16.09Q375.90 18.09 378.20 22.34Q380.5 26.59 381.40 33.3H382.3Q381.8 29.5 381.3 26.09Q380.8 22.69 380.55 19.59Q380.3 16.5 380.3 13.89V-1.5H394.8L394.70 48.4L394.8 68.0H382.1L382.40 51.4H381.6Q380.5 57.3 378.20 61.35Q375.90 65.4 372.5 67.4Q369.1 69.4 364.5 69.4ZM369.2 57.7Q371.6 57.7 373.70 56.6Q375.8 55.5 377.25 53.4Q378.7 51.3 379.55 48.5Q380.40 45.7 380.40 42.3V41.59Q380.40 38.9 379.85 36.55Q379.3 34.19 378.3 32.3Q377.3 30.4 375.9 29.04Q374.5 27.69 372.8 26.99Q371.1 26.29 369.2 26.29Q365.90 26.29 363.55 28.45Q361.2 30.6 360.05 34.15Q358.90 37.7 358.90 42.2Q358.90 46.5 360.1 50.05Q361.3 53.6 363.6 55.65Q365.90 57.7 369.2 57.7Z"/><path id="g8" d="M424.1 69.4Q417.0 69.4 412.05 67.30Q407.1 65.2 404.0 61.5Q400.90 57.8 399.5 53.0Q398.1 48.2 398.1 42.7Q398.1 37.0 399.55 31.84Q401.0 26.69 404.0 22.69Q407.0 18.69 411.8 16.39Q416.6 14.09 423.1 14.09Q429.6 14.09 434.3 16.34Q439.0 18.59 441.85 22.59Q444.70 26.59 445.65 31.94Q446.6 37.3 445.70 43.7L407.0 44.3V36.2L434.70 35.6L432.70 40.3Q433.20 35.69 432.30 32.39Q431.40 29.09 429.15 27.34Q426.90 25.59 423.1 25.59Q419.1 25.59 416.65 27.64Q414.20 29.69 413.1 33.39Q412.0 37.09 412.0 42.0Q412.0 50.5 415.05 54.5Q418.1 58.5 424.20 58.5Q427.0 58.5 428.85 57.75Q430.70 57.0 431.85 55.65Q433.0 54.3 433.45 52.5Q433.90 50.7 433.8 48.59L447.0 49.4Q447.20 52.9 446.15 56.45Q445.1 60.0 442.45 62.9Q439.8 65.8 435.25 67.6Q430.70 69.4 424.1 69.4Z"/><path id="g9" d="M460.6 68.0 444.0 15.5H459.3L469.8 56.0H470.2L481.0 15.5H495.5L478.9 68.0Z"/></svg>
+    </div>
+    <div class="loader-meta"><span class="loader-count">000</span><span>Agadir, Morocco</span></div>
+    <span class="loader-bar"></span>
+    <span class="sr loader-live" role="status" aria-live="polite">Loading</span>
+  </div>
+</div>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header" data-tone="night">
+  <div class="wrap">
+    <a class="brand" href="./" aria-label="Abdelhadev, home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><path d="M13 35a19 19 0 0 1 38 0z" fill="#FFB48A"/><g fill="#3D52D5"><rect x="6" y="38.5" width="52" height="5" rx="2.5"/><g opacity=".55"><rect x="18" y="47.5" width="28" height="4.5" rx="2.25"/></g></g></svg><span>Abdelhadev</span></a>
+    <nav class="nav-pill" aria-label="Main">
+      <a href="./">Home</a>
+      <a href="work.html" aria-current="page">Work</a>
+      <a href="about.html">About</a>
+    </nav>
+    <div class="header-end">
+      <span class="clock-chip">Agadir <span class="clock">--:--</span></span>
+      <a class="btn btn-sm" href="contact.html" data-cursor="Write to me"><span class="sun-dot" aria-hidden="true"></span>Contact</a>
+    </div>
+  </div>
+</header>
+<nav class="pill" data-tone="night" aria-label="Main (mobile)">
+  <a href="work.html" aria-current="page">Work</a>
+  <a class="pill-home" href="./" aria-label="Home"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><path d="M13 35a19 19 0 0 1 38 0z" fill="#FFB48A"/><g fill="#3D52D5"><rect x="6" y="38.5" width="52" height="5" rx="2.5"/><g opacity=".55"><rect x="18" y="47.5" width="28" height="4.5" rx="2.25"/></g></g></svg></a>
+  <a href="about.html">About</a>
+</nav>
+<div class="cursor" aria-hidden="true"><span class="label"></span></div>
+<main id="main">
+  <section class="case-hero" data-tone="night">
+    <div class="wrap">
+      <a class="back-link" href="work.html">All projects</a>
+      <h1 class="case-word">DentaFlow</h1>
+      <div class="case-intro">
+        <p class="lead">A management system for dental clinics: agenda, patient records, treatment plans and billing. I adapt it to each clinic and deploy it on the clinic's own server.</p>
+        <dl class="facts">
+          <div><dt>Role</dt><dd>Product design and full-stack development</dd></div>
+          <div><dt>Status</dt><dd>Ready for clinics</dd></div>
+          <div><dt>Delivery</dt><dd>One deployment and one database per clinic</dd></div>
+          <div><dt>Stack</dt><dd>Next.js, TypeScript, tRPC, Drizzle, PostgreSQL</dd></div>
+        </dl>
+      </div>
+      <div class="case-shot" data-cursor="Screenshot to come"><div class="screen "><div class="screen-inner"><div class="ui-bar"><i></i><i></i><i></i></div><div class="ui-body"><div class="grid-cells"><span class="a"></span><span class=""></span><span class="b"></span><span class=""></span><span class="c"></span><span class=""></span><span class="a"></span><span class=""></span><span class=""></span><span class="b"></span><span class="c"></span><span class=""></span><span class=""></span><span class="a"></span><span class=""></span><span class="b"></span><span class=""></span><span class=""></span><span class="a"></span><span class="c"></span><span class=""></span><span class="b"></span><span class=""></span><span class=""></span><span class="a"></span></div></div></div></div></div>
+    </div>
+    <div style="height: clamp(72px, 12vh, 140px)"></div>
+  </section>
+
+  <section class="problem pad" data-tone="day" aria-label="The problem">
+    <div class="wrap"><p class="statement">Most clinics I meet run on a paper agenda, a spreadsheet and a phone that never stops ringing. The software has to be easier than that on the first day, or nobody uses it.</p></div>
+  </section>
+
+  <section class="tour" data-tone="day" aria-label="What it does">
+    <div class="wrap tour-grid">
+      <div class="tour-steps"><article class="tour-step"><span class="num">01</span><h3 class="display h-sm">The day at a glance</h3><p>Every chair, every appointment, colour-coded by treatment. Reception moves an appointment in one drag.</p>
+      <div class="tour-mobile-shot"><div class="screen "><div class="screen-inner"><div class="ui-bar"><i></i><i></i><i></i></div><div class="ui-body"><div class="grid-cells"><span class="a"></span><span class=""></span><span class="b"></span><span class=""></span><span class="c"></span><span class=""></span><span class="a"></span><span class=""></span><span class=""></span><span class="b"></span><span class="c"></span><span class=""></span><span class=""></span><span class="a"></span><span class=""></span><span class="b"></span><span class=""></span><span class=""></span><span class="a"></span><span class="c"></span><span class=""></span><span class="b"></span><span class=""></span><span class=""></span><span class="a"></span></div></div></div></div></div></article><article class="tour-step"><span class="num">02</span><h3 class="display h-sm">One record per patient</h3><p>History, treatments, documents and notes in one place, readable by the whole team.</p>
+      <div class="tour-mobile-shot"><div class="screen "><div class="screen-inner"><div class="ui-bar"><i></i><i></i><i></i></div><div class="ui-body"><div class="ui-split"><div class="ui-side"><span class="sk dark w80"></span><span class="sk w60"></span><span class="sk w70"></span><span class="sk w50"></span></div><div style="display:grid;gap:8px;align-content:start"><span class="sk dark w60"></span><span class="sk w40"></span><div class="tiles-row"><span></span><span class="a"></span><span></span><span></span></div><span class="sk w80"></span><span class="sk w70"></span></div></div></div></div></div></div></article><article class="tour-step"><span class="num">03</span><h3 class="display h-sm">Plans the patient can follow</h3><p>Treatment plans broken into sessions, with progress the dentist and the patient both understand.</p>
+      <div class="tour-mobile-shot"><div class="screen "><div class="screen-inner"><div class="ui-bar"><i></i><i></i><i></i></div><div class="ui-body"><div style="display:grid;gap:10px"><span class="sk dark w50"></span><span class="sk w80"></span><span class="sk w70"></span><span class="sk w60"></span><span class="sk w80"></span><span class="sk w40"></span></div></div></div></div></div></article><article class="tour-step"><span class="num">04</span><h3 class="display h-sm">Invoices without the spreadsheet</h3><p>Invoices and payments come straight from the treatments, so nothing is billed twice or forgotten.</p>
+      <div class="tour-mobile-shot"><div class="screen "><div class="screen-inner"><div class="ui-bar"><i></i><i></i><i></i></div><div class="ui-body"><div style="display:grid;gap:10px"><div style="display:flex;justify-content:space-between"><span class="sk dark w40"></span><span class="sk w30" style="width:16%"></span></div><span class="sk w70"></span><span class="sk w60"></span><span class="sk w70"></span><span style="height:12px;border-radius:99px;background:#2B1D1A;width:44%;justify-self:end"></span></div></div></div></div></div></article></div>
+      <div class="tour-stage" aria-hidden="true"><div class="tour-frame"><div class="screen is-on"><div class="screen-inner"><div class="ui-bar"><i></i><i></i><i></i></div><div class="ui-body"><div class="grid-cells"><span class="a"></span><span class=""></span><span class="b"></span><span class=""></span><span class="c"></span><span class=""></span><span class="a"></span><span class=""></span><span class=""></span><span class="b"></span><span class="c"></span><span class=""></span><span class=""></span><span class="a"></span><span class=""></span><span class="b"></span><span class=""></span><span class=""></span><span class="a"></span><span class="c"></span><span class=""></span><span class="b"></span><span class=""></span><span class=""></span><span class="a"></span></div></div></div></div><div class="screen "><div class="screen-inner"><div class="ui-bar"><i></i><i></i><i></i></div><div class="ui-body"><div class="ui-split"><div class="ui-side"><span class="sk dark w80"></span><span class="sk w60"></span><span class="sk w70"></span><span class="sk w50"></span></div><div style="display:grid;gap:8px;align-content:start"><span class="sk dark w60"></span><span class="sk w40"></span><div class="tiles-row"><span></span><span class="a"></span><span></span><span></span></div><span class="sk w80"></span><span class="sk w70"></span></div></div></div></div></div><div class="screen "><div class="screen-inner"><div class="ui-bar"><i></i><i></i><i></i></div><div class="ui-body"><div style="display:grid;gap:10px"><span class="sk dark w50"></span><span class="sk w80"></span><span class="sk w70"></span><span class="sk w60"></span><span class="sk w80"></span><span class="sk w40"></span></div></div></div></div><div class="screen "><div class="screen-inner"><div class="ui-bar"><i></i><i></i><i></i></div><div class="ui-body"><div style="display:grid;gap:10px"><div style="display:flex;justify-content:space-between"><span class="sk dark w40"></span><span class="sk w30" style="width:16%"></span></div><span class="sk w70"></span><span class="sk w60"></span><span class="sk w70"></span><span style="height:12px;border-radius:99px;background:#2B1D1A;width:44%;justify-self:end"></span></div></div></div></div></div></div>
+    </div>
+  </section>
+
+  <section class="pad" data-tone="day" aria-labelledby="adapt-title">
+    <div class="wrap">
+      <div class="section-head"><h2 id="adapt-title" class="display h-md">Adapted to each clinic</h2><p class="lead muted">DentaFlow is ready. What changes for each clinic happens in four steps, before anyone logs in.</p></div>
+      <ol class="steps">
+        <li><h3>Your name and colours</h3><p>The clinic's name, logo and colours, so it feels like your own tool.</p></li>
+        <li><h3>Your own database</h3><p>A separate database for your clinic. Your patients' data is never mixed with anyone else's.</p></li>
+        <li><h3>Your own server</h3><p>Deployed for your clinic alone, under an address you choose.</p></li>
+        <li><h3>Handover to your team</h3><p>I walk your team through the daily tasks until they are comfortable.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="pad" data-tone="night" aria-labelledby="arch-title">
+    <div class="wrap arch">
+      <div>
+        <div class="section-head"><h2 id="arch-title" class="display h-md">How it's built</h2><p class="lead muted">Typed from the database to the screen, so a change in one place is checked everywhere.</p></div>
+        <ul class="arch-list">
+          <li><strong>One database per clinic</strong><span>PostgreSQL, accessed through Drizzle with typed queries.</span></li>
+          <li><strong>Access by role</strong><span>Each person sees and changes only what their role allows.</span></li>
+          <li><strong>End-to-end types</strong><span>tRPC shares the same types between the server and the interface.</span></li>
+        </ul>
+      </div>
+      <div class="diagram-box">
+        <svg class="diagram" viewBox="0 0 720 420" role="img" aria-label="Architecture: the browser talks to the Next.js app, which calls tRPC procedures, which query each clinic's PostgreSQL database through Drizzle. Authentication checks every request.">
+          <path class="wire" d="M150 80 H285"/>
+          <path class="wire" d="M435 80 H570"/>
+          <path class="wire" d="M645 120 V210 Q645 230 625 230 H435"/>
+          <path class="wire" d="M285 230 H150"/>
+          <path class="wire soft" d="M360 120 V180"/>
+          <path class="wire soft" d="M360 280 V330"/>
+          <g class="node"><rect x="20" y="40" width="130" height="80" rx="18"/><text x="40" y="76">Browser</text><text class="sub" x="40" y="98">Reception, dentist</text></g>
+          <g class="node hot"><rect x="285" y="40" width="150" height="80" rx="18"/><text x="305" y="76">Next.js app</text><text class="sub" x="305" y="98">Server components</text></g>
+          <g class="node"><rect x="570" y="40" width="130" height="80" rx="18"/><text x="590" y="76">tRPC API</text><text class="sub" x="590" y="98">Typed procedures</text></g>
+          <g class="node"><rect x="285" y="180" width="150" height="100" rx="18"/><text x="305" y="220">Drizzle ORM</text><text class="sub" x="305" y="242">Typed queries</text><text class="sub" x="305" y="262">Migrations</text></g>
+          <g class="node hot"><rect x="20" y="190" width="130" height="80" rx="18"/><text x="40" y="226">PostgreSQL</text><text class="sub" x="40" y="248">One per clinic</text></g>
+          <g class="node"><rect x="285" y="330" width="150" height="70" rx="18"/><text x="305" y="362">Better Auth</text><text class="sub" x="305" y="382">Roles and sessions</text></g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section data-tone="day" aria-label="Next project">
+    <div class="wrap"><a class="next-project" href="work.html#hms"><span class="muted">Next project</span><span class="display h-xl">HMS</span></a></div>
+  </section>
+</main>
+<footer class="site-footer" data-tone="night">
+  <div class="wrap">
+    <div class="foot-cta">
+      <h2 class="display h-lg">Want DentaFlow in your clinic?</h2>
+      <div class="hero-actions"><a class="btn btn-xl magnetic" href="contact.html" data-cursor="Write to me"><span class="sun-dot" aria-hidden="true"></span>Contact</a>
+      <a class="link" href="work.html">See the work</a></div>
+    </div>
+    <div class="foot-cols">
+      <div><h2>Pages</h2><p><a href="./">Home</a><br><a href="work.html">Work</a><br><a href="about.html">About</a><br><a href="contact.html">Contact</a><br><a href="brand.html">Logo files</a></p></div>
+      <div><h2>Elsewhere</h2><p>LinkedIn, link to come<br>GitHub, link to come</p></div>
+      <div><h2>Agadir, Morocco</h2><p>Local time <span class="clock">--:--</span><br>Working with clinics in Morocco and teams abroad</p></div>
+      <div><h2>Legal</h2><p class="legal">&copy; 2026 Abdelhadi Bouchadi, auto-entrepreneur</p><p>Legal notice on the live site</p></div>
+    </div>
+    <div class="footer-word-wrap"><span class="footer-word" data-fit aria-hidden="true">Abdelhadev</span></div>
+  </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/CustomEase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/DrawSVGPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.20/dist/lenis.min.js"></script>
+<script src="assets/site.js"></script>
+</body>
+</html>
