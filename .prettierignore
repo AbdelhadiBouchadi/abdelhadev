@@ -1,0 +1,13 @@
+docs/
+brand/
+prompts/
+AGENTS.md
+.agents/
+.claude/
+skills-lock.json
+pnpm-lock.yaml
+.next/
+test-results/
+playwright-report/
+.lighthouseci/
+public/
