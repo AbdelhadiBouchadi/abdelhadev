@@ -18,6 +18,9 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
+  // `next dev` otherwise injects its own rules block into AGENTS.md. Tooling must never write rules
+  // there (docs/decisions.md, "Lessons from the first attempt").
+  agentRules: false,
   // Decision T11: cacheComponents stays off.
   turbopack: {
     rules: {
