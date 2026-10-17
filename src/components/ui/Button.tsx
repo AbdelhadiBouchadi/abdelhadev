@@ -11,6 +11,17 @@ export const buttonClass = cn(
   "night:bg-glow night:text-night night:before:bg-moon night:hover:text-night",
 );
 
+/** Prototype .btn-sm (header) and .btn-xl (footer call to action); merge after buttonClass. */
+export const buttonSize = {
+  sm: "min-h-11 px-[18px] text-[14px]",
+  md: "",
+  xl: "min-h-16 px-[30px] text-[17px]",
+} as const;
+
+/** Prototype .link: the secondary text link next to a button. */
+export const textLinkClass =
+  "inline-flex min-h-12 items-center text-[15px] font-semibold underline decoration-[color-mix(in_srgb,currentColor_35%,transparent)] decoration-[1.5px] underline-offset-[6px] transition-[text-decoration-color] duration-(--dur-quick) ease-warm hover:decoration-current";
+
 export function SunDot() {
   return (
     <span

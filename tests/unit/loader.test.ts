@@ -138,6 +138,26 @@ describe("loader registry", () => {
     expect(seen).toEqual([0, 1]);
   });
 
+  it("counts the first cycle's floor and ceiling from navigation start", async () => {
+    // Hydration 1000 ms after navigation start: 600 ms of floor and 3500 ms of ceiling remain.
+    const loader = createLoader("first", { clock, elapsedMs: 1000 });
+    loader.track(1, Promise.resolve());
+    await vi.advanceTimersByTimeAsync(LOADER.floorFirstMs - 1000);
+    expect(loader.isReady()).toBe(true);
+
+    const slow = createLoader("first", { clock, elapsedMs: 1000 });
+    slow.track(1, new Promise(() => undefined));
+    await vi.advanceTimersByTimeAsync(LOADER.ceilingMs - 1000);
+    expect(slow.isReady()).toBe(true);
+
+    // A route cycle starts from zero again.
+    slow.reset("route");
+    await vi.advanceTimersByTimeAsync(LOADER.floorRouteMs - 1);
+    expect(slow.isReady()).toBe(false);
+    await vi.advanceTimersByTimeAsync(1);
+    expect(slow.isReady()).toBe(true);
+  });
+
   it("stops notifying after unsubscribe", async () => {
     const loader = createLoader("route", { clock });
     const listener = vi.fn();

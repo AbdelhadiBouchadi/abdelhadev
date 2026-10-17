@@ -5,12 +5,33 @@
   },
   "common": {
     "skipLink": "Skip to content",
-    "footer": {
-      "copyright": "© {year} {name}, auto-entrepreneur",
-      "legal": "Legal notice",
-      "nav": "Footer"
-    },
     "localeSwitch": "Français"
+  },
+  "nav": {
+    "label": "Main",
+    "mobileLabel": "Main (mobile)",
+    "brandLabel": "{brand}, home",
+    "home": "Home",
+    "work": "Work",
+    "about": "About",
+    "contact": "Contact"
+  },
+  "cursor": {
+    "write": "Write to me"
+  },
+  "loader": {
+    "loading": "Loading",
+    "status": "Loading, {percent} percent"
+  },
+  "footer": {
+    "cta": "Have a project in mind?",
+    "seeWork": "See the work",
+    "pages": "Pages",
+    "elsewhere": "Elsewhere",
+    "localTime": "Local time",
+    "legalHeading": "Legal",
+    "legal": "Legal notice",
+    "copyright": "© {year} {name}, auto-entrepreneur"
   },
   "pages": {
     "home": {
@@ -34,7 +55,45 @@
     },
     "legal": {
       "title": "Legal notice",
-      "lead": "The full legal notice will be published on this page before launch."
+      "updated": "Last updated: {date}",
+      "publisher": {
+        "title": "Publisher",
+        "body": "This site is published by {name}, auto-entrepreneur, a full-stack developer based in {place}.",
+        "contact": "To reach me:"
+      },
+      "director": {
+        "title": "Publication director",
+        "body": "The publication director is {name}."
+      },
+      "host": {
+        "title": "Hosting",
+        "body": "The site is hosted by {host}, {address}.",
+        "site": "Host's website:"
+      },
+      "ip": {
+        "title": "Intellectual property",
+        "body": "The texts, the {brand} name, its logo and the graphics on this site are mine unless stated otherwise. Copying them, in whole or in part, needs my written permission first.",
+        "names": "Product and technology names belong to their owners."
+      },
+      "data": {
+        "title": "Personal data",
+        "collected": "The contact form collects your name, your email address, the kind of organisation you work for and your message. I use them only to reply to you; they are never sold or used for advertising.",
+        "processor": "Your message reaches me by email through Resend, which acts as a processor for that delivery.",
+        "whatsapp": "If you choose WhatsApp, your message goes through that service and falls under its own terms.",
+        "retention": "How long messages are kept: {retention}",
+        "retentionValue": "[TODO: how long messages received through the form are kept]",
+        "rights": "You can ask to see, correct or delete your data by writing to the address above."
+      },
+      "storage": {
+        "title": "Cookies and local storage",
+        "cookies": "This site sets no advertising or analytics cookies.",
+        "session": "It also keeps one piece of information in your browser's session storage: that you have already seen the opening animation, so the next pages open faster. It is gone when you close the tab.",
+        "language": "It may set a single cookie, NEXT_LOCALE, which remembers the language you are reading the site in. It is a session cookie: it is gone when you close the browser."
+      },
+      "links": {
+        "title": "External links",
+        "body": "Links to other sites, such as LinkedIn, GitHub, WhatsApp or the host, leave this site. I do not control what they publish."
+      }
     },
     "notFound": {
       "title": "Page not found",
@@ -50,7 +109,15 @@
       "type": "Type scale",
       "brand": "Brand",
       "buttons": "Button",
-      "button": "Contact"
+      "button": "Contact",
+      "shell": "Shell test",
+      "shellLead": "Scroll through these three sections: the header, the mobile nav and the cursor take the tone of each one.",
+      "toneDay": "Day section",
+      "toneNight": "Night section",
+      "toneSheet": "Sheet section",
+      "cursorTarget": "Hover over this area",
+      "cursorLabel": "Cursor label",
+      "jumpToNight": "Jump to the night section"
     }
   },
   "projects": {

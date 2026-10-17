@@ -40,11 +40,12 @@ describe("placeholders", () => {
     expect(isTodo(3)).toBe(false);
   });
 
-  it("lists the identity values the owner still has to supply", () => {
+  it("lists the identity values the owner still has to supply and the pending legal review", () => {
     expect(todoReport()).toEqual([
       `email: ${SITE.email}`,
       `linkedin: ${SITE.linkedin}`,
       `github: ${SITE.github}`,
+      "legalReview: pending",
     ]);
   });
 });

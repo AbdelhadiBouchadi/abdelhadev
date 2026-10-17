@@ -20,6 +20,8 @@ export const EASE = {
 
 /** Seconds, as GSAP expects them. */
 export const DURATION = {
+  /** Mirrors --dur-fade: the cursor and its label fading. */
+  fade: 0.3,
   /** Mirrors --dur-quick: skip link, fields, nav pill items. */
   quick: 0.4,
   /** Mirrors --dur-cursor: cursor label morph. */
@@ -70,6 +72,49 @@ export const DURATION = {
   intro: 2.2,
 } as const;
 
+/** Programmatic scrolls (hash links, back to top): the prototype's 1.6 s ease-out-quart. */
+export const SCROLL_TO = {
+  duration: 1.6,
+  easing: (t: number) => 1 - Math.pow(1 - t, 4),
+} as const;
+
+/** Media queries the motion code branches on. */
+export const MEDIA = {
+  motion: "(prefers-reduced-motion: no-preference)",
+  reduce: "(prefers-reduced-motion: reduce)",
+  /** A mouse or trackpad: the cursor and magnetic buttons run only here. */
+  finePointer: "(hover: hover) and (pointer: fine)",
+} as const;
+
+/** Distances of the shell's moves, in px unless noted. */
+export const SHELL = {
+  /** The header hides when scrolling down past this offset. */
+  headerHideAfter: 240,
+  /** Tone triggers: where a section takes over the shell tone (prototype initTone). */
+  toneLine: 50,
+  toneStart: "top 50px",
+  toneEnd: "bottom 50px",
+  /** Footer wordmark rise, yPercent. */
+  footerWordFrom: 60,
+  footerWordTo: 14,
+  /** Footer CTA heading lines start when the heading reaches this point. */
+  footerCtaStart: "top 80%",
+} as const;
+
+/** Loader moves, in px (letters, mark) and mark units (sun, in SUN). */
+export const LOADER_MOVE = {
+  letterY: 26,
+  letterOutY: -30,
+  markOutY: -24,
+  /** Line reveals start below their mask. */
+  linesYPercent: 110,
+  /** The curved edge of the panel while it moves, and flat. */
+  curve: "50% 14vh",
+  flat: "50% 0vh",
+  /** The horizon and reflection grow from the centre of the horizon line. */
+  horizonOrigin: "32 41",
+} as const;
+
 /** Seconds of the loader exit timeline at which events start. */
 export const LOADER_EXIT_AT = {
   mark: 0.1,
@@ -77,6 +122,9 @@ export const LOADER_EXIT_AT = {
   /** The page intro starts 0.55 s into the exit. */
   ready: 0.55,
 } as const;
+
+/** Seconds of the curtain timeline at which the sun starts setting. */
+export const CURTAIN_AT = { sun: 0.2 } as const;
 
 /** Every scroll-linked timeline uses the same smoothing. */
 export const SCRUB = 0.8;

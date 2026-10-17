@@ -71,18 +71,24 @@ interface Cycle {
   promise: Promise<void>;
 }
 
+export interface LoaderOptions {
+  clock?: LoaderClock;
+  ceilingMs?: number;
+  /** Milliseconds of the first cycle that already passed before the registry existed. On a first
+      visit this is the time since navigation start, so the floor and the ceiling count from the
+      start of the page load (as in the prototype), not from hydration. Route cycles start at 0. */
+  elapsedMs?: number;
+}
+
 export function createLoader(
   kind: LoaderKind,
-  {
-    clock = defaultClock,
-    ceilingMs = LOADER.ceilingMs,
-  }: { clock?: LoaderClock; ceilingMs?: number } = {},
+  { clock = defaultClock, ceilingMs = LOADER.ceilingMs, elapsedMs = 0 }: LoaderOptions = {},
 ): LoaderRegistry {
   const listeners = new Set<(progress: number) => void>();
   let nextId = 0;
-  let cycle = open(kind);
+  let cycle = open(kind, elapsedMs);
 
-  function open(k: LoaderKind): Cycle {
+  function open(k: LoaderKind, elapsed = 0): Cycle {
     let resolve: () => void = () => undefined;
     const promise = new Promise<void>((r) => {
       resolve = r;
@@ -101,11 +107,11 @@ export function createLoader(
       resolve,
       promise,
     };
-    void clock.wait(c.floorMs).then(() => {
+    void clock.wait(Math.max(0, c.floorMs - elapsed)).then(() => {
       c.floorPassed = true;
       check(c);
     });
-    void clock.wait(ceilingMs).then(() => {
+    void clock.wait(Math.max(0, ceilingMs - elapsed)).then(() => {
       c.ceilingPassed = true;
       check(c);
     });

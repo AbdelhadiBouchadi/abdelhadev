@@ -39,6 +39,8 @@ First person singular. Plain, specific, calm. Say what was built, for whom, with
 
 Never mention the internship project or its client.
 
+A project is shown by name on a public page only after the owner confirms permission (Côte Royale first). Until then it is hidden from lists and the sitemap.
+
 ## About and experience
 
 Known facts only: from Agadir; freelance full-stack developer (auto-entrepreneur); third-year Computer Engineering student at Karabuk University (named as the institution, never as a location); DentaFlow. Earlier roles and dates are `[TODO]` until the owner supplies them. No claim of full-time availability.

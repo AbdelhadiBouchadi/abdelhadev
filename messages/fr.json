@@ -5,12 +5,33 @@
   },
   "common": {
     "skipLink": "Aller au contenu",
-    "footer": {
-      "copyright": "© {year} {name}, auto-entrepreneur",
-      "legal": "Mentions légales",
-      "nav": "Pied de page"
-    },
     "localeSwitch": "English"
+  },
+  "nav": {
+    "label": "Navigation principale",
+    "mobileLabel": "Navigation principale (mobile)",
+    "brandLabel": "{brand}, accueil",
+    "home": "Accueil",
+    "work": "Projets",
+    "about": "À propos",
+    "contact": "Contact"
+  },
+  "cursor": {
+    "write": "Écrivez-moi"
+  },
+  "loader": {
+    "loading": "Chargement",
+    "status": "Chargement, {percent} pour cent"
+  },
+  "footer": {
+    "cta": "Un projet en tête ?",
+    "seeWork": "Voir les projets",
+    "pages": "Pages",
+    "elsewhere": "Ailleurs",
+    "localTime": "Heure locale",
+    "legalHeading": "Informations légales",
+    "legal": "Mentions légales",
+    "copyright": "© {year} {name}, auto-entrepreneur"
   },
   "pages": {
     "home": {
@@ -34,7 +55,45 @@
     },
     "legal": {
       "title": "Mentions légales",
-      "lead": "Les mentions légales complètes seront publiées sur cette page avant le lancement."
+      "updated": "Dernière mise à jour : {date}",
+      "publisher": {
+        "title": "Éditeur du site",
+        "body": "Ce site est édité par {name}, auto-entrepreneur, développeur full-stack basé à {place}.",
+        "contact": "Pour me joindre :"
+      },
+      "director": {
+        "title": "Directeur de la publication",
+        "body": "Le directeur de la publication est {name}."
+      },
+      "host": {
+        "title": "Hébergement",
+        "body": "Le site est hébergé par {host}, {address}.",
+        "site": "Site de l'hébergeur :"
+      },
+      "ip": {
+        "title": "Propriété intellectuelle",
+        "body": "Les textes, la marque {brand}, son logo et les éléments graphiques de ce site m'appartiennent, sauf mention contraire. Leur reproduction, totale ou partielle, demande mon accord écrit préalable.",
+        "names": "Les noms de produits et de technologies cités appartiennent à leurs propriétaires."
+      },
+      "data": {
+        "title": "Données personnelles",
+        "collected": "Le formulaire de contact recueille votre nom, votre adresse e-mail, le type de votre organisation et votre message. Je m'en sers uniquement pour vous répondre ; ces données ne sont ni vendues ni utilisées pour de la publicité.",
+        "processor": "Le message m'est transmis par e-mail grâce au service Resend, qui agit comme sous-traitant pour cet envoi.",
+        "whatsapp": "Si vous choisissez WhatsApp, votre message passe par ce service et relève de ses propres conditions.",
+        "retention": "Durée de conservation des messages : {retention}",
+        "retentionValue": "[TODO: durée de conservation des messages reçus par le formulaire]",
+        "rights": "Vous pouvez demander l'accès à vos données, leur rectification ou leur suppression en m'écrivant à l'adresse indiquée plus haut."
+      },
+      "storage": {
+        "title": "Cookies et stockage local",
+        "cookies": "Ce site ne dépose aucun cookie publicitaire ni de mesure d'audience.",
+        "session": "Il enregistre aussi une information dans le stockage de session de votre navigateur : le fait que vous avez déjà vu l'animation d'ouverture, pour la raccourcir sur les pages suivantes. Elle disparaît quand vous fermez l'onglet.",
+        "language": "Il peut déposer un seul cookie, NEXT_LOCALE, qui retient la langue dans laquelle vous lisez le site. C'est un cookie de session : il disparaît quand vous fermez le navigateur."
+      },
+      "links": {
+        "title": "Liens externes",
+        "body": "Les liens vers d'autres sites, comme LinkedIn, GitHub, WhatsApp ou l'hébergeur, quittent ce site. Je ne contrôle pas leur contenu."
+      }
     },
     "notFound": {
       "title": "Page introuvable",
@@ -50,7 +109,15 @@
       "type": "Échelle typographique",
       "brand": "Marque",
       "buttons": "Bouton",
-      "button": "Contact"
+      "button": "Contact",
+      "shell": "Test du cadre",
+      "shellLead": "Faites défiler ces trois sections : l'en-tête, la navigation mobile et le curseur prennent le ton de chacune.",
+      "toneDay": "Section jour",
+      "toneNight": "Section nuit",
+      "toneSheet": "Section feuille",
+      "cursorTarget": "Survolez cette zone",
+      "cursorLabel": "Étiquette du curseur",
+      "jumpToNight": "Aller à la section nuit"
     }
   },
   "projects": {

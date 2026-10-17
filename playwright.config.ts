@@ -11,6 +11,10 @@ export default defineConfig({
   testDir: "tests/e2e",
   outputDir: "test-results/artifacts",
   fullyParallel: true,
+  // Every page now runs the GSAP ticker (Lenis) and the loader. At the default 50 % of a 12-thread
+  // machine, frame starvation pushed about 1 % of loads past their timeouts; at 33 % the suite is
+  // green in the same wall time. CI keeps Playwright's default.
+  workers: process.env.CI ? undefined : "33%",
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? [["github"], ["list"]] : [["list"]],

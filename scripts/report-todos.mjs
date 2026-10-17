@@ -30,6 +30,16 @@ for (const source of SOURCES) {
   }
 }
 
+// The legal notice is not a placeholder but must be reviewed before launch (src/lib/site.ts).
+const site = readFileSync(join(root, "src/lib/site.ts"), "utf8");
+site.split("\n").forEach((line, i) => {
+  if (/^\s*legalReview:\s*"pending"/.test(line)) {
+    found.push(
+      `src/lib/site.ts:${i + 1}  legalReview: "pending" (the owner confirms the legal notice)`,
+    );
+  }
+});
+
 const strict = process.env.REQUIRE_CONTENT === "1";
 if (found.length === 0) {
   console.log("Content placeholders: none");
