@@ -113,3 +113,31 @@ The loader ceiling now bounds when the exit starts (3300 ms), so a slow task can
 | LCP, S3 method, first visit | error above 1.5 s, element must be the hero (0.96 to 1.17 s measured) |
 | LCP, Lighthouse simulated | trend only (3.62 s, dominated by fonts and script download) |
 | Overlay on the throttled profile | record, do not gate locally until measured on CI hardware: here it follows the machine state |
+
+## 02-primitives (2026-10-18)
+
+Same machine and tools. `/fr` uses no primitive except the footer (every page), whose `FooterMotion` was replaced by `SplitReveal` and `Scrub` with the same numbers; the primitives' setup now runs in one task after React's commit instead of inside it (`src/lib/schedule.ts`).
+
+### Interleaved with `main`, `/fr`
+
+Lighthouse mobile through its Node API, a frozen build of `main` (port 3200) and this branch (port 3100) alternating, 7 runs each, two series.
+
+| Series | `main` TBT median (range) | 02 TBT median (range) | JS transfer `main` / 02 | LCP simulated |
+| --- | --- | --- | --- | --- |
+| 1 | 123 ms (112 to 206) | 126 ms (111 to 585) | 231.3 / 232.6 KiB | 3.63 / 3.63 s |
+| 2 (noisier machine phase) | 194 ms (149 to 539) | 188 ms (111 to 334) | 231.3 / 232.6 KiB | 3.63 / 3.63 s |
+
+**Delta:** JavaScript transfer +1.3 KiB on `/fr` (the primitive leaves the footer now uses, `useMotion`, `useReadyGate` and the scheduler, less `FooterMotion`). TBT: no measurable change; within each series the two builds are level, and both series swing with the machine (the two 578 and 585 ms branch runs in series 1 were the first requests to a server that had just started). LCP unchanged.
+
+### `pnpm lhci` (3 runs per route, median)
+
+Run with `--collect.startServerCommand="pnpm start --port 3100"` and the four URLs on port 3100, because a `next dev` server was holding port 3000; the configuration and its assertions are unchanged, and all of them pass.
+
+| Route | LCP (simulated) | FCP | TBT | CLS | JS transfer | Perf | A11y |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `/fr` | 3.63 s | 0.78 s | 171 ms | 0.000 | 232.6 KiB | 87 | 100 |
+| `/en` | 3.62 s | 0.77 s | 130 ms | 0.000 | 232.6 KiB | 89 | 100 |
+| `/fr/projets` | 3.62 s | 0.77 s | 155 ms | 0.000 | 232.6 KiB | 88 | 100 |
+| `/fr/mentions-legales` | 3.63 s | 0.78 s | 153 ms | 0.000 | 232.6 KiB | 87 | 100 |
+
+These are higher than the 79 to 120 ms of 01b's `pnpm lhci` run, but the interleaved series above show the same spread on `main`'s own build on the same afternoon: the difference follows the machine, not the branch. All routes stay under the proposed 200 ms TBT and the proposed 267 KiB JavaScript budget.

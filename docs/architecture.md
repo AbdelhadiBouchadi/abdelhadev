@@ -42,16 +42,22 @@ abdelhadev/
 │   │   ├── layout/     Header.tsx, MobileNav.tsx, Footer.tsx, Loader.tsx, Cursor.tsx, Sky.tsx, SkipLink.tsx
 │   │   ├── sections/   home/, work/, case/, about/, contact/
 │   │   ├── three/      HeroScene.tsx (+ its parts), plain three.js, loaded with next/dynamic, ssr: false
-│   │   └── ui/         Button.tsx, Chip.tsx, Field.tsx, Screen.tsx (placeholder screen)
-│   ├── primitives/     SmoothScroll, TransitionProvider, TransitionLink, SplitReveal, WordsLight,
-│   │                   MaskReveal, StickyStage, Magnetic, FitText, LineDraw, ToneSection
-│   ├── hooks/          useLenis, useReducedMotion, useMediaQuery, usePointer, useLoaderReady,
-│   │                   useIsomorphicLayoutEffect
+│   │   └── ui/         Button.tsx, Chip.tsx, Screen.tsx (framed screen, placeholder skeletons),
+│   │                   ArrowLink.tsx, Field.tsx (07)
+│   ├── primitives/     shell (01): SmoothScroll, TransitionProvider, TransitionLink, ToneSection,
+│   │                   ToneTrigger, Magnetic, FitText
+│   │                   motion (02, docs/primitives.md): SplitReveal, WordsLight, Reveal,
+│   │                   MediaReveal, StickyStage + useStageTimeline, Scrub, LineDraw; each with its
+│   │                   client leaf (…Motion.tsx)
+│   ├── hooks/          useMotion, useReadyGate, useScrollSpy, useLoaderReady, useLoaderTask,
+│   │                   useReducedMotion, useMediaQuery, useIsomorphicLayoutEffect
 │   ├── lib/
 │   │   ├── gsap.ts     plugin registration, CustomEase "warm", exports
 │   │   ├── lenis.ts    Lenis factory and ticker wiring
 │   │   ├── motion.ts   EASE, DURATION, SCRUB, STAGGER, LOADER timings (mirror of the CSS tokens)
 │   │   ├── loader.ts   task registry: track(weight, promise), progress, ready signal
+│   │   ├── schedule.ts one shared task after React's commit for the primitives' setup
+│   │   ├── scroll.ts   pure helpers of the primitives: ranges, stage condition, scroll spy, clip paths
 │   │   ├── fonts.ts    next/font definitions
 │   │   ├── site.ts     identity, contact channels, social links, INDEXABLE flag
 │   │   ├── seo.ts      metadata helpers, alternates, JSON-LD builders

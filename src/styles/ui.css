@@ -1,0 +1,227 @@
+/* Static UI building blocks (src/components/ui): the framed product screen with its placeholder
+   skeletons, and chips. Ported from docs/prototype/assets/site.css (.screen*, .ui-*, .sk*, .chip*).
+
+   The prototype drew its placeholder screens with a few raw colours; here each is a token or a
+   color-mix of tokens (docs/primitives.md lists the mapping):
+     #FFFCF7 screen          → --sheet
+     rgba(43,29,26,.06)      → --ink at 6 %
+     #F3E8DC ui bar, tiles   → --sand 70 % with --sheet
+     #DCC8B5 ui bar pills    → --sand-2 90 % with --ink-soft
+     #EADBCB skeleton line   → --sand
+     #D9C2AC dark line       → --sand-2 88 % with --ink-soft
+     #F6EEE5 empty cell      → --sand 35 % with --sheet
+     #E8D5C2 cell c          → --sand-2
+     #2B1D1A invoice total   → --ink
+     rgba(61,82,213,.08/.3)  → --majorelle at 8 % and 30 % (chip todo)
+   In the components layer, so Tailwind utilities still win. */
+@layer components {
+  /* ---------- Screen ---------- */
+  .screen {
+    aspect-ratio: 16 / 10;
+    max-width: 100%;
+    border-radius: var(--r-screen);
+    background: var(--sheet);
+    overflow: hidden;
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--ink) 6%, transparent);
+  }
+  .screen[data-aspect="tall"] {
+    aspect-ratio: 4 / 5;
+  }
+  .screen[data-aspect="wide"] {
+    aspect-ratio: 21 / 10;
+  }
+  .screen-inner {
+    transform-origin: 50% 50%;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    height: 100%;
+  }
+  .screen-inner[data-image] {
+    display: block;
+  }
+  .screen-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .ui-bar {
+    height: 14%;
+    min-height: 14px;
+    max-height: 44px;
+    background: color-mix(in srgb, var(--sand) 70%, var(--sheet));
+    display: flex;
+    align-items: center;
+    gap: 4%;
+    padding-inline: 5%;
+  }
+  .ui-bar i {
+    display: block;
+    height: 30%;
+    width: 14%;
+    background: color-mix(in srgb, var(--sand-2) 90%, var(--ink-soft));
+    border-radius: var(--r-pill);
+  }
+  .ui-bar i:first-child {
+    width: 7%;
+    background: var(--glow);
+  }
+  .ui-body {
+    padding: 5%;
+    display: grid;
+    gap: 6%;
+    align-content: start;
+    min-height: 0;
+  }
+  .ui-split {
+    display: grid;
+    grid-template-columns: 22% 1fr;
+    gap: 5%;
+    height: 100%;
+  }
+  .ui-side,
+  .ui-stack {
+    display: grid;
+    gap: 8px;
+    align-content: start;
+  }
+  .ui-list {
+    display: grid;
+    gap: 10px;
+  }
+  .ui-row {
+    display: flex;
+    justify-content: space-between;
+  }
+  .sk {
+    display: block;
+    height: 7px;
+    border-radius: var(--r-pill);
+    background: var(--sand);
+  }
+  .sk[data-dark] {
+    background: color-mix(in srgb, var(--sand-2) 88%, var(--ink-soft));
+  }
+  .sk[data-w="16"] {
+    width: 16%;
+  }
+  .sk[data-w="30"] {
+    width: 30%;
+  }
+  .sk[data-w="40"] {
+    width: 40%;
+  }
+  .sk[data-w="50"] {
+    width: 50%;
+  }
+  .sk[data-w="60"] {
+    width: 60%;
+  }
+  .sk[data-w="70"] {
+    width: 70%;
+  }
+  .sk[data-w="80"] {
+    width: 80%;
+  }
+  .ui-total {
+    height: 12px;
+    width: 44%;
+    justify-self: end;
+    border-radius: var(--r-pill);
+    background: var(--ink);
+  }
+  .grid-cells {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 5px;
+  }
+  .grid-cells span {
+    aspect-ratio: 1.6;
+    max-width: 100%;
+    border-radius: 5px;
+    background: color-mix(in srgb, var(--sand) 35%, var(--sheet));
+  }
+  .grid-cells [data-c="a"] {
+    background: var(--glow);
+  }
+  .grid-cells [data-c="b"] {
+    background: var(--majorelle-soft);
+  }
+  .grid-cells [data-c="c"] {
+    background: var(--sand-2);
+  }
+  .tiles-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+  .tiles-row span {
+    aspect-ratio: 1;
+    max-width: 100%;
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--sand) 70%, var(--sheet));
+  }
+  .tiles-row [data-c="a"] {
+    background: var(--glow);
+  }
+  /* A captioned screen grows to fill its figure (prototype `.media .screen { height: 100% }`). */
+  .screen-figure {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+  }
+  .screen-figure > .screen {
+    flex: 1 1 auto;
+  }
+  .screen-caption {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 10px 6px 0;
+    font-size: 13px;
+  }
+
+  /* ---------- Chip ---------- */
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    min-height: 30px;
+    padding-inline: 12px;
+    border-radius: var(--r-pill);
+    font-size: 13px;
+    font-weight: 500;
+    box-shadow: inset 0 0 0 1px var(--line);
+    color: var(--ink-soft);
+  }
+  [data-tone="night"] .chip {
+    box-shadow: inset 0 0 0 1px var(--line-night);
+    color: var(--moon-soft);
+  }
+  .chip[data-variant="warm"] {
+    background: color-mix(in srgb, var(--glow) 30%, transparent);
+    box-shadow: none;
+    color: var(--ink);
+  }
+  [data-tone="night"] .chip[data-variant="warm"] {
+    color: var(--moon);
+  }
+  .chip[data-variant="todo"] {
+    background: color-mix(in srgb, var(--majorelle) 8%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--majorelle) 30%, transparent);
+    color: var(--majorelle);
+  }
+  /* Majorelle on night is too dark to read: its soft tint is the accent on night (art direction). */
+  [data-tone="night"] .chip[data-variant="todo"] {
+    background: color-mix(in srgb, var(--majorelle-soft) 10%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--majorelle-soft) 35%, transparent);
+    color: var(--majorelle-soft);
+  }
+}

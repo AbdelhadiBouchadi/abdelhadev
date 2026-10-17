@@ -41,6 +41,8 @@
   --r-media: 18px;
   --r-frame: 20px;
   --r-card: 22px;
+  /* the case study hero screenshot frame (prototype .case-shot) */
+  --r-shot: 26px;
   --r-sheet: 28px;
   --r-pill: 999px;
 

@@ -81,6 +81,7 @@ Imports go one way: `app` → `components/sections` → `components/layout`, `co
 ## Motion rules (details in `docs/choreography.md`)
 
 - GSAP is the only animation engine. Plugins are registered once in `src/lib/gsap.ts`. The house ease `warm` (CustomEase `0.625, 0.05, 0, 1`) is defined there.
+- Before writing GSAP in a section, check `docs/primitives.md`; compose a primitive when one fits.
 - Every animation: `useGSAP` with a scope, inside `gsap.matchMedia()` with a reduced-motion branch, cleaned up on unmount. Never kill all ScrollTriggers.
 - Scroll storytelling is scrubbed (`scrub: 0.8`) inside sticky stages. Time-based animation is for intros, hovers, menus, the loader and route transitions.
 - Never put Tailwind transform utilities (translate, scale, rotate) on an element GSAP animates; wrap it or use a child.

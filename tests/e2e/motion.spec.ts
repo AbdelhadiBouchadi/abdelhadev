@@ -2,49 +2,16 @@
 // screenshots of the shell's motion in test-results/motion/, to compare with docs/prototype.
 // Recorded once, from the 1440 project; each clip opens its own context at the size it shows.
 import { mkdirSync } from "node:fs";
-import { test, type Browser, type BrowserContextOptions, type Page } from "@playwright/test";
+import { test, type Page } from "@playwright/test";
+import { DESKTOP, MOTION_OUT, PHONE, record, wheel } from "./motion-helpers";
 import { shellIdle } from "./shell-helpers";
-
-const OUT = "test-results/motion";
-const DESKTOP = { width: 1440, height: 900 };
-const PHONE = { width: 390, height: 844 };
 
 test.describe.configure({ mode: "serial" });
 test.beforeEach(() => {
   test.skip(test.info().project.name !== "1440", "recorded once");
   test.setTimeout(90_000);
-  mkdirSync(OUT, { recursive: true });
+  mkdirSync(MOTION_OUT, { recursive: true });
 });
-
-async function record(
-  browser: Browser,
-  name: string,
-  size: { width: number; height: number },
-  run: (page: Page) => Promise<void>,
-  { visitedSession = true, phone = false }: { visitedSession?: boolean; phone?: boolean } = {},
-) {
-  const options: BrowserContextOptions = {
-    viewport: size,
-    recordVideo: { dir: `${OUT}/raw`, size },
-    ...(phone ? { isMobile: true, hasTouch: true, deviceScaleFactor: 2 } : {}),
-  };
-  const context = await browser.newContext(options);
-  const page = await context.newPage();
-  if (visitedSession) await page.addInitScript(() => sessionStorage.setItem("abd-visited", "1"));
-  await run(page);
-  await page.screenshot({ path: `${OUT}/${name}.png` });
-  await context.close();
-  await page.video()?.saveAs(`${OUT}/${name}.webm`);
-}
-
-/** Smooth wheel scroll through Lenis, in steps, so the video shows the motion. */
-async function wheel(page: Page, dy: number, steps = 12) {
-  for (let i = 0; i < steps; i++) {
-    await page.mouse.wheel(0, dy / steps);
-    await page.waitForTimeout(60);
-  }
-  await page.waitForTimeout(700);
-}
 
 const toLabNight = (page: Page) =>
   page.locator("#lab-night").evaluate((el) => el.getBoundingClientRect().top + window.scrollY);

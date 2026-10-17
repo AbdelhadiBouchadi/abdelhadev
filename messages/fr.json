@@ -117,7 +117,58 @@
       "toneSheet": "Section feuille",
       "cursorTarget": "Survolez cette zone",
       "cursorLabel": "Étiquette du curseur",
-      "jumpToNight": "Aller à la section nuit"
+      "jumpToNight": "Aller à la section nuit",
+      "bench": {
+        "title": "Banc des primitives",
+        "lead": "Chaque bloc montre une primitive de mouvement, de jour puis de nuit. Faites défiler pour voir chaque état final.",
+        "lines": "Des logiciels sur lesquels une équipe peut compter, construits avec soin.",
+        "linesNight": "Le soir porte le produit et la conclusion.",
+        "scrubLines": "Cette phrase monte au rythme du défilement.",
+        "words": "Je construis des applications web dont les gens se servent chaque jour : des outils de gestion, des produits avec de l'IA et des plateformes pour les clients.",
+        "wordsNight": "Chaque cabinet reçoit son propre nom, sa propre base de données et son propre serveur.",
+        "steps": {
+          "scoping": "Cadrage",
+          "modelling": "Modélisation des données",
+          "delivery": "Livraison"
+        },
+        "stepsLead": "Chaque élément du groupe monte et apparaît à son tour.",
+        "stack": {
+          "next": "Next.js",
+          "postgres": "PostgreSQL"
+        },
+        "toConfirm": "À confirmer",
+        "warm": "En ligne",
+        "screenLabel": "Capture d'écran à venir",
+        "screens": {
+          "agenda": "Agenda",
+          "record": "Dossier patient",
+          "plan": "Plan de traitement",
+          "invoice": "Facture"
+        },
+        "imageAlt": "Le symbole Abdelhadev : un soleil au-dessus de l'horizon",
+        "stageTitle": "Quatre écrans s'ouvrent l'un après l'autre",
+        "stageLead": "Sur ordinateur, la scène reste fixe et le défilement ouvre chaque écran. Sur mobile, chaque écran s'ouvre quand il arrive.",
+        "settle": "Le mot se pose pendant le défilement.",
+        "fade": "Ce texte s'efface quand on descend.",
+        "diagramLabel": "Schéma : le navigateur appelle l'application, qui appelle l'API, qui interroge la base de données.",
+        "diagram": {
+          "browser": "Navigateur",
+          "app": "Application",
+          "api": "API",
+          "database": "Base de données"
+        },
+        "spyLead": "La pastille suit le bloc qui croise la ligne d'activation, à 45 % de la hauteur de l'écran.",
+        "spy": {
+          "morning": "Matin",
+          "noon": "Midi",
+          "evening": "Soir",
+          "night": "Nuit"
+        },
+        "spyNav": "Moments de la journée",
+        "back": "Tous les projets",
+        "forward": "Voir les projets",
+        "external": "Le prototype"
+      }
     }
   },
   "projects": {
