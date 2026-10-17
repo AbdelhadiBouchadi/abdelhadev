@@ -181,6 +181,8 @@ export function Loader() {
         const finish = () => {
           html.classList.add("loader-off");
           shellBusy.set(false);
+          // Needed even after an arrival's own refresh: Lenis starting gives the scrollbar back
+          // (`.lenis-stopped` hides it), which narrows the page on classic-scrollbar systems.
           ScrollTrigger.refresh();
         };
 

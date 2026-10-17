@@ -148,11 +148,25 @@ export const CURSOR = { lerp: 0.16 } as const;
 /** Magnetic pull as a fraction of the pointer offset from the centre. */
 export const MAGNETIC = { x: 0.22, y: 0.3 } as const;
 
+/** Seconds from the start of the loader exit until the panel has left the viewport. */
+export const LOADER_EXIT_TOTAL = LOADER_EXIT_AT.panel + DURATION.panelOut;
+
+/** 5000 − 1450 would be 3550; 250 ms of it is margin for a busy main thread, where the deadline
+    timer, the final push and the exit each end late (on the 4x-CPU profile the exit started 70 to
+    150 ms late on a quiet machine, and later while hydration was still running; docs/spikes/tbt.md). */
+const CEILING_MS = 3300;
+
 export const LOADER = {
   floorFirstMs: 1600,
   floorRouteMs: 700,
   floorReducedMs: 250,
-  ceilingMs: 4500,
+  /** The latest moment the exit starts, from navigation start (first visit) or from the cover
+      (route change). Exit start plus the exit (LOADER_EXIT_TOTAL, 1.45 s) stays under the 5 s
+      the loader may cover content (docs/quality.md). */
+  ceilingMs: CEILING_MS,
+  /** When the registry stops waiting for tasks: the final push to 100 % still plays before the
+      exit, so it ends at the ceiling. */
+  tasksDeadlineMs: CEILING_MS - DURATION.progressEnd * 1000,
   /** The boot script reveals the page if nothing has marked it ready by then. */
   failsafeMs: 7000,
   weights: { fonts: 3, load: 2, image: 1, scene: 3 },

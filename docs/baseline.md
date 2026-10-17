@@ -79,3 +79,37 @@ The LCP element is the hero text (the lead paragraph on the placeholder pages), 
 | TBT | the 200 ms proposal is not met (about 1.4 s simulated); decide whether to budget it now or after a pass that splits the shell's hydration work |
 | LCP, S3 method | 1.04 s first visit on the mobile profile: under the 1.5 s proposal |
 | Loader on a slow phone | decide whether the 4.5 s ceiling should include the 1.45 s exit (today the overlay can stay up to about 6 s on the mobile profile) |
+
+## 01b-shell-performance (2026-10-18)
+
+Same machine and tools. Full method and attribution: `docs/spikes/tbt.md`.
+
+**Correction to the 01 section.** The 1.4 s TBT and the 6.4 to 6.8 s overlay above were measured during a slow phase of this machine (idle CPU utility 57 to 72 %, a Windows `dllhost` process using about 0.75 of a core). On the same committed code, `pnpm lhci` measures 79 to 101 ms, and the same build swung from 1837 ms to 266 ms of real TBT within two minutes. Builds are therefore compared **interleaved** (alternating runs against a frozen copy of the `main` build), never minutes apart.
+
+### Before and after (interleaved, same machine)
+
+| Metric | `main` (01) | 01b | Method |
+| --- | --- | --- | --- |
+| TBT, `/fr`, median | 133 ms (94 to 159) | **104 ms** (83 to 110) | Lighthouse mobile, 7 alternating runs each |
+| TBT, all routes | 79 to 101 ms | 79 to 120 ms | `pnpm lhci`, 3 runs per route, not interleaved (within run-to-run spread) |
+| LCP, simulated | 3.62 s | 3.62 s | Lighthouse mobile |
+| LCP, in-browser (S3 method) | 1.04 s first visit, 0.97 s visited (01, alone) | 0.96 s first visit, 1.12 s visited (inside the parallel suite) | `tests/e2e/lcp.spec.ts`; the hero lead is the LCP element |
+| JavaScript transfer, `/fr` | 231.7 KiB | 231.3 KiB | Lighthouse; SplitText now loads after hydration instead of with GSAP, so the total barely moves |
+| GSAP chunk (critical path) | 53.1 KB gzip | 48.6 KB gzip | build output; SplitText is a 3.3 KB on-demand chunk, DrawSVGPlugin is no longer loaded |
+| `/fr` HTML with RSC payload | 47.6 KB | 42.4 KB | only the `loader` and `common` messages reach the client |
+| Overlay gone, normal profile, first visit / visited | 3.50 s / 2.61 s | 3.50 s / 2.61 s | method B unthrottled, median of 5 (floor-bound, unchanged) |
+| Overlay gone, 4x CPU and 1.6 Mbps, first visit | 4.90 s (4.72 to 5.14) | 4.91 s (4.79 to 5.52) | method B, 8 alternating pairs, median (range) |
+| Overlay gone, font files held 8 s | 6.41 s | **4.76 s** | unthrottled, 3 runs each |
+| CLS | 0.000 | 0.000 | Lighthouse |
+
+The loader ceiling now bounds when the exit starts (3300 ms), so a slow task can no longer keep the overlay up past 4.75 s plus main-thread lateness. On the throttled profile the overlay still ends between 4.7 and 5.5 s, because it follows the end of hydration (`docs/spikes/tbt.md`, "What remains").
+
+### Proposals for the owner
+
+| Metric | Proposal |
+| --- | --- |
+| TBT, Lighthouse mobile | error above 200 ms (all routes measure 79 to 120 ms) |
+| JavaScript transfer, initial route without the 3D chunk | 232 KiB measured; 267 KiB (+15 %) |
+| LCP, S3 method, first visit | error above 1.5 s, element must be the hero (0.96 to 1.17 s measured) |
+| LCP, Lighthouse simulated | trend only (3.62 s, dominated by fonts and script download) |
+| Overlay on the throttled profile | record, do not gate locally until measured on CI hardware: here it follows the machine state |

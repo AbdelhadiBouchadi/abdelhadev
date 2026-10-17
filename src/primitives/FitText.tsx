@@ -1,7 +1,8 @@
 "use client";
 
 /* The prototype's `fit()`: sets the font size so a one-line word fills its column (the content box
-   of the nearest `.wrap`). Measured at 100 px with the final width axis, then scaled. Refitted
+   of the nearest `.wrap`). Measured at its current size with the final width axis, then scaled
+   (the prototype measures at 100 px; the result is the same because the width is linear). Refitted
    whenever the word stops matching its column: a resize, or the web font swapping in (which can
    happen after document.fonts.ready has already resolved). A fitted word matches, so the observer
    never loops. The text is rendered on the server (children) and keeps the CSS clamp size until
@@ -15,8 +16,6 @@ export interface FitTextProps extends Omit<ComponentPropsWithoutRef<"span">, "st
   children: ReactNode;
 }
 
-const PROBE_PX = 100;
-
 /** Sub-pixel rounding tolerance between a fitted word and its column. */
 const TOLERANCE_PX = 1;
 
@@ -25,11 +24,12 @@ function available(column: HTMLElement): number {
   return column.clientWidth - parseFloat(cs.paddingInlineStart) - parseFloat(cs.paddingInlineEnd);
 }
 
-function fit(el: HTMLElement, column: HTMLElement) {
-  const room = available(column);
-  el.style.fontSize = `${String(PROBE_PX)}px`;
-  const width = el.offsetWidth;
-  if (width > 0) el.style.fontSize = `${((PROBE_PX * room) / width).toFixed(2)}px`;
+/** One line of text scales linearly with its font size (letter spacing is in em), so the fitted
+    size is the current size times room over width: every value is read before the one write, and
+    fitting forces no extra layout (docs/spikes/tbt.md). */
+function fit(el: HTMLElement, room: number, width: number) {
+  const size = parseFloat(getComputedStyle(el).fontSize);
+  if (width > 0 && size > 0) el.style.fontSize = `${((size * room) / width).toFixed(2)}px`;
 }
 
 export function FitText({ children, className, ...props }: FitTextProps) {
@@ -41,7 +41,10 @@ export function FitText({ children, className, ...props }: FitTextProps) {
     if (!el || !column) return;
     let alive = true;
     const refit = () => {
-      if (alive && Math.abs(el.offsetWidth - available(column)) > TOLERANCE_PX) fit(el, column);
+      if (!alive) return;
+      const width = el.offsetWidth;
+      const room = available(column);
+      if (Math.abs(width - room) > TOLERANCE_PX) fit(el, room, width);
     };
     refit();
     void document.fonts.ready.then(refit);

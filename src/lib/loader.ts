@@ -8,7 +8,8 @@
 
    The cycle is ready when the floor has passed AND (every task has settled OR the ceiling has
    passed). The floor keeps the sunrise readable; the ceiling keeps a slow network from hiding the
-   page. */
+   page. The registry's ceiling is LOADER.tasksDeadlineMs: the loader's final push to 100 % plays
+   after it, so the exit starts by LOADER.ceilingMs and the overlay is gone within 5 s. */
 import { LOADER } from "@/lib/motion";
 
 export type LoaderKind = "first" | "route" | "reduced";
@@ -82,7 +83,7 @@ export interface LoaderOptions {
 
 export function createLoader(
   kind: LoaderKind,
-  { clock = defaultClock, ceilingMs = LOADER.ceilingMs, elapsedMs = 0 }: LoaderOptions = {},
+  { clock = defaultClock, ceilingMs = LOADER.tasksDeadlineMs, elapsedMs = 0 }: LoaderOptions = {},
 ): LoaderRegistry {
   const listeners = new Set<(progress: number) => void>();
   let nextId = 0;

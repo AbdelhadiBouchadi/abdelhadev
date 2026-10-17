@@ -22,7 +22,7 @@ What moves, when, and by how much. Values come from `docs/prototype/assets/site.
 1. Present at first paint (night panel, dawn glow at the bottom, mark with the sun below the horizon, wordmark letters hidden, counter `000`).
 2. First visit: the horizon and reflection draw from the centre (0.9 s, stagger 0.08).
 3. Real progress (fonts weight 3, window load 2, each critical image 1, home 3D scene 3) is tweened (`power2.out`, 0.8 s) and drives: the counter, the bottom bar, the sun rising (`y 19 → 0` in mark units), and one wordmark letter per tenth of progress (`opacity 0 → 1`, `y 26 → 0`, 0.7 s).
-4. Floor 1600 ms on the first visit, 700 ms on a route change; ceiling 4500 ms.
+4. Floor 1600 ms on the first visit, 700 ms on a route change; ceiling 3300 ms, the latest moment the exit starts (the registry stops waiting for tasks 0.45 s earlier, so the final push still plays). Exit start plus the exit (1.45 s) is 4.75 s, under the 5 s limit.
 5. Exit: letters lift out (`y -30`, stagger 0.025, `power3.in`), mark lifts, meta fades, then the panel slides up (`yPercent -100`, 1.15 s, `warm`) with its bottom edge curving (`border-bottom radius 50% 14vh`). The page intro starts 0.55 s into the exit.
 6. Leaving a page (curtain): the panel rises from the bottom with a curved top edge (0.8 s), the sun sets (`y 0 → 19`, 0.7 s, `power2.in`), then navigation happens and the arriving page runs the short loader.
 7. Reduced motion: no drawing or rising; a 250 ms fade when ready.
