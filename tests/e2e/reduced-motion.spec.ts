@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
+import { wordsLightOpacities } from "./page-helpers";
 import { ROUTES } from "./routes";
-import { shellIdle } from "./shell-helpers";
+import { scrollToY, shellIdle } from "./shell-helpers";
 
 test.use({ reducedMotion: "reduce" });
 
@@ -22,5 +23,13 @@ for (const route of ROUTES.filter((r) => r.locale === "fr")) {
         }).length,
     );
     expect(hidden).toBe(0);
+
+    // Every WordsLight word is at full opacity, before and after its range is scrolled through.
+    const top = await wordsLightOpacities(page);
+    expect(top.length > 0).toBe(route.wordsLight);
+    expect(top.filter((opacity) => opacity !== 1)).toEqual([]);
+    await scrollToY(page, await page.evaluate(() => document.documentElement.scrollHeight / 2));
+    await page.waitForTimeout(400);
+    expect((await wordsLightOpacities(page)).filter((opacity) => opacity !== 1)).toEqual([]);
   });
 }

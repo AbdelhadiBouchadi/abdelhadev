@@ -64,3 +64,20 @@ export async function beyond(page: Page, locator: Locator): Promise<void> {
   }));
   await scrollToY(page, top + height + 10);
 }
+
+/** The effective opacity (its own times its ancestors') of every WordsLight statement and of
+    each split word in it, so a word faded by its own tween or by a parent is caught alike. */
+export function wordsLightOpacities(page: Page): Promise<number[]> {
+  return page.evaluate(() => {
+    const effective = (el: Element) => {
+      let opacity = 1;
+      for (let node: Element | null = el; node; node = node.parentElement) {
+        opacity *= Number(getComputedStyle(node).opacity);
+      }
+      return opacity;
+    };
+    return [...document.querySelectorAll("[data-words-light]")].flatMap((statement) =>
+      [statement, ...statement.querySelectorAll("*")].map(effective),
+    );
+  });
+}

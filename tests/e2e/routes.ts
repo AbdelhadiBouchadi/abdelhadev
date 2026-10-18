@@ -7,6 +7,8 @@ import { caseStudyProjects } from "@/lib/content/projects";
 export interface Route {
   locale: "fr" | "en";
   path: string;
+  /** The page has WordsLight statements (home manifesto, case-study problem, about chapters). */
+  wordsLight: boolean;
 }
 
 function localise(locale: "fr" | "en", key: keyof typeof routing.pathnames): string {
@@ -16,15 +18,16 @@ function localise(locale: "fr" | "en", key: keyof typeof routing.pathnames): str
 }
 
 export const ROUTES: Route[] = routing.locales.flatMap((locale) => [
-  { locale, path: localise(locale, "/") },
-  { locale, path: localise(locale, "/work") },
+  { locale, path: localise(locale, "/"), wordsLight: true },
+  { locale, path: localise(locale, "/work"), wordsLight: false },
   ...caseStudyProjects().map(({ slug }) => ({
     locale,
     path: localise(locale, "/work/[slug]").replace("[slug]", slug),
+    wordsLight: true,
   })),
-  { locale, path: localise(locale, "/about") },
-  { locale, path: localise(locale, "/contact") },
-  { locale, path: localise(locale, "/legal") },
+  { locale, path: localise(locale, "/about"), wordsLight: true },
+  { locale, path: localise(locale, "/contact"), wordsLight: false },
+  { locale, path: localise(locale, "/legal"), wordsLight: false },
 ]);
 
 export const LEGAL_NAME = "Abdelhadi Bouchadi";

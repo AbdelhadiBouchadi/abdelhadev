@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { wordsLightOpacities } from "./page-helpers";
 import { LEGAL_NAME, ROUTES } from "./routes";
 
 test.use({ javaScriptEnabled: false });
@@ -15,6 +16,10 @@ for (const route of ROUTES) {
     expect(classes ?? "").not.toMatch(/\b(js|motion)\b/);
     await expect(page.locator("[data-loader]")).toBeHidden();
     expect(await page.locator("[inert]").count()).toBe(0);
+    // WordsLight statements are plain, fully opaque text.
+    const words = await wordsLightOpacities(page);
+    expect(words.length > 0).toBe(route.wordsLight);
+    expect(words.filter((opacity) => opacity !== 1)).toEqual([]);
     // The header links are there and reachable.
     await expect(page.getByRole("link", { name: "Contact" }).first()).toBeVisible();
   });

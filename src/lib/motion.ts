@@ -214,6 +214,9 @@ export const REVEAL = {
   enterStart: "top 85%",
   /** Reveal: px the group rises from. */
   fadeY: 28,
+  /** WordsLight: the opacity unlit words wait at (the prototype's 0.14, restored by the owner
+      after 07; it was 0.5 from 03). The words reach 1 within their scrubbed range, before they
+      are read, and are plain and fully opaque under reduced motion and without JavaScript. */
   wordsFrom: 0.14,
   /** WordsLight default range (prototype wordsLight). */
   wordsStart: "top 75%",

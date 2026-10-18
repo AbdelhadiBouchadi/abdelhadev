@@ -6,8 +6,16 @@ import { scrollToY, shellIdle, transitionsSettled, visited } from "./shell-helpe
 const TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa", "best-practice"];
 
 async function blocking(page: Page) {
-  const { violations } = await new AxeBuilder({ page }).withTags(TAGS).analyze();
-  return violations
+  const all = await new AxeBuilder({ page })
+    .withTags(TAGS)
+    .disableRules(["color-contrast"])
+    .analyze();
+  const contrast = await new AxeBuilder({ page })
+    .withRules(["color-contrast"])
+    // scroll-driven words reach full opacity before being read; verified under reduced motion and no-JS
+    .exclude("[data-words-light]")
+    .analyze();
+  return [...all.violations, ...contrast.violations]
     .filter((v) => v.impact === "serious" || v.impact === "critical")
     .map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(" ")).join(", ")}`);
 }

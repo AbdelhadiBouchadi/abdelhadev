@@ -150,7 +150,7 @@ test.describe("with motion", () => {
       await expect(chapter.locator(".chapter-label")).toHaveText(
         MESSAGES.fr.about.chapters[key]?.label ?? key,
       );
-      // Before the chapter's range: the words wait at REVEAL.wordsFrom (0.5).
+      // Before the chapter's range: the words wait at REVEAL.wordsFrom (0.14).
       await bring(page, chapter, 1);
       await expect.poll(() => faintestWord(statement), { message: key }).toBeLessThan(0.6);
       // Through it: the stage is pinned while the words light, then every word is at 1.

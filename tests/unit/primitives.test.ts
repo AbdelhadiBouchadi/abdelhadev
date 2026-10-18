@@ -211,7 +211,7 @@ describe("the primitives keep the documented values", () => {
       linesYPercent: 110,
       charsYPercent: 115,
       fadeY: 28,
-      wordsFrom: 0.5,
+      wordsFrom: 0.14,
       enterStart: "top 85%",
     });
     expect(DURATION.lines).toBe(1.2);

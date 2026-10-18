@@ -49,10 +49,10 @@ Scrubbed word-by-word lighting. Ports `wordsLight`.
 | `start` | ScrollTrigger start | `REVEAL.wordsStart` (`"top 75%"`) | manifesto `STAGE.start`; case problem `"top 70%"`; about chapters `"top 20%"` |
 | `end` | ScrollTrigger end | `REVEAL.wordsEnd` (`"bottom 40%"`) | manifesto `STAGE.end`; case problem `"bottom 55%"`; about chapters `"bottom bottom"` |
 
-- Words: `opacity REVEAL.wordsFrom (0.5) → 1`, `STAGGER.words` (0.1), `EASE.none`, `SCRUB`.
+- Words: `opacity REVEAL.wordsFrom (0.14) → 1`, `STAGGER.words` (0.1), `EASE.none`, `SCRUB`.
 - Words are split as inline spans with `aria: "none"`: the words stay in the accessibility tree in order, and the statement can stay a paragraph.
 - Reduced motion and no JavaScript: plain text at full opacity.
-- Contrast: unlit words start at 0.5 (ink on paper about 3.1:1, moon on night about 4.5:1, over the 3:1 for large text). The prototype's 0.14 measured 1.32:1 on paper and 1.44:1 on night and failed Lighthouse's color-contrast audit on the home manifesto; the owner raised it to 0.5 in 03.
+- Contrast: unlit words start at 0.14, the prototype value (1.32:1 on paper, 1.44:1 on night). The owner raised it to 0.5 in 03 after it failed Lighthouse's color-contrast audit on the home manifesto, then restored 0.14 after 07 to match the prototype: the words are scrolled to full opacity before they are read, and they are plain and fully opaque under reduced motion and without JavaScript (both asserted in `reduced-motion.spec.ts` and `no-js.spec.ts`). The a11y spec excludes `[data-words-light]` from axe's color-contrast rule only; Lighthouse still reports it on the manifesto (`docs/baseline.md`).
 
 ### Reveal
 
