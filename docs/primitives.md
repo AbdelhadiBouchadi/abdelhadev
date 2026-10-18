@@ -2,7 +2,7 @@
 
 The reusable motion and UI building blocks that the page branches compose (built in 02). A section is written by composing these; it writes its own GSAP only for a choreography that exists on one page only. Values are the prototype's (`docs/prototype/assets/site.js`); every number is a constant in `src/lib/motion.ts`, named below.
 
-All of them can be seen, scrolled and filmed on the bench at `/fr/lab` (development and preview only, removed in 03). Tests: `tests/unit/primitives.test.ts`, `tests/e2e/primitives.spec.ts`; motion evidence: `tests/e2e/primitives-motion.spec.ts`.
+Since 03 the home page exercises SplitReveal, WordsLight, Reveal, StickyStage and Scrub, and their end-to-end checks moved there (`tests/e2e/home.spec.ts`, motion evidence in `tests/e2e/home-motion.spec.ts`). The bench at `/fr/lab` (development and preview only) keeps only the primitives no real page uses yet, MediaReveal, LineDraw and useScrollSpy, and is removed in 05 (`tests/e2e/primitives.spec.ts`, `tests/e2e/primitives-motion.spec.ts`). Unit tests: `tests/unit/primitives.test.ts`.
 
 ## How every primitive is built
 
@@ -12,7 +12,7 @@ All of them can be seen, scrolled and filmed on the bench at `/fr/lab` (developm
 - **Ready-time intros** wait for the loader through `useReadyGate` (`src/hooks/useReadyGate.ts`, built on `useLoaderReady`): the animation is created paused under the overlay and plays at the ready signal (0.55 s into the loader exit or the curtain lift).
 - **SplitText and DrawSVGPlugin load on demand** (`loadSplitText()`, `loadDrawSVG()` in `src/lib/gsap.ts`). Every SplitText use has `autoSplit: true` and builds its tween in `onSplit`, so line breaks stay right after a resize or a font swap.
 - **Scrubs** always use `SCRUB` (0.8). **Triggers** are the element itself by default; a `trigger` prop takes a selector, resolved as the nearest matching ancestor, else the first match on the page (`resolveTrigger` in `src/lib/scroll.ts`).
-- **Leaving a page:** each leaf's triggers belong to its `useGSAP` context and die with it; nothing calls `ScrollTrigger.killAll()`. The primitives spec checks that the ScrollTrigger count returns to its baseline after the lab → work → back round trip.
+- **Leaving a page:** each leaf's triggers belong to its `useGSAP` context and die with it; nothing calls `ScrollTrigger.killAll()`. The home spec checks that the ScrollTrigger count returns to its baseline after the home → work → back round trip.
 
 ## Motion primitives (`src/primitives/`)
 
@@ -49,10 +49,10 @@ Scrubbed word-by-word lighting. Ports `wordsLight`.
 | `start` | ScrollTrigger start | `REVEAL.wordsStart` (`"top 75%"`) | manifesto `STAGE.start`; case problem `"top 70%"`; about chapters `"top 20%"` |
 | `end` | ScrollTrigger end | `REVEAL.wordsEnd` (`"bottom 40%"`) | manifesto `STAGE.end`; case problem `"bottom 55%"`; about chapters `"bottom bottom"` |
 
-- Words: `opacity REVEAL.wordsFrom (0.14) → 1`, `STAGGER.words` (0.1), `EASE.none`, `SCRUB`.
+- Words: `opacity REVEAL.wordsFrom (0.5) → 1`, `STAGGER.words` (0.1), `EASE.none`, `SCRUB`.
 - Words are split as inline spans with `aria: "none"`: the words stay in the accessibility tree in order, and the statement can stay a paragraph.
 - Reduced motion and no JavaScript: plain text at full opacity.
-- Axe: before it is scrubbed the text is at 0.14 opacity, which fails `color-contrast` (1.32:1 on paper, 1.44:1 on night). Reported to the owner in 02; the value is the prototype's and was not changed.
+- Contrast: unlit words start at 0.5 (ink on paper about 3.1:1, moon on night about 4.5:1, over the 3:1 for large text). The prototype's 0.14 measured 1.32:1 on paper and 1.44:1 on night and failed Lighthouse's color-contrast audit on the home manifesto; the owner raised it to 0.5 in 03.
 
 ### Reveal
 
@@ -202,12 +202,12 @@ The prototype's `.link` and `.back-link` as one component with a lucide-react ar
 
 | Primitive | Used by |
 |---|---|
-| `SplitReveal` chars, `ready` | home hero wordmark, case-study product name |
+| `SplitReveal` chars, `ready` | case-study product name (the home hero wordmark has its own leaf, `HeroWordmark`: its width axis reflows the letters, and only a combined split with frozen letter boxes keeps that out of CLS) |
 | `SplitReveal` lines, `ready` | work hero, about dawn, contact hero, case-study intro |
-| `SplitReveal` lines, `enter` | footer CTA, case-study next project, home featured heading |
+| `SplitReveal` lines, `enter` | footer CTA, case-study next project (the home featured heading fades up with its copy, as in the prototype) |
 | `SplitReveal` lines, `scrub` | home dusk title |
 | `WordsLight` | home manifesto, case-study problem, the three about chapters |
-| `Reveal` `ready` | hero meta and foot, work lead, case-study back link and facts, about lead, contact lead and cards |
+| `Reveal` `ready` | home hero meta and actions (not the intro paragraph: it is the LCP element, decision T7), work lead, case-study back link and facts, about lead, contact lead and cards |
 | `Reveal` `enter` | work project heads, case-study steps and architecture list, about timeline, stack groups and "right now" |
 | `MediaReveal` scrub | work project media, case-study media |
 | `MediaReveal` intro | case-study hero screenshot |

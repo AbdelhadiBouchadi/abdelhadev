@@ -27,6 +27,31 @@
   --majorelle-soft: #aeb7f4;
   --danger: #b3261e;
 
+  /* the home sun glow (prototype #sun radial gradient) */
+  --sun-core: rgba(255, 164, 112, 0.78);
+  --sun-mid: rgba(255, 180, 138, 0.42);
+  --sun-edge: rgba(255, 190, 150, 0);
+
+  /* the home 3D scene (prototype createScene): lights, slab, and the greys of the screen textures.
+     Read at runtime by src/lib/css-tokens.ts; the scene also uses --glow, --majorelle,
+     --majorelle-soft and --ink. */
+  --scene-light-ambient: #fff1e6;
+  --scene-light-sky: #fff4ea;
+  --scene-light-ground: #d9a58a;
+  --scene-light-key: #ffd2b0;
+  --scene-light-rim: #6f80ff;
+  --scene-slab: #fbf4ec;
+  --scene-screen: #fffcf7;
+  --scene-bar: #f3e8dc;
+  --scene-pill: #dcc8b5;
+  --scene-pill-soft: #e6d6c6;
+  --scene-label: #e3d2c1;
+  --scene-line: #eadbcb;
+  --scene-line-dark: #d9c2ac;
+  --scene-tile: #f2e7db;
+  --scene-cell: #f6eee5;
+  --scene-cell-warm: #e8d5c2;
+
   /* motion */
   --ease-warm: cubic-bezier(0.625, 0.05, 0, 1);
   --dur-fade: 0.3s;

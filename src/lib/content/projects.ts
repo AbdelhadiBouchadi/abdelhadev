@@ -10,6 +10,12 @@ export const PROJECTS: readonly Project[] = projectsSchema.parse([
     stack: ["Next.js", "TypeScript", "tRPC", "Drizzle", "PostgreSQL (Neon)", "Better Auth"],
     links: {},
     media: [],
+    // Listed on the home featured work (messages: home.featured.features.<item>).
+    features: {
+      items: ["agenda", "records", "plans", "invoices"],
+      confirmed:
+        "[TODO: confirm the DentaFlow feature list (agenda, patient records, treatment plans, invoices)]",
+    },
     copyKey: "projects.dentaflow",
   },
   {

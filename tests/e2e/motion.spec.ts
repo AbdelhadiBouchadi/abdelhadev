@@ -2,7 +2,7 @@
 // screenshots of the shell's motion in test-results/motion/, to compare with docs/prototype.
 // Recorded once, from the 1440 project; each clip opens its own context at the size it shows.
 import { mkdirSync } from "node:fs";
-import { test, type Page } from "@playwright/test";
+import { test } from "@playwright/test";
 import { DESKTOP, MOTION_OUT, PHONE, record, wheel } from "./motion-helpers";
 import { shellIdle } from "./shell-helpers";
 
@@ -12,9 +12,6 @@ test.beforeEach(() => {
   test.setTimeout(90_000);
   mkdirSync(MOTION_OUT, { recursive: true });
 });
-
-const toLabNight = (page: Page) =>
-  page.locator("#lab-night").evaluate((el) => el.getBoundingClientRect().top + window.scrollY);
 
 test("first-visit loader to page, desktop and 390", async ({ browser }) => {
   for (const [name, size] of [
@@ -48,23 +45,11 @@ test("route curtain out and in", async ({ browser }) => {
 
 test("header hide and return", async ({ browser }) => {
   await record(browser, "header-hide-1440", DESKTOP, async (page) => {
-    await page.goto("/fr/lab");
+    await page.goto("/fr");
     await shellIdle(page);
     await page.mouse.move(700, 450);
     await wheel(page, 900);
     await wheel(page, -250, 6);
-  });
-});
-
-test("tone switch, day to night on the lab page", async ({ browser }) => {
-  await record(browser, "tone-switch-1440", DESKTOP, async (page) => {
-    await page.goto("/fr/lab");
-    await shellIdle(page);
-    await page.mouse.move(700, 450);
-    const night = await toLabNight(page);
-    await wheel(page, night - 300, 16);
-    await wheel(page, -200, 6);
-    await wheel(page, 500, 8);
   });
 });
 
@@ -91,12 +76,9 @@ test("mobile pill", async ({ browser }) => {
 
 test("cursor label", async ({ browser }) => {
   await record(browser, "cursor-label-1440", DESKTOP, async (page) => {
-    await page.goto("/fr/lab");
+    await page.goto("/fr");
     await shellIdle(page);
-    const night = await toLabNight(page);
-    await page.mouse.move(700, 450);
-    await wheel(page, night - 100, 10);
-    const box = await page.locator('[data-lab-cursor="night"]').boundingBox();
+    const box = await page.locator(".hero-actions [data-cursor]").boundingBox();
     if (!box) throw new Error("cursor target not laid out");
     await page.mouse.move(200, 200, { steps: 10 });
     await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2, { steps: 25 });
@@ -108,12 +90,9 @@ test("cursor label", async ({ browser }) => {
 
 test("magnetic button", async ({ browser }) => {
   await record(browser, "magnetic-1440", DESKTOP, async (page) => {
-    await page.goto("/fr/lab");
+    await page.goto("/fr");
     await shellIdle(page);
-    const night = await toLabNight(page);
-    await page.mouse.move(700, 450);
-    await wheel(page, night - 100, 10);
-    const button = page.locator("#lab-night [data-magnetic]");
+    const button = page.locator(".hero-actions [data-magnetic]");
     const box = await button.boundingBox();
     if (!box) throw new Error("button not laid out");
     const cx = box.x + box.width / 2;

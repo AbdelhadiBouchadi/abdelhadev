@@ -141,3 +141,33 @@ Run with `--collect.startServerCommand="pnpm start --port 3100"` and the four UR
 | `/fr/mentions-legales` | 3.63 s | 0.78 s | 153 ms | 0.000 | 232.6 KiB | 87 | 100 |
 
 These are higher than the 79 to 120 ms of 01b's `pnpm lhci` run, but the interleaved series above show the same spread on `main`'s own build on the same afternoon: the difference follows the machine, not the branch. All routes stay under the proposed 200 ms TBT and the proposed 267 KiB JavaScript budget.
+
+## 03-home (2026-10-18)
+
+Same machine and tools. `/fr` and `/en` are now the real home page: the hero, the manifesto, the dusk and the featured work, the fixed sky and the plain three.js scene (lazy chunk). Methods: `pnpm lhci` (Lighthouse 12.6.1, mobile, 3 runs, median); the S3 in-browser LCP probe (`tests/e2e/lcp.spec.ts`, 390 px, 150 ms RTT, 1.6 Mbps, CPU 4x); a Playwright probe for JavaScript, the scene chunk, the first frame and the overlay (first visit, normal and the same throttled profile, 3 runs each). This machine swings between runs (see 01b); the throttled numbers below were measured on a quiet machine (CPU about 15 % idle load) and still moved by about 0.3 s between series.
+
+### Measured
+
+| Metric | `/fr` (home) | Note |
+| --- | --- | --- |
+| JavaScript, initial, without the 3D chunk | about 245.7 KiB transferred (Lighthouse 384.9 KiB minus the chunk); 235.5 KiB gzip of the 13 scripts loaded with WebGL blocked | 02: 232.6 KiB. Other routes: 244.5 KiB (Lighthouse) |
+| 3D chunk (home only, lazy) | **139.2 KiB gzip**, 557.2 KiB raw, one chunk | spike S1 measured 184.8 KiB; named imports let three.js tree-shake. Requested after hydration, never without WebGL |
+| TBT, Lighthouse | 498 ms `/fr`, 377 ms `/en` | other routes 112 and 139 ms. The largest task (444 ms, simulated) is the scene's first frame: shader compilation and texture upload inside HeroScene's effect |
+| LCP, S3 method | **hero intro paragraph**, 1.08 s (fr first visit), 1.08 s (fr visited), 0.98 s (en first), 1.06 s (en visited) | painted under the loader; before the fix in this branch it was revealed by a fade and LCP was 5.1 to 6.0 s |
+| LCP, Lighthouse simulated | 3.92 s, the hero intro paragraph | trend only (02: 3.63 s) |
+| CLS | Lighthouse 0.000; in-browser 0.0001 at 1440 and 390 (normal); 0.012 at 1440 and 0.015 at 390 (throttled) | the throttled shifts are the web font swap and the first fit, before the intro. The `--wdth` intro itself adds no shift (letter boxes frozen, see HeroWordmark); animated naively it measured 0.058 |
+| Scene, first frame (`data-scene="live"`) | 0.79 to 0.97 s normal; 6.36 to 6.51 s throttled | throttled, the chunk arrives during the loader's exit and compiles once the overlay is gone, then fades in |
+| Overlay gone, first visit | 3.51 to 3.54 s normal; 5.33 to 5.40 s throttled | 01b: 4.91 s throttled median on the shell alone. The 5 s rule holds unthrottled (`loader.spec.ts`); throttled it is over |
+| Lighthouse accessibility | `/fr` 96 (fails the 100 assertion), `/en` 100 | color-contrast on the manifesto's unlit words (WordsLight at 0.14 opacity, 1.32:1), reported, not changed |
+
+### Proposed budgets (for the owner)
+
+| Metric | Proposal |
+| --- | --- |
+| JavaScript, initial route without the 3D chunk | 280 KiB (245.7 KiB + 15 %) |
+| 3D chunk, gzip | 160 KiB (139.2 KiB + 15 %), measured separately, home only |
+| TBT, Lighthouse mobile | keep 200 ms for all routes except the home; home 500 ms until the scene's first frame is split (compileAsync, textures uploaded over several frames), then 200 ms |
+| LCP, S3 method | error above 1.5 s, element must be the hero text (now 0.98 to 1.08 s) |
+| CLS | at most 0.02 (in-browser throttled 0.015 at 390) |
+| Scene first frame | record only: it follows the network and never holds the loader past its ceiling |
+| Overlay on the throttled profile | record, do not gate locally (it follows the machine, 01b) |

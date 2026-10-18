@@ -40,7 +40,21 @@ jobs:
       - name: wordmark-paths.ts is fresh
         run: pnpm brand:paths && git diff --exit-code src/components/brand/wordmark-paths.ts
       - run: pnpm build
-      - run: pnpm exec playwright install --with-deps chromium
+      # Browsers are cached per Playwright version; the system libraries are installed either way.
+      - name: Playwright version
+        id: playwright
+        run: echo "version=$(pnpm exec playwright --version | awk '{print $2}')" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}-chromium
+      - if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: pnpm exec playwright install --with-deps chromium
+      - if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: pnpm exec playwright install-deps chromium
+      # The CI suite: behaviour at 390 and 1440. Responsive and a11y at 360 and 430 run locally in
+      # `pnpm test:e2e:full`, the motion evidence in `pnpm test:motion` (docs/quality.md).
       - run: pnpm test:e2e
       - uses: actions/upload-artifact@v4
         if: always()
@@ -62,6 +76,15 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
       - run: pnpm lhci
+      # Names the failing audits, elements and measured values in the log.
+      - if: failure()
+        run: node scripts/lh-failures.mjs
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: lighthouse-reports
+          path: .lighthouseci/reports/
+          retention-days: 14
       - uses: actions/upload-artifact@v4
         if: always()
         with:

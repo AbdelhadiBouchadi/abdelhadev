@@ -12,20 +12,30 @@
 | `pnpm check:i18n` | `fr.json` and `en.json` have identical keys and no empty values; no price words or currency symbols; `[TODO` allowed in development only |
 | `pnpm test` | Vitest |
 | `pnpm build` | production build; lists every `[TODO` in content and `site.ts`, and fails on them when `REQUIRE_CONTENT=1` |
-| `pnpm test:e2e` | Playwright suites below |
-| `pnpm lhci` | Lighthouse CI against the production build |
+| `pnpm test:e2e` | Playwright, the CI suite below (390 and 1440, no motion evidence) |
+| `pnpm lhci` | Lighthouse CI against the production build; on failure CI prints every failing accessibility audit with its elements and values (`node scripts/lh-failures.mjs`) and uploads `.lighthouseci/reports` |
+
+Local only, not in CI: `pnpm test:e2e:full` (the CI suite plus responsive and accessibility at 360 and 430) and `pnpm test:motion` (the motion evidence). Run both before handing over a UI branch.
 
 CI: two jobs on every pull request, `check-build-e2e` (with a secret scan) and `lighthouse`. Both required.
 
 ## Playwright suites
 
-- Responsive: every route, both locales, at 360, 390, 430 and 1440 px. No horizontal overflow, primary tap targets at least 44 px, screenshots saved.
-- Accessibility: axe with no serious or critical violation on every route, after the loader has finished, in day and night sections. Skip link, visible focus, one `h1`, `lang` matches the locale.
+Three entry points share one configuration (`playwright.config.ts`, `e2eConfig(suite)`):
+
+| Suite | Command | Where | Runs |
+| --- | --- | --- | --- |
+| ci | `pnpm test:e2e` | CI and local | every behaviour spec at 390 and 1440 (Playwright's default worker count in CI, browsers cached per Playwright version) |
+| full | `pnpm test:e2e:full` | local | the ci suite, plus responsive and accessibility at 360 and 430 |
+| motion | `pnpm test:motion` | local | the motion evidence (videos and screenshots in `test-results/motion/`), at 1440, one worker |
+
+- Responsive: every route, both locales, at 390 and 1440 px in CI, and also 360 and 430 px in the full suite. No horizontal overflow, primary tap targets at least 44 px, screenshots saved.
+- Accessibility: axe with no serious or critical violation on every route, after the loader has finished, in day and night sections (390 and 1440 in CI, also 360 and 430 in the full suite). Skip link, visible focus, one `h1`, `lang` matches the locale.
 - No JavaScript: content, footer legal name and navigation work without scripts; the loader is not shown.
 - Reduced motion: nothing hidden, no smooth scroll, loader fades.
 - Loader: it finishes before the ceiling, and it never covers content for more than 5 s.
 - Legal: the raw HTML of every route contains `Abdelhadi Bouchadi` in the footer.
-- Motion evidence (UI branches): short videos of the listed interactions in `test-results/motion/`.
+- Motion evidence (UI branches): short videos of the listed interactions in `test-results/motion/`, recorded with `pnpm test:motion` (not in CI: they assert nothing and record video with software WebGL, which made them the slowest and least stable part of the CI run).
 
 ## Budgets
 

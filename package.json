@@ -19,6 +19,8 @@
     "check:i18n": "node scripts/check-i18n.mjs",
     "test": "vitest run",
     "test:e2e": "playwright test",
+    "test:e2e:full": "playwright test --config playwright.full.config.ts",
+    "test:motion": "playwright test --config playwright.motion.config.ts",
     "lhci": "lhci autorun",
     "brand:paths": "node scripts/build-brand-paths.mjs"
   },

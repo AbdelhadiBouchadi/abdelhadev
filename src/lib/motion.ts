@@ -203,8 +203,10 @@ export const REVEAL = {
   enterStart: "top 85%",
   /** Reveal: px the group rises from. */
   fadeY: 28,
-  /** WordsLight: words start at this opacity. */
-  wordsFrom: 0.14,
+  /** WordsLight: unlit words start at this opacity. The prototype's 0.14 gave 1.32:1 on paper;
+      0.5 gives ink on paper about 3.1:1 and moon on night about 4.5:1, over the 3:1 that large
+      text needs (Lighthouse color-contrast, 03). */
+  wordsFrom: 0.5,
   /** WordsLight default range (prototype wordsLight). */
   wordsStart: "top 75%",
   wordsEnd: "bottom 40%",
@@ -252,4 +254,78 @@ export const SETTLE = {
   heroWord: { yPercent: -14, scale: 0.92 },
   heroMeta: { opacity: 0, y: -30 },
   arcs: { yPercent: -10, scale: 1.25, opacity: 0.25 },
+} as const;
+
+// ---------- home (Pages.home, docs/choreography.md "Home") ----------
+
+/** The home page's own choreography: the hero intro around the primitives, the sun, the dusk sky
+    and the featured work stage. Timeline positions and durations of the scrubbed stages are in
+    timeline units, as in the prototype (a scrubbed timeline is stretched over its scroll range). */
+export const HOME = {
+  hero: {
+    /** The wordmark's width axis settles from 75 to 100 (DURATION.heroWidth). */
+    wdthFrom: 75,
+    wdthTo: 100,
+    /** Meta and foot fade up from this offset, starting this long after ready, one stagger for
+        the four of them (meta's two paragraphs, then the foot's paragraph and actions). */
+    laterY: 18,
+    laterDelay: 0.6,
+    laterStagger: 0.07,
+    /** The meta has faded out at this point of the hero's scroll. */
+    metaEnd: "45% top",
+  },
+  scene: {
+    /** The 3D layer fades in (DURATION.scene) this long after ready. */
+    delay: 0.3,
+    /** The layer dims to this opacity while the manifesto scrolls in. */
+    dim: 0.3,
+  },
+  sun: {
+    /** Intro: the glow rises from here (DURATION.intro). */
+    fromYPercent: 40,
+    /** Scroll, from the hero's top to the dusk's centre: the sun sinks, then fades. */
+    sink: { yPercent: 62, scale: 0.86 },
+    sinkDuration: 1,
+    fadeAt: 0.65,
+    fadeDuration: 0.35,
+  },
+  dusk: {
+    /** The header turns to night at the section's centre. */
+    toneStart: "center 50px",
+    start: "top bottom",
+    end: "bottom top",
+    /** The stage timeline: sky paper → sunset → night, text colours crossing to moon. */
+    sunsetDuration: 0.28,
+    nightAt: 0.28,
+    nightDuration: 0.32,
+    colourAt: 0.32,
+    colourDuration: 0.25,
+    subAt: 0.3,
+    subDuration: 0.2,
+    subY: 20,
+    /** The title lines (SplitReveal scrub on the dusk section): the prototype places them at 0.14
+        to about 0.5 of its 0.6-long timeline over "top bottom".."bottom top" of the 190 vh
+        section, which is the section's top from 32 % to -142 % of the viewport. */
+    linesStart: "top 32%",
+    linesEnd: "top -142%",
+  },
+  featured: {
+    copyY: 34,
+    copyStagger: 0.07,
+    copyDuration: 0.5,
+    tilesAt: 0.15,
+    tileDuration: 0.8,
+    innerDuration: 0.9,
+    /** Inner screens settle from this scale. */
+    innerFrom: 1.22,
+    /** Hold at the end of the stage. */
+    tail: 0.4,
+    /** Mobile: the copy fades up on entry, each screen opens on its own range. */
+    mobileCopyY: 26,
+    mobileCopyStagger: 0.08,
+    mobileCopyDuration: 0.9,
+    mobileCopyStart: "top 80%",
+    mobileTileStart: "top 92%",
+    mobileTileEnd: "top 50%",
+  },
 } as const;

@@ -1,6 +1,5 @@
 {
   "meta": {
-    "homeTitle": "Full-stack developer in Agadir",
     "description": "Abdelhadi Bouchadi, full-stack developer in Agadir, Morocco. Management systems, AI web apps, client platforms and websites."
   },
   "common": {
@@ -23,6 +22,55 @@
     "loading": "Loading",
     "status": "Loading, {percent} percent"
   },
+  "home": {
+    "meta": {
+      "title": "Full-stack developer in Agadir",
+      "description": "Abdelhadi Bouchadi builds dependable web applications: management systems, AI apps and client platforms, from the data model to the last screen."
+    },
+    "hero": {
+      "name": "Abdelhadev, Abdelhadi Bouchadi, full-stack developer in Agadir",
+      "role": "Full-stack developer",
+      "place": "Agadir, Morocco",
+      "localTime": "Local time <time></time>",
+      "kinds": {
+        "management": "Management systems",
+        "ai": "AI web apps",
+        "platforms": "Client platforms"
+      },
+      "intro": "I build web applications that people rely on every day: management systems, AI-powered apps and client platforms, from the data model to the last screen. Careful work, explained simply, delivered in stages you can see.",
+      "seeWork": "See the work"
+    },
+    "manifesto": {
+      "label": "How I work",
+      "statement": "People trust software with their schedules, their data and their daily operations. I build applications that deserve that trust: secure by design, and simple enough that nobody needs a manual."
+    },
+    "dusk": {
+      "label": "After hours",
+      "title": "When the office closes, the software keeps working.",
+      "sub": "Agendas, records and invoices stay in order overnight, on infrastructure that belongs to you."
+    },
+    "featured": {
+      "product": "DentaFlow",
+      "title": "Software for dental clinics",
+      "body": "DentaFlow runs the day of a clinic, from the first appointment to the last invoice. I adapt it to each clinic before it goes live.",
+      "features": {
+        "agenda": "Agenda and appointments",
+        "records": "Patient records",
+        "plans": "Treatment plans",
+        "invoices": "Invoices and payments"
+      },
+      "adapt": "Your clinic's name, <strong>your data</strong>, your own server.",
+      "cta": "Read the case study",
+      "screens": "DentaFlow screens",
+      "captions": {
+        "agenda": "Agenda",
+        "record": "Patient record",
+        "plan": "Treatment plan",
+        "invoice": "Invoice"
+      },
+      "placeholder": "Screenshot to come"
+    }
+  },
   "footer": {
     "cta": "Have a project in mind?",
     "seeWork": "See the work",
@@ -34,10 +82,6 @@
     "copyright": "© {year} {name}, auto-entrepreneur"
   },
   "pages": {
-    "home": {
-      "title": "Abdelhadi Bouchadi, full-stack developer in Agadir",
-      "lead": "I build web applications people rely on every day: management systems, AI web apps, client platforms and websites."
-    },
     "work": {
       "title": "Work",
       "lead": "This page will show my projects, starting with DentaFlow."
@@ -102,42 +146,11 @@
     },
     "lab": {
       "title": "Design lab",
-      "lead": "A working page to compare the tokens, type and brand with the prototype. It goes away in step 03.",
-      "tokens": "Colour tokens",
-      "day": "Day",
-      "night": "Night",
-      "type": "Type scale",
-      "brand": "Brand",
-      "buttons": "Button",
-      "button": "Contact",
-      "shell": "Shell test",
-      "shellLead": "Scroll through these three sections: the header, the mobile nav and the cursor take the tone of each one.",
-      "toneDay": "Day section",
-      "toneNight": "Night section",
-      "toneSheet": "Sheet section",
-      "cursorTarget": "Hover over this area",
-      "cursorLabel": "Cursor label",
+      "lead": "A working page for the primitives no real page uses yet. It goes away in step 05.",
       "jumpToNight": "Jump to the night section",
       "bench": {
         "title": "Primitives bench",
         "lead": "Each block shows one motion primitive, by day and then by night. Scroll to see each end state.",
-        "lines": "Software a team can rely on, built with care.",
-        "linesNight": "The evening carries the product and the close.",
-        "scrubLines": "This sentence rises as you scroll.",
-        "words": "I build web applications people use every day: management tools, AI-powered products and client platforms.",
-        "wordsNight": "Each clinic gets its own name, database and server.",
-        "steps": {
-          "scoping": "Scoping",
-          "modelling": "Data modelling",
-          "delivery": "Delivery"
-        },
-        "stepsLead": "Each item of the group rises and appears in turn.",
-        "stack": {
-          "next": "Next.js",
-          "postgres": "PostgreSQL"
-        },
-        "toConfirm": "To confirm",
-        "warm": "Live",
         "screenLabel": "Screenshot to come",
         "screens": {
           "agenda": "Agenda",
@@ -146,10 +159,6 @@
           "invoice": "Invoice"
         },
         "imageAlt": "The Abdelhadev mark: a sun above the horizon",
-        "stageTitle": "Four screens open one after another",
-        "stageLead": "On a computer the stage stays put and scrolling opens each screen. On a phone each screen opens as it arrives.",
-        "settle": "The word settles as you scroll.",
-        "fade": "This text fades as you scroll down.",
         "diagramLabel": "Diagram: the browser calls the app, which calls the API, which queries the database.",
         "diagram": {
           "browser": "Browser",
@@ -164,10 +173,7 @@
           "evening": "Evening",
           "night": "Night"
         },
-        "spyNav": "Times of day",
-        "back": "All projects",
-        "forward": "See the work",
-        "external": "The prototype"
+        "spyNav": "Times of day"
       }
     }
   },

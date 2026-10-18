@@ -12,16 +12,30 @@ export async function record(
   name: string,
   size: { width: number; height: number },
   run: (page: Page) => Promise<void>,
-  { visitedSession = true, phone = false }: { visitedSession?: boolean; phone?: boolean } = {},
+  {
+    visitedSession = true,
+    phone = false,
+    context: extra = {},
+    before,
+  }: {
+    visitedSession?: boolean;
+    phone?: boolean;
+    /** More context options (reduced motion, …). */
+    context?: BrowserContextOptions;
+    /** Runs before the first navigation (init scripts). */
+    before?: (page: Page) => Promise<void>;
+  } = {},
 ): Promise<void> {
   const options: BrowserContextOptions = {
     viewport: size,
     recordVideo: { dir: `${MOTION_OUT}/raw`, size },
     ...(phone ? { isMobile: true, hasTouch: true, deviceScaleFactor: 2 } : {}),
+    ...extra,
   };
   const context = await browser.newContext(options);
   const page = await context.newPage();
   if (visitedSession) await page.addInitScript(() => sessionStorage.setItem("abd-visited", "1"));
+  await before?.(page);
   await run(page);
   await page.screenshot({ path: `${MOTION_OUT}/${name}.png` });
   await context.close();

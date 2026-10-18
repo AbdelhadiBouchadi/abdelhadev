@@ -26,7 +26,8 @@ async function startSampler(page: Page, arrivedTitle: string) {
         getComputedStyle(loader).display !== "none" &&
         getComputedStyle(loader).opacity === "1";
       frames.push({
-        arrived: document.querySelector("main h1")?.textContent === title,
+        // endsWith: the home h1 is the visual wordmark followed by its screen-reader name.
+        arrived: document.querySelector("main h1")?.textContent?.endsWith(title) ?? false,
         covered: shown && !!r && r.top <= 0 && r.bottom >= window.innerHeight,
       });
       requestAnimationFrame(loop);
@@ -81,7 +82,7 @@ test("Back and Forward arrive behind the curtain too", async ({ page }) => {
   await expect(page).toHaveURL(/\/fr\/projets$/);
   await shellIdle(page);
 
-  await startSampler(page, "Abdelhadi Bouchadi, développeur full-stack à Agadir");
+  await startSampler(page, "Abdelhadev, Abdelhadi Bouchadi, développeur full-stack à Agadir");
   await page.goBack();
   await expect(page).toHaveURL(/\/fr$/);
   await shellIdle(page);
