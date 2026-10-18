@@ -40,6 +40,19 @@ site.split("\n").forEach((line, i) => {
   }
 });
 
+// A CV that is still the placeholder PDF must be replaced before launch (src/lib/content/cv.ts).
+let cvLocale = "";
+readFileSync(join(root, "src/lib/content/cv.ts"), "utf8")
+  .split("\n")
+  .forEach((line, i) => {
+    cvLocale = /^\s*(\w+): \{/.exec(line)?.[1] ?? cvLocale;
+    if (/^\s*status:\s*"placeholder"/.test(line)) {
+      found.push(
+        `src/lib/content/cv.ts:${i + 1}  cv.${cvLocale}: placeholder (the owner supplies the CV)`,
+      );
+    }
+  });
+
 const strict = process.env.REQUIRE_CONTENT === "1";
 if (found.length === 0) {
   console.log("Content placeholders: none");

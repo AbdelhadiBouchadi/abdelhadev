@@ -1,7 +1,9 @@
 /* Identity, contact channels and URLs. The single source for these facts (AGENTS.md).
    Values the owner has not supplied are placeholders (src/lib/todo.ts): never invent them. The
    build lists every placeholder and fails on them when REQUIRE_CONTENT=1. */
-import { isTodo, type Todo } from "@/lib/todo";
+import { isTodo } from "@/lib/todo";
+
+const WHATSAPP_E164 = "+212637025032";
 
 export const SITE = {
   legalName: "Abdelhadi Bouchadi",
@@ -11,11 +13,17 @@ export const SITE = {
   /** ISO 3166-1 alpha-2. Display names come from Intl.DisplayNames in the page's locale. */
   country: "MA",
   timeZone: "Africa/Casablanca",
-  /** International format without "+" or spaces, as wa.me expects. Source: the prototype's WhatsApp composer. */
-  whatsapp: "212637025032",
-  email: "[TODO: public email address]" satisfies Todo,
-  linkedin: "[TODO: LinkedIn profile URL]" satisfies Todo,
-  github: "[TODO: GitHub profile URL]" satisfies Todo,
+  /** WhatsApp Business (supplied by the owner in 06). The number is E.164; `href` is the wa.me
+      link built from it (digits only, as wa.me expects); `display` is how it is written. */
+  whatsapp: {
+    e164: WHATSAPP_E164,
+    href: `https://wa.me/${WHATSAPP_E164.slice(1)}`,
+    display: "+212 6 37 02 50 32",
+  },
+  // No public email yet: it stays unset until the owner has a mailbox on the domain. The legal
+  // notice shows its own placeholder until then (messages: pages.legal.publisher.emailPending).
+  linkedin: "https://www.linkedin.com/in/abdelhadi-bouchadi-904b5b359/",
+  github: "https://github.com/AbdelhadiBouchadi",
   /** "pending" until the owner has had the legal notice reviewed; the build fails on it with
       REQUIRE_CONTENT=1. */
   legalReview: "pending" as "pending" | "done",

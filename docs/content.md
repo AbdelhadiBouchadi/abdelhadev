@@ -32,7 +32,7 @@ First person singular. Plain, specific, calm. Say what was built, for whom, with
 | Slug | Name | Kind | Status | What is known |
 |---|---|---|---|---|
 | `dentaflow` | DentaFlow | Dental clinic management | Ready for clinics | Agenda, patients, treatments, billing (owner confirms the list); adapted per clinic with its own name, database and deployment; Next.js, TypeScript, tRPC, Drizzle, PostgreSQL (Neon), Better Auth. WhatsApp reminders are not live. |
-| `hms` | HMS | Hospital management system | `[TODO]` | Everything else `[TODO]` |
+| `hms` | HMS | Hospital management system | `[TODO]` | A management system for a hospital ophthalmology service: patient data, appointments, eye images and medical records; only the medical staff have access. Built for friends who are residents there. Never name the hospital or the resident, never claim it is in use. Status, stack and year `[TODO]`. |
 | `meetai` | MeetAI | AI web app | `[TODO]` | Everything else `[TODO]` |
 | `flowshop` | FlowShop | E-commerce | `[TODO]` | Everything else `[TODO]` |
 | `cote-royale` | Côte Royale | Website | `[TODO]` | Client permission to name `[TODO]` |
@@ -43,7 +43,19 @@ A project is shown by name on a public page only after the owner confirms permis
 
 ## About and experience
 
-Known facts only: from Agadir; freelance full-stack developer (auto-entrepreneur); third-year Computer Engineering student at Karabuk University (named as the institution, never as a location); DentaFlow. Earlier roles and dates are `[TODO]` until the owner supplies them. No claim of full-time availability.
+The only facts that may be published (supplied by the owner in 06). Everything else stays a visible `[TODO: …]`.
+
+- **Who:** full-stack developer from Agadir, independent (auto-entrepreneur). Freelancer since late 2022, working alone, for French, English and Moroccan clients.
+- **Education:** "Formation en génie informatique" / "Computer engineering background" only. The university and the graduation year are never shown. The words "ingénieur", "engineer", "student", "étudiant" and any year of study appear nowhere until the owner confirms his degree status (decision P3).
+- **Languages and availability:** French, English and Arabic (Darija), all fluent. Morocco time zone. Remote only, not on site. Open to freelance projects and to a remote position, said without hours or studies ("parlons-en" / "let's talk", decision P11).
+- **What he builds, in this order:** (1) management systems for clinics and health services, (2) AI-powered web apps, (3) online shops, (4) websites with a custom admin panel, (5) other web projects ("anything web").
+- **Stack:** every day Next.js, TypeScript, tRPC, Drizzle ORM, PostgreSQL (Neon), Better Auth, Arcjet, shadcn/ui. Per project AI SDK, OpenAI API, Shopify headless through its GraphQL API (online shops), WordPress as a CMS when a client insists, GSAP. Exploring Trigger.dev and Browserbase by building a browser-automation app (never presented as a product).
+- **Websites:** Next.js with PostgreSQL (Neon) and a custom admin panel so the client manages everything.
+- **Process:** he listens first; within 24 hours he turns the notes into a technical plan, models the data and splits the project into small tasks; the quote (devis) arrives 24 to 48 hours after the first conversation (decision P12); after the client accepts and signs, an advance invoice, then development; just before launch, the balance invoice and delivery of everything. The payment percentages are not published.
+- **Why clinics:** part of his circle are doctors. He built HMS for a hospital ophthalmology service, for friends who are residents there. DentaFlow was born from his brother's dental clinic, which showed him what dentists need. He wants healthcare staff to save time for what matters.
+- **Other client work:** a website with a fully custom admin panel for a festival-organisation company in Morocco.
+- **Never publish:** the names of the hospital, of the resident friend, of the festival company, or of the clinic on the about page; the owner's personal email address; any claim that HMS is in use; any claim about income, savings or results for clinics; photos of the owner (decision P9).
+- Years of the projects, earlier roles and the CV itself are `[TODO]` until the owner supplies them (the CV is a placeholder file, `src/lib/content/cv.ts`).
 
 ## Testimonial
 
@@ -62,4 +74,4 @@ SOS Dental Clinic, Agadir. Role and organisation only, no personal name. The wor
 
 ## Not yet supplied by the owner
 
-Public email, LinkedIn URL, GitHub URL, project details listed as `[TODO]`, real screenshots with seeded data, testimonial wording.
+Public email (unset until a mailbox exists on the domain), project details and years listed as `[TODO]`, the final CV, real screenshots with seeded data, testimonial wording. Supplied in 06: LinkedIn, GitHub and WhatsApp (`src/lib/site.ts`).

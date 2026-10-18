@@ -71,6 +71,8 @@
   /* the case study tour's sticky stage frame (prototype .tour-frame) */
   --r-stage: 24px;
   --r-sheet: 28px;
+  /* the top corners of a night section rising over day (prototype .now on the about page) */
+  --r-section: 36px;
   --r-pill: 999px;
 
   /* layout */

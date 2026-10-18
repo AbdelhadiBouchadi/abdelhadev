@@ -231,8 +231,8 @@ test.describe("with motion", () => {
     const baseline = await liveScrollTriggers(page);
     expect(baseline).toBeGreaterThan(0);
 
-    await page.locator('a:visible[href="/fr/a-propos"]').first().click();
-    await page.waitForURL(/\/fr\/a-propos$/);
+    await page.locator('a:visible[href="/fr/contact"]').first().click();
+    await page.waitForURL(/\/fr\/contact$/);
     await shellIdle(page);
     await settle();
     expect(await liveScrollTriggers(page)).toBeLessThan(baseline);

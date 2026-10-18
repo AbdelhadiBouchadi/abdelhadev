@@ -79,13 +79,10 @@
     "localTime": "Local time",
     "legalHeading": "Legal",
     "legal": "Legal notice",
-    "copyright": "© {year} {name}, auto-entrepreneur"
+    "copyright": "© {year} {name}, auto-entrepreneur",
+    "newTab": "opens in a new tab"
   },
   "pages": {
-    "about": {
-      "title": "About",
-      "lead": "I am a full-stack developer in Agadir. This page will show how I work."
-    },
     "contact": {
       "title": "Contact",
       "lead": "The form and WhatsApp will be available on this page."
@@ -96,7 +93,8 @@
       "publisher": {
         "title": "Publisher",
         "body": "This site is published by {name}, auto-entrepreneur, a full-stack developer based in {place}.",
-        "contact": "To reach me:"
+        "contact": "To reach me:",
+        "emailPending": "[TODO: public email address, to be set up on the domain]"
       },
       "director": {
         "title": "Publication director",
@@ -136,6 +134,155 @@
       "title": "Page not found",
       "lead": "This address does not lead to a page.",
       "back": "Back to the home page"
+    }
+  },
+  "about": {
+    "meta": {
+      "title": "About",
+      "description": "Independent full-stack developer in Agadir: management systems, AI apps, online shops and websites with an admin panel."
+    },
+    "title": "A developer from Agadir, building software people trust with their work",
+    "lead": "I'm Abdelhadi Bouchadi. I design and build web applications from the data model to the last screen, for clinics, health services and small teams.",
+    "facts": {
+      "languages": {
+        "term": "Languages",
+        "value": "French, English, Arabic (Darija)"
+      },
+      "timeZone": {
+        "term": "Time zone",
+        "value": "Morocco"
+      },
+      "mode": {
+        "term": "Work",
+        "value": "Remote"
+      }
+    },
+    "chapters": {
+      "who": {
+        "label": "Who I am",
+        "text": "I'm from Agadir, an independent full-stack developer. I build web applications end to end with Next.js and TypeScript, for people who have no time to learn complicated tools."
+      },
+      "how": {
+        "label": "How I work",
+        "text": "I start by listening. Then I model your data and split the project into tasks. You get a quote 24 to 48 hours after our first conversation, then I build and deliver."
+      },
+      "why": {
+        "label": "Why clinics",
+        "text": "Part of my circle are doctors. I built a tool for a hospital ophthalmology service, and DentaFlow was born from my brother's dental clinic. I want healthcare staff to save time for what matters."
+      }
+    },
+    "services": {
+      "title": "What I build",
+      "items": {
+        "clinics": {
+          "title": "Management systems for clinics and health services",
+          "text": "Agenda, patients, records and billing, adapted to each organisation."
+        },
+        "ai": {
+          "title": "AI-powered web apps",
+          "text": "AI features inside your application, with the AI SDK or the OpenAI API."
+        },
+        "shops": {
+          "title": "Online shops",
+          "text": "Headless Shopify connected to a Next.js interface through the GraphQL API."
+        },
+        "websites": {
+          "title": "Websites with an admin panel",
+          "text": "A Next.js site and a custom admin panel to manage all the content. WordPress as the CMS if you prefer."
+        },
+        "other": {
+          "title": "Other web projects",
+          "text": "Anything web, let's talk."
+        }
+      }
+    },
+    "process": {
+      "title": "How a project runs",
+      "lead": "From the first conversation to delivery.",
+      "steps": {
+        "listen": {
+          "title": "Listen",
+          "text": "You talk, I take notes on your needs."
+        },
+        "scope": {
+          "title": "Scoping",
+          "text": "Within 24 hours I turn your needs into a technical plan, model the data and split the project into tasks."
+        },
+        "quote": {
+          "title": "Quote",
+          "text": "You receive a quote 24 to 48 hours after our first conversation."
+        },
+        "build": {
+          "title": "Build",
+          "text": "Once you accept and sign, an advance invoice, then I build."
+        },
+        "deliver": {
+          "title": "Delivery",
+          "text": "Just before launch, the balance invoice, then I hand over everything."
+        }
+      }
+    },
+    "experience": {
+      "title": "Experience",
+      "cv": "Download my CV (PDF)",
+      "items": {
+        "freelance": {
+          "when": "Since late 2022",
+          "title": "Independent full-stack developer",
+          "text": "Web applications designed alone, end to end, for French, English and Moroccan clients.",
+          "where": "Agadir, Morocco"
+        },
+        "dentaflow": {
+          "when": "[TODO: DentaFlow year]",
+          "title": "DentaFlow",
+          "text": "Dental clinic management software, ready to be adapted to new clinics.",
+          "where": "Product"
+        },
+        "hms": {
+          "when": "[TODO: HMS year]",
+          "title": "HMS",
+          "text": "A management system for a hospital ophthalmology service, for the medical staff only.",
+          "where": "Healthcare"
+        },
+        "festival": {
+          "when": "[TODO: year of the festival company website]",
+          "title": "Website and custom admin panel",
+          "text": "For a festival-organisation company in Morocco: a website and an admin panel to manage all the content.",
+          "where": "Client"
+        },
+        "education": {
+          "when": "Education",
+          "title": "Computer engineering",
+          "where": "Education"
+        }
+      }
+    },
+    "stack": {
+      "title": "What I use",
+      "groups": {
+        "daily": "Every day",
+        "project": "Per project",
+        "exploring": "Exploring"
+      }
+    },
+    "now": {
+      "title": "Right now",
+      "cards": {
+        "dentaflow": {
+          "title": "DentaFlow is ready for new clinics",
+          "text": "Each clinic has its own name, database and deployment.",
+          "link": "Read the case study"
+        },
+        "open": {
+          "title": "Open to freelance projects, and to a remote position",
+          "text": "Let's talk.",
+          "link": "Contact"
+        },
+        "exploring": {
+          "title": "Exploring browser automation",
+          "text": "Learning Trigger.dev and Browserbase by building an automation app."
+        }
+      }
     }
   },
   "work": {
@@ -299,8 +446,8 @@
     "hms": {
       "name": "HMS",
       "kind": "Hospital management system",
-      "challenge": "[TODO: the HMS challenge, in one sentence]",
-      "built": "[TODO: what I built for the HMS]",
+      "challenge": "Give an ophthalmology service a tool to follow its patients, appointments and eye images.",
+      "built": "A management system for the service's medical staff only: patient data, appointments, eye imaging and medical records.",
       "media": {
         "s1": "[TODO: describe the screen, HMS 1]",
         "s2": "[TODO: describe the screen, HMS 2]",

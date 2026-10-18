@@ -4,7 +4,6 @@ import type { ReactNode } from "react";
 import { resolveLocale } from "@/i18n/locale";
 import { pageMetadata } from "@/lib/seo";
 import { placeName, SITE } from "@/lib/site";
-import { isTodo } from "@/lib/todo";
 import { ToneSection } from "@/primitives/ToneSection";
 
 export async function generateMetadata({
@@ -29,8 +28,8 @@ function Part({ id, title, children }: { id: string; title: string; children: Re
 }
 
 // The legal notice from docs/content.md ("Legal"). No ID, registration or ICE numbers and no street
-// address of the publisher. Placeholders (the email, the retention period) stay visible until the
-// owner supplies them, and site.ts keeps legalReview "pending" until the owner confirms the text.
+// address of the publisher. Placeholders (the email, unset until the owner has a mailbox on the
+// domain, and the retention period) stay visible until the owner supplies them, and site.ts keeps legalReview "pending" until the owner confirms the text.
 export default async function LegalPage({ params }: PageProps<"/[locale]/legal">) {
   const locale = await resolveLocale(params);
   const t = await getTranslations({ locale, namespace: "pages.legal" });
@@ -39,13 +38,6 @@ export default async function LegalPage({ params }: PageProps<"/[locale]/legal">
     dateStyle: "long",
     timeZone: "UTC",
   }).format(new Date(SITE.legalUpdated));
-  const email = isTodo(SITE.email) ? (
-    <span>{SITE.email}</span>
-  ) : (
-    <a href={`mailto:${SITE.email}`} className={inlineLink}>
-      {SITE.email}
-    </a>
-  );
 
   return (
     <ToneSection
@@ -63,7 +55,7 @@ export default async function LegalPage({ params }: PageProps<"/[locale]/legal">
         <Part id="legal-publisher" title={t("publisher.title")}>
           <p>{t("publisher.body", { name, place: placeName(locale) })}</p>
           <p>
-            {t("publisher.contact")} {email}
+            {t("publisher.contact")} <span>{t("publisher.emailPending")}</span>
           </p>
         </Part>
 

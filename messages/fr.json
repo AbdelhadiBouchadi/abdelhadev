@@ -79,13 +79,10 @@
     "localTime": "Heure locale",
     "legalHeading": "Informations légales",
     "legal": "Mentions légales",
-    "copyright": "© {year} {name}, auto-entrepreneur"
+    "copyright": "© {year} {name}, auto-entrepreneur",
+    "newTab": "s'ouvre dans un nouvel onglet"
   },
   "pages": {
-    "about": {
-      "title": "À propos",
-      "lead": "Je suis développeur full-stack à Agadir. Cette page présentera ma façon de travailler."
-    },
     "contact": {
       "title": "Contact",
       "lead": "Le formulaire et WhatsApp seront disponibles sur cette page."
@@ -96,7 +93,8 @@
       "publisher": {
         "title": "Éditeur du site",
         "body": "Ce site est édité par {name}, auto-entrepreneur, développeur full-stack basé à {place}.",
-        "contact": "Pour me joindre :"
+        "contact": "Pour me joindre :",
+        "emailPending": "[TODO: adresse e-mail publique, à créer sur le domaine]"
       },
       "director": {
         "title": "Directeur de la publication",
@@ -136,6 +134,155 @@
       "title": "Page introuvable",
       "lead": "Cette adresse ne mène à aucune page.",
       "back": "Retour à l'accueil"
+    }
+  },
+  "about": {
+    "meta": {
+      "title": "À propos",
+      "description": "Développeur full-stack indépendant à Agadir : systèmes de gestion, applications IA, boutiques en ligne et sites avec espace d'administration."
+    },
+    "title": "Un développeur d'Agadir qui construit des logiciels auxquels on confie son travail",
+    "lead": "Je suis Abdelhadi Bouchadi. Je conçois et construis des applications web de la base de données au dernier écran, pour des cabinets, des services de santé et des petites équipes.",
+    "facts": {
+      "languages": {
+        "term": "Langues",
+        "value": "Français, anglais, arabe (darija)"
+      },
+      "timeZone": {
+        "term": "Fuseau horaire",
+        "value": "Maroc"
+      },
+      "mode": {
+        "term": "Travail",
+        "value": "À distance"
+      }
+    },
+    "chapters": {
+      "who": {
+        "label": "Qui je suis",
+        "text": "Je suis d'Agadir, développeur full-stack indépendant. Je construis des applications web de bout en bout avec Next.js et TypeScript, pour des personnes qui n'ont pas le temps d'apprendre des outils compliqués."
+      },
+      "how": {
+        "label": "Comment je travaille",
+        "text": "Je commence par vous écouter. Je modélise ensuite vos données et je découpe le projet en tâches. Vous recevez un devis 24 à 48 heures après notre premier échange, puis je construis et je livre."
+      },
+      "why": {
+        "label": "Pourquoi les cabinets",
+        "text": "Une partie de mon entourage est médecin. J'ai construit un outil pour un service d'ophtalmologie hospitalier, et DentaFlow est né de la clinique dentaire de mon frère. Je veux que les soignants gagnent du temps pour l'essentiel."
+      }
+    },
+    "services": {
+      "title": "Ce que je construis",
+      "items": {
+        "clinics": {
+          "title": "Systèmes de gestion pour cabinets et services de santé",
+          "text": "Agenda, patients, dossiers et facturation, adaptés à chaque structure."
+        },
+        "ai": {
+          "title": "Applications web avec IA",
+          "text": "Des fonctions d'IA dans votre application, avec l'AI SDK ou l'API OpenAI."
+        },
+        "shops": {
+          "title": "Boutiques en ligne",
+          "text": "Shopify en headless, relié à une interface Next.js par l'API GraphQL."
+        },
+        "websites": {
+          "title": "Sites web avec espace d'administration",
+          "text": "Un site Next.js et un espace d'administration sur mesure pour gérer tout le contenu. WordPress comme CMS si vous le préférez."
+        },
+        "other": {
+          "title": "Autres projets web",
+          "text": "Tout ce qui touche au web, parlons-en."
+        }
+      }
+    },
+    "process": {
+      "title": "Comment se déroule un projet",
+      "lead": "De la première conversation à la livraison.",
+      "steps": {
+        "listen": {
+          "title": "Écoute",
+          "text": "Vous parlez, je prends des notes sur vos besoins."
+        },
+        "scope": {
+          "title": "Cadrage",
+          "text": "En 24 heures, je traduis vos besoins en plan technique, je modélise les données et je découpe le projet en tâches."
+        },
+        "quote": {
+          "title": "Devis",
+          "text": "Vous recevez un devis 24 à 48 heures après notre premier échange."
+        },
+        "build": {
+          "title": "Développement",
+          "text": "Après votre accord et votre signature, une facture d'acompte, puis je construis."
+        },
+        "deliver": {
+          "title": "Livraison",
+          "text": "Juste avant la mise en ligne, la facture du solde, puis je vous livre tout."
+        }
+      }
+    },
+    "experience": {
+      "title": "Expérience",
+      "cv": "Télécharger mon CV (PDF)",
+      "items": {
+        "freelance": {
+          "when": "Depuis fin 2022",
+          "title": "Développeur full-stack indépendant",
+          "text": "Des applications web conçues seul, de bout en bout, pour des clients français, anglais et marocains.",
+          "where": "Agadir, Maroc"
+        },
+        "dentaflow": {
+          "when": "[TODO: année de DentaFlow]",
+          "title": "DentaFlow",
+          "text": "Un logiciel de gestion de cabinet dentaire, prêt à être adapté à de nouveaux cabinets.",
+          "where": "Produit"
+        },
+        "hms": {
+          "when": "[TODO: année du HMS]",
+          "title": "HMS",
+          "text": "Un système de gestion pour un service d'ophtalmologie hospitalier, réservé au personnel médical.",
+          "where": "Santé"
+        },
+        "festival": {
+          "when": "[TODO: année du site pour la société de festivals]",
+          "title": "Site web et espace d'administration sur mesure",
+          "text": "Pour une société d'organisation de festivals au Maroc : un site et un espace d'administration pour gérer tous les contenus.",
+          "where": "Client"
+        },
+        "education": {
+          "when": "Formation",
+          "title": "Génie informatique",
+          "where": "Formation"
+        }
+      }
+    },
+    "stack": {
+      "title": "Ce que j'utilise",
+      "groups": {
+        "daily": "Au quotidien",
+        "project": "Selon le projet",
+        "exploring": "J'explore"
+      }
+    },
+    "now": {
+      "title": "En ce moment",
+      "cards": {
+        "dentaflow": {
+          "title": "DentaFlow est prêt pour de nouveaux cabinets",
+          "text": "Chaque cabinet a son nom, sa base de données et son déploiement.",
+          "link": "Lire l'étude de cas"
+        },
+        "open": {
+          "title": "Ouvert aux projets freelance, et à un poste à distance",
+          "text": "Parlons-en.",
+          "link": "Contact"
+        },
+        "exploring": {
+          "title": "J'explore l'automatisation de navigateur",
+          "text": "Je me forme à Trigger.dev et Browserbase en construisant une application d'automatisation."
+        }
+      }
     }
   },
   "work": {
@@ -299,8 +446,8 @@
     "hms": {
       "name": "HMS",
       "kind": "Système de gestion hospitalière",
-      "challenge": "[TODO: le défi du HMS, en une phrase]",
-      "built": "[TODO: ce que j'ai construit pour le HMS]",
+      "challenge": "Donner à un service d'ophtalmologie un outil pour suivre ses patients, ses rendez-vous et ses images de l'œil.",
+      "built": "Un système de gestion réservé au personnel médical du service : données des patients, rendez-vous, imagerie de l'œil et dossiers médicaux.",
       "media": {
         "s1": "[TODO: décrire l'écran 1 de HMS]",
         "s2": "[TODO: décrire l'écran 2 de HMS]",

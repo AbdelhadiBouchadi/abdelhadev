@@ -9,7 +9,7 @@ Status: **Fixed**, **Provisional** (fixed unless the named spike fails), **Open*
 |---|---|---|
 | P1 | Two jobs: win freelance clients and be a professional profile for LinkedIn, job portals and recruiters. | Fixed |
 | P2 | Positioning is broad: a full-stack developer who builds web applications people rely on (management systems, AI-powered apps, client platforms, websites). Clinic and hospital software is the strongest proof and appears as featured work, not as the whole message. | Fixed |
-| P3 | Based in Agadir, Morocco. Karabuk is never shown as a location; the degree names the university only on the about page and the CV. | Fixed |
+| P3 | Based in Agadir, Morocco. The university and the graduation year are not published; the degree is not named as ingénieur or student until the owner confirms. | Fixed |
 | P4 | Clinic offer: DentaFlow is prebuilt and adapted per clinic after a quote (own name, database, deployment). | Fixed |
 | P5 | No prices anywhere. The process explains that the quote comes after scoping and data modelling. | Fixed |
 | P6 | No years-of-experience claims. No invented metrics, clients, reviews or dates. | Fixed |
@@ -17,6 +17,8 @@ Status: **Fixed**, **Provisional** (fixed unless the named spike fails), **Open*
 | P8 | DentaFlow WhatsApp reminders are not presented as live. | Fixed |
 | P9 | The owner does not appear on camera. Warmth comes from colour, light, copy, motion and the 3D scene. | Fixed |
 | P10 | Testimonials show role and organisation only. The SOS Dental Clinic testimonial names no person. | Fixed |
+| P11 | Availability: open to freelance projects and to a remote position, said without hours or studies. | Fixed |
+| P12 | The process may state that the quote arrives 24 to 48 hours after the first conversation: it is how he works, not a reply-time promise. The percentages of the advance and balance invoices are not published. | Fixed |
 
 ## Design
 

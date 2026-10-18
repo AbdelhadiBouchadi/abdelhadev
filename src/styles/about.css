@@ -1,0 +1,323 @@
+/* The about page (docs/prototype/assets/site.css: .dawn, .arcs, .arc, .dawn-copy, .chapter*,
+   .timeline, .stack-group*, .now*). The services list and the process cards are new in 06: the
+   services take the timeline's rows, the process takes the case study's .steps cards
+   (src/styles/case.css) with five columns from 1081 px.
+
+   The prototype's arcs were raw rgba gradients; each stop maps to a token:
+     rgba(255,180,138,a)            → --glow at a
+     rgba(243,162,143,.35)          → --rose at 35 %
+     rgba(174,183,244,a)            → --majorelle-soft at a
+     rgba(255,196,160,.35)          → --glow 77 % with --sheet, at 35 %
+     rgba(255,170,120,.85) centre   → --sun-core (255,164,112 at .78, the home sun's core)
+     rgba(255,186,146,.5)           → --glow at 50 %
+     rgba(255,190,150,0)            → --sun-edge
+   Motion start states are under html.motion only: without JavaScript and under reduced motion the
+   arcs are at rest and the chapters are in normal flow (the StickyStage CSS in primitives.css).
+   In the components layer, so Tailwind utilities still win. */
+@layer components {
+  .about-pad {
+    padding-block: clamp(88px, 14vh, 180px);
+  }
+
+  /* ---------- dawn (day) ---------- */
+  .dawn {
+    position: relative;
+    min-height: 100vh;
+    min-height: 100svh;
+    display: grid;
+    align-items: end;
+    overflow: clip;
+    padding-top: calc(var(--header-h) + env(safe-area-inset-top, 0px) + 40px);
+    padding-bottom: clamp(40px, 8vh, 96px);
+    isolation: isolate;
+  }
+  .arcs {
+    position: absolute;
+    inset-inline-start: 50%;
+    bottom: -60vmin;
+    width: 150vmax;
+    aspect-ratio: 1;
+    max-width: none;
+    margin-inline-start: -75vmax;
+    z-index: -1;
+    pointer-events: none;
+  }
+  .arc {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+  }
+  .arc:nth-child(1) {
+    background: radial-gradient(
+      circle,
+      transparent 60%,
+      color-mix(in srgb, var(--glow) 55%, transparent) 63%,
+      color-mix(in srgb, var(--rose) 35%, transparent) 66%,
+      transparent 70%
+    );
+  }
+  .arc:nth-child(2) {
+    inset: 12%;
+    background: radial-gradient(
+      circle,
+      transparent 58%,
+      color-mix(in srgb, var(--majorelle-soft) 55%, transparent) 62%,
+      color-mix(in srgb, var(--majorelle-soft) 20%, transparent) 66%,
+      transparent 70%
+    );
+  }
+  .arc:nth-child(3) {
+    inset: 25%;
+    background: radial-gradient(
+      circle,
+      transparent 54%,
+      color-mix(in srgb, var(--glow) 70%, transparent) 60%,
+      color-mix(in srgb, color-mix(in srgb, var(--glow) 77%, var(--sheet)) 35%, transparent) 66%,
+      transparent 71%
+    );
+  }
+  .arc:nth-child(4) {
+    inset: 37%;
+    background: radial-gradient(
+      circle,
+      var(--sun-core),
+      color-mix(in srgb, var(--glow) 50%, transparent) 50%,
+      var(--sun-edge) 71%
+    );
+  }
+  /* Mirrors ABOUT.dawn.arcsFrom (src/lib/motion.ts): the arcs wait below and smaller, unseen. */
+  html.motion .arc {
+    opacity: 0;
+    transform: translateY(18%) scale(0.86);
+  }
+  .dawn-copy {
+    display: grid;
+    gap: 24px;
+  }
+  .dawn-title {
+    max-width: 13em;
+    outline: none;
+  }
+  .about-facts {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px 32px;
+    max-width: 52rem;
+    margin: 8px 0 0;
+  }
+  .about-facts > div {
+    border-top: 1px solid var(--line);
+    padding-top: 12px;
+  }
+  .about-facts dt {
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .about-facts dd {
+    margin: 4px 0 0;
+    font-weight: 500;
+  }
+  @media (min-width: 761px) {
+    .about-facts {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  /* ---------- chapters (day, StickyStage 200 vh) ---------- */
+  .chapter-stage {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(20px, 4vw, 64px);
+    align-items: center;
+    align-content: center;
+    padding-block: 14vh;
+  }
+  html.motion .chapter-stage {
+    padding-block: calc(var(--header-h) + 4vh) 6vh;
+  }
+  @media (min-width: 901px) {
+    .chapter-stage {
+      grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+    }
+  }
+  .chapter-label {
+    margin: 0;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: clamp(20px, 1.8vw, 26px);
+    color: var(--ink-soft);
+    font-variation-settings:
+      "wdth" 90,
+      "opsz" 32;
+  }
+  .chapter-statement {
+    font-size: clamp(26px, 3.4vw, 52px);
+    max-width: 19em;
+  }
+
+  /* ---------- services (day): the timeline's rows, title and one line ---------- */
+  .services {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--line);
+  }
+  .services li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px 32px;
+    padding-block: 26px;
+    border-bottom: 1px solid var(--line);
+    align-items: baseline;
+  }
+  .services h3,
+  .timeline h3 {
+    margin: 0;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: clamp(22px, 2vw, 30px);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    font-variation-settings:
+      "wdth" 90,
+      "opsz" 32;
+  }
+  .services p {
+    margin: 0;
+    color: var(--ink-soft);
+    max-width: 52ch;
+  }
+  .services-foot {
+    margin-top: clamp(28px, 4vh, 44px);
+  }
+  @media (min-width: 901px) {
+    .services li {
+      grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    }
+  }
+
+  /* ---------- process (day): the case study's .steps, five across from 1081 px ---------- */
+  @media (min-width: 1081px) {
+    .steps[data-count="5"] {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+  }
+
+  /* ---------- experience (day) ---------- */
+  .about-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px 32px;
+    margin-bottom: clamp(36px, 6vh, 72px);
+  }
+  .timeline {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--line);
+  }
+  .timeline li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px 32px;
+    padding-block: 26px;
+    border-bottom: 1px solid var(--line);
+    align-items: baseline;
+  }
+  .timeline .when,
+  .timeline .where {
+    color: var(--ink-soft);
+    font-size: 15px;
+    font-variant-numeric: tabular-nums;
+  }
+  .timeline p {
+    margin: 6px 0 0;
+    color: var(--ink-soft);
+    max-width: 52ch;
+  }
+  @media (min-width: 901px) {
+    .timeline li {
+      grid-template-columns: minmax(0, 2fr) minmax(0, 5fr) minmax(0, 3fr);
+    }
+    .timeline .where {
+      text-align: end;
+    }
+  }
+
+  /* ---------- stack (day) ---------- */
+  .stack-groups {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .stack-group {
+    display: grid;
+    gap: 14px;
+    align-content: start;
+    border-radius: var(--r-card);
+    background: var(--sheet);
+    padding: 24px;
+  }
+  .stack-group h3 {
+    margin: 0;
+    font: 600 15px/1.3 var(--text);
+  }
+
+  /* ---------- right now (night) ---------- */
+  .now {
+    border-radius: var(--r-section) var(--r-section) 0 0;
+  }
+  .now-list {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .now-card {
+    display: grid;
+    gap: 14px;
+    align-content: start;
+    min-height: 260px;
+    border-radius: var(--r-stage);
+    background: var(--night-2);
+    padding: 26px;
+  }
+  .now-card .glyph {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--glow) 22%, transparent);
+  }
+  .now-card h3 {
+    margin: 0;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 24px;
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+    font-variation-settings:
+      "wdth" 90,
+      "opsz" 32;
+    color: var(--moon);
+  }
+  .now-card p {
+    margin: 0;
+    color: var(--moon-soft);
+    font-size: 15.5px;
+  }
+  @media (min-width: 901px) {
+    .stack-groups,
+    .now-list {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+}

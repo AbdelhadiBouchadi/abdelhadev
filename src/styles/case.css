@@ -141,10 +141,11 @@
   .tour-slot {
     position: absolute;
     inset: clamp(12px, 1.6vw, 22px);
-    opacity: 0;
   }
-  .tour-slot:first-child {
-    opacity: 1;
+  /* Only the first screen waits on the stage. Under html.motion only, like the stage itself:
+     without JavaScript and under reduced motion no slot is hidden (reduced-motion.spec.ts). */
+  html.motion .tour-slot:not(:first-child) {
+    opacity: 0;
   }
   .tour-slot > .screen {
     width: 100%;

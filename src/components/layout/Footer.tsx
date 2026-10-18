@@ -8,9 +8,9 @@
    wordmark keeps its resting offset from CSS and the heading is never split.
 
    The legal name is plain, server-rendered text here on every page (AGENTS.md, "Content, identity
-   and legal"). A channel the owner has not supplied yet shows its visible placeholder, never an
-   empty link; the build lists it (scripts/report-todos.mjs). The copy makes no availability or
-   client claims (decision P6).
+   and legal"). The LinkedIn and GitHub links (src/lib/site.ts) open in a new tab, which their
+   accessible name says; each is a 44 px target. The copy makes no availability or client claims
+   (decision P6).
 
    The call to action is "Have a project in mind?" unless the page passes its own (`cta`, the case
    study's "DentaFlow in your clinic?"). The layout renders the footer through its @footer slot
@@ -23,7 +23,6 @@ import { buttonClass, buttonSize, SunDot, textLinkClass } from "@/components/ui/
 import { SHELL } from "@/lib/motion";
 import { SHELL_CONTENT_ATTR } from "@/lib/shell";
 import { placeName, SITE } from "@/lib/site";
-import { isTodo } from "@/lib/todo";
 import { cn } from "@/lib/utils";
 import { FitText } from "@/primitives/FitText";
 import { Magnetic } from "@/primitives/Magnetic";
@@ -40,8 +39,8 @@ const colLink =
 const colList = "m-0 grid list-none p-0";
 
 const CHANNELS = [
-  { key: "linkedin", label: "LinkedIn", value: SITE.linkedin },
-  { key: "github", label: "GitHub", value: SITE.github },
+  { key: "linkedin", label: "LinkedIn", href: SITE.linkedin },
+  { key: "github", label: "GitHub", href: SITE.github },
 ] as const;
 
 export interface FooterProps {
@@ -122,18 +121,12 @@ export async function Footer({ cta }: FooterProps = {}) {
           <div>
             <h2 className={colHeading}>{t("elsewhere")}</h2>
             <ul className={colList}>
-              {CHANNELS.map(({ key, label, value }) => (
-                <li key={key} className="flex min-h-11 flex-wrap items-center gap-x-2">
-                  {isTodo(value) ? (
-                    <>
-                      <span>{label}</span>
-                      <span className="text-moon">{value}</span>
-                    </>
-                  ) : (
-                    <a href={value} className={colLink} target="_blank" rel="noopener noreferrer">
-                      {label}
-                    </a>
-                  )}
+              {CHANNELS.map(({ key, label, href }) => (
+                <li key={key}>
+                  <a href={href} className={colLink} target="_blank" rel="noopener noreferrer">
+                    {label}
+                    <span className="sr"> ({t("newTab")})</span>
+                  </a>
                 </li>
               ))}
             </ul>
