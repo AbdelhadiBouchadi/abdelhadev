@@ -14,7 +14,7 @@ French is the default language, English the second. Arabic comes later.
 - Read the prompt's read-first list before writing code.
 - Decisions in `docs/decisions.md` or in a prompt are made. Do not re-decide them. If the repo or a prompt contradicts a decision, stop and report it.
 - Do not expand scope. List anything you notice outside the scope in your reply.
-- Before replying, run exactly the commands in `.github/workflows/ci.yml`, in order. Never report a gate as passing that you did not run.
+- Before replying, run the lean check list under "Quality gates". Never report a gate as passing that you did not run.
 - Say plainly what you did not verify.
 - You never run git add, commit or push; the owner commits. Propose a commit split in your reply.
 

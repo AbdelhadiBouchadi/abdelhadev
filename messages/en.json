@@ -82,10 +82,6 @@
     "copyright": "© {year} {name}, auto-entrepreneur"
   },
   "pages": {
-    "work": {
-      "title": "Work",
-      "lead": "This page will show my projects, starting with DentaFlow."
-    },
     "case": {
       "lead": "The {name} case study will be on this page."
     },
@@ -151,52 +147,102 @@
       "bench": {
         "title": "Primitives bench",
         "lead": "Each block shows one motion primitive, by day and then by night. Scroll to see each end state.",
-        "screenLabel": "Screenshot to come",
-        "screens": {
-          "agenda": "Agenda",
-          "record": "Patient record",
-          "plan": "Treatment plan",
-          "invoice": "Invoice"
-        },
-        "imageAlt": "The Abdelhadev mark: a sun above the horizon",
         "diagramLabel": "Diagram: the browser calls the app, which calls the API, which queries the database.",
         "diagram": {
           "browser": "Browser",
           "app": "App",
           "api": "API",
           "database": "Database"
-        },
-        "spyLead": "The pill follows the block crossing the activation line, at 45 % of the screen height.",
-        "spy": {
-          "morning": "Morning",
-          "noon": "Noon",
-          "evening": "Evening",
-          "night": "Night"
-        },
-        "spyNav": "Times of day"
+        }
       }
+    }
+  },
+  "work": {
+    "meta": {
+      "title": "Work",
+      "description": "The software I have built end to end: DentaFlow for dental clinics, a hospital system, an AI app, an online shop and a website."
+    },
+    "title": "Software people rely on every day",
+    "lead": "{count, plural, one {# project} other {# projects}}, from clinic and hospital software to AI tools and online shops. Each one built end to end, from the data model to the last screen.",
+    "start": "Start with DentaFlow",
+    "projects": "Projects",
+    "rail": "Projects on this page",
+    "challenge": "The challenge",
+    "built": "What I built",
+    "stack": "Stack",
+    "caseStudy": "Case study",
+    "demo": "Ask for a demo",
+    "ask": "Ask about this project",
+    "status": {
+      "ready": "Ready for clinics",
+      "todo": "Details to confirm"
+    },
+    "screenshot": "Screenshot to come",
+    "screens": "{name} screens",
+    "allScreens": "See all {count} screens",
+    "cursor": {
+      "caseStudy": "Read the case study"
     }
   },
   "projects": {
     "dentaflow": {
       "name": "DentaFlow",
-      "kind": "Dental clinic management"
+      "kind": "Dental clinic management",
+      "challenge": "Run the full day of a dental clinic in one place: appointments, patients, treatments and billing.",
+      "built": "A management system adapted to each clinic before launch, with its own database, its own deployment and the clinic's name on it.",
+      "media": {
+        "s1": "[TODO: describe the screen, DentaFlow 1]",
+        "s2": "[TODO: describe the screen, DentaFlow 2]",
+        "s3": "[TODO: describe the screen, DentaFlow 3]",
+        "s4": "[TODO: describe the screen, DentaFlow 4]",
+        "s5": "[TODO: describe the screen, DentaFlow 5]"
+      }
     },
     "hms": {
       "name": "HMS",
-      "kind": "Hospital management system"
+      "kind": "Hospital management system",
+      "challenge": "[TODO: the HMS challenge, in one sentence]",
+      "built": "[TODO: what I built for the HMS]",
+      "media": {
+        "s1": "[TODO: describe the screen, HMS 1]",
+        "s2": "[TODO: describe the screen, HMS 2]",
+        "s3": "[TODO: describe the screen, HMS 3]",
+        "s4": "[TODO: describe the screen, HMS 4]"
+      }
     },
     "meetai": {
       "name": "MeetAI",
-      "kind": "AI web app"
+      "kind": "AI web app",
+      "challenge": "[TODO: the problem MeetAI solves, in one sentence]",
+      "built": "[TODO: what I built, and how the AI part helps the user]",
+      "media": {
+        "s1": "[TODO: describe the screen, MeetAI 1]",
+        "s2": "[TODO: describe the screen, MeetAI 2]",
+        "s3": "[TODO: describe the screen, MeetAI 3]"
+      }
     },
     "flowshop": {
       "name": "FlowShop",
-      "kind": "E-commerce"
+      "kind": "E-commerce",
+      "challenge": "[TODO: the shop's goal and who it serves]",
+      "built": "[TODO: what I built: catalogue, checkout, admin]",
+      "media": {
+        "s1": "[TODO: describe the screen, FlowShop 1]",
+        "s2": "[TODO: describe the screen, FlowShop 2]",
+        "s3": "[TODO: describe the screen, FlowShop 3]",
+        "s4": "[TODO: describe the screen, FlowShop 4]"
+      }
     },
     "cote-royale": {
       "name": "Côte Royale",
-      "kind": "Website"
+      "kind": "Website",
+      "challenge": "[TODO: the client's goal for the website]",
+      "built": "An interface-driven experience animated with GSAP and TypeScript, for a polished design and UX. (draft, confirm in 08)",
+      "media": {
+        "s1": "[TODO: describe the screen, Côte Royale 1]",
+        "s2": "[TODO: describe the screen, Côte Royale 2]",
+        "s3": "[TODO: describe the screen, Côte Royale 3]"
+      }
     }
   }
 }

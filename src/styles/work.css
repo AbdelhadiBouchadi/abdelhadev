@@ -1,0 +1,238 @@
+/* The work page (docs/prototype/assets/site.css: .work-hero*, .work-layout, .rail*, .projects,
+   .project*, .media*). Raw colours of the prototype map to tokens:
+     rgba(43,29,26,.07) active rail pill  → --ink at 7 %
+     rgba(43,29,26,.04) sheet shadow       → --ink at 4 %
+   Breakpoints: the rail shows from 901 px (prototype max-width 900), the sheet head has four
+   columns from 1081 px and two from 761 px, and the media keep their spans from 761 px.
+   In the components layer, so Tailwind utilities still win. */
+@layer components {
+  /* ---------- hero ---------- */
+  .work-hero {
+    padding-top: calc(var(--header-h) + env(safe-area-inset-top, 0px) + clamp(72px, 14vh, 160px));
+    padding-bottom: clamp(56px, 10vh, 120px);
+  }
+  .work-title {
+    max-width: 12em;
+    outline: none;
+  }
+  .work-hero-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 32px;
+    flex-wrap: wrap;
+    margin-top: clamp(28px, 4vh, 48px);
+  }
+
+  /* ---------- layout: rail and sheets ---------- */
+  .work-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(20px, 3vw, 48px);
+    padding-bottom: clamp(64px, 10vh, 120px);
+  }
+  .rail {
+    display: none;
+  }
+  @media (min-width: 901px) {
+    .work-layout {
+      grid-template-columns: 200px minmax(0, 1fr);
+    }
+    .rail {
+      position: sticky;
+      top: calc(var(--header-h) + 40px);
+      align-self: start;
+      display: block;
+    }
+  }
+  .rail-list {
+    display: grid;
+    gap: 2px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .rail-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 40px;
+    width: max-content;
+    max-width: 100%;
+    padding: 0 14px 0 10px;
+    border-radius: var(--r-pill);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    transition:
+      background-color var(--dur-hover) var(--ease-warm),
+      color var(--dur-hover) var(--ease-warm);
+  }
+  .rail-link::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    flex: none;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.45;
+    transition:
+      background-color var(--dur-hover) var(--ease-warm),
+      opacity var(--dur-hover),
+      transform var(--dur-hover) var(--ease-warm);
+  }
+  .rail-name {
+    opacity: 0.9;
+    transition: opacity var(--dur-hover) var(--ease-warm);
+  }
+  .rail-link:hover .rail-name,
+  .rail-link:focus-visible .rail-name {
+    opacity: 1;
+  }
+  .rail-link[aria-current="true"] {
+    background: color-mix(in srgb, var(--ink) 7%, transparent);
+    color: var(--ink);
+  }
+  .rail-link[aria-current="true"]::before {
+    background: var(--majorelle);
+    opacity: 1;
+    transform: scale(1.2);
+  }
+  .rail-link[aria-current="true"] .rail-name {
+    opacity: 1;
+  }
+  .rail-progress {
+    position: relative;
+    width: 2px;
+    height: 80px;
+    margin: 14px 0 0 13px;
+    border-radius: 2px;
+    background: var(--line);
+    overflow: hidden;
+  }
+  /* Empty at rest: the Scrub fills it (scaleY 0 → 1) while motion runs; without JavaScript and
+     under reduced motion it stays an empty track. */
+  .rail-fill {
+    position: absolute;
+    inset: 0;
+    background: var(--ink);
+    transform-origin: 50% 0;
+    transform: scaleY(0);
+  }
+
+  /* ---------- project sheets ---------- */
+  .projects {
+    display: grid;
+    gap: clamp(28px, 4vh, 48px);
+    min-width: 0;
+  }
+  .project {
+    border-radius: var(--r-card);
+    background: var(--sheet);
+    padding: clamp(22px, 3vw, 44px);
+    scroll-margin-top: calc(var(--header-h) + 20px);
+    box-shadow: 0 1px 0 color-mix(in srgb, var(--ink) 4%, transparent);
+  }
+  .project-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px 36px;
+    align-items: start;
+  }
+  @media (min-width: 761px) {
+    .project {
+      border-radius: var(--r-sheet);
+    }
+    .project-head {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1081px) {
+    .project-head {
+      grid-template-columns: minmax(0, 1.25fr) repeat(3, minmax(0, 1fr));
+    }
+  }
+  .project-title {
+    display: grid;
+    gap: 14px;
+  }
+  .project-name {
+    margin: 0;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: clamp(30px, 2.8vw, 44px);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    font-variation-settings:
+      "wdth" 88,
+      "opsz" 48;
+  }
+  .project-kind {
+    margin: 0;
+    color: var(--ink-soft);
+  }
+  .project-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .project-col h3 {
+    margin: 0 0 10px;
+    font: 600 14px/1.3 var(--text);
+    color: var(--ink);
+  }
+  .project-col p {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 15.5px;
+  }
+
+  /* ---------- media grid ---------- */
+  .media {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: clamp(10px, 1.2vw, 16px);
+    margin-top: clamp(28px, 4vw, 48px);
+  }
+  .media-frame {
+    position: relative;
+    grid-column: span 12;
+    min-width: 0;
+    margin: 0;
+    padding: clamp(10px, 1.6vw, 22px);
+    border-radius: var(--r-media);
+    overflow: hidden;
+    background: var(--sand);
+  }
+  @media (min-width: 761px) {
+    .media-frame[data-span="4"] {
+      grid-column: span 4;
+    }
+    .media-frame[data-span="5"] {
+      grid-column: span 5;
+    }
+    .media-frame[data-span="6"] {
+      grid-column: span 6;
+    }
+    .media-frame[data-span="7"] {
+      grid-column: span 7;
+    }
+    .media-frame[data-span="8"] {
+      grid-column: span 8;
+    }
+  }
+  .media-frame[data-frame="warm"] {
+    background: color-mix(in srgb, var(--glow) 55%, var(--sand));
+  }
+  .media-frame[data-frame="blue"] {
+    background: color-mix(in srgb, var(--majorelle-soft) 55%, var(--sand));
+  }
+  .media-frame[data-frame="dark"] {
+    background: var(--night-2);
+  }
+  .media-more {
+    margin: clamp(18px, 2.4vw, 28px) 0 0;
+  }
+}

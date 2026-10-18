@@ -1,17 +1,30 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { PagePlaceholder } from "@/components/ui/PagePlaceholder";
+import { ProjectList } from "@/components/sections/work/ProjectList";
+import { ProjectRail } from "@/components/sections/work/ProjectRail";
+import { WorkHero } from "@/components/sections/work/WorkHero";
 import { resolveLocale } from "@/i18n/locale";
 import { pageMetadata } from "@/lib/seo";
+import { ToneSection } from "@/primitives/ToneSection";
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/work">): Promise<Metadata> {
   const locale = await resolveLocale(params);
-  const t = await getTranslations({ locale, namespace: "pages.work" });
-  return pageMetadata("/work", locale, { title: t("title") });
+  const t = await getTranslations({ locale, namespace: "work.meta" });
+  return pageMetadata("/work", locale, { title: t("title"), description: t("description") });
 }
 
 export default async function WorkPage({ params }: PageProps<"/[locale]/work">) {
   const locale = await resolveLocale(params);
-  const t = await getTranslations({ locale, namespace: "pages.work" });
-  return <PagePlaceholder title={t("title")} lead={t("lead")} />;
+  const t = await getTranslations({ locale, namespace: "work" });
+  return (
+    <>
+      <WorkHero />
+      <ToneSection tone="day" aria-label={t("projects")}>
+        <div className="work-layout wrap">
+          <ProjectRail />
+          <ProjectList />
+        </div>
+      </ToneSection>
+    </>
+  );
 }

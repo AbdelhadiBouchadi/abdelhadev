@@ -21,8 +21,16 @@ export interface SmoothScrollApi {
   scrollTo: (target: ScrollTarget, options?: { immediate?: boolean }) => void;
 }
 
+/** Where the page scrolls to for a target: an element's live top, less its scroll-margin-top, as
+    the browser's own fragment navigation does (the work sheets clear the header that way). */
+function destinationOf(target: ScrollTarget): number {
+  if (typeof target === "number") return target;
+  const margin = parseFloat(getComputedStyle(target).scrollMarginTop) || 0;
+  return target.getBoundingClientRect().top + window.scrollY - margin;
+}
+
 function nativeScrollTo(target: ScrollTarget, immediate: boolean) {
-  const top = typeof target === "number" ? target : target.getBoundingClientRect().top + scrollY;
+  const top = destinationOf(target);
   const reduce = matchMedia(MEDIA.reduce).matches;
   window.scrollTo({ top, behavior: immediate || reduce ? "instant" : "smooth" });
 }
@@ -88,8 +96,7 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
         // so a click can come first) would offset both the start and the destination by that
         // distance. Sync Lenis to the window, then take the destination from the page itself.
         lenis.resize();
-        const destination = () =>
-          typeof target === "number" ? target : target.getBoundingClientRect().top + window.scrollY;
+        const destination = () => destinationOf(target);
         const userData = {};
         const started = performance.now();
         let aim = destination();

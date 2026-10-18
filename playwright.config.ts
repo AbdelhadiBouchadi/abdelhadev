@@ -6,8 +6,9 @@ const PHONE = { ...devices["Pixel 7"], browserName: "chromium" as const };
 /** The per-route width suites: every route at every width (docs/quality.md). */
 const EVERY_WIDTH = /(responsive|a11y)\.spec\.ts/;
 /** Motion evidence (videos and end-state screenshots in test-results/motion/), not assertions:
-    motion.spec, home-motion.spec and primitives-motion.spec; not reduced-motion.spec (behaviour). */
-const MOTION = /(?:^|[\\/])(?:home-|primitives-)?motion\.spec\.ts$/;
+    motion.spec, home-motion.spec, work-motion.spec and primitives-motion.spec; not
+    reduced-motion.spec (behaviour). */
+const MOTION = /(?:^|[\\/])(?:home-|work-|primitives-)?motion\.spec\.ts$/;
 
 /** Which suite a config runs (docs/quality.md, "Playwright suites"):
     - `ci` (`pnpm test:e2e`, CI): every behaviour spec at 390 and 1440; no motion evidence.

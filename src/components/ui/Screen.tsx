@@ -1,5 +1,5 @@
 /* The framed product screen (prototype .screen). With `src` it shows a real screenshot through
-   next/image; without it, one of the prototype's four placeholder skeletons, drawn in CSS
+   next/image; without it, one of the prototype's placeholder skeletons, drawn in CSS
    (src/styles/ui.css) and announced by `label` ("Screenshot to come"). Placeholders carry
    data-placeholder="screen" so 08 (real screenshots) can find every one of them.
 
@@ -9,7 +9,10 @@ import Image, { type StaticImageData } from "next/image";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
-export type ScreenLayout = "agenda" | "record" | "plan" | "invoice";
+/** The prototype's skeletons: agenda grid, record split, plan lines, invoice (02), and the work
+    page's product list (shop tiles), chart (bars), chat (bubbles) and site (hero band) (04). */
+export type ScreenLayout =
+  "agenda" | "record" | "plan" | "invoice" | "list" | "chart" | "chat" | "site";
 export type ScreenAspect = "default" | "tall" | "wide";
 
 interface ScreenCommon {
@@ -44,6 +47,8 @@ export interface ScreenPlaceholderProps extends ScreenCommon {
 export type ScreenProps = ScreenImageProps | ScreenPlaceholderProps;
 
 const AGENDA = "a.b.c.a..bc..a.b..ac.b..a";
+/** Six bars (heights in ui.css); the fifth is Majorelle. */
+const BARS = "....b.";
 
 function Line({ w, dark = false }: { w: 16 | 30 | 40 | 50 | 60 | 70 | 80; dark?: boolean }) {
   return <span className="sk" data-w={w} data-dark={dark ? "" : undefined} />;
@@ -104,6 +109,50 @@ function Skeleton({ layout }: { layout: ScreenLayout }) {
           <Line w={60} />
           <Line w={70} />
           <span className="ui-total" />
+        </div>
+      );
+    case "list":
+      return (
+        <>
+          <div className="tiles-row">
+            <span data-c="a" />
+            <span />
+            <span />
+            <span data-c="a" />
+          </div>
+          <div className="ui-list ui-list-tight">
+            <Line w={50} dark />
+            <Line w={30} />
+          </div>
+        </>
+      );
+    case "chart":
+      return (
+        <div className="ui-list ui-list-loose">
+          <Line w={40} dark />
+          <div className="bars">
+            {[...BARS].map((c, i) => (
+              <span key={i} data-c={c === "." ? undefined : c} />
+            ))}
+          </div>
+        </div>
+      );
+    case "chat":
+      return (
+        <div className="bubbles">
+          <span />
+          <span data-me="" />
+          <span data-w="54" />
+          <span data-me="" data-w="36" />
+        </div>
+      );
+    case "site":
+      return (
+        <div className="ui-list">
+          <span className="ui-hero" />
+          <Line w={60} dark />
+          <Line w={80} />
+          <Line w={50} />
         </div>
       );
   }

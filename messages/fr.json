@@ -82,10 +82,6 @@
     "copyright": "© {year} {name}, auto-entrepreneur"
   },
   "pages": {
-    "work": {
-      "title": "Projets",
-      "lead": "Cette page présentera mes projets, DentaFlow en premier."
-    },
     "case": {
       "lead": "L'étude de cas de {name} sera présentée sur cette page."
     },
@@ -151,52 +147,102 @@
       "bench": {
         "title": "Banc des primitives",
         "lead": "Chaque bloc montre une primitive de mouvement, de jour puis de nuit. Faites défiler pour voir chaque état final.",
-        "screenLabel": "Capture d'écran à venir",
-        "screens": {
-          "agenda": "Agenda",
-          "record": "Dossier patient",
-          "plan": "Plan de traitement",
-          "invoice": "Facture"
-        },
-        "imageAlt": "Le symbole Abdelhadev : un soleil au-dessus de l'horizon",
         "diagramLabel": "Schéma : le navigateur appelle l'application, qui appelle l'API, qui interroge la base de données.",
         "diagram": {
           "browser": "Navigateur",
           "app": "Application",
           "api": "API",
           "database": "Base de données"
-        },
-        "spyLead": "La pastille suit le bloc qui croise la ligne d'activation, à 45 % de la hauteur de l'écran.",
-        "spy": {
-          "morning": "Matin",
-          "noon": "Midi",
-          "evening": "Soir",
-          "night": "Nuit"
-        },
-        "spyNav": "Moments de la journée"
+        }
       }
+    }
+  },
+  "work": {
+    "meta": {
+      "title": "Projets",
+      "description": "Les logiciels que j'ai construits de bout en bout : DentaFlow pour les cabinets dentaires, un système hospitalier, une application IA, une boutique en ligne et un site web."
+    },
+    "title": "Des logiciels sur lesquels on s'appuie au quotidien",
+    "lead": "{count, plural, one {# projet} other {# projets}}, du logiciel de cabinet et d'hôpital aux outils IA et aux boutiques en ligne. Chacun construit de bout en bout, du modèle de données au dernier écran.",
+    "start": "Commencer par DentaFlow",
+    "projects": "Projets",
+    "rail": "Projets sur cette page",
+    "challenge": "Le défi",
+    "built": "Ce que j'ai construit",
+    "stack": "Stack",
+    "caseStudy": "Étude de cas",
+    "demo": "Demander une démo",
+    "ask": "Poser une question sur ce projet",
+    "status": {
+      "ready": "Prêt pour les cabinets",
+      "todo": "Détails à confirmer"
+    },
+    "screenshot": "Capture à venir",
+    "screens": "Écrans de {name}",
+    "allScreens": "Voir les {count} écrans",
+    "cursor": {
+      "caseStudy": "Lire l'étude de cas"
     }
   },
   "projects": {
     "dentaflow": {
       "name": "DentaFlow",
-      "kind": "Gestion de cabinet dentaire"
+      "kind": "Gestion de cabinet dentaire",
+      "challenge": "Faire tourner toute la journée d'un cabinet dentaire au même endroit : rendez-vous, patients, soins et facturation.",
+      "built": "Un système de gestion adapté à chaque cabinet avant la mise en service, avec sa propre base de données, son propre déploiement et le nom du cabinet.",
+      "media": {
+        "s1": "[TODO: décrire l'écran 1 de DentaFlow]",
+        "s2": "[TODO: décrire l'écran 2 de DentaFlow]",
+        "s3": "[TODO: décrire l'écran 3 de DentaFlow]",
+        "s4": "[TODO: décrire l'écran 4 de DentaFlow]",
+        "s5": "[TODO: décrire l'écran 5 de DentaFlow]"
+      }
     },
     "hms": {
       "name": "HMS",
-      "kind": "Système de gestion hospitalière"
+      "kind": "Système de gestion hospitalière",
+      "challenge": "[TODO: le défi du HMS, en une phrase]",
+      "built": "[TODO: ce que j'ai construit pour le HMS]",
+      "media": {
+        "s1": "[TODO: décrire l'écran 1 de HMS]",
+        "s2": "[TODO: décrire l'écran 2 de HMS]",
+        "s3": "[TODO: décrire l'écran 3 de HMS]",
+        "s4": "[TODO: décrire l'écran 4 de HMS]"
+      }
     },
     "meetai": {
       "name": "MeetAI",
-      "kind": "Application web avec IA"
+      "kind": "Application web IA",
+      "challenge": "[TODO: le problème que MeetAI résout, en une phrase]",
+      "built": "[TODO: ce que j'ai construit, et ce que la partie IA apporte]",
+      "media": {
+        "s1": "[TODO: décrire l'écran 1 de MeetAI]",
+        "s2": "[TODO: décrire l'écran 2 de MeetAI]",
+        "s3": "[TODO: décrire l'écran 3 de MeetAI]"
+      }
     },
     "flowshop": {
       "name": "FlowShop",
-      "kind": "E-commerce"
+      "kind": "E-commerce",
+      "challenge": "[TODO: l'objectif de la boutique et pour qui]",
+      "built": "[TODO: ce que j'ai construit : catalogue, paiement, administration]",
+      "media": {
+        "s1": "[TODO: décrire l'écran 1 de FlowShop]",
+        "s2": "[TODO: décrire l'écran 2 de FlowShop]",
+        "s3": "[TODO: décrire l'écran 3 de FlowShop]",
+        "s4": "[TODO: décrire l'écran 4 de FlowShop]"
+      }
     },
     "cote-royale": {
       "name": "Côte Royale",
-      "kind": "Site web"
+      "kind": "Site web",
+      "challenge": "[TODO: l'objectif du client pour le site]",
+      "built": "Une expérience pilotée par l'interface, animée avec GSAP et TypeScript, pour un design et une UX soignés. (brouillon, à confirmer en 08)",
+      "media": {
+        "s1": "[TODO: décrire l'écran 1 de Côte Royale]",
+        "s2": "[TODO: décrire l'écran 2 de Côte Royale]",
+        "s3": "[TODO: décrire l'écran 3 de Côte Royale]"
+      }
     }
   }
 }

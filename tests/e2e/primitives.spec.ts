@@ -1,12 +1,13 @@
-// The motion primitives no real page uses yet, on the bench (/fr/lab, trimmed in 03): MediaReveal,
-// LineDraw and useScrollSpy, at 1440 and 390. Each reaches its end state; nothing is hidden or
-// clipped without JavaScript or under reduced motion; no console errors; axe once the loader has
-// finished. The primitives the home page uses (SplitReveal, WordsLight, Reveal, StickyStage,
-// Scrub) and the ScrollTrigger leak check moved to tests/e2e/home.spec.ts in 03.
+// The motion primitive no real page uses yet, on the bench (/fr/lab, trimmed in 03 and 04):
+// LineDraw, at 1440 and 390. It reaches its end state; nothing is hidden without JavaScript or
+// under reduced motion; no console errors; axe once the loader has finished. The primitives the
+// home page uses (SplitReveal, WordsLight, Reveal, StickyStage, Scrub) and the ScrollTrigger leak
+// check moved to tests/e2e/home.spec.ts in 03; MediaReveal (scrub) and useScrollSpy moved to
+// tests/e2e/work.spec.ts in 04.
 import AxeBuilder from "@axe-core/playwright";
 import { readFileSync } from "node:fs";
 import { expect, test, type Locator, type Page } from "@playwright/test";
-import { beyond, bring, collectErrors } from "./page-helpers";
+import { beyond, collectErrors } from "./page-helpers";
 import { scrollToY, shellIdle, transitionsSettled, visited } from "./shell-helpers";
 
 const LAB = "/fr/lab";
@@ -18,15 +19,6 @@ const messages: Messages = JSON.parse(readFileSync("messages/fr.json", "utf8"));
 const bench = (page: Page, name: string) => page.locator(`[data-bench="${name}"]`);
 
 // ---------- end states (read in the page) ----------
-
-const mediaOpen = (locator: Locator) =>
-  locator.evaluate((el) => {
-    const clip = getComputedStyle(el).clipPath;
-    const inner = el.querySelector("[data-media-inner]");
-    const t = inner ? getComputedStyle(inner).transform : "none";
-    const scale = t === "none" ? 1 : new DOMMatrixReadOnly(t).a;
-    return (clip === "none" || /^inset\(0(%|px)? /.test(`${clip} `)) && Math.abs(scale - 1) < 0.001;
-  });
 
 const diagramDrawn = (locator: Locator) =>
   locator.evaluate((el) => {
@@ -50,25 +42,10 @@ test.describe("with motion", () => {
     await visited(page);
   });
 
-  test("the MediaReveal intro reaches its end state after the loader", async ({ page }) => {
-    await page.goto(LAB);
-    await shellIdle(page);
-    await expect(page.locator("h1")).toHaveText(messages.pages.lab.title);
-    await expect.poll(() => mediaOpen(bench(page, "media-intro")), { timeout: 6000 }).toBe(true);
-  });
-
-  test("MediaReveal and LineDraw reach their end state when scrolled, without console errors", async ({
-    page,
-  }) => {
+  test("LineDraw reaches its end state when scrolled, without console errors", async ({ page }) => {
     const errors = collectErrors(page);
     await page.goto(LAB);
     await shellIdle(page);
-
-    for (const name of ["media-scrub", "media-image"]) {
-      await beyond(page, bench(page, name));
-      await expect.poll(() => mediaOpen(bench(page, name)), { message: name }).toBe(true);
-    }
-    await expect(bench(page, "media-image").locator("img")).toHaveJSProperty("complete", true);
 
     for (const name of ["line-day", "line-night"]) {
       await beyond(page, bench(page, name));
@@ -76,22 +53,6 @@ test.describe("with motion", () => {
     }
 
     expect(errors).toEqual([]);
-  });
-
-  test("useScrollSpy follows the block crossing the activation line", async ({ page }) => {
-    await page.goto(LAB);
-    await shellIdle(page);
-    const rail = page.locator("[data-spy-active]");
-    for (const key of ["morning", "noon", "evening", "night"]) {
-      const block = page.locator(`#spy-${key}`);
-      // The block's top a little above the 45 % line.
-      await bring(page, block, 0.4);
-      await expect(rail).toHaveAttribute("data-spy-active", `spy-${key}`);
-      await expect(rail.locator('[aria-current="true"]')).toHaveCount(1);
-    }
-    // Back up into the first block.
-    await bring(page, page.locator("#spy-morning"), 0.3);
-    await expect(rail).toHaveAttribute("data-spy-active", "spy-morning");
   });
 
   test("axe on the bench: no serious or critical issue at the top or once scrolled through", async ({
