@@ -2,7 +2,7 @@
 
 The reusable motion and UI building blocks that the page branches compose (built in 02). A section is written by composing these; it writes its own GSAP only for a choreography that exists on one page only. Values are the prototype's (`docs/prototype/assets/site.js`); every number is a constant in `src/lib/motion.ts`, named below.
 
-Since 03 the home page exercises SplitReveal, WordsLight, Reveal, StickyStage and Scrub, and their end-to-end checks moved there (`tests/e2e/home.spec.ts`, motion evidence in `tests/e2e/home-motion.spec.ts`). Since 04 the work page exercises MediaReveal (scrub) and useScrollSpy (`tests/e2e/work.spec.ts`, motion evidence in `tests/e2e/work-motion.spec.ts`). The bench at `/fr/lab` (development and preview only) keeps only LineDraw, the one primitive no real page uses yet, and is removed in 05 (`tests/e2e/primitives.spec.ts`, `tests/e2e/primitives-motion.spec.ts`). MediaReveal's `intro` variant has no end-to-end check until the case study uses it in 05. Unit tests: `tests/unit/primitives.test.ts`.
+Since 03 the home page exercises SplitReveal, WordsLight, Reveal, StickyStage and Scrub, and their end-to-end checks moved there (`tests/e2e/home.spec.ts`, motion evidence in `tests/e2e/home-motion.spec.ts`). Since 04 the work page exercises MediaReveal (scrub) and useScrollSpy (`tests/e2e/work.spec.ts`, motion evidence in `tests/e2e/work-motion.spec.ts`). Since 05 the case study exercises SplitReveal (chars, `ready`, and lines, `enter`), MediaReveal (`intro`), LineDraw and useScrollSpy (`SPY.tour`), and their end-to-end checks live there (`tests/e2e/case.spec.ts`, motion evidence in `tests/e2e/case-motion.spec.ts`). The lab bench and its specs (`primitives.spec.ts`, `primitives-motion.spec.ts`) were removed in 05: every primitive now has a real page. Unit tests: `tests/unit/primitives.test.ts`.
 
 ## How every primitive is built
 
@@ -136,7 +136,7 @@ DrawSVG for diagrams. Ports the architecture diagram of `Pages.case`. Inside it,
 
 | Prop | Type | Default |
 |---|---|---|
-| `trigger` | selector | the LineDraw element (the case study passes its architecture section) |
+| `trigger` | selector | the LineDraw element (the case study passes its `.arch` grid, as the prototype) |
 | `start` | ScrollTrigger start | `LINE_DRAW.start` (`"top 70%"`) |
 | `end` | ScrollTrigger end | `LINE_DRAW.end` (`"bottom 60%"`) |
 
@@ -203,20 +203,20 @@ The prototype's `.link` and `.back-link` as one component with a lucide-react ar
 | Primitive | Used by |
 |---|---|
 | `SplitReveal` chars, `ready` | case-study product name (the home hero wordmark has its own leaf, `HeroWordmark`: its width axis reflows the letters, and only a combined split with frozen letter boxes keeps that out of CLS) |
-| `SplitReveal` lines, `ready` | work hero, about dawn, contact hero, case-study intro |
+| `SplitReveal` lines, `ready` | work hero, about dawn, contact hero |
 | `SplitReveal` lines, `enter` | footer CTA, case-study next project (the home featured heading fades up with its copy, as in the prototype) |
 | `SplitReveal` lines, `scrub` | home dusk title |
 | `WordsLight` | home manifesto, case-study problem, the three about chapters |
-| `Reveal` `ready` | home hero meta and actions (not the intro paragraph: it is the LCP element, decision T7), work lead, case-study back link and facts, about lead, contact lead and cards |
-| `Reveal` `enter` | work project heads, case-study steps and architecture list, about timeline, stack groups and "right now" |
-| `MediaReveal` scrub | work project media, case-study media |
+| `Reveal` `ready` | home hero meta and actions (not the intro paragraph: it is the LCP element, decision T7), work lead, case-study back link, lead and facts (`STAGGER.caseLater`), about lead, contact lead and cards |
+| `Reveal` `enter` | work project heads, case-study adaptation cards (`STAGGER.adapt`) and architecture list (`STAGGER.archList`), about timeline, stack groups and "right now" |
+| `MediaReveal` scrub | work project media |
 | `MediaReveal` intro | case-study hero screenshot |
-| `StickyStage` | home manifesto, dusk and featured work, about chapters, case-study tour |
+| `StickyStage` | home manifesto, dusk and featured work, about chapters (not the case-study tour: as in the prototype, only its framed stage is sticky, inside the tour grid, `src/styles/case.css`) |
 | `Scrub` | home hero settle and meta fade, about arcs, home 3D layer dim |
 | `LineDraw` | case-study architecture diagram |
-| `useScrollSpy` | work rail, case-study tour |
-| `Screen` | home featured work, work media, case-study hero and tour |
-| `Chip` | work projects (stack), case-study facts |
+| `useScrollSpy` | work rail (`SPY.list`), case-study tour (`SPY.tour`, `TourMotion`: the active step and the stage crossfade) |
+| `Screen` | home featured work, work media, case-study hero, tour stage and inline tour screens |
+| `Chip` | work projects (stack); the case-study facts are plain text, as in the prototype's `dl.facts` |
 | `ArrowLink` | case-study back link, work links, footer secondary link |
 
 Already composed in 02: the footer CTA (`SplitReveal` lines, `enter`, `SHELL.footerCtaStart`) and the footer wordmark (`Scrub`, `yPercent SHELL.footerWordFrom → SHELL.footerWordTo`, the footer from `"top bottom"` to `"bottom bottom"`), which replaced `FooterMotion` with the same numbers.

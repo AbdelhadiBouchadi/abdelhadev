@@ -1,7 +1,20 @@
 // The route curtain (decision T8, docs/spikes/route-curtain.md): cover, navigate, arrive, lift;
 // Back and Forward; same-page hash links; modified and double clicks; no flash of the new page.
+// The same-page hash link is the work hero's "Start with DentaFlow" (#dentaflow) since the lab
+// was removed in 05; it lands on the sheet clear of the header (its scroll-margin-top).
+import { readFileSync } from "node:fs";
 import { expect, test, type Page } from "@playwright/test";
 import { scrollToY, shellIdle, visited } from "./shell-helpers";
+
+// The headings the destination pages show, from the French catalogue, so a copy change cannot
+// break these tests.
+interface Headings {
+  home: { hero: { name: string } };
+  work: { title: string };
+}
+const fr: Headings = JSON.parse(readFileSync("messages/fr.json", "utf8"));
+const WORK_TITLE = fr.work.title;
+const HOME_TITLE = fr.home.hero.name;
 
 test.beforeEach(async ({ page }) => {
   await visited(page);
@@ -36,6 +49,21 @@ async function startSampler(page: Page, arrivedTitle: string) {
   }, arrivedTitle);
 }
 
+/** The document offset of the element with this id. */
+const offsetOf = (page: Page, id: string) =>
+  page.locator(`#${id}`).evaluate((el) => el.getBoundingClientRect().top + window.scrollY);
+
+/** Where a hash link to this id scrolls: its offset less its scroll-margin-top. */
+const landing = (page: Page, id: string) =>
+  page
+    .locator(`#${id}`)
+    .evaluate(
+      (el) =>
+        el.getBoundingClientRect().top +
+        window.scrollY -
+        parseFloat(getComputedStyle(el).scrollMarginTop),
+    );
+
 const frames = (page: Page) =>
   page.evaluate(() => (window as unknown as { __frames: Frame[] }).__frames);
 
@@ -56,7 +84,7 @@ test("a link covers the page, navigates, scrolls to the top and focuses the new 
   await expect(page.locator("header.site-header")).toHaveClass(/is-hidden/);
   await scrollToY(page, 480);
   await expect(page.locator("header.site-header")).not.toHaveClass(/is-hidden/);
-  await startSampler(page, "Projets");
+  await startSampler(page, WORK_TITLE);
 
   await workLink(page).click();
   await expect(page).toHaveURL(/\/fr\/projets$/);
@@ -72,7 +100,7 @@ test("a link covers the page, navigates, scrolls to the top and focuses the new 
   ).toBe(true);
   expect(await page.evaluate(() => window.scrollY)).toBe(0);
   await expect(page.locator("main h1")).toBeFocused();
-  await expect(page.locator("main h1")).toHaveText("Projets");
+  await expect(page.locator("main h1")).toHaveText(WORK_TITLE);
 });
 
 test("Back and Forward arrive behind the curtain too", async ({ page }) => {
@@ -82,7 +110,7 @@ test("Back and Forward arrive behind the curtain too", async ({ page }) => {
   await expect(page).toHaveURL(/\/fr\/projets$/);
   await shellIdle(page);
 
-  await startSampler(page, "Abdelhadev, Abdelhadi Bouchadi, développeur full-stack à Agadir");
+  await startSampler(page, HOME_TITLE);
   await page.goBack();
   await expect(page).toHaveURL(/\/fr$/);
   await shellIdle(page);
@@ -91,7 +119,7 @@ test("Back and Forward arrive behind the curtain too", async ({ page }) => {
   expect(seen[first]?.covered, "Back: covered on the first frame").toBe(true);
   await expect(page.locator("main h1")).toBeFocused();
 
-  await startSampler(page, "Projets");
+  await startSampler(page, WORK_TITLE);
   await page.goForward();
   await expect(page).toHaveURL(/\/fr\/projets$/);
   await shellIdle(page);
@@ -101,15 +129,17 @@ test("Back and Forward arrive behind the curtain too", async ({ page }) => {
   expect(await page.evaluate(() => window.scrollY)).toBe(0);
 });
 
+const WORK = "/fr/projets";
+const TARGET = "dentaflow";
+const JUMP = "Commencer par DentaFlow";
+
 test("a hash link to the current page scrolls there without a curtain", async ({ page }) => {
-  await page.goto("/fr/lab");
+  await page.goto(WORK);
   await shellIdle(page);
   await startSampler(page, "never");
-  await page.getByRole("link", { name: "Aller à la section nuit" }).click();
-  await expect(page).toHaveURL(/\/fr\/lab#lab-night$/);
-  const target = await page
-    .locator("#lab-night")
-    .evaluate((el) => el.getBoundingClientRect().top + window.scrollY);
+  await page.getByRole("link", { name: JUMP }).click();
+  await expect(page).toHaveURL(/\/fr\/projets#dentaflow$/);
+  const target = await landing(page, TARGET);
   await expect
     .poll(() => page.evaluate(() => window.scrollY), { timeout: 4000 })
     .toBeCloseTo(target, -1);
@@ -119,26 +149,22 @@ test("a hash link to the current page scrolls there without a curtain", async ({
   ).toBe(false);
 });
 
-/** The document offset of the element with this id. */
-const offsetOf = (page: Page, id: string) =>
-  page.locator(`#${id}`).evaluate((el) => el.getBoundingClientRect().top + window.scrollY);
-
 test("a hash link lands on its target when the click comes before Lenis has seen the last scroll", async ({
   page,
 }) => {
   // Scroll events reach Lenis on the next frame, so a click can arrive while Lenis still holds the
   // previous scroll position. It used to measure the target from that stale value and overshoot
   // by the distance it had missed (CI: 382 px at 390, 436 px at 1440).
-  await page.goto("/fr/lab");
+  await page.goto(WORK);
   await shellIdle(page);
   await scrollToY(page, 437);
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(437);
   await page.waitForTimeout(300);
   await page.evaluate(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
-    document.querySelector<HTMLAnchorElement>('main a[href$="#lab-night"]')?.click();
+    document.querySelector<HTMLAnchorElement>('main .work-hero a[href$="#dentaflow"]')?.click();
   });
-  const target = await offsetOf(page, "lab-night");
+  const target = await landing(page, TARGET);
   await expect
     .poll(() => page.evaluate(() => window.scrollY), { timeout: 4000 })
     .toBeCloseTo(target, -1);
@@ -147,10 +173,10 @@ test("a hash link lands on its target when the click comes before Lenis has seen
 test("a hash link follows its target when the layout above it changes during the scroll", async ({
   page,
 }) => {
-  await page.goto("/fr/lab");
+  await page.goto(WORK);
   await shellIdle(page);
-  const before = await offsetOf(page, "lab-night");
-  await page.getByRole("link", { name: "Aller à la section nuit" }).click();
+  const before = await offsetOf(page, TARGET);
+  await page.getByRole("link", { name: JUMP }).click();
   // Halfway through the scroll, content above the target grows by 400 px (an image, a re-split,
   // a font swap). Done in the page on the frame the scroll passes halfway, so it is mid-scroll on
   // any machine.
@@ -164,7 +190,7 @@ test("a hash link follows its target when the layout above it changes during the
           }
           const spacer = document.createElement("div");
           spacer.style.height = "400px";
-          document.getElementById("bench")?.append(spacer);
+          document.querySelector(".work-hero")?.append(spacer);
           resolve(window.scrollY);
         };
         step();
@@ -172,8 +198,8 @@ test("a hash link follows its target when the layout above it changes during the
     before / 2,
   );
   expect(yAtChange, "the layout changed during the scroll").toBeLessThan(before - 200);
-  const target = await offsetOf(page, "lab-night");
-  expect(target - before).toBeGreaterThanOrEqual(400);
+  expect((await offsetOf(page, TARGET)) - before).toBeGreaterThanOrEqual(400);
+  const target = await landing(page, TARGET);
   await expect
     .poll(() => page.evaluate(() => window.scrollY), { timeout: 4000 })
     .toBeCloseTo(target, -1);
@@ -182,7 +208,7 @@ test("a hash link follows its target when the layout above it changes during the
 test("a modified click opens a new tab and leaves this page alone", async ({ page, context }) => {
   await page.goto("/fr");
   await shellIdle(page);
-  await startSampler(page, "Projets");
+  await startSampler(page, WORK_TITLE);
   const [tab] = await Promise.all([
     context.waitForEvent("page"),
     workLink(page).click({ modifiers: ["ControlOrMeta"] }),

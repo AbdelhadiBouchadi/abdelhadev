@@ -19,8 +19,6 @@ pnpm install
 pnpm dev            # http://localhost:3000 redirects to /fr or /en
 ```
 
-The design lab with the tokens, type scale and brand is at `/fr/lab` (not in production).
-
 Environment variable names are in [`.env.example`](.env.example); copy it to `.env.local` and fill in values when a feature needs them. Never commit values.
 
 ## Checks

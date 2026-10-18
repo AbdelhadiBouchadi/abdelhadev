@@ -68,6 +68,8 @@
   --r-card: 22px;
   /* the case study hero screenshot frame (prototype .case-shot) */
   --r-shot: 26px;
+  /* the case study tour's sticky stage frame (prototype .tour-frame) */
+  --r-stage: 24px;
   --r-sheet: 28px;
   --r-pill: 999px;
 

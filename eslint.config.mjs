@@ -70,7 +70,7 @@ const PARENT_RELATIVE = {
 
 // ---------- import boundaries (docs/architecture.md) ----------
 const deny = (paths, message) => ({ group: paths, message });
-const SECTION_PAGES = ["home", "work", "case", "about", "contact", "lab"];
+const SECTION_PAGES = ["home", "work", "case", "about", "contact"];
 
 /** Banned @/ imports per folder (each folder gets its own config block). */
 const BOUNDARIES = {

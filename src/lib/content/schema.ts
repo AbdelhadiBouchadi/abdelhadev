@@ -12,6 +12,21 @@ export const projectStatus = z.enum(["live", "ready", "in-progress"]);
 /** The work page shows at most this many media per project; the full set lives in the case study. */
 export const MAX_SHEET_MEDIA = 5;
 
+/** The frame around a screen (prototype .media figure, .warm, .blue, .dark). */
+export const frameTone = z.enum(["plain", "warm", "blue", "dark"]);
+
+/** The placeholder skeleton drawn until 08 brings the real screenshot (Screen `layout`). */
+export const screenSkeleton = z.enum([
+  "agenda",
+  "record",
+  "plan",
+  "invoice",
+  "list",
+  "chart",
+  "chat",
+  "site",
+]);
+
 export const mediaItem = z
   .object({
     /** Columns out of 12 on the project sheet (prototype .m-4 to .m-12). */
@@ -23,12 +38,10 @@ export const mediaItem = z
       z.literal(8),
       z.literal(12),
     ]),
-    /** The frame around the screen (prototype .media figure, .warm, .blue, .dark). */
-    tone: z.enum(["plain", "warm", "blue", "dark"]),
+    tone: frameTone,
     /** The screen's aspect (Screen `aspect`): 16 / 10, 4 / 5 or 21 / 10. */
     layout: z.enum(["default", "tall", "wide"]),
-    /** The placeholder skeleton drawn until 08 brings the real screenshot (Screen `layout`). */
-    skeleton: z.enum(["agenda", "record", "plan", "invoice", "list", "chart", "chat", "site"]),
+    skeleton: screenSkeleton,
     /** Only the field exists for now: video rendering arrives in 08. */
     kind: z.enum(["image", "video"]).default("image"),
   })
@@ -57,8 +70,6 @@ export const project = z
       .optional(),
     /** The curated screens of the work page sheet, in grid order. */
     media: z.array(mediaItem).max(MAX_SHEET_MEDIA),
-    /** The total number of screens that exist, when it is larger than `media.length`. */
-    screenCount: z.number().int().positive().optional(),
     /** The features a page lists (the home featured work), as keys of the page's messages, and
         whether the owner has confirmed the list (a placeholder until then). */
     features: z
@@ -71,10 +82,7 @@ export const project = z
     /** Points at messages.projects.<slug> for the localised name, kind and texts. */
     copyKey: z.string().regex(/^projects\.[a-z0-9-]+$/),
   })
-  .refine((p) => p.screenCount === undefined || p.screenCount > p.media.length, {
-    message: "screenCount is only set when it is larger than the media shown",
-    path: ["screenCount"],
-  });
+  .strict();
 
 export const projects = z.array(project).superRefine((list, ctx) => {
   const slugs = new Set<string>();
@@ -90,6 +98,47 @@ export const projects = z.array(project).superRefine((list, ctx) => {
     }
   }
 });
+
+// ---------- case studies (05) ----------
+
+/** A message key segment: projects.<slug>.case.<group>.<key>. */
+const copyKey = z.string().regex(/^[a-z]+$/);
+
+/** One screen of a case study: its frame tone and placeholder skeleton (real images in 08). */
+export const caseScreen = z.object({ tone: frameTone, skeleton: screenSkeleton }).strict();
+
+/** The product tour has between this many steps (prototype Pages.case). */
+export const TOUR_STEPS = { min: 3, max: 8 } as const;
+
+/** The number of adaptation cards (prototype .steps, four columns). */
+export const ADAPT_STEPS = 4;
+
+const uniqueKeys = (keys: readonly string[]) => new Set(keys).size === keys.length;
+
+export const caseStudy = z
+  .object({
+    /** The hero screenshot (prototype .case-shot). */
+    hero: caseScreen,
+    /** The product tour, in reading order: copy at projects.<slug>.case.tour.<key>. */
+    tour: z
+      .array(caseScreen.extend({ key: copyKey }).strict())
+      .min(TOUR_STEPS.min)
+      .max(TOUR_STEPS.max)
+      .refine((steps) => uniqueKeys(steps.map((s) => s.key)), "Duplicate tour key"),
+    /** The adaptation cards, in order: copy at projects.<slug>.case.adapt.<key>. */
+    adapt: z.array(copyKey).length(ADAPT_STEPS).refine(uniqueKeys, "Duplicate adaptation key"),
+    /** The architecture list beside the diagram: copy at projects.<slug>.case.arch.<key>. */
+    arch: z
+      .object({ listKeys: z.array(copyKey).min(1).refine(uniqueKeys, "Duplicate list key") })
+      .strict(),
+  })
+  .strict();
+
+/** Case studies keyed by project slug. */
+export const caseStudies = z.record(z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/), caseStudy);
+
+export type CaseStudy = z.infer<typeof caseStudy>;
+export type CaseScreen = z.infer<typeof caseScreen>;
 
 /** A project as written in projects.ts (media `kind` may be left out). */
 export type ProjectInput = z.input<typeof project>;

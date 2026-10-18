@@ -10,7 +10,11 @@
    The legal name is plain, server-rendered text here on every page (AGENTS.md, "Content, identity
    and legal"). A channel the owner has not supplied yet shows its visible placeholder, never an
    empty link; the build lists it (scripts/report-todos.mjs). The copy makes no availability or
-   client claims (decision P6). */
+   client claims (decision P6).
+
+   The call to action is "Have a project in mind?" unless the page passes its own (`cta`, the case
+   study's "DentaFlow in your clinic?"). The layout renders the footer through its @footer slot
+   (src/app/[locale]/@footer), so the heading follows client-side navigations too. */
 import { getLocale, getTranslations } from "next-intl/server";
 import { Clock } from "@/components/layout/Clock";
 import { LocaleSwitch } from "@/components/layout/LocaleSwitch";
@@ -40,7 +44,12 @@ const CHANNELS = [
   { key: "github", label: "GitHub", value: SITE.github },
 ] as const;
 
-export async function Footer() {
+export interface FooterProps {
+  /** The call-to-action heading of this page. Default: messages footer.cta. */
+  cta?: string;
+}
+
+export async function Footer({ cta }: FooterProps = {}) {
   const t = await getTranslations("footer");
   const nav = await getTranslations("nav");
   const cursor = await getTranslations("cursor");
@@ -57,7 +66,7 @@ export async function Footer() {
             start={SHELL.footerCtaStart}
             className="display max-w-[14em] h-lg"
           >
-            {t("cta")}
+            {cta ?? t("cta")}
           </SplitReveal>
           <div className="flex flex-wrap items-center gap-5.5">
             <Magnetic>

@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations } from "next-intl/server";
 import { Cursor } from "@/components/layout/Cursor";
-import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { Loader } from "@/components/layout/Loader";
 import { MobileNav } from "@/components/layout/MobileNav";
@@ -38,7 +37,9 @@ export const viewport: Viewport = {
   themeColor: cssToken("paper"),
 };
 
-export default async function LocaleLayout({ children, params }: LayoutProps<"/[locale]">) {
+// The footer comes from the @footer slot: the shell footer on every route, with the case study's
+// own call to action on its pages (src/app/[locale]/@footer/work/[slug]/page.tsx).
+export default async function LocaleLayout({ children, footer, params }: LayoutProps<"/[locale]">) {
   const locale = await resolveLocale(params);
   const clientMessages = pickClientMessages(await getMessages());
   return (
@@ -61,7 +62,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
               <main id="main" {...shellContent}>
                 {children}
               </main>
-              <Footer />
+              {footer}
             </TransitionProvider>
           </SmoothScroll>
         </NextIntlClientProvider>

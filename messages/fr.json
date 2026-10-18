@@ -82,9 +82,6 @@
     "copyright": "© {year} {name}, auto-entrepreneur"
   },
   "pages": {
-    "case": {
-      "lead": "L'étude de cas de {name} sera présentée sur cette page."
-    },
     "about": {
       "title": "À propos",
       "lead": "Je suis développeur full-stack à Agadir. Cette page présentera ma façon de travailler."
@@ -139,22 +136,6 @@
       "title": "Page introuvable",
       "lead": "Cette adresse ne mène à aucune page.",
       "back": "Retour à l'accueil"
-    },
-    "lab": {
-      "title": "Laboratoire",
-      "lead": "Page de travail pour les primitives qu'aucune page réelle n'utilise encore. Elle disparaît à l'étape 05.",
-      "jumpToNight": "Aller à la section nuit",
-      "bench": {
-        "title": "Banc des primitives",
-        "lead": "Chaque bloc montre une primitive de mouvement, de jour puis de nuit. Faites défiler pour voir chaque état final.",
-        "diagramLabel": "Schéma : le navigateur appelle l'application, qui appelle l'API, qui interroge la base de données.",
-        "diagram": {
-          "browser": "Navigateur",
-          "app": "Application",
-          "api": "API",
-          "database": "Base de données"
-        }
-      }
     }
   },
   "work": {
@@ -184,6 +165,34 @@
       "caseStudy": "Lire l'étude de cas"
     }
   },
+  "case": {
+    "back": "Tous les projets",
+    "problem": "Le problème",
+    "facts": {
+      "role": "Rôle",
+      "status": "Statut",
+      "delivery": "Livraison",
+      "stack": "Stack",
+      "roleValue": "Développement full-stack",
+      "deliveryValue": "Un déploiement et une base de données par cabinet"
+    },
+    "tour": {
+      "label": "Ce que fait DentaFlow"
+    },
+    "adapt": {
+      "title": "Adapté à chaque cabinet",
+      "lead": "DentaFlow est prêt. Ce qui change pour chaque cabinet se fait avant la mise en service."
+    },
+    "arch": {
+      "title": "Comment c'est construit",
+      "lead": "Typé de la base de données à l'écran, pour qu'un changement soit vérifié partout.",
+      "diagramBox": "Schéma de l'architecture"
+    },
+    "next": "Projet suivant",
+    "cursor": {
+      "next": "Voir le projet"
+    }
+  },
   "projects": {
     "dentaflow": {
       "name": "DentaFlow",
@@ -196,6 +205,95 @@
         "s3": "[TODO: décrire l'écran 3 de DentaFlow]",
         "s4": "[TODO: décrire l'écran 4 de DentaFlow]",
         "s5": "[TODO: décrire l'écran 5 de DentaFlow]"
+      },
+      "case": {
+        "meta": {
+          "description": "Un système de gestion pour cabinets dentaires : agenda, patients, soins et facturation. Adapté à chaque cabinet avant la mise en service, avec sa propre base de données et son propre déploiement."
+        },
+        "lead": "Un système de gestion pour cabinets dentaires : agenda, patients, soins et facturation. Adapté à chaque cabinet avant la mise en service, avec sa propre base de données et son propre déploiement.",
+        "footer": "DentaFlow dans votre cabinet ?",
+        "screens": {
+          "hero": "[TODO: décrire l'écran d'ouverture de DentaFlow]",
+          "agenda": "[TODO: décrire l'écran agenda de DentaFlow]",
+          "patients": "[TODO: décrire l'écran patients de DentaFlow]",
+          "record": "[TODO: décrire l'écran dossier patient de DentaFlow]",
+          "odontogram": "[TODO: décrire l'écran schéma dentaire de DentaFlow]",
+          "acts": "[TODO: décrire l'écran catalogue des actes de DentaFlow]",
+          "documents": "[TODO: décrire l'écran documents de DentaFlow]",
+          "statistics": "[TODO: décrire l'écran statistiques de DentaFlow]"
+        },
+        "tour": {
+          "agenda": {
+            "title": "L'agenda du cabinet",
+            "text": "Les rendez-vous de la journée et de la semaine, avec leur type."
+          },
+          "patients": {
+            "title": "Tous les patients",
+            "text": "La liste des patients du cabinet, avec leurs étiquettes et leur assurance."
+          },
+          "record": {
+            "title": "Un dossier par patient",
+            "text": "Les documents et l'imagerie d'un patient réunis dans son dossier."
+          },
+          "odontogram": {
+            "title": "Le schéma dentaire",
+            "text": "L'odontogramme du patient, dent par dent."
+          },
+          "acts": {
+            "title": "Le catalogue des actes",
+            "text": "Les actes du cabinet, avec l'import de la nomenclature NGAP."
+          },
+          "documents": {
+            "title": "Les documents",
+            "text": "Ordonnances, devis, factures et certificats au même endroit."
+          },
+          "statistics": {
+            "title": "Les statistiques",
+            "text": "L'activité et les encaissements du cabinet, en chiffres et en graphiques."
+          }
+        },
+        "adapt": {
+          "name": {
+            "title": "Le nom du cabinet",
+            "text": "Le nom du cabinet apparaît dans l'application."
+          },
+          "database": {
+            "title": "Sa propre base de données",
+            "text": "Une base de données séparée pour chaque cabinet."
+          },
+          "deployment": {
+            "title": "Son propre déploiement",
+            "text": "Un déploiement propre à chaque cabinet."
+          },
+          "fourth": {
+            "title": "[TODO: fourth step title]",
+            "text": "[TODO: fourth step text]"
+          }
+        },
+        "arch": {
+          "database": {
+            "title": "Une base de données par cabinet",
+            "text": "PostgreSQL, accessible avec Drizzle."
+          },
+          "types": {
+            "title": "Des types de bout en bout",
+            "text": "tRPC partage les mêmes types entre le serveur et l'interface."
+          },
+          "access": {
+            "title": "[TODO: access and roles, owner to confirm]",
+            "text": "[TODO: access and roles text, owner to confirm]"
+          }
+        },
+        "diagram": {
+          "label": "Architecture : le navigateur parle à l'application Next.js, qui appelle les procédures tRPC, qui interrogent avec Drizzle la base PostgreSQL de chaque cabinet. Better Auth se trouve à côté de l'application.",
+          "browser": "Navigateur",
+          "browserSub": "Le cabinet",
+          "appSub": "L'application",
+          "apiSub": "API typée",
+          "ormSub": "Requêtes typées",
+          "databaseSub": "Une par cabinet",
+          "authSub": "Authentification"
+        }
       }
     },
     "hms": {

@@ -1,11 +1,11 @@
 // The work page's data and copy (prompts/04-work.md, "Tests"): publicProjects() and the schema
-// rules, the sitemap list, and the plural in the lead.
+// rules, and the plural in the lead. The derived screen count, the case study list and the
+// sitemap moved to tests/unit/case.test.ts in 05.
 import { createTranslator } from "next-intl";
 import { describe, expect, it } from "vitest";
 import en from "@messages/en.json";
 import fr from "@messages/fr.json";
-import sitemap from "@/app/sitemap";
-import { hasMoreScreens, PROJECTS, publicProjects } from "@/lib/content/projects";
+import { PROJECTS, publicProjects } from "@/lib/content/projects";
 import { MAX_SHEET_MEDIA, project, projects, type Project } from "@/lib/content/schema";
 
 const [dentaflow, hms] = PROJECTS;
@@ -80,46 +80,13 @@ describe("project schema", () => {
     );
   });
 
-  it("accepts screenCount only when it is larger than the media shown", () => {
-    expect(project.safeParse({ ...dentaflow, screenCount: dentaflow.media.length }).success).toBe(
-      false,
-    );
-    const more = project.parse({ ...dentaflow, screenCount: dentaflow.media.length + 3 });
-    expect(hasMoreScreens(more)).toBe(true);
-    // Without a case study there is nowhere to see the rest.
-    expect(hasMoreScreens({ ...more, caseStudy: false })).toBe(false);
-    expect(hasMoreScreens(dentaflow)).toBe(false);
+  it("no longer stores a screen count: it is derived from the case study (05)", () => {
+    expect(project.safeParse({ ...dentaflow, screenCount: 9 }).success).toBe(false);
   });
 
   it("rejects duplicate slugs and a copyKey that does not match the slug", () => {
     expect(projects.safeParse([hms, hms]).success).toBe(false);
     expect(projects.safeParse([{ ...hms, copyKey: "projects.meetai" }]).success).toBe(false);
-  });
-});
-
-describe("sitemap", () => {
-  it("lists every public page and case study in both locales", () => {
-    const urls = sitemap().map((entry) => entry.url.replace("https://abdelhadev.me", ""));
-    const cases = publicProjects().flatMap(({ slug }) => [
-      `/fr/projets/${slug}`,
-      `/en/work/${slug}`,
-    ]);
-    expect(urls.toSorted()).toEqual(
-      [
-        "/fr",
-        "/en",
-        "/fr/projets",
-        "/en/work",
-        "/fr/a-propos",
-        "/en/about",
-        "/fr/contact",
-        "/en/contact",
-        "/fr/mentions-legales",
-        "/en/legal-notice",
-        ...cases,
-      ].toSorted(),
-    );
-    expect(urls.some((url) => url.includes("/lab"))).toBe(false);
   });
 });
 

@@ -5,6 +5,7 @@
 @import "./ui.css";
 @import "./home.css";
 @import "./work.css";
+@import "./case.css";
 
 /* Only tokens exist as utilities: Tailwind's default palette, radii, shadows, easings and
    breakpoints are cleared, then mapped to the tokens in tokens.css. */
@@ -47,6 +48,7 @@
   --radius-card: var(--r-card);
   --radius-sheet: var(--r-sheet);
   --radius-shot: var(--r-shot);
+  --radius-stage: var(--r-stage);
   --radius-pill: var(--r-pill);
 
   --font-display: var(--display);
