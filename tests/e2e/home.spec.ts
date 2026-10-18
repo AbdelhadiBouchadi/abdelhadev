@@ -371,9 +371,9 @@ test.describe("with motion", () => {
   }) => {
     const errors = collectErrors(page);
     const settle = () => page.waitForTimeout(800);
-    // The about page is still a placeholder (06): a quiet baseline. The work page has its own
-    // triggers since 04 (tests/e2e/work.spec.ts runs the same round trip from there).
-    await page.goto("/fr/a-propos");
+    // The contact page is still a placeholder (07; the about page has its own triggers since 06):
+    // a quiet baseline. The work page runs the same round trip from there (tests/e2e/work.spec.ts).
+    await page.goto("/fr/contact");
     await shellIdle(page);
     await settle();
     const baseline = await liveScrollTriggers(page);
@@ -384,8 +384,8 @@ test.describe("with motion", () => {
     const home = await liveScrollTriggers(page);
     expect(home).toBeGreaterThan(baseline);
 
-    await page.locator('a:visible[href="/fr/a-propos"]').first().click();
-    await page.waitForURL(/\/fr\/a-propos$/);
+    await page.locator('a:visible[href="/fr/contact"]').first().click();
+    await page.waitForURL(/\/fr\/contact$/);
     await shellIdle(page);
     await settle();
     expect(await liveScrollTriggers(page)).toBe(baseline);

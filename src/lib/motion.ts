@@ -372,3 +372,32 @@ export const CASE = {
     screenFrom: 0.97,
   },
 } as const;
+
+// ---------- about (Pages.about, docs/choreography.md "About") ----------
+
+/** The about page around the primitives. */
+export const ABOUT = {
+  dawn: {
+    /** The four arcs rise and settle from here (DURATION.intro, STAGGER.arcs from the outside).
+        src/styles/about.css mirrors the start state (tests/unit/primitives.test.ts). */
+    arcsFrom: { yPercent: 18, scale: 0.86 },
+    /** The title lines start this long after ready (prototype title(0.3)). */
+    titleDelay: 0.3,
+    /** The lead and the facts rise from this offset, this long after ready (prototype 0.8 s). */
+    laterY: 20,
+    laterDelay: 0.8,
+    /** The arcs expand and fade (SETTLE.arcs) while the dawn scrolls from "top top" to "bottom top". */
+    scrubStart: "top top",
+    scrubEnd: "bottom top",
+  },
+  chapter: {
+    /** Each chapter's label fades up when it reaches 60 % of the viewport. */
+    labelY: 24,
+    labelStart: "top 60%",
+    /** The statement's words light over the chapter from "top 20%" to "bottom bottom". */
+    wordsStart: "top 20%",
+    wordsEnd: "bottom bottom",
+  },
+  /** Fade-up groups (prototype fadeUpOnEnter): timeline and stack 0.08, "Right now" 0.1. */
+  stagger: { services: 0.08, process: 0.09, timeline: 0.08, stack: 0.08, now: 0.1 },
+} as const;

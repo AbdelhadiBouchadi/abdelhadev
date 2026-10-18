@@ -192,7 +192,7 @@ Placeholder colours: the prototype drew its skeletons with raw colours; each map
 
 ### ArrowLink
 
-The prototype's `.link` and `.back-link` as one component with a lucide-react arrow: `variant` `forward` (underlined, arrow after), `back` (quiet, arrow before) or `external` (up-right arrow). The link element comes in through `as`: `TransitionLink` for internal links (route curtain, localised pathnames through `@/i18n/navigation`), `"a"` for external ones, because `components/ui` may import `lib` only (`docs/architecture.md`).
+The prototype's `.link` and `.back-link` as one component with a lucide-react arrow: `variant` `forward` (underlined, arrow after), `back` (quiet, arrow before), `external` (up-right arrow) or `download` (down arrow, for a file: the about page's CV, added in 06). The link element comes in through `as`: `TransitionLink` for internal links (route curtain, localised pathnames through `@/i18n/navigation`), `"a"` for external ones, because `components/ui` may import `lib` only (`docs/architecture.md`).
 
 ```tsx
 <ArrowLink as={TransitionLink} href="/work" variant="back">{t("allProjects")}</ArrowLink>
@@ -208,7 +208,7 @@ The prototype's `.link` and `.back-link` as one component with a lucide-react ar
 | `SplitReveal` lines, `scrub` | home dusk title |
 | `WordsLight` | home manifesto, case-study problem, the three about chapters |
 | `Reveal` `ready` | home hero meta and actions (not the intro paragraph: it is the LCP element, decision T7), work lead, case-study back link, lead and facts (`STAGGER.caseLater`), about lead, contact lead and cards |
-| `Reveal` `enter` | work project heads, case-study adaptation cards (`STAGGER.adapt`) and architecture list (`STAGGER.archList`), about timeline, stack groups and "right now" |
+| `Reveal` `enter` | work project heads, case-study adaptation cards (`STAGGER.adapt`) and architecture list (`STAGGER.archList`), about chapter labels, services, process cards, timeline, stack groups and "right now" (`ABOUT.stagger`) |
 | `MediaReveal` scrub | work project media |
 | `MediaReveal` intro | case-study hero screenshot |
 | `StickyStage` | home manifesto, dusk and featured work, about chapters (not the case-study tour: as in the prototype, only its framed stage is sticky, inside the tour grid, `src/styles/case.css`) |
@@ -216,7 +216,7 @@ The prototype's `.link` and `.back-link` as one component with a lucide-react ar
 | `LineDraw` | case-study architecture diagram |
 | `useScrollSpy` | work rail (`SPY.list`), case-study tour (`SPY.tour`, `TourMotion`: the active step and the stage crossfade) |
 | `Screen` | home featured work, work media, case-study hero, tour stage and inline tour screens |
-| `Chip` | work projects (stack); the case-study facts are plain text, as in the prototype's `dl.facts` |
-| `ArrowLink` | case-study back link, work links, footer secondary link |
+| `Chip` | work projects (stack), about stack groups and the timeline's unconfirmed years (`todo`); the case-study and about facts are plain text, as in the prototype's `dl.facts` |
+| `ArrowLink` | case-study back link, work links, footer secondary link, about services Contact, CV download and "right now" links |
 
 Already composed in 02: the footer CTA (`SplitReveal` lines, `enter`, `SHELL.footerCtaStart`) and the footer wordmark (`Scrub`, `yPercent SHELL.footerWordFrom → SHELL.footerWordTo`, the footer from `"top bottom"` to `"bottom bottom"`), which replaced `FooterMotion` with the same numbers.
