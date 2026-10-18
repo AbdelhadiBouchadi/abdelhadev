@@ -7,7 +7,7 @@
 import { useRef } from "react";
 import { ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { SHELL } from "@/lib/motion";
-import { applyShellTone, shellToneOf, toneAt, type SectionTone } from "@/lib/tone";
+import { applyShellTone, shellToneOf, untriggeredToneAt, type SectionTone } from "@/lib/tone";
 
 export interface ToneTriggerProps {
   tone: SectionTone;
@@ -26,10 +26,13 @@ export function ToneTrigger({ tone, start = SHELL.toneStart }: ToneTriggerProps)
         trigger: section,
         start,
         end: SHELL.toneEnd,
-        // Leaving: whatever is under the header line now (a section without its own trigger
-        // included) gives the tone.
+        // Leaving: a section without its own trigger under the header line gives the tone;
+        // otherwise the tone stays until the next trigger becomes active (prototype initTone). A
+        // section with a later takeover point (the home dusk, "center 50px") must not take over
+        // as soon as its top reaches the line.
         onToggle: (self) => {
-          applyShellTone(document, self.isActive ? shellTone : toneAt(document, SHELL.toneLine));
+          const tone = self.isActive ? shellTone : untriggeredToneAt(document, SHELL.toneLine);
+          if (tone) applyShellTone(document, tone);
         },
       });
     },

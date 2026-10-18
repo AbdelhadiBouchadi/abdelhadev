@@ -3,6 +3,7 @@
 @import "./shell.css";
 @import "./primitives.css";
 @import "./ui.css";
+@import "./home.css";
 
 /* Only tokens exist as utilities: Tailwind's default palette, radii, shadows, easings and
    breakpoints are cleared, then mapped to the tokens in tokens.css. */

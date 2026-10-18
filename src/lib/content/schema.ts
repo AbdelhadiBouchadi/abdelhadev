@@ -40,6 +40,15 @@ export const project = z.object({
     })
     .strict(),
   media: z.array(mediaItem),
+  /** The features a page lists (the home featured work), as keys of the page's messages, and
+      whether the owner has confirmed the list (a placeholder until then). */
+  features: z
+    .object({
+      items: z.array(z.string().regex(/^[a-z]+$/)).min(1),
+      confirmed: z.union([z.literal(true), todo]),
+    })
+    .strict()
+    .optional(),
   /** Whether the client allows the project to be named publicly. */
   clientPermission: z.union([z.boolean(), todo]).optional(),
   /** Points at messages.projects.<slug> for the localised name, kind and texts. */

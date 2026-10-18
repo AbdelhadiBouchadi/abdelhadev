@@ -38,7 +38,7 @@ async function observeLcp(page: Page) {
       for (const e of list.getEntries() as (PerformanceEntry & { element?: Element | null })[]) {
         entries.push({
           t: Math.round(e.startTime),
-          tag: e.element?.tagName ?? "",
+          tag: `${e.element?.tagName ?? ""}${e.element?.className ? `.${String(e.element.className).split(" ")[0]}` : ""}`,
           text: (e.element?.textContent ?? "").trim().slice(0, 60),
         });
       }
@@ -50,13 +50,19 @@ const lcp = (page: Page) => page.evaluate(() => (window as unknown as { __lcp: E
 
 test("LCP on a first visit and on a visited load, mobile profile", async ({ browser }, info) => {
   test.skip(info.project.name !== "390", "measured once, on the mobile profile");
-  test.setTimeout(90_000);
+  test.setTimeout(180_000);
+  const finals: { name: string; final: Entry | undefined }[] = [];
   const results: Record<string, unknown> = {
     measured: new Date().toISOString(),
     profile: "390x844, 150 ms RTT, 1.6 Mbps down, CPU 4x (CDP), production build on localhost",
   };
 
-  for (const variant of ["firstVisit", "visitedLoad"] as const) {
+  for (const [locale, variant] of [
+    ["fr", "firstVisit"],
+    ["fr", "visitedLoad"],
+    ["en", "firstVisit"],
+    ["en", "visitedLoad"],
+  ] as const) {
     const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
     const page = await context.newPage();
     if (variant === "visitedLoad") {
@@ -65,17 +71,20 @@ test("LCP on a first visit and on a visited load, mobile profile", async ({ brow
     await observeLcp(page);
     await recordLoader(page);
     await throttle(context, page);
-    await page.goto("/fr");
+    await page.goto(`/${locale}`);
     await shellIdle(page, 20_000);
     const entries = await lcp(page);
     const loader = await loaderRecord(page);
     const final = entries.at(-1);
-    results[variant] = { final, entries, loaderReadyMs: loader.ready, loaderOffMs: loader.off };
+    results[`${locale}.${variant}`] = {
+      final,
+      entries,
+      loaderReadyMs: loader.ready,
+      loaderOffMs: loader.off,
+    };
+    finals.push({ name: `${locale} ${variant}`, final });
 
-    expect(final, `${variant}: an LCP entry exists`).toBeDefined();
-    expect(final?.t ?? Infinity).toBeLessThan(LIMIT_MS);
-
-    if (variant === "visitedLoad") {
+    if (locale === "fr" && variant === "visitedLoad") {
       // A client-side route change: Chrome reports no LCP for soft navigations, so this records
       // only whether any new entry appears.
       const before = entries.length;
@@ -91,6 +100,11 @@ test("LCP on a first visit and on a visited load, mobile profile", async ({ brow
     await context.close();
   }
 
+  // Written before the assertions, so a failing run still leaves its measurements.
   mkdirSync("test-results/shell", { recursive: true });
   writeFileSync("test-results/shell/lcp.json", `${JSON.stringify(results, null, 2)}\n`);
+  for (const { name, final } of finals) {
+    expect(final, `${name}: an LCP entry exists`).toBeDefined();
+    expect(final?.t ?? Infinity, name).toBeLessThan(LIMIT_MS);
+  }
 });

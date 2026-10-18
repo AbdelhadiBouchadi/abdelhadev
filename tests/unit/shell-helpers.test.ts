@@ -10,7 +10,7 @@ import {
   type ClickLike,
 } from "@/lib/links";
 import { localizedPath } from "@/lib/paths";
-import { applyShellTone, shellToneOf, toneAt } from "@/lib/tone";
+import { applyShellTone, shellToneOf, toneAt, untriggeredToneAt } from "@/lib/tone";
 
 const click = (over: Partial<ClickLike> = {}): ClickLike => ({
   button: 0,
@@ -102,6 +102,26 @@ describe("tone", () => {
     expect(toneAt(root(sections), 50)).toBe("night");
     expect(toneAt(root(sections), 1000)).toBe("day");
     expect(toneAt(root([]), 50)).toBe("day");
+  });
+
+  it("leaving a section, only sections without their own trigger take over (else null)", () => {
+    const triggered = (tone: string, top: number, bottom: number) => ({
+      ...el(tone, top, bottom),
+      querySelector: () => ({}),
+    });
+    const plain = (tone: string, top: number, bottom: number) => ({
+      ...el(tone, top, bottom),
+      querySelector: () => null,
+    });
+    // The home dusk: its top is under the line but it takes over at its centre, by its trigger.
+    expect(untriggeredToneAt(root([plain("day", -900, 40), triggered("night", 40, 900)]), 50)).toBe(
+      null,
+    );
+    // A section without a trigger (a plain data-tone section) still gives the tone.
+    expect(untriggeredToneAt(root([triggered("day", -900, 40), plain("night", 40, 900)]), 50)).toBe(
+      "night",
+    );
+    expect(untriggeredToneAt(root([]), 50)).toBe(null);
   });
 
   it("sets data-tone on every shell element", () => {

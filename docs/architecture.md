@@ -41,7 +41,8 @@ abdelhadev/
 │   │   ├── brand/      Mark.tsx, Wordmark.tsx, wordmark-paths.ts (generated)
 │   │   ├── layout/     Header.tsx, MobileNav.tsx, Footer.tsx, Loader.tsx, Cursor.tsx, Sky.tsx, SkipLink.tsx
 │   │   ├── sections/   home/, work/, case/, about/, contact/
-│   │   ├── three/      HeroScene.tsx (+ its parts), plain three.js, loaded with next/dynamic, ssr: false
+│   │   ├── three/      SceneLayer.tsx (wrapper, poster, state), HeroScene.tsx (lazy, next/dynamic,
+│   │   │               ssr: false), scene.ts (pure factory), slabs.ts, textures.ts, lights.ts, palette.ts
 │   │   └── ui/         Button.tsx, Chip.tsx, Screen.tsx (framed screen, placeholder skeletons),
 │   │                   ArrowLink.tsx, Field.tsx (07)
 │   ├── primitives/     shell (01): SmoothScroll, TransitionProvider, TransitionLink, ToneSection,
@@ -58,6 +59,8 @@ abdelhadev/
 │   │   ├── loader.ts   task registry: track(weight, promise), progress, ready signal
 │   │   ├── schedule.ts one shared task after React's commit for the primitives' setup
 │   │   ├── scroll.ts   pure helpers of the primitives: ranges, stage condition, scroll spy, clip paths
+│   │   ├── scene-state.ts  the home 3D scene's scroll progress { p1, p2, p3 }, written by sections
+│   │   ├── css-tokens.ts   colour tokens read at runtime (the 3D scene, the dusk sky)
 │   │   ├── fonts.ts    next/font definitions
 │   │   ├── site.ts     identity, contact channels, social links, INDEXABLE flag
 │   │   ├── seo.ts      metadata helpers, alternates, JSON-LD builders

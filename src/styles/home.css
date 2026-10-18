@@ -1,0 +1,392 @@
+/* The home page (docs/prototype/assets/site.css, "HOME", with #sky, #sun and #scene-wrap).
+   Two worlds:
+   - html.motion.sky (JavaScript, motion allowed, set by the Sky leaf): the sky, the sun and the 3D
+     layer are fixed behind the whole page and the sections are transparent over them; the sticky
+     stages run; start states hide what the intro and the stages reveal.
+   - otherwise (no JavaScript, reduced motion): every section keeps its own tone background, the
+     sun and the 3D poster or still frame sit inside the hero, nothing is sticky or hidden.
+   The layers' classes are not `sky` and `sun`: `sky` is the class on <html>.
+   Colours are tokens only. In the components layer, so Tailwind utilities still win. */
+@layer components {
+  /* ---------- the sky behind the page ---------- */
+  html.motion.sky main [data-tone] {
+    background: transparent;
+  }
+  /* The night sections after the dusk show the sky turning only while the dusk is on screen
+     (html[data-dusk], DuskMotion); before and after it they keep their own night, which looks
+     the same once the sky is night and keeps their colours measurable. */
+  html.motion.sky[data-dusk="during"] footer[data-tone] {
+    background: transparent;
+  }
+  html.motion.sky:not([data-dusk="during"]) #featured[data-tone],
+  html.motion.sky[data-dusk="after"] [data-dusk-tone] {
+    background: var(--night);
+  }
+  .sky-layer {
+    position: fixed;
+    inset: 0;
+    z-index: -3;
+    background: var(--paper);
+  }
+  html:not(.motion) .sky-layer,
+  html:not(.sky) .sky-layer {
+    display: none;
+  }
+  .sun-layer {
+    position: fixed;
+    inset-inline-start: 50%;
+    bottom: -38vmax;
+    width: 150vmax;
+    height: 76vmax;
+    margin-inline-start: -75vmax;
+    pointer-events: none;
+    z-index: -2;
+  }
+  html:not(.motion) .sun-layer {
+    position: absolute;
+  }
+  .sun-glow {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(
+      closest-side,
+      var(--sun-core),
+      var(--sun-mid) 46%,
+      var(--sun-edge) 72%
+    );
+  }
+  html.motion .sun-glow {
+    opacity: 0;
+    transform: translateY(40%);
+  }
+
+  /* ---------- the 3D layer ---------- */
+  .scene-wrap {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+  }
+  html.motion .scene-wrap {
+    position: fixed;
+  }
+  /* The poster belongs to the hero: it scrolls away with it instead of staying fixed. */
+  html.motion .scene-wrap:has([data-scene="poster"]) {
+    position: absolute;
+  }
+  .scene-layer,
+  .scene-host {
+    position: absolute;
+    inset: 0;
+  }
+  .scene-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  html.motion .scene-canvas {
+    opacity: 0;
+  }
+  .scene-poster {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  /* With JavaScript the poster shows only when the scene cannot run. */
+  html.js .scene-layer:not([data-scene="poster"]) .scene-poster {
+    display: none;
+  }
+
+  /* ---------- hero ---------- */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-top: calc(var(--header-h) + env(safe-area-inset-top, 0px) + 24px);
+    padding-bottom: clamp(28px, 4vh, 48px);
+  }
+  html:not(.motion) .hero {
+    overflow: clip;
+    isolation: isolate;
+  }
+  .hero-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    font-size: 15px;
+    line-height: 1.45;
+    color: var(--ink-soft);
+  }
+  .hero-meta p {
+    margin: 0;
+  }
+  .hero-meta strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .hero-meta-end {
+    text-align: end;
+  }
+  .hero-word-wrap {
+    transform-origin: 50% 100%;
+  }
+  .hero-title {
+    margin: 0;
+    outline: none;
+  }
+  .hero-word {
+    font-family: var(--display);
+    font-weight: 700;
+    line-height: 0.86;
+    letter-spacing: -0.045em;
+    font-size: clamp(64px, 17vw, 320px);
+    font-variation-settings:
+      "wdth" var(--wdth, 100),
+      "opsz" 96;
+    padding-bottom: 0.04em;
+  }
+  .hero-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 32px;
+    margin-top: clamp(20px, 3vh, 36px);
+  }
+  .hero-intro {
+    margin: 0;
+    max-width: 40ch;
+    font-size: clamp(17px, 1.35vw, 20px);
+    line-height: 1.5;
+  }
+  .hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    flex-wrap: wrap;
+  }
+
+  /* ---------- manifesto ---------- */
+  .manifesto-stage {
+    display: flex;
+    align-items: center;
+    padding-block: 18vh;
+  }
+  html.motion .manifesto-stage {
+    padding-block: 0;
+  }
+  .manifesto-statement {
+    margin-inline-start: clamp(0px, 8vw, 140px);
+  }
+
+  /* ---------- dusk ---------- */
+  .dusk-stage {
+    display: flex;
+    align-items: center;
+    padding-block: 20vh;
+  }
+  html.motion .dusk-stage {
+    padding-block: 0;
+  }
+  .dusk-inner {
+    display: grid;
+    gap: 28px;
+    justify-items: end;
+    text-align: end;
+    width: 100%;
+  }
+  .dusk-title {
+    max-width: 11em;
+  }
+  .dusk-sub {
+    margin: 0;
+    max-width: 36ch;
+    font-size: clamp(17px, 1.3vw, 19px);
+    color: var(--moon-soft);
+  }
+  html.motion.sky .dusk-title {
+    color: var(--ink);
+  }
+  html.motion.sky .dusk-sub {
+    color: var(--ink-soft);
+    opacity: 0;
+  }
+
+  /* ---------- featured work ---------- */
+  .featured-stage {
+    padding-block: 16vh;
+  }
+  html.motion .featured-stage {
+    padding-block: 12vh;
+  }
+  .featured-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(28px, 5vw, 88px);
+    align-items: center;
+    width: 100%;
+  }
+  .featured-copy {
+    display: grid;
+    gap: 22px;
+    min-width: 0;
+  }
+  .featured-product {
+    margin: 0;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 18px;
+    color: var(--glow);
+    font-variation-settings:
+      "wdth" 90,
+      "opsz" 24;
+  }
+  .featured-body {
+    margin: 0;
+    color: var(--moon-soft);
+    max-width: 44ch;
+  }
+  .features {
+    list-style: none;
+    margin: 4px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 12px;
+  }
+  .features li {
+    display: flex;
+    gap: 14px;
+    align-items: baseline;
+  }
+  .features li::before {
+    content: "";
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--glow);
+    flex: none;
+    transform: translateY(-1px);
+  }
+  .featured-adapt {
+    margin: 6px 0 0;
+    font-family: var(--display);
+    font-weight: 500;
+    font-size: clamp(20px, 1.7vw, 26px);
+    line-height: 1.25;
+    color: var(--moon);
+    font-variation-settings:
+      "wdth" 92,
+      "opsz" 32;
+    max-width: 22em;
+  }
+  .featured-adapt strong {
+    color: var(--glow);
+    font-weight: 600;
+  }
+  .featured-actions {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 6px;
+  }
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(12px, 1.6vw, 22px);
+    min-width: 0;
+    /* GSAP measures units with a temporary 100em-wide absolute element next to a tile. Without a
+       positioned, clipping ancestor it widens the document for a frame, and a phone zooms out
+       and rescales the scroll position (measured: 4500 px → 3295 px at 390). x only: the even
+       tiles hang 12 % below the row on desktop. */
+    position: relative;
+    overflow-x: clip;
+  }
+  .tile {
+    margin: 0;
+    border-radius: var(--r-frame);
+    background: var(--night-2);
+    padding: 10px 10px 12px;
+    overflow: hidden;
+  }
+  .tile:nth-child(2),
+  .tile:nth-child(4) {
+    translate: 0 12%;
+  }
+  .tile .screen-caption {
+    color: var(--moon-soft);
+  }
+  .tile .screen-caption span:first-child {
+    color: var(--moon);
+    font-weight: 600;
+  }
+  html.motion [data-featured-copy] > * {
+    opacity: 0;
+  }
+  html.motion [data-tile] {
+    clip-path: inset(100% 0% 0% 0% round var(--r-frame));
+  }
+  html.motion [data-tile] [data-media-inner] {
+    transform: scale(1.22);
+  }
+  @media (min-width: 761px) {
+    html.motion .featured-stage {
+      display: flex;
+      align-items: center;
+      padding-block: 0;
+    }
+  }
+
+  /* ---------- phones ---------- */
+  @media (max-width: 760px) {
+    .hero-meta {
+      flex-direction: column;
+      gap: 14px;
+    }
+    .hero-meta-end {
+      text-align: start;
+    }
+    .hero-foot {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 22px;
+      padding-bottom: 70px;
+    }
+    .hero-actions {
+      justify-content: space-between;
+    }
+    .manifesto-statement {
+      margin-inline-start: 0;
+    }
+    .dusk-inner {
+      justify-items: start;
+      text-align: start;
+    }
+    .featured-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .tile:nth-child(2),
+    .tile:nth-child(4) {
+      translate: none;
+    }
+    .tiles {
+      gap: 10px;
+    }
+    .tile {
+      padding: 6px 6px 8px;
+      border-radius: 16px;
+    }
+    .tile .screen-caption {
+      flex-direction: column;
+      gap: 2px;
+      font-size: 12px;
+    }
+  }
+}

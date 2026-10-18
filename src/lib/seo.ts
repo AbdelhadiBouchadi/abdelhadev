@@ -45,7 +45,7 @@ function openGraph(locale: Locale) {
   } as const;
 }
 
-/** Metadata for one page: title, description and alternates. */
+/** Metadata for one page: title, description, alternates and the Open Graph basics. */
 export function pageMetadata(
   href: Href,
   locale: Locale,
@@ -56,6 +56,11 @@ export function pageMetadata(
     title,
     ...(description ? { description } : {}),
     alternates: url,
-    openGraph: { ...openGraph(locale), title, url: url.canonical },
+    openGraph: {
+      ...openGraph(locale),
+      title,
+      ...(description ? { description } : {}),
+      url: url.canonical,
+    },
   };
 }
