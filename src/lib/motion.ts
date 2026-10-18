@@ -203,8 +203,10 @@ export const REVEAL = {
   enterStart: "top 85%",
   /** Reveal: px the group rises from. */
   fadeY: 28,
-  /** WordsLight: words start at this opacity. */
-  wordsFrom: 0.14,
+  /** WordsLight: unlit words start at this opacity. The prototype's 0.14 gave 1.32:1 on paper;
+      0.5 gives ink on paper about 3.1:1 and moon on night about 4.5:1, over the 3:1 that large
+      text needs (Lighthouse color-contrast, 03). */
+  wordsFrom: 0.5,
   /** WordsLight default range (prototype wordsLight). */
   wordsStart: "top 75%",
   wordsEnd: "bottom 40%",

@@ -49,10 +49,10 @@ Scrubbed word-by-word lighting. Ports `wordsLight`.
 | `start` | ScrollTrigger start | `REVEAL.wordsStart` (`"top 75%"`) | manifesto `STAGE.start`; case problem `"top 70%"`; about chapters `"top 20%"` |
 | `end` | ScrollTrigger end | `REVEAL.wordsEnd` (`"bottom 40%"`) | manifesto `STAGE.end`; case problem `"bottom 55%"`; about chapters `"bottom bottom"` |
 
-- Words: `opacity REVEAL.wordsFrom (0.14) → 1`, `STAGGER.words` (0.1), `EASE.none`, `SCRUB`.
+- Words: `opacity REVEAL.wordsFrom (0.5) → 1`, `STAGGER.words` (0.1), `EASE.none`, `SCRUB`.
 - Words are split as inline spans with `aria: "none"`: the words stay in the accessibility tree in order, and the statement can stay a paragraph.
 - Reduced motion and no JavaScript: plain text at full opacity.
-- Axe: before it is scrubbed the text is at 0.14 opacity, which fails `color-contrast` (1.32:1 on paper, 1.44:1 on night). Reported to the owner in 02 and again in 03, where the home manifesto puts it on a public route; the value is the prototype's and was not changed. `tests/e2e/a11y.spec.ts` records these nodes (and only these) in `test-results/a11y/` instead of failing on them, until the owner decides.
+- Contrast: unlit words start at 0.5 (ink on paper about 3.1:1, moon on night about 4.5:1, over the 3:1 for large text). The prototype's 0.14 measured 1.32:1 on paper and 1.44:1 on night and failed Lighthouse's color-contrast audit on the home manifesto; the owner raised it to 0.5 in 03.
 
 ### Reveal
 

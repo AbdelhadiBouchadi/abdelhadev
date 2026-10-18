@@ -488,6 +488,9 @@ test.describe("with motion", () => {
         });
       }
       expect(others).toEqual([]);
+      // No contrast finding either since the unlit words start at 0.5 (REVEAL.wordsFrom) and the
+      // night sections keep their own background outside the dusk; the file above names any.
+      expect(findings.map((f) => `${f.at} ${f.target} ${String(f.ratio)}:1`)).toEqual([]);
     });
   }
 });

@@ -14,7 +14,7 @@ What moves, when, and by how much. Values come from `docs/prototype/assets/site.
 | Cursor follow | lerp 0.16 per frame, frame-rate independent | fine pointers only |
 | Magnetic pull | 22 % horizontal, 30 % vertical of the pointer offset, `quickTo` 0.6 s | primary buttons |
 | Line reveal | SplitText lines with mask, `yPercent 110 → 0`, 1.2 s, stagger 0.08 | headings |
-| Word light | SplitText words, opacity `0.14 → 1`, stagger 0.1, scrubbed | statements |
+| Word light | SplitText words, opacity `0.5 → 1`, stagger 0.1, scrubbed (the prototype's 0.14 failed color-contrast, 1.32:1; changed in 03) | statements |
 | Media reveal | `clip-path inset(18% 6% 0 6% round 18px) → inset(0)`, inner screen scale `1.16 → 1`, scrubbed from `top 95%` to `top 45%` | project media |
 
 ## Loader (every page) — `Loader` in site.js
