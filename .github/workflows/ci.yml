@@ -1,5 +1,6 @@
-# The quality gates from docs/quality.md. Agents run these commands locally, in this order, before
-# replying (AGENTS.md).
+# The pull-request gates (docs/quality.md): static checks, unit tests, the build, the secret scan and a
+# small e2e smoke (foundation, no-JavaScript, a11y) at 1440. The timing-sensitive browser specs and
+# Lighthouse run in e2e-full.yml, on main, weekly and on demand, and never block a pull request.
 name: CI
 
 on:
@@ -15,9 +16,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  check-build-e2e:
+  check-build-smoke:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
         with:
@@ -53,41 +54,14 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium
       - if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: pnpm exec playwright install-deps chromium
-      # The CI suite: behaviour at 390 and 1440. Responsive and a11y at 360 and 430 run locally in
-      # `pnpm test:e2e:full`, the motion evidence in `pnpm test:motion` (docs/quality.md).
-      - run: pnpm test:e2e
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: test-results
-          path: test-results/
-          retention-days: 14
-
-  lighthouse:
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm build
-      - run: pnpm lhci
-      # Names the failing audits, elements and measured values in the log.
-      - if: failure()
-        run: node scripts/lh-failures.mjs
+      - name: e2e smoke (1440)
+        run: >-
+          pnpm exec playwright test
+          tests/e2e/foundation.spec.ts tests/e2e/no-js.spec.ts tests/e2e/a11y.spec.ts
+          --project=1440
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: lighthouse-reports
-          path: .lighthouseci/reports/
-          retention-days: 14
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: lighthouse
-          path: .lighthouseci/
+          name: smoke-test-results
+          path: test-results/
           retention-days: 14
