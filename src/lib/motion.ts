@@ -329,3 +329,14 @@ export const HOME = {
     mobileTileEnd: "top 50%",
   },
 } as const;
+
+// ---------- work (Pages.work, docs/choreography.md "Work") ----------
+
+/** The work page around the primitives: the hero's lead and link fade up after the title lines,
+    each sheet's head fades up on entry (STAGGER.projectHead), the rail's progress line fills while
+    the projects cross the spy line (SPY.list, 45 %). */
+export const WORK = {
+  hero: { laterY: 20, laterDelay: 0.35 },
+  head: { y: 30, start: "top 80%" },
+  progress: { start: "top 45%", end: "bottom 45%" },
+} as const;

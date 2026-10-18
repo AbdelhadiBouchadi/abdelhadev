@@ -164,6 +164,75 @@
   .tiles-row [data-c="a"] {
     background: var(--glow);
   }
+  /* The work page's skeletons (04): product list, chart, chat and site. Bubbles use the tile
+     colour (#F2E7DB in the prototype, the same mix as #F3E8DC); the site's hero band is the
+     prototype's glow-to-rose gradient. */
+  .ui-list-tight {
+    gap: 8px;
+    margin-top: 6%;
+  }
+  .ui-list-loose {
+    gap: 12px;
+  }
+  .bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 6%;
+    height: 70px;
+  }
+  .bars span {
+    flex: 1;
+    border-radius: 6px 6px 2px 2px;
+    background: var(--glow);
+  }
+  .bars span:nth-child(1) {
+    height: 35%;
+  }
+  .bars span:nth-child(2) {
+    height: 52%;
+  }
+  .bars span:nth-child(3) {
+    height: 44%;
+  }
+  .bars span:nth-child(4) {
+    height: 70%;
+  }
+  .bars span:nth-child(5) {
+    height: 88%;
+  }
+  .bars span:nth-child(6) {
+    height: 64%;
+  }
+  .bars [data-c="b"] {
+    background: var(--majorelle);
+  }
+  .bubbles {
+    display: grid;
+    gap: 8px;
+  }
+  .bubbles span {
+    height: 18px;
+    width: 62%;
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--sand) 70%, var(--sheet));
+  }
+  .bubbles [data-me] {
+    justify-self: end;
+    width: 48%;
+    background: var(--majorelle-soft);
+  }
+  .bubbles [data-w="54"] {
+    width: 54%;
+  }
+  .bubbles [data-w="36"] {
+    width: 36%;
+  }
+  .ui-hero {
+    height: 46px;
+    border-radius: 10px;
+    background: linear-gradient(120deg, var(--glow), var(--rose));
+  }
+
   /* A captioned screen grows to fill its figure (prototype `.media .screen { height: 100% }`). */
   .screen-figure {
     display: flex;

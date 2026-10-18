@@ -2,7 +2,7 @@
 
 The reusable motion and UI building blocks that the page branches compose (built in 02). A section is written by composing these; it writes its own GSAP only for a choreography that exists on one page only. Values are the prototype's (`docs/prototype/assets/site.js`); every number is a constant in `src/lib/motion.ts`, named below.
 
-Since 03 the home page exercises SplitReveal, WordsLight, Reveal, StickyStage and Scrub, and their end-to-end checks moved there (`tests/e2e/home.spec.ts`, motion evidence in `tests/e2e/home-motion.spec.ts`). The bench at `/fr/lab` (development and preview only) keeps only the primitives no real page uses yet, MediaReveal, LineDraw and useScrollSpy, and is removed in 05 (`tests/e2e/primitives.spec.ts`, `tests/e2e/primitives-motion.spec.ts`). Unit tests: `tests/unit/primitives.test.ts`.
+Since 03 the home page exercises SplitReveal, WordsLight, Reveal, StickyStage and Scrub, and their end-to-end checks moved there (`tests/e2e/home.spec.ts`, motion evidence in `tests/e2e/home-motion.spec.ts`). Since 04 the work page exercises MediaReveal (scrub) and useScrollSpy (`tests/e2e/work.spec.ts`, motion evidence in `tests/e2e/work-motion.spec.ts`). The bench at `/fr/lab` (development and preview only) keeps only LineDraw, the one primitive no real page uses yet, and is removed in 05 (`tests/e2e/primitives.spec.ts`, `tests/e2e/primitives-motion.spec.ts`). MediaReveal's `intro` variant has no end-to-end check until the case study uses it in 05. Unit tests: `tests/unit/primitives.test.ts`.
 
 ## How every primitive is built
 
@@ -166,7 +166,7 @@ The framed product screen (`.screen`, `.screen-inner`, `.ui-bar`).
 |---|---|---|
 | `aspect` | `"default" \| "tall" \| "wide"` | 16 / 10, 4 / 5, 21 / 10; a `className` such as `aspect-[16/8.5]` overrides (case study hero) |
 | `src`, `alt`, `width`, `height`, `sizes`, `priority` | `next/image` props | a real screenshot; `alt`, `width`, `height` and `sizes` are required |
-| `layout` | `"agenda" \| "record" \| "plan" \| "invoice"` | without `src`: the prototype's placeholder skeleton |
+| `layout` | `"agenda" \| "record" \| "plan" \| "invoice" \| "list" \| "chart" \| "chat" \| "site"` | without `src`: the prototype's placeholder skeleton (the last four, added in 04, are the work page's shop tiles, bars, bubbles and site hero band) |
 | `label` | string | required with `layout`: announced in place of the screenshot ("Screenshot to come", from messages) |
 | `caption`, `captionHidden` | | renders a `figure` with a `figcaption` (visually hidden with `captionHidden`, as the prototype's work media) |
 

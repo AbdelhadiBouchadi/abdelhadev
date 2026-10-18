@@ -122,5 +122,5 @@ Localised pathnames in `src/i18n/routing.ts`:
 
 ## Data shapes
 
-- `lib/content/projects.ts`: `slug`, `featured`, `status` (`live`, `ready`, `in-progress`), `year` (optional, never invented), `stack[]`, `links` (demo, repo, live; optional), `media[]` (path, width, height, layout span), and a `copyKey` pointing at `messages.projects.<slug>` for the localised name, kind, challenge, built, role and alt texts. Validated with zod at build time.
+- `lib/content/projects.ts`: `slug`, `featured`, `status` (`live`, `ready`, `in-progress`), `year` (optional, never invented), `stack[]`, `links` (demo, repo, live; optional), `permission` (`confirmed` or `pending`: only confirmed projects are public, through `publicProjects()`), `caseStudy` (boolean), `media[]` (at most 5 on the work page: `span` 4 to 12, frame `tone`, `layout` aspect, placeholder `skeleton`, `kind` image or video; real paths and sizes arrive in 08), `screenCount` (optional, when more screens exist than the sheet shows), and a `copyKey` pointing at `messages.projects.<slug>` for the localised name, kind, challenge, built, role and alt texts. Validated with zod at build time.
 - Placeholders: any value the owner has not supplied is the literal `[TODO: …]`; the build lists them and fails when `REQUIRE_CONTENT=1`.

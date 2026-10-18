@@ -4,15 +4,16 @@ import { notFound } from "next/navigation";
 import { PagePlaceholder } from "@/components/ui/PagePlaceholder";
 import { resolveLocale } from "@/i18n/locale";
 import type { Locale } from "@/i18n/routing";
-import { PROJECT_SLUGS } from "@/lib/content/projects";
+import { publicProjects } from "@/lib/content/projects";
 import { pageMetadata } from "@/lib/seo";
 import { isKeyOf } from "@/lib/utils";
 
-// Case studies are statically generated from lib/content/projects.ts; any other slug is a 404.
+// Case studies are statically generated from the public projects (decision P7); any other slug,
+// including a project whose permission is pending, is a 404.
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return PROJECT_SLUGS.map((slug) => ({ slug }));
+  return publicProjects().map(({ slug }) => ({ slug }));
 }
 
 async function projectCopy(locale: Locale, slug: string) {

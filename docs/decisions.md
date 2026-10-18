@@ -13,7 +13,7 @@ Status: **Fixed**, **Provisional** (fixed unless the named spike fails), **Open*
 | P4 | Clinic offer: DentaFlow is prebuilt and adapted per clinic after a quote (own name, database, deployment). | Fixed |
 | P5 | No prices anywhere. The process explains that the quote comes after scoping and data modelling. | Fixed |
 | P6 | No years-of-experience claims. No invented metrics, clients, reviews or dates. | Fixed |
-| P7 | The internship project and its client are never mentioned. | Fixed |
+| P7 | The internship project and its client are never mentioned. A client project is named on a public page only with the client's permission: `permission: "confirmed"` in `src/lib/content/projects.ts`, read through `publicProjects()` by the work page, its rail and the sitemap. Update (04): the owner cleared Côte Royale; all five projects are `confirmed`, and the field stays as the switch for any future project that is not cleared. | Fixed |
 | P8 | DentaFlow WhatsApp reminders are not presented as live. | Fixed |
 | P9 | The owner does not appear on camera. Warmth comes from colour, light, copy, motion and the 3D scene. | Fixed |
 | P10 | Testimonials show role and organisation only. The SOS Dental Clinic testimonial names no person. | Fixed |
@@ -59,6 +59,8 @@ Status: **Fixed**, **Provisional** (fixed unless the named spike fails), **Open*
 ## Branch order
 
 `00-foundation`, `01-shell` (header, nav, footer, loader, curtain, cursor, smooth scroll, legal page), `02-primitives`, `03-home`, `04-work`, `05-case-study`, `06-about`, `07-contact`, `08-copy-and-media` (final FR and EN copy, real screenshots), `09-seo-og-cv`, `10-launch`.
+
+The design lab (`/[locale]/lab`, development and preview only) is removed in 05. Since 04 it keeps only the `LineDraw` block (and the night section the hash-link tests use): the work page uses `MediaReveal` (scrub) and `useScrollSpy`, and their assertions live in `tests/e2e/work.spec.ts`.
 
 ## Spikes the foundation settles
 

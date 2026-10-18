@@ -1,7 +1,7 @@
 // Every public route in both locales (the localised pathnames table in docs/architecture.md),
 // generated from the same sources as the app so a new route or project is covered automatically.
 import { routing } from "@/i18n/routing";
-import { PROJECT_SLUGS } from "@/lib/content/projects";
+import { publicProjects } from "@/lib/content/projects";
 
 export interface Route {
   locale: "fr" | "en";
@@ -17,7 +17,7 @@ function localise(locale: "fr" | "en", key: keyof typeof routing.pathnames): str
 export const ROUTES: Route[] = routing.locales.flatMap((locale) => [
   { locale, path: localise(locale, "/") },
   { locale, path: localise(locale, "/work") },
-  ...PROJECT_SLUGS.map((slug) => ({
+  ...publicProjects().map(({ slug }) => ({
     locale,
     path: localise(locale, "/work/[slug]").replace("[slug]", slug),
   })),
