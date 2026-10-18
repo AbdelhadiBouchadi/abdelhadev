@@ -5,7 +5,9 @@
    - stopped while the loader or a curtain is on screen (lib/shell.ts `shellBusy`), started after;
    - `history.scrollRestoration = "manual"`: the curtain decides where an arriving page starts.
    `useSmoothScroll().scrollTo` goes through Lenis with the prototype's 1.6 s ease-out-quart, and
-   falls back to native scrolling when Lenis is not running. */
+   falls back to native scrolling when Lenis is not running. An element target lands on the
+   element's live position: the destination is measured from the page (not from Lenis's own scroll
+   value), and re-aimed if the layout above it changes during the scroll. */
 import type Lenis from "lenis";
 import { createContext, use, useMemo, useRef, type ReactNode } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
@@ -41,6 +43,8 @@ export interface SmoothScrollProps {
 
 export function SmoothScroll({ children }: SmoothScrollProps) {
   const lenisRef = useRef<Lenis | null>(null);
+  /** Disconnects the layout observer of the scroll in progress, if any. */
+  const stopFollowing = useRef<(() => void) | null>(null);
 
   useGSAP(() => {
     history.scrollRestoration = "manual";
@@ -56,6 +60,7 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
       const off = shellBusy.subscribe(follow);
       return () => {
         off();
+        stopFollowing.current?.();
         lenisRef.current = null;
         smooth.destroy();
       };
@@ -70,6 +75,7 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
       scrollTo: (target, options) => {
         const immediate = options?.immediate ?? false;
         const lenis = lenisRef.current;
+        stopFollowing.current?.();
         if (!lenis || immediate) {
           // Immediate jumps (an arrival under the curtain, while Lenis is stopped) go through the
           // window, then Lenis takes the new position as its own.
@@ -77,11 +83,47 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
           lenis?.scrollTo(scrollY, { immediate: true, force: true });
           return;
         }
-        lenis.scrollTo(target, {
-          force: true,
-          duration: SCROLL_TO.duration,
-          easing: SCROLL_TO.easing,
-        });
+        // Lenis measures an element from its own last-known scroll (`animatedScroll`) and animates
+        // from it. A native scroll it has not heard of yet (scroll events arrive on the next frame,
+        // so a click can come first) would offset both the start and the destination by that
+        // distance. Sync Lenis to the window, then take the destination from the page itself.
+        lenis.resize();
+        const destination = () =>
+          typeof target === "number" ? target : target.getBoundingClientRect().top + window.scrollY;
+        const userData = {};
+        const started = performance.now();
+        let aim = destination();
+        const go = (duration: number) => {
+          lenis.scrollTo(aim, {
+            force: true,
+            duration,
+            easing: SCROLL_TO.easing,
+            userData,
+            onComplete: () => stopFollowing.current?.(),
+          });
+        };
+        if (typeof target !== "number") {
+          // Layout above the element can change during the scroll (an image, a late re-split):
+          // re-aim at its live position for the time that is left. Lenis replaces `userData` when
+          // the visitor scrolls, and following stops there.
+          const observer = new ResizeObserver(() => {
+            const elapsed = (performance.now() - started) / 1000;
+            if (lenis.userData !== userData || elapsed >= SCROLL_TO.duration) {
+              stopFollowing.current?.();
+              return;
+            }
+            const next = destination();
+            if (Math.abs(next - aim) < 1) return;
+            aim = next;
+            go(Math.max(SCROLL_TO.duration - elapsed, SCROLL_TO.minFollow));
+          });
+          observer.observe(document.body);
+          stopFollowing.current = () => {
+            observer.disconnect();
+            stopFollowing.current = null;
+          };
+        }
+        go(SCROLL_TO.duration);
       },
     }),
     [],

@@ -117,7 +117,58 @@
       "toneSheet": "Sheet section",
       "cursorTarget": "Hover over this area",
       "cursorLabel": "Cursor label",
-      "jumpToNight": "Jump to the night section"
+      "jumpToNight": "Jump to the night section",
+      "bench": {
+        "title": "Primitives bench",
+        "lead": "Each block shows one motion primitive, by day and then by night. Scroll to see each end state.",
+        "lines": "Software a team can rely on, built with care.",
+        "linesNight": "The evening carries the product and the close.",
+        "scrubLines": "This sentence rises as you scroll.",
+        "words": "I build web applications people use every day: management tools, AI-powered products and client platforms.",
+        "wordsNight": "Each clinic gets its own name, database and server.",
+        "steps": {
+          "scoping": "Scoping",
+          "modelling": "Data modelling",
+          "delivery": "Delivery"
+        },
+        "stepsLead": "Each item of the group rises and appears in turn.",
+        "stack": {
+          "next": "Next.js",
+          "postgres": "PostgreSQL"
+        },
+        "toConfirm": "To confirm",
+        "warm": "Live",
+        "screenLabel": "Screenshot to come",
+        "screens": {
+          "agenda": "Agenda",
+          "record": "Patient record",
+          "plan": "Treatment plan",
+          "invoice": "Invoice"
+        },
+        "imageAlt": "The Abdelhadev mark: a sun above the horizon",
+        "stageTitle": "Four screens open one after another",
+        "stageLead": "On a computer the stage stays put and scrolling opens each screen. On a phone each screen opens as it arrives.",
+        "settle": "The word settles as you scroll.",
+        "fade": "This text fades as you scroll down.",
+        "diagramLabel": "Diagram: the browser calls the app, which calls the API, which queries the database.",
+        "diagram": {
+          "browser": "Browser",
+          "app": "App",
+          "api": "API",
+          "database": "Database"
+        },
+        "spyLead": "The pill follows the block crossing the activation line, at 45 % of the screen height.",
+        "spy": {
+          "morning": "Morning",
+          "noon": "Noon",
+          "evening": "Evening",
+          "night": "Night"
+        },
+        "spyNav": "Times of day",
+        "back": "All projects",
+        "forward": "See the work",
+        "external": "The prototype"
+      }
     }
   },
   "projects": {

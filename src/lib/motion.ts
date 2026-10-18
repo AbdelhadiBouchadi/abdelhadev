@@ -70,11 +70,23 @@ export const DURATION = {
   heroWidth: 1.9,
   /** Home sun glow and about arcs rising. */
   intro: 2.2,
+  /** Case study product name letters rising. */
+  caseLetters: 1.3,
+  /** Case study hero screenshot: the clip opening. */
+  shotClip: 1.6,
+  /** Case study hero screenshot: the inner screen settling. */
+  shotScale: 1.8,
+  /** Line draw: one diagram node arriving (in scrubbed timeline units). */
+  node: 0.4,
+  /** Line draw: one wire drawing (in scrubbed timeline units). */
+  wire: 0.5,
 } as const;
 
 /** Programmatic scrolls (hash links, back to top): the prototype's 1.6 s ease-out-quart. */
 export const SCROLL_TO = {
   duration: 1.6,
+  /** Seconds, at least, of a scroll re-aimed at an element that moved during the scroll. */
+  minFollow: 0.3,
   easing: (t: number) => 1 - Math.pow(1 - t, 4),
 } as const;
 
@@ -84,6 +96,9 @@ export const MEDIA = {
   reduce: "(prefers-reduced-motion: reduce)",
   /** A mouse or trackpad: the cursor and magnetic buttons run only here. */
   finePointer: "(hover: hover) and (pointer: fine)",
+  /** The prototype's desk / mob split (Pages.home), the `nav` breakpoint in globals.css. */
+  desktop: "(min-width: 761px)",
+  mobile: "(max-width: 760px)",
 } as const;
 
 /** Distances of the shell's moves, in px unless noted. */
@@ -106,8 +121,6 @@ export const LOADER_MOVE = {
   letterY: 26,
   letterOutY: -30,
   markOutY: -24,
-  /** Line reveals start below their mask. */
-  linesYPercent: 110,
   /** The curved edge of the panel while it moves, and flat. */
   curve: "50% 14vh",
   flat: "50% 0vh",
@@ -138,6 +151,9 @@ export const STAGGER = {
   projectHead: 0.07,
   tiles: 0.32,
   arcs: 0.14,
+  /** Fade-up groups (prototype fadeUpOnEnter default). */
+  reveal: 0.08,
+  caseLetters: 0.05,
 } as const;
 
 export const LENIS = { lerp: 0.1 } as const;
@@ -174,3 +190,66 @@ export const LOADER = {
 
 /** Loader geometry in mark units: the sun disc sits 19 below the horizon when set. */
 export const SUN = { setY: 19 } as const;
+
+// ---------- primitives (docs/primitives.md) ----------
+
+/** Text and group reveals: prototype linesUp, wordsLight, fadeUpOnEnter, Pages.home, Pages.case. */
+export const REVEAL = {
+  /** SplitReveal lines start this far below their mask. */
+  linesYPercent: 110,
+  /** SplitReveal chars start this far below their mask. */
+  charsYPercent: 115,
+  /** Where an `enter` reveal plays (fadeUpOnEnter, Pages.case next project). */
+  enterStart: "top 85%",
+  /** Reveal: px the group rises from. */
+  fadeY: 28,
+  /** WordsLight: words start at this opacity. */
+  wordsFrom: 0.14,
+  /** WordsLight default range (prototype wordsLight). */
+  wordsStart: "top 75%",
+  wordsEnd: "bottom 40%",
+} as const;
+
+/** SplitReveal chars pace: the home hero wordmark and the case study product name. */
+export const CHARS_PACE = {
+  hero: { duration: DURATION.heroLetters, stagger: STAGGER.heroLetters },
+  case: { duration: DURATION.caseLetters, stagger: STAGGER.caseLetters },
+} as const;
+
+/** Seconds a ready-time intro waits after the ready signal. */
+export const DELAY = {
+  /** Case study hero screenshot (Pages.case intro). */
+  shot: 0.5,
+} as const;
+
+/** MediaReveal (prototype revealMedia and the case study hero shot). Insets are % (top, right,
+    bottom, left); the radius is a token name (`--r-<name>`). src/styles/primitives.css mirrors
+    the start states (tests/unit/primitives.test.ts keeps them in sync). */
+export const MEDIA_REVEAL = {
+  scrub: { inset: [18, 6, 0, 6], radius: "media", scale: 1.16, start: "top 95%", end: "top 45%" },
+  intro: { inset: [30, 8, 0, 8], radius: "shot", scale: 1.2 },
+} as const;
+
+/** LineDraw (Pages.case architecture): positions in scrubbed timeline units. */
+export const LINE_DRAW = {
+  nodeY: 16,
+  /** Each node and each wire starts this long after the previous one. */
+  step: 0.35,
+  /** The first wire starts this long after the first node. */
+  wireOffset: 0.2,
+  start: "top 70%",
+  end: "bottom 60%",
+} as const;
+
+/** useStageTimeline default range: the stage section from its top to its bottom. */
+export const STAGE = { start: "top top", end: "bottom bottom" } as const;
+
+/** useScrollSpy activation lines, as a fraction of the viewport height from the top. */
+export const SPY = { list: 0.45, tour: 0.55 } as const;
+
+/** Scrub end states of the simple scrubs (Pages.home hero, Pages.about dawn). */
+export const SETTLE = {
+  heroWord: { yPercent: -14, scale: 0.92 },
+  heroMeta: { opacity: 0, y: -30 },
+  arcs: { yPercent: -10, scale: 1.25, opacity: 0.25 },
+} as const;
