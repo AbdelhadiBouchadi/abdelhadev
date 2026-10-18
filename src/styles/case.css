@@ -1,0 +1,335 @@
+/* The case study (docs/prototype/assets/site.css: .case-*, .facts, .tour*, .steps, .arch*,
+   .diagram*, .next-project, .back-link, .pad, .section-head). Colours are tokens only; the
+   prototype's raw values were already tokens here, except the stage frame's 24 px radius
+   (--r-stage, added in 05).
+
+   The tour has two layouts:
+   - Motion on, from 901 px: steps in a column and a sticky framed stage with every screen stacked
+     on the right; the inline screens are hidden; the active step (data-on, set by TourMotion) is
+     full strength and its number turns Majorelle.
+   - Otherwise (no JavaScript, reduced motion, under 901 px): no stage, each step shows its own
+     screen, nothing is dimmed. From 901 px the step puts its screen beside its text.
+   In the components layer, so Tailwind utilities still win. */
+@layer components {
+  .case-pad {
+    padding-block: clamp(88px, 14vh, 180px);
+  }
+  .section-head {
+    display: grid;
+    gap: 18px;
+    margin-bottom: clamp(36px, 6vh, 72px);
+  }
+
+  /* ---------- hero (night) ---------- */
+  .case-hero {
+    padding-top: calc(var(--header-h) + env(safe-area-inset-top, 0px) + clamp(56px, 10vh, 120px));
+  }
+  .case-hero-tail {
+    height: clamp(72px, 12vh, 140px);
+  }
+  .case-word {
+    margin: 18px 0 0;
+    font-family: var(--display);
+    font-weight: 700;
+    letter-spacing: -0.05em;
+    line-height: 0.86;
+    font-size: clamp(64px, 15vw, 260px);
+    font-variation-settings:
+      "wdth" 92,
+      "opsz" 96;
+    color: var(--moon);
+    white-space: nowrap;
+    outline: none;
+  }
+  .case-intro {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px 64px;
+    margin-top: clamp(28px, 4vh, 48px);
+    align-items: end;
+  }
+  .facts {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 22px 32px;
+    margin: 0;
+  }
+  .facts > div {
+    border-top: 1px solid var(--line-night);
+    padding-top: 12px;
+  }
+  .facts dt {
+    font-size: 13px;
+    color: var(--moon-soft);
+  }
+  .facts dd {
+    margin: 4px 0 0;
+    font-weight: 500;
+  }
+  @media (min-width: 761px) {
+    .facts {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 901px) {
+    .case-intro {
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    }
+  }
+  .case-shot {
+    margin-top: clamp(48px, 8vh, 96px);
+    border-radius: var(--r-shot);
+    background: var(--night-2);
+    padding: clamp(10px, 1.6vw, 22px);
+    overflow: hidden;
+  }
+  .case-shot .screen {
+    aspect-ratio: 16 / 8.5;
+  }
+
+  /* ---------- product tour (day) ---------- */
+  .tour-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(28px, 5vw, 88px);
+  }
+  .tour-steps {
+    display: grid;
+    min-width: 0;
+  }
+  .tour-step {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-content: center;
+    gap: 14px;
+    padding-block: 28px;
+    transform-origin: 0% 50%;
+  }
+  .tour-num {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--ink-soft);
+    font-variant-numeric: tabular-nums;
+    transition: color var(--dur-hover) var(--ease-warm);
+  }
+  .tour-step p {
+    margin: 0;
+    color: var(--ink-soft);
+    max-width: 40ch;
+  }
+  .tour-shot {
+    border-radius: var(--r-frame);
+    background: var(--sand);
+    padding: 10px;
+  }
+  .tour-stage {
+    display: none;
+  }
+  .tour-frame {
+    position: relative;
+    width: 100%;
+    border-radius: var(--r-stage);
+    background: var(--sand);
+    padding: clamp(12px, 1.6vw, 22px);
+  }
+  .tour-frame::before {
+    content: "";
+    display: block;
+    aspect-ratio: 16 / 10.4;
+  }
+  .tour-slot {
+    position: absolute;
+    inset: clamp(12px, 1.6vw, 22px);
+    opacity: 0;
+  }
+  .tour-slot:first-child {
+    opacity: 1;
+  }
+  .tour-slot > .screen {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+  }
+  @media (min-width: 901px) {
+    /* No stage: the screen sits beside its text. */
+    .tour-step {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      column-gap: clamp(28px, 5vw, 88px);
+      padding-block: 6vh;
+    }
+    .tour-step > :not(.tour-shot) {
+      grid-column: 1;
+    }
+    .tour-shot {
+      grid-column: 2;
+      grid-row: 1 / span 3;
+      align-self: center;
+    }
+  }
+  @media (min-width: 901px) and (prefers-reduced-motion: no-preference) {
+    html.motion .tour-grid {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    }
+    html.motion .tour-step {
+      grid-template-columns: minmax(0, 1fr);
+      min-height: 70vh;
+      padding-block: 8vh;
+    }
+    html.motion .tour-shot {
+      display: none;
+    }
+    html.motion .tour-stage {
+      position: sticky;
+      top: calc(var(--header-h) + 6vh);
+      height: calc(100vh - var(--header-h) - 12vh);
+      height: calc(100svh - var(--header-h) - 12vh);
+      display: grid;
+      align-items: center;
+    }
+    html.motion .tour-step[data-on] .tour-num {
+      color: var(--majorelle);
+    }
+  }
+
+  /* ---------- adaptation (day) ---------- */
+  .steps {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: step;
+  }
+  .steps li {
+    display: grid;
+    gap: 10px;
+    align-content: start;
+    min-width: 0;
+    border-radius: var(--r-card);
+    background: var(--sheet);
+    padding: 24px 22px 26px;
+    counter-increment: step;
+  }
+  .steps li::before {
+    content: counter(step);
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 40px;
+    line-height: 1;
+    color: var(--glow);
+    font-variation-settings:
+      "wdth" 85,
+      "opsz" 48;
+  }
+  .steps h3 {
+    margin: 0;
+    font: 600 18px/1.25 var(--text);
+  }
+  .steps p {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 15.5px;
+  }
+  @media (min-width: 761px) {
+    .steps {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1081px) {
+    .steps {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  /* ---------- architecture (night) ---------- */
+  .arch {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(28px, 5vw, 80px);
+    align-items: center;
+  }
+  @media (min-width: 901px) {
+    .arch {
+      grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    }
+  }
+  .arch-list {
+    display: grid;
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .arch-list li {
+    display: grid;
+    gap: 4px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line-night);
+  }
+  .arch-list strong {
+    font-weight: 600;
+    color: var(--moon);
+  }
+  .arch-list span {
+    color: var(--moon-soft);
+    font-size: 15.5px;
+  }
+  /* Below 520 px the diagram keeps its width and scrolls inside its box (keyboard focusable). */
+  .diagram-box {
+    min-width: 0;
+    overflow-x: auto;
+  }
+  .diagram {
+    display: block;
+    width: 100%;
+    min-width: 520px;
+    height: auto;
+  }
+  .diagram [data-node] rect {
+    fill: var(--night-2);
+    stroke: var(--line-night);
+    stroke-width: 1.5;
+  }
+  .diagram [data-node][data-hot] rect {
+    fill: color-mix(in srgb, var(--glow) 22%, var(--night-2));
+    stroke: var(--glow);
+  }
+  .diagram text {
+    fill: var(--moon);
+    font: 600 15px var(--text);
+  }
+  .diagram text[data-sub] {
+    fill: var(--moon-soft);
+    font: 400 12.5px var(--text);
+  }
+  .diagram [data-wire] {
+    fill: none;
+    stroke: var(--glow);
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+  .diagram [data-wire][data-soft] {
+    stroke: var(--majorelle-soft);
+    stroke-dasharray: 4 6;
+  }
+
+  /* ---------- next project (day) ---------- */
+  .next-project {
+    display: grid;
+    gap: 10px;
+    min-height: 44px;
+    padding-block: clamp(72px, 12vh, 140px);
+    text-decoration: none;
+  }
+  .next-project-label {
+    font-size: 15px;
+  }
+  .next-project-name {
+    transition: color var(--dur-base) var(--ease-warm);
+  }
+  .next-project:hover .next-project-name {
+    color: var(--glow);
+  }
+}

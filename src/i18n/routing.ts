@@ -16,8 +16,6 @@ export const routing = defineRouting({
     "/about": { fr: "/a-propos", en: "/about" },
     "/contact": "/contact",
     "/legal": { fr: "/mentions-legales", en: "/legal-notice" },
-    // Temporary design lab (removed in 03). Not in the sitemap, noindex, 404 in production.
-    "/lab": "/lab",
   },
 });
 

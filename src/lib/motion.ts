@@ -34,6 +34,8 @@ export const DURATION = {
   header: 0.7,
   /** Case study tour screen crossfade. */
   crossfade: 0.7,
+  /** Case study tour: a step dimming or returning to full strength. */
+  stepDim: 0.5,
   /** Loader: one wordmark letter rising. */
   letter: 0.7,
   /** Loader: progress tween toward the settled weight. */
@@ -99,6 +101,9 @@ export const MEDIA = {
   /** The prototype's desk / mob split (Pages.home), the `nav` breakpoint in globals.css. */
   desktop: "(min-width: 761px)",
   mobile: "(max-width: 760px)",
+  /** The prototype's two-column split (max-width 900), the `split` breakpoint in globals.css:
+      the work rail and the case study tour stage show from here. */
+  split: "(min-width: 901px)",
 } as const;
 
 /** Distances of the shell's moves, in px unless noted. */
@@ -154,6 +159,12 @@ export const STAGGER = {
   /** Fade-up groups (prototype fadeUpOnEnter default). */
   reveal: 0.08,
   caseLetters: 0.05,
+  /** Case study: the back link, lead and facts after the product name (Pages.case intro). */
+  caseLater: 0.07,
+  /** Case study: the adaptation cards (fadeUpOnEnter(".steps", 0.09)). */
+  adapt: 0.09,
+  /** Case study: the architecture list (fadeUpOnEnter(".arch-list", 0.1)). */
+  archList: 0.1,
 } as const;
 
 export const LENIS = { lerp: 0.1 } as const;
@@ -339,4 +350,25 @@ export const WORK = {
   hero: { laterY: 20, laterDelay: 0.35 },
   head: { y: 30, start: "top 80%" },
   progress: { start: "top 45%", end: "bottom 45%" },
+} as const;
+
+// ---------- case study (Pages.case, docs/choreography.md "Case study") ----------
+
+/** The case study around the primitives. */
+export const CASE = {
+  /** The back link, lead and facts rise from this offset, starting this long after ready, one
+      STAGGER.caseLater apart (back link first). */
+  hero: { laterY: 22, laterDelay: 0.4 },
+  /** The problem statement's words light over its section (prototype wordsLight(".problem")). */
+  problem: { start: "top 70%", end: "bottom 55%" },
+  tour: {
+    /** Inactive steps. The prototype's 0.35 left the step text at about 1.7:1 on paper; 0.88 is
+        the lowest opacity that keeps --ink-soft on --paper at 4.5:1 (4.62:1; 0.87 gives 4.52:1,
+        0.86 fails), too close to full to read as dimmed on its own, so the step also scales down
+        and only the active step's number turns Majorelle (src/styles/case.css). */
+    dimOpacity: 0.88,
+    dimScale: 0.96,
+    /** Inactive stage screens wait at this scale, hidden, and grow to 1 as they fade in. */
+    screenFrom: 0.97,
+  },
 } as const;

@@ -82,9 +82,6 @@
     "copyright": "© {year} {name}, auto-entrepreneur"
   },
   "pages": {
-    "case": {
-      "lead": "The {name} case study will be on this page."
-    },
     "about": {
       "title": "About",
       "lead": "I am a full-stack developer in Agadir. This page will show how I work."
@@ -139,22 +136,6 @@
       "title": "Page not found",
       "lead": "This address does not lead to a page.",
       "back": "Back to the home page"
-    },
-    "lab": {
-      "title": "Design lab",
-      "lead": "A working page for the primitives no real page uses yet. It goes away in step 05.",
-      "jumpToNight": "Jump to the night section",
-      "bench": {
-        "title": "Primitives bench",
-        "lead": "Each block shows one motion primitive, by day and then by night. Scroll to see each end state.",
-        "diagramLabel": "Diagram: the browser calls the app, which calls the API, which queries the database.",
-        "diagram": {
-          "browser": "Browser",
-          "app": "App",
-          "api": "API",
-          "database": "Database"
-        }
-      }
     }
   },
   "work": {
@@ -184,6 +165,34 @@
       "caseStudy": "Read the case study"
     }
   },
+  "case": {
+    "back": "All projects",
+    "problem": "The problem",
+    "facts": {
+      "role": "Role",
+      "status": "Status",
+      "delivery": "Delivery",
+      "stack": "Stack",
+      "roleValue": "Full-stack development",
+      "deliveryValue": "One deployment and one database per clinic"
+    },
+    "tour": {
+      "label": "What DentaFlow does"
+    },
+    "adapt": {
+      "title": "Adapted to each clinic",
+      "lead": "DentaFlow is ready. What changes for each clinic happens before launch."
+    },
+    "arch": {
+      "title": "How it's built",
+      "lead": "Typed from the database to the screen, so a change is checked everywhere.",
+      "diagramBox": "Architecture diagram"
+    },
+    "next": "Next project",
+    "cursor": {
+      "next": "See the project"
+    }
+  },
   "projects": {
     "dentaflow": {
       "name": "DentaFlow",
@@ -196,6 +205,95 @@
         "s3": "[TODO: describe the screen, DentaFlow 3]",
         "s4": "[TODO: describe the screen, DentaFlow 4]",
         "s5": "[TODO: describe the screen, DentaFlow 5]"
+      },
+      "case": {
+        "meta": {
+          "description": "A management system for dental clinics: agenda, patients, treatments and billing. Adapted to each clinic before launch, with its own database and its own deployment."
+        },
+        "lead": "A management system for dental clinics: agenda, patients, treatments and billing. Adapted to each clinic before launch, with its own database and its own deployment.",
+        "footer": "DentaFlow in your clinic?",
+        "screens": {
+          "hero": "[TODO: describe the screen, DentaFlow opening]",
+          "agenda": "[TODO: describe the screen, DentaFlow agenda]",
+          "patients": "[TODO: describe the screen, DentaFlow patients]",
+          "record": "[TODO: describe the screen, DentaFlow patient record]",
+          "odontogram": "[TODO: describe the screen, DentaFlow dental chart]",
+          "acts": "[TODO: describe the screen, DentaFlow acts catalogue]",
+          "documents": "[TODO: describe the screen, DentaFlow documents]",
+          "statistics": "[TODO: describe the screen, DentaFlow statistics]"
+        },
+        "tour": {
+          "agenda": {
+            "title": "The clinic agenda",
+            "text": "The day's and week's appointments, with their type."
+          },
+          "patients": {
+            "title": "Every patient",
+            "text": "The clinic's patient list, with their tags and insurance."
+          },
+          "record": {
+            "title": "One record per patient",
+            "text": "A patient's documents and imaging in one record."
+          },
+          "odontogram": {
+            "title": "The dental chart",
+            "text": "The patient's odontogram, tooth by tooth."
+          },
+          "acts": {
+            "title": "The acts catalogue",
+            "text": "The clinic's treatments, with NGAP nomenclature import."
+          },
+          "documents": {
+            "title": "Documents",
+            "text": "Prescriptions, quotes, invoices and certificates in one place."
+          },
+          "statistics": {
+            "title": "Statistics",
+            "text": "The clinic's activity and payments, in figures and charts."
+          }
+        },
+        "adapt": {
+          "name": {
+            "title": "The clinic's name",
+            "text": "The clinic's name appears in the application."
+          },
+          "database": {
+            "title": "Its own database",
+            "text": "A separate database for each clinic."
+          },
+          "deployment": {
+            "title": "Its own deployment",
+            "text": "A deployment of its own for each clinic."
+          },
+          "fourth": {
+            "title": "[TODO: fourth step title]",
+            "text": "[TODO: fourth step text]"
+          }
+        },
+        "arch": {
+          "database": {
+            "title": "One database per clinic",
+            "text": "PostgreSQL, accessed through Drizzle."
+          },
+          "types": {
+            "title": "End-to-end types",
+            "text": "tRPC shares the same types between the server and the interface."
+          },
+          "access": {
+            "title": "[TODO: access and roles, owner to confirm]",
+            "text": "[TODO: access and roles text, owner to confirm]"
+          }
+        },
+        "diagram": {
+          "label": "Architecture: the browser talks to the Next.js app, which calls tRPC procedures, which query each clinic's PostgreSQL database through Drizzle. Better Auth sits beside the app.",
+          "browser": "Browser",
+          "browserSub": "The clinic",
+          "appSub": "The application",
+          "apiSub": "Typed API",
+          "ormSub": "Typed queries",
+          "databaseSub": "One per clinic",
+          "authSub": "Authentication"
+        }
       }
     },
     "hms": {

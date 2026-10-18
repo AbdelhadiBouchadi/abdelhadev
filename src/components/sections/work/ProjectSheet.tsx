@@ -12,7 +12,7 @@ import { ArrowLink } from "@/components/ui/ArrowLink";
 import { buttonClass, buttonSize, SunDot } from "@/components/ui/Button";
 import { Chips, type ChipItem } from "@/components/ui/Chip";
 import { Screen } from "@/components/ui/Screen";
-import { hasMoreScreens } from "@/lib/content/projects";
+import { hasMoreScreens, screenCount } from "@/lib/content/projects";
 import type { Project } from "@/lib/content/schema";
 import { STAGGER, WORK } from "@/lib/motion";
 import { isTodo } from "@/lib/todo";
@@ -118,10 +118,10 @@ export async function ProjectSheet({ project }: ProjectSheetProps) {
           );
         })}
       </div>
-      {hasMoreScreens(project) && project.screenCount !== undefined ? (
+      {hasMoreScreens(project) ? (
         <p className="media-more">
           <ArrowLink as={TransitionLink} href={caseStudy}>
-            {t("allScreens", { count: project.screenCount })}
+            {t("allScreens", { count: screenCount(project) })}
           </ArrowLink>
         </p>
       ) : null}

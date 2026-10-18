@@ -27,7 +27,10 @@ abdelhadev/
 ├── src/
 │   ├── app/
 │   │   ├── [locale]/
-│   │   │   ├── layout.tsx              html, fonts, providers, boot script, header, footer, loader
+│   │   │   ├── layout.tsx              html, fonts, providers, boot script, header, loader; the footer
+│   │   │   │                           comes from the @footer slot
+│   │   │   ├── @footer/                one slot page per route: the shell footer, or the case study's
+│   │   │   │                           with its own call to action (work/[slug]/page.tsx), default.tsx
 │   │   │   ├── page.tsx                home
 │   │   │   ├── work/page.tsx   work index
 │   │   │   ├── work/[slug]/page.tsx   case study
@@ -66,7 +69,7 @@ abdelhadev/
 │   │   ├── seo.ts      metadata helpers, alternates, JSON-LD builders
 │   │   ├── env.ts      zod-validated environment (server-only parts guarded)
 │   │   ├── utils.ts    cn() and small pure helpers
-│   │   └── content/    projects.ts, experience.ts, stack.ts, schema.ts (zod)
+│   │   └── content/    projects.ts, case-studies.ts, experience.ts, stack.ts, schema.ts (zod)
 │   ├── i18n/           routing.ts, request.ts, navigation.ts
 │   └── styles/         globals.css, tokens.css (the only colour source)
 └── tests/              unit/, e2e/
@@ -122,5 +125,6 @@ Localised pathnames in `src/i18n/routing.ts`:
 
 ## Data shapes
 
-- `lib/content/projects.ts`: `slug`, `featured`, `status` (`live`, `ready`, `in-progress`), `year` (optional, never invented), `stack[]`, `links` (demo, repo, live; optional), `permission` (`confirmed` or `pending`: only confirmed projects are public, through `publicProjects()`), `caseStudy` (boolean), `media[]` (at most 5 on the work page: `span` 4 to 12, frame `tone`, `layout` aspect, placeholder `skeleton`, `kind` image or video; real paths and sizes arrive in 08), `screenCount` (optional, when more screens exist than the sheet shows), and a `copyKey` pointing at `messages.projects.<slug>` for the localised name, kind, challenge, built, role and alt texts. Validated with zod at build time.
+- `lib/content/projects.ts`: `slug`, `featured`, `status` (`live`, `ready`, `in-progress`), `year` (optional, never invented), `stack[]`, `links` (demo, repo, live; optional), `permission` (`confirmed` or `pending`: only confirmed projects are public, through `publicProjects()`), `caseStudy` (boolean), `media[]` (at most 5 on the work page: `span` 4 to 12, frame `tone`, `layout` aspect, placeholder `skeleton`, `kind` image or video; real paths and sizes arrive in 08), and a `copyKey` pointing at `messages.projects.<slug>` for the localised name, kind, challenge, built, role and alt texts. Validated with zod at build time. Derived, not stored (05): `caseStudyProjects()` (public projects with `caseStudy: true`: the case study's `generateStaticParams`, the sitemap and the test route list; any other slug is a 404), `screenCount()` (the case study's `tour.length`, else `media.length`; the sheet links to "See all N screens" when it is larger than the media shown) and `nextProject()` (the next public project, or `null` after the last).
+- `lib/content/case-studies.ts` (05): keyed by project slug, zod-validated at load (`caseStudies` in `schema.ts`), one entry exactly for each project with `caseStudy: true` (checked in `projects.ts`). Each entry: `hero: { tone, skeleton }` (the first screen), `tour: { key, tone, skeleton }[]` (3 to 8 steps, unique keys, in reading order), `adapt: string[]` (exactly 4 keys) and `arch: { listKeys: string[] }`. Every key points at `messages.projects.<slug>.case.<group>.<key>` (`tour` and `adapt` items have a `title` and a `text`, `screens` the alt texts), next to `lead`, `footer` (the footer's call to action), `meta.description` and `diagram` (the architecture diagram's label and subtitles). The page-level labels shared by every case study are in `messages.case`.
 - Placeholders: any value the owner has not supplied is the literal `[TODO: …]`; the build lists them and fails when `REQUIRE_CONTENT=1`.

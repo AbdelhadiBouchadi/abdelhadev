@@ -1,7 +1,7 @@
-// Foundation acceptance: locale redirects, sitemap and robots, metadata files, the lab.
+// Foundation acceptance: locale redirects, sitemap and robots, metadata files, 404s. The lab and
+// its tokens, type and brand screenshot were removed in 05; nothing here depended on it.
 import { expect, test } from "@playwright/test";
 import { ROUTES } from "./routes";
-import { shellIdle, visited } from "./shell-helpers";
 
 test.describe("locale redirect on /", () => {
   const cases: { name: string; headers: Record<string, string>; to: string }[] = [
@@ -43,7 +43,7 @@ test.describe("locale redirect on /", () => {
   });
 });
 
-test("the sitemap lists every route with its alternates and leaves out the lab", async ({
+test("the sitemap lists every route with its alternates, and only the case studies that exist", async ({
   request,
 }) => {
   const xml = await (await request.get("/sitemap.xml")).text();
@@ -51,6 +51,9 @@ test("the sitemap lists every route with its alternates and leaves out the lab",
   expect(xml).toContain('hreflang="fr"');
   expect(xml).toContain('hreflang="en"');
   expect(xml).not.toContain("/lab");
+  // A project without a case study has no page, so no URL (tests/unit/case.test.ts lists them).
+  expect(xml).not.toContain("/projets/hms");
+  expect(xml).not.toContain("/work/hms");
 });
 
 test("robots meta is noindex while INDEXABLE is false", async ({ page, request }) => {
@@ -87,21 +90,8 @@ test("unknown pages are a localised 404", async ({ page }) => {
   expect(response?.status()).toBe(404);
   await expect(page.locator("h1")).toHaveText("Page introuvable");
   expect((await page.goto("/fr/projets/nope"))?.status()).toBe(404);
-});
-
-test.describe("lab", () => {
-  test("is noindex and screenshots the tokens, type and brand", async ({ page }, info) => {
-    await visited(page);
-    await page.goto("/fr/lab");
-    await shellIdle(page);
-    await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
-      "content",
-      "noindex, nofollow",
-    );
-    await page.evaluate(() => document.fonts.ready);
-    await page.screenshot({
-      path: `test-results/foundation/lab-${info.project.name}.png`,
-      fullPage: true,
-    });
-  });
+  // Projects without a case study, and the removed lab.
+  expect((await page.goto("/fr/projets/hms"))?.status()).toBe(404);
+  expect((await page.goto("/en/work/meetai"))?.status()).toBe(404);
+  expect((await page.goto("/fr/lab"))?.status()).toBe(404);
 });

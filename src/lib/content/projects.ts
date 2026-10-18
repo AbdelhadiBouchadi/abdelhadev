@@ -2,6 +2,7 @@
    until the owner supplies it. Parsed at module load, so an invalid entry fails the build.
    The media are the work page sheets of the prototype (docs/prototype/work.html): span, frame
    tone, aspect and placeholder skeleton, in grid order, until 08 brings the real screenshots. */
+import { CASE_STUDIES } from "@/lib/content/case-studies";
 import {
   projects as projectsSchema,
   type MediaItem,
@@ -99,19 +100,51 @@ const INPUT: ProjectInput[] = [
 
 export const PROJECTS: readonly Project[] = projectsSchema.parse(INPUT);
 
+// A case study exists exactly for the projects that say so, or the build fails.
+for (const p of PROJECTS) {
+  if (p.caseStudy !== Object.hasOwn(CASE_STUDIES, p.slug)) {
+    throw new Error(
+      `${p.slug}: caseStudy is ${String(p.caseStudy)} but its case study data says otherwise`,
+    );
+  }
+}
+for (const slug of Object.keys(CASE_STUDIES)) {
+  if (!PROJECTS.some((p) => p.slug === slug)) throw new Error(`Case study ${slug} has no project`);
+}
+
 export const PROJECT_SLUGS = PROJECTS.map((p) => p.slug);
 
 export function getProject(slug: string): Project | undefined {
   return PROJECTS.find((p) => p.slug === slug);
 }
 
-/** The projects the client allows to be named (decision P7): the work page, its rail, the sitemap
-    and, from 05, the case study's generateStaticParams. */
+/** The projects the client allows to be named (decision P7): the work page, its rail and the
+    sitemap. */
 export function publicProjects(list: readonly Project[] = PROJECTS): Project[] {
   return list.filter((p) => p.permission === "confirmed");
 }
 
+/** The public projects with a case study page: the case study's generateStaticParams, the
+    sitemap and the route list of the tests. Any other slug is a 404. */
+export function caseStudyProjects(list: readonly Project[] = PROJECTS): Project[] {
+  return publicProjects(list).filter((p) => p.caseStudy);
+}
+
+/** Every screen of a project: the case study's tour when it has one, else the sheet's media. */
+export function screenCount(p: Project): number {
+  const study = p.caseStudy ? CASE_STUDIES[p.slug] : undefined;
+  return study ? study.tour.length : p.media.length;
+}
+
 /** Whether a sheet links to the case study for the screens it does not show. */
 export function hasMoreScreens(p: Project): boolean {
-  return p.caseStudy && p.screenCount !== undefined && p.screenCount > p.media.length;
+  return p.caseStudy && screenCount(p) > p.media.length;
+}
+
+/** The public project after `slug` on the work page, or null when it is the last one (the case
+    study's next-project link then goes to the work page). */
+export function nextProject(slug: string, list: readonly Project[] = PROJECTS): Project | null {
+  const shown = publicProjects(list);
+  const i = shown.findIndex((p) => p.slug === slug);
+  return i === -1 ? null : (shown[i + 1] ?? null);
 }

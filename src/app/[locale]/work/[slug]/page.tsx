@@ -1,25 +1,31 @@
 import type { Metadata } from "next";
-import { getMessages, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { PagePlaceholder } from "@/components/ui/PagePlaceholder";
+import { Adaptation } from "@/components/sections/case/Adaptation";
+import { Architecture } from "@/components/sections/case/Architecture";
+import { CaseHero } from "@/components/sections/case/CaseHero";
+import { CaseProblem } from "@/components/sections/case/CaseProblem";
+import { caseCopy } from "@/components/sections/case/case-copy";
+import { NextProject } from "@/components/sections/case/NextProject";
+import { ProductTour } from "@/components/sections/case/ProductTour";
 import { resolveLocale } from "@/i18n/locale";
 import type { Locale } from "@/i18n/routing";
-import { publicProjects } from "@/lib/content/projects";
+import { getCaseStudy } from "@/lib/content/case-studies";
+import { caseStudyProjects } from "@/lib/content/projects";
 import { pageMetadata } from "@/lib/seo";
-import { isKeyOf } from "@/lib/utils";
 
-// Case studies are statically generated from the public projects (decision P7); any other slug,
-// including a project whose permission is pending, is a 404.
+// Only the public projects with a case study have a page (decision P7, caseStudyProjects); any
+// other slug, a project without a case study or with a pending permission, is a 404.
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return publicProjects().map(({ slug }) => ({ slug }));
+  return caseStudyProjects().map(({ slug }) => ({ slug }));
 }
 
-async function projectCopy(locale: Locale, slug: string) {
-  const { projects } = await getMessages({ locale });
-  if (!isKeyOf(projects, slug)) notFound();
-  return projects[slug];
+async function load(locale: Locale, slug: string) {
+  const project = caseStudyProjects().find((p) => p.slug === slug);
+  const study = getCaseStudy(slug);
+  if (!project || !study) notFound();
+  return { project, study, copy: await caseCopy(locale, slug) };
 }
 
 export async function generateMetadata({
@@ -27,16 +33,27 @@ export async function generateMetadata({
 }: PageProps<"/[locale]/work/[slug]">): Promise<Metadata> {
   const locale = await resolveLocale(params);
   const { slug } = await params;
-  const copy = await projectCopy(locale, slug);
+  const { copy } = await load(locale, slug);
   return pageMetadata({ pathname: "/work/[slug]", params: { slug } }, locale, {
     title: copy.name,
+    description: copy.case.meta.description,
   });
 }
 
+// Tones: hero night, problem, tour and adaptation day, architecture night, next project day,
+// then the night footer with the product's call to action (the @footer slot).
 export default async function CaseStudyPage({ params }: PageProps<"/[locale]/work/[slug]">) {
   const locale = await resolveLocale(params);
   const { slug } = await params;
-  const copy = await projectCopy(locale, slug);
-  const t = await getTranslations({ locale, namespace: "pages.case" });
-  return <PagePlaceholder title={copy.name} lead={t("lead", { name: copy.name })} />;
+  const { project, study, copy } = await load(locale, slug);
+  return (
+    <>
+      <CaseHero project={project} study={study} copy={copy} />
+      <CaseProblem copy={copy} />
+      <ProductTour study={study} copy={copy} />
+      <Adaptation study={study} copy={copy} />
+      <Architecture study={study} copy={copy} />
+      <NextProject slug={slug} />
+    </>
+  );
 }
