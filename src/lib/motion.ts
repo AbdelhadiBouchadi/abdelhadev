@@ -401,3 +401,26 @@ export const ABOUT = {
   /** Fade-up groups (prototype fadeUpOnEnter): timeline and stack 0.08, "Right now" 0.1. */
   stagger: { services: 0.08, process: 0.09, timeline: 0.08, stack: 0.08, now: 0.1 },
 } as const;
+
+// ---------- contact (Pages.contact, docs/choreography.md "Contact") ----------
+
+/** The contact page around the primitives: the title lines rise at ready (SplitReveal), the lead
+    and then the two cards fade up after them (Reveal); a sent message's confirmation rises in
+    place of the form (initForms). */
+export const CONTACT = {
+  lead: { y: 20, delay: 0.35 },
+  cards: { y: 40, delay: 0.45, duration: 1.1, stagger: 0.1 },
+  done: { y: 20, duration: 0.8 },
+  /** The toast after a send (Sonner, which counts in milliseconds). Its slide-fade uses
+      --ease-warm and --dur-base (src/styles/contact.css). Offsets from the viewport edges; on
+      mobile it sits above the floating nav pill. */
+  toast: {
+    durationMs: 5000,
+    offset: { bottom: "24px", right: "24px", left: "24px" },
+    mobileOffset: {
+      bottom: "calc(88px + env(safe-area-inset-bottom, 0px))",
+      right: "16px",
+      left: "16px",
+    },
+  },
+} as const;

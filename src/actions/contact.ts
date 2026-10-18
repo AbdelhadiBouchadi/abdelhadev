@@ -1,0 +1,36 @@
+"use server";
+
+/* The contact form's server action (useActionState). It wires the environment to the handler
+   (src/lib/contact-handler.ts), which holds the logic and its tests. Posted without JavaScript,
+   the same action runs and the page renders the state it returns. */
+import { getTranslations } from "next-intl/server";
+import { handleContact } from "@/lib/contact-handler";
+import type { ContactState } from "@/lib/contact-schema";
+import { env } from "@/lib/env";
+import { createArcjetGuard } from "@/lib/guard";
+import { createResendMailer } from "@/lib/mailer";
+
+const log = (line: string) => {
+  console.info(line);
+};
+
+// One client each per server instance, created on first use.
+const mailer = env.RESEND_API_KEY ? createResendMailer(env.RESEND_API_KEY) : null;
+const guard = env.ARCJET_KEY ? createArcjetGuard(env.ARCJET_KEY, log) : null;
+
+export async function sendContact(_previous: ContactState, data: FormData): Promise<ContactState> {
+  return handleContact(data, {
+    dryRun: env.CONTACT_DRY_RUN === "1",
+    mailer,
+    guard,
+    from: env.CONTACT_FROM,
+    to: env.CONTACT_TO ?? null,
+    // The email is for the owner only, so its topic label is always French (docs/decisions.md).
+    topicLabel: async ({ topic }) => {
+      const t = await getTranslations({ locale: "fr", namespace: "contact.form.topics" });
+      return t(topic);
+    },
+    now: () => new Date(),
+    log,
+  });
+}

@@ -64,7 +64,9 @@ SOS Dental Clinic, Agadir. Role and organisation only, no personal name. The wor
 ## Contact
 
 - Channels: the contact form (email through Resend) and WhatsApp. The WhatsApp number and the public email address are in `src/lib/site.ts`, supplied by the owner.
-- The process shown: I reply with questions, we talk (about thirty minutes), I model your data and show how it would work, you get a quote for that scope, in stages.
+- The form sends to a private inbox (`CONTACT_TO`) that is never published. Its topics follow what he builds: clinic or health-service management software, an AI-powered web app, an online shop, a website with an admin panel, something else.
+- The process shown is the about page's own (`about.process`, steps 1 to 4, read from the same messages): he listens; within 24 hours he turns the notes into a technical plan, models the data and splits the project into tasks; the quote arrives 24 to 48 hours after the first conversation; after acceptance and signature, an advance invoice, then development. The about page adds the last step: the balance invoice and delivery. No payment percentages (decision P12).
+- The form confirmation is on screen only ("Message sent"). There is no automatic email to the visitor yet.
 - No reply-time promises.
 
 ## Legal

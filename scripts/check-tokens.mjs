@@ -7,7 +7,9 @@ import { checkFile, radiusTokens } from "./lib/token-rules.mjs";
 const root = resolve(import.meta.dirname, "..");
 const EXTENSIONS = /\.(?:ts|tsx|js|jsx|mjs|css)$/;
 // Generated path data has no colours or motion, and its numbers would only be noise.
-const SKIP = new Set(["src/components/brand/wordmark-paths.ts"]);
+// The contact email template: email clients ignore CSS variables and stylesheets, so its values
+// are copied from tokens.css by hand and inlined (each one names its token there).
+const SKIP = new Set(["src/components/brand/wordmark-paths.ts", "src/emails/contact-form.tsx"]);
 
 function* walk(dir) {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {

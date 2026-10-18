@@ -81,6 +81,8 @@ export default async function LegalPage({ params }: PageProps<"/[locale]/legal">
         <Part id="legal-data" title={t("data.title")}>
           <p>{t("data.collected")}</p>
           <p>{t("data.processor")}</p>
+          <p>{t("data.protection")}</p>
+          <p>{t("data.stored")}</p>
           <p>{t("data.whatsapp")}</p>
           <p>{t("data.retention", { retention: t("data.retentionValue") })}</p>
           <p>{t("data.rights")}</p>

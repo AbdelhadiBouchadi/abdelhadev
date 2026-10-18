@@ -49,6 +49,12 @@ Status: **Fixed**, **Provisional** (fixed unless the named spike fails), **Open*
 | T9 | Contact form: server action, shared zod schema, honeypot, rate limit, Resend from a verified `abdelhadev.me` domain. WhatsApp composer builds a `wa.me` link from the same fields. | Fixed |
 | T10 | Analytics: cookie-free (Plausible or Umami). | Open (before launch) |
 | T11 | `cacheComponents` stays off unless the foundation finds a reason to enable it (the old repo showed it makes `notFound()` pages need JavaScript). | Fixed |
+| T12 | The contact form's rate limit and bot detection are Arcjet (`@arcjet/next`, about 5 messages an hour per IP address, every automated client refused). If Arcjet itself errors, the form fails open with a log line that holds no personal data. The rate limit is `LIVE`; bot detection ships in `DRY_RUN` (logged in Arcjet, never blocking) and is switched to `LIVE` in `10-launch` after the owner has reviewed the Arcjet dashboard. | Fixed |
+| T13 | `CONTACT_DRY_RUN=1` validates and reports success without calling Resend or Arcjet (the Playwright web server sets it). It can never run in production: with `VERCEL_ENV=production` the environment parser refuses it and the server does not start (`src/lib/env.ts`, `src/instrumentation.ts`). | Fixed |
+| T14 | No automatic reply to the visitor: the confirmation is on screen only, until the owner decides otherwise. | Fixed |
+| T15 | The contact form sends to a private inbox (`CONTACT_TO`, an environment variable) that is never published on the site, in the repo or in a client bundle. Until `abdelhadev.me` is verified in Resend, mail goes out from `Abdelhadev <onboarding@resend.dev>` (`CONTACT_FROM`). | Fixed |
+| T16 | The contact email (`src/emails/contact-form.tsx`, sent with a plain-text twin) is for the owner only, so it is always in French, whatever the page language. Its values are copied from the tokens and inlined, because email clients ignore CSS variables. | Fixed |
+| T17 | The contact toast (Sonner, mounted only in the contact form) is additive: it repeats the inline confirmation or error line, which stay the accessible, no-JavaScript source of truth. A toast is never the only feedback. | Fixed |
 
 ## Lessons from the first attempt (kept so we do not repeat them)
 

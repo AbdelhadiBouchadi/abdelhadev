@@ -164,6 +164,24 @@ const BOUNDARIES = {
       "three may import ui, brand, primitives, hooks, lib and i18n.",
     ),
   ],
+  "src/emails": [
+    deny(
+      [
+        "@/components/*",
+        "@/components/**",
+        "@/primitives/*",
+        "@/primitives/**",
+        "@/hooks/*",
+        "@/hooks/**",
+        "@/app/**",
+        "@/actions/*",
+        "@/i18n/*",
+        "@/lib/*",
+        "@/lib/**",
+      ],
+      "Email templates are self-contained: plain props in, inline styles, nothing from the app.",
+    ),
+  ],
   "src/actions": [
     deny(
       [
@@ -271,6 +289,16 @@ export default defineConfig([
   {
     files: ["src/components/brand/**/*.tsx", "src/components/sections/**/diagrams/**/*.tsx"],
     rules: { "no-restricted-syntax": ["error", ...COLOUR_LITERAL] },
+  },
+  {
+    // Email templates inline colour values copied from tokens.css: email clients ignore CSS
+    // variables (also on the check:tokens allow-list).
+    // A template is a whole email document, not a Next page, so it writes its own <head>.
+    files: ["src/emails/**/*.tsx"],
+    rules: {
+      "no-restricted-syntax": ["error", INLINE_SVG],
+      "@next/next/no-head-element": "off",
+    },
   },
   {
     // Tests assert real colour values (the manifest, the token checker's own cases).

@@ -83,10 +83,6 @@
     "newTab": "s'ouvre dans un nouvel onglet"
   },
   "pages": {
-    "contact": {
-      "title": "Contact",
-      "lead": "Le formulaire et WhatsApp seront disponibles sur cette page."
-    },
     "legal": {
       "title": "Mentions légales",
       "updated": "Dernière mise à jour : {date}",
@@ -112,8 +108,10 @@
       },
       "data": {
         "title": "Données personnelles",
-        "collected": "Le formulaire de contact recueille votre nom, votre adresse e-mail, le type de votre organisation et votre message. Je m'en sers uniquement pour vous répondre ; ces données ne sont ni vendues ni utilisées pour de la publicité.",
-        "processor": "Le message m'est transmis par e-mail grâce au service Resend, qui agit comme sous-traitant pour cet envoi.",
+        "collected": "Le formulaire de contact recueille votre nom, votre adresse e-mail, le type de projet et votre message. Ils me sont envoyés par e-mail dans ma boîte de réception. Je m'en sers uniquement pour vous répondre ; ces données ne sont ni vendues ni utilisées pour de la publicité.",
+        "processor": "L'envoi passe par le service Resend, qui agit comme sous-traitant pour cette transmission.",
+        "protection": "Pour limiter le nombre de messages envoyés depuis une même connexion et bloquer les robots, le service Arcjet traite l'adresse IP de votre appareil au moment de l'envoi.",
+        "stored": "Rien n'est enregistré sur ce site : il n'a pas de base de données et ne garde aucune copie des messages.",
         "whatsapp": "Si vous choisissez WhatsApp, votre message passe par ce service et relève de ses propres conditions.",
         "retention": "Durée de conservation des messages : {retention}",
         "retentionValue": "[TODO: durée de conservation des messages reçus par le formulaire]",
@@ -283,6 +281,77 @@
           "text": "Je me forme à Trigger.dev et Browserbase en construisant une application d'automatisation."
         }
       }
+    }
+  },
+  "contact": {
+    "meta": {
+      "title": "Contact",
+      "description": "Écrivez-moi pour parler de votre projet : logiciel de gestion, application IA, boutique en ligne ou site web."
+    },
+    "title": "Parlons de votre projet",
+    "lead": "Écrivez-moi par email avec le formulaire, ou continuez sur WhatsApp. Dans les deux cas, je lis chaque message moi-même.",
+    "channels": "Les façons de me contacter",
+    "form": {
+      "title": "Envoyer un message",
+      "intro": "Il arrive directement dans ma boîte de réception.",
+      "labels": {
+        "name": "Votre nom",
+        "email": "Email",
+        "topic": "Votre projet",
+        "message": "De quoi avez-vous besoin ?"
+      },
+      "topicPlaceholder": "Choisissez une option",
+      "topics": {
+        "clinic": "Un logiciel de gestion pour mon cabinet ou mon service de santé",
+        "ai": "Une application web avec IA",
+        "shop": "Une boutique en ligne",
+        "website": "Un site web avec espace d'administration",
+        "other": "Autre chose"
+      },
+      "hint": "Décrivez comment votre équipe travaille aujourd'hui et ce qui vous ralentit : c'est un excellent début.",
+      "honeypot": "Société",
+      "errors": {
+        "name": "Indiquez votre nom pour que je sache à qui répondre.",
+        "email": "Indiquez une adresse email comme nom@exemple.ma.",
+        "topic": "Choisissez l'option la plus proche.",
+        "message": "Dites-m'en un peu plus, au moins deux phrases."
+      },
+      "privacy": "Vos informations servent uniquement à vous répondre.",
+      "submit": "Envoyer le message",
+      "sending": "Envoi en cours…",
+      "success": {
+        "title": "Message envoyé",
+        "text": "Merci. Je vous réponds personnellement.",
+        "again": "Écrire un autre message"
+      },
+      "failed": {
+        "send": "Le message n'a pas pu être envoyé. Vos mots sont conservés : réessayez, ou écrivez-moi sur WhatsApp.",
+        "rateLimit": "Trop de messages en peu de temps. Réessayez plus tard ou écrivez-moi sur WhatsApp."
+      },
+      "toast": {
+        "region": "Notifications",
+        "close": "Fermer la notification",
+        "sent": "Message envoyé",
+        "failed": "Envoi impossible",
+        "rateLimit": "Trop de messages"
+      }
+    },
+    "whatsapp": {
+      "title": "Plutôt WhatsApp ?",
+      "intro": "Le message du formulaire est copié ici, pour l'envoyer sur WhatsApp à la place.",
+      "action": "Continuer sur WhatsApp",
+      "previewLabel": "Aperçu du message WhatsApp",
+      "numberLabel": "Numéro WhatsApp",
+      "greeting": "Bonjour Abdelhadi,",
+      "name": "Je m'appelle {name}.",
+      "topic": "Mon projet : {topic}."
+    },
+    "next": {
+      "title": "Et ensuite ?"
+    },
+    "cursor": {
+      "send": "Envoyer",
+      "whatsapp": "Ouvre WhatsApp"
     }
   },
   "work": {

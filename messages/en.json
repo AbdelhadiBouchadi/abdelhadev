@@ -83,10 +83,6 @@
     "newTab": "opens in a new tab"
   },
   "pages": {
-    "contact": {
-      "title": "Contact",
-      "lead": "The form and WhatsApp will be available on this page."
-    },
     "legal": {
       "title": "Legal notice",
       "updated": "Last updated: {date}",
@@ -112,8 +108,10 @@
       },
       "data": {
         "title": "Personal data",
-        "collected": "The contact form collects your name, your email address, the kind of organisation you work for and your message. I use them only to reply to you; they are never sold or used for advertising.",
-        "processor": "Your message reaches me by email through Resend, which acts as a processor for that delivery.",
+        "collected": "The contact form collects your name, your email address, the type of project and your message. They are sent to my inbox by email. I use them only to reply to you; they are never sold or used for advertising.",
+        "processor": "Delivery goes through Resend, which acts as a processor for that transmission.",
+        "protection": "To limit how many messages one connection can send and to block bots, the Arcjet service processes your device's IP address when you send.",
+        "stored": "Nothing is stored on this site: it has no database and keeps no copy of the messages.",
         "whatsapp": "If you choose WhatsApp, your message goes through that service and falls under its own terms.",
         "retention": "How long messages are kept: {retention}",
         "retentionValue": "[TODO: how long messages received through the form are kept]",
@@ -283,6 +281,77 @@
           "text": "Learning Trigger.dev and Browserbase by building an automation app."
         }
       }
+    }
+  },
+  "contact": {
+    "meta": {
+      "title": "Contact",
+      "description": "Write to me about your project: management software, AI app, online shop or website."
+    },
+    "title": "Let's talk about your project",
+    "lead": "Write to me by email with the form, or continue on WhatsApp. Either way, I read every message myself.",
+    "channels": "Ways to contact me",
+    "form": {
+      "title": "Send a message",
+      "intro": "It reaches my inbox directly.",
+      "labels": {
+        "name": "Your name",
+        "email": "Email",
+        "topic": "Your project",
+        "message": "What do you need?"
+      },
+      "topicPlaceholder": "Choose one",
+      "topics": {
+        "clinic": "Management software for my clinic or health service",
+        "ai": "An AI-powered web app",
+        "shop": "An online shop",
+        "website": "A website with an admin panel",
+        "other": "Something else"
+      },
+      "hint": "How your team works today and what slows you down is a perfect start.",
+      "honeypot": "Company",
+      "errors": {
+        "name": "Enter your name so I know who to reply to.",
+        "email": "Enter an email address like name@example.com.",
+        "topic": "Choose the closest option.",
+        "message": "Tell me a little more, at least a couple of sentences."
+      },
+      "privacy": "Your details are only used to reply to you.",
+      "submit": "Send message",
+      "sending": "Sending…",
+      "success": {
+        "title": "Message sent",
+        "text": "Thank you. I will reply to you personally.",
+        "again": "Write another message"
+      },
+      "failed": {
+        "send": "The message could not be sent. Your words are kept: try again, or write to me on WhatsApp.",
+        "rateLimit": "Too many messages in a short time. Try again later or write to me on WhatsApp."
+      },
+      "toast": {
+        "region": "Notifications",
+        "close": "Close the notification",
+        "sent": "Message sent",
+        "failed": "Could not send",
+        "rateLimit": "Too many messages"
+      }
+    },
+    "whatsapp": {
+      "title": "Prefer WhatsApp?",
+      "intro": "Your message from the form is copied here, so you can send it on WhatsApp instead.",
+      "action": "Continue on WhatsApp",
+      "previewLabel": "WhatsApp message preview",
+      "numberLabel": "WhatsApp number",
+      "greeting": "Hello Abdelhadi,",
+      "name": "My name is {name}.",
+      "topic": "My project: {topic}."
+    },
+    "next": {
+      "title": "What happens next?"
+    },
+    "cursor": {
+      "send": "Send",
+      "whatsapp": "Opens WhatsApp"
     }
   },
   "work": {
