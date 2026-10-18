@@ -85,6 +85,8 @@ export const DURATION = {
 /** Programmatic scrolls (hash links, back to top): the prototype's 1.6 s ease-out-quart. */
 export const SCROLL_TO = {
   duration: 1.6,
+  /** Seconds, at least, of a scroll re-aimed at an element that moved during the scroll. */
+  minFollow: 0.3,
   easing: (t: number) => 1 - Math.pow(1 - t, 4),
 } as const;
 

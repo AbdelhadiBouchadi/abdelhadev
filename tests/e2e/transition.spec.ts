@@ -118,6 +118,66 @@ test("a hash link to the current page scrolls there without a curtain", async ({
   ).toBe(false);
 });
 
+/** The document offset of the element with this id. */
+const offsetOf = (page: Page, id: string) =>
+  page.locator(`#${id}`).evaluate((el) => el.getBoundingClientRect().top + window.scrollY);
+
+test("a hash link lands on its target when the click comes before Lenis has seen the last scroll", async ({
+  page,
+}) => {
+  // Scroll events reach Lenis on the next frame, so a click can arrive while Lenis still holds the
+  // previous scroll position. It used to measure the target from that stale value and overshoot
+  // by the distance it had missed (CI: 382 px at 390, 436 px at 1440).
+  await page.goto("/fr/lab");
+  await shellIdle(page);
+  await scrollToY(page, 437);
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(437);
+  await page.waitForTimeout(300);
+  await page.evaluate(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+    document.querySelector<HTMLAnchorElement>('main a[href$="#lab-night"]')?.click();
+  });
+  const target = await offsetOf(page, "lab-night");
+  await expect
+    .poll(() => page.evaluate(() => window.scrollY), { timeout: 4000 })
+    .toBeCloseTo(target, -1);
+});
+
+test("a hash link follows its target when the layout above it changes during the scroll", async ({
+  page,
+}) => {
+  await page.goto("/fr/lab");
+  await shellIdle(page);
+  const before = await offsetOf(page, "lab-night");
+  await page.getByRole("link", { name: "Aller à la section nuit" }).click();
+  // Halfway through the scroll, content above the target grows by 400 px (an image, a re-split,
+  // a font swap). Done in the page on the frame the scroll passes halfway, so it is mid-scroll on
+  // any machine.
+  const yAtChange = await page.evaluate(
+    (half) =>
+      new Promise<number>((resolve) => {
+        const step = () => {
+          if (window.scrollY < half) {
+            requestAnimationFrame(step);
+            return;
+          }
+          const spacer = document.createElement("div");
+          spacer.style.height = "400px";
+          document.getElementById("bench")?.append(spacer);
+          resolve(window.scrollY);
+        };
+        step();
+      }),
+    before / 2,
+  );
+  expect(yAtChange, "the layout changed during the scroll").toBeLessThan(before - 200);
+  const target = await offsetOf(page, "lab-night");
+  expect(target - before).toBeGreaterThanOrEqual(400);
+  await expect
+    .poll(() => page.evaluate(() => window.scrollY), { timeout: 4000 })
+    .toBeCloseTo(target, -1);
+});
+
 test("a modified click opens a new tab and leaves this page alone", async ({ page, context }) => {
   await page.goto("/fr");
   await shellIdle(page);
