@@ -3,7 +3,7 @@ import en from "@messages/en.json";
 import fr from "@messages/fr.json";
 import { PROJECTS, PROJECT_SLUGS } from "@/lib/content/projects";
 import { project } from "@/lib/content/schema";
-import { parseEnv } from "@/lib/env";
+import { DEFAULT_CONTACT_FROM, parseEnv } from "@/lib/env";
 import { SITE, todoReport } from "@/lib/site";
 import { isTodo } from "@/lib/todo";
 
@@ -54,11 +54,13 @@ describe("env", () => {
   it("treats empty values as unset and keeps Resend optional", () => {
     expect(parseEnv({ VERCEL_ENV: "", RESEND_API_KEY: "" })).toEqual({
       NODE_ENV: "development",
+      CONTACT_FROM: DEFAULT_CONTACT_FROM,
+      CONTACT_DRY_RUN: "0",
     });
   });
 
   it("rejects an invalid email or environment", () => {
-    expect(() => parseEnv({ CONTACT_TO_EMAIL: "nope" })).toThrow();
+    expect(() => parseEnv({ CONTACT_TO: "nope" })).toThrow();
     expect(() => parseEnv({ VERCEL_ENV: "staging" })).toThrow();
   });
 });

@@ -18,6 +18,11 @@ export const buttonSize = {
   xl: "min-h-16 px-[30px] text-[17px]",
 } as const;
 
+/** Prototype .btn-ghost: a ring in the current colour, the fill sweeping up in ink (moon on
+    night); merge after buttonClass. */
+export const buttonGhost =
+  "bg-transparent text-current shadow-[inset_0_0_0_1.5px_currentColor] before:bg-ink hover:text-paper night:bg-transparent night:text-moon night:before:bg-moon night:hover:text-night";
+
 /** Prototype .link: the secondary text link next to a button. */
 export const textLinkClass =
   "inline-flex min-h-12 items-center text-[15px] font-semibold underline decoration-[color-mix(in_srgb,currentColor_35%,transparent)] decoration-[1.5px] underline-offset-[6px] transition-[text-decoration-color] duration-(--dur-quick) ease-warm hover:decoration-current";

@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { PagePlaceholder } from "@/components/ui/PagePlaceholder";
+import { ContactChannels } from "@/components/sections/contact/ContactChannels";
+import { ContactFormCard } from "@/components/sections/contact/ContactFormCard";
+import { ContactHero } from "@/components/sections/contact/ContactHero";
+import { NextSteps } from "@/components/sections/contact/NextSteps";
+import { WhatsAppCard } from "@/components/sections/contact/WhatsAppCard";
 import { resolveLocale } from "@/i18n/locale";
 import { pageMetadata } from "@/lib/seo";
 
@@ -8,12 +12,23 @@ export async function generateMetadata({
   params,
 }: PageProps<"/[locale]/contact">): Promise<Metadata> {
   const locale = await resolveLocale(params);
-  const t = await getTranslations({ locale, namespace: "pages.contact" });
-  return pageMetadata("/contact", locale, { title: t("title") });
+  const t = await getTranslations({ locale, namespace: "contact.meta" });
+  return pageMetadata("/contact", locale, { title: t("title"), description: t("description") });
 }
 
+// The contact page (prototype contact.html), day with a night WhatsApp card: the hero, then the
+// email form (a server action that works without JavaScript) beside WhatsApp and the next steps.
 export default async function ContactPage({ params }: PageProps<"/[locale]/contact">) {
   const locale = await resolveLocale(params);
-  const t = await getTranslations({ locale, namespace: "pages.contact" });
-  return <PagePlaceholder title={t("title")} lead={t("lead")} />;
+  return (
+    <>
+      <ContactHero />
+      <ContactChannels>
+        <ContactFormCard locale={locale} />
+        <WhatsAppCard>
+          <NextSteps />
+        </WhatsAppCard>
+      </ContactChannels>
+    </>
+  );
 }

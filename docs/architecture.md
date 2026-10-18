@@ -39,6 +39,7 @@ abdelhadev/
 │   │   │   ├── legal/page.tsx  legal notice
 │   │   │   ├── not-found.tsx  error.tsx
 │   │   ├── favicon.ico  icon.svg  apple-icon.png  manifest.ts  robots.ts  sitemap.ts
+│   ├── instrumentation.ts  parses the environment at server start (a bad production env stops boot)
 │   ├── actions/contact.ts
 │   ├── components/
 │   │   ├── brand/      Mark.tsx, Wordmark.tsx, wordmark-paths.ts (generated)
@@ -68,6 +69,11 @@ abdelhadev/
 │   │   ├── site.ts     identity, contact channels, social links, INDEXABLE flag
 │   │   ├── seo.ts      metadata helpers, alternates, JSON-LD builders
 │   │   ├── env.ts      zod-validated environment (server-only parts guarded)
+│   │   ├── contact-schema.ts   the contact form's zod schema and state, shared by form and action
+│   │   ├── contact-handler.ts  the contact action's logic, its mailer, guard and clock passed in
+│   │   ├── mailer.ts   the Resend wrapper (server-only, errors as codes)
+│   │   ├── guard.ts    Arcjet rate limit and bot detection (server-only, fails open)
+│   │   ├── whatsapp.ts pure wa.me message composer
 │   │   ├── utils.ts    cn() and small pure helpers
 │   │   └── content/    projects.ts, case-studies.ts, experience.ts, stack.ts, schema.ts (zod)
 │   ├── i18n/           routing.ts, request.ts, navigation.ts
