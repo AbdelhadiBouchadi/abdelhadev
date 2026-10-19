@@ -1,11 +1,3 @@
-/* The home dusk (prototype #dusk): a 190 vh night section with a sticky stage, where the day ends.
-   Its stage timeline (DuskMotion) turns the sky from paper to sunset to night, crosses the text
-   colours from ink to moon and fades the sub line up; the title lines rise (SplitReveal lines,
-   scrubbed on the section); the slabs fly up and the canvas stops (p3). The shell turns to night
-   at the section's centre (the ToneSection around the stage, start "center 50px").
-
-   Without the fixed sky (no JavaScript, reduced motion) the section is plain night with moon text,
-   in normal flow. */
 import { getTranslations } from "next-intl/server";
 import { DuskMotion } from "@/components/sections/home/DuskMotion";
 import { HOME } from "@/lib/motion";

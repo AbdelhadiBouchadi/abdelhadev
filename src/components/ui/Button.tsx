@@ -1,6 +1,4 @@
-/* Prototype .btn: espresso pill on day, glow on night; the hover fill sweeps up from the bottom
-   (Majorelle on day, moon on night) and the sun dot lifts. Tone comes from the nearest
-   [data-tone="night"] ancestor, as in the prototype. */
+/* The tone comes from the nearest [data-tone="night"] ancestor. */
 import type { ButtonHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
@@ -11,19 +9,17 @@ export const buttonClass = cn(
   "night:bg-glow night:text-night night:before:bg-moon night:hover:text-night",
 );
 
-/** Prototype .btn-sm (header) and .btn-xl (footer call to action); merge after buttonClass. */
+/** Merge after buttonClass. */
 export const buttonSize = {
   sm: "min-h-11 px-[18px] text-[14px]",
   md: "",
   xl: "min-h-16 px-[30px] text-[17px]",
 } as const;
 
-/** Prototype .btn-ghost: a ring in the current colour, the fill sweeping up in ink (moon on
-    night); merge after buttonClass. */
+/** Merge after buttonClass. */
 export const buttonGhost =
   "bg-transparent text-current shadow-[inset_0_0_0_1.5px_currentColor] before:bg-ink hover:text-paper night:bg-transparent night:text-moon night:before:bg-moon night:hover:text-night";
 
-/** Prototype .link: the secondary text link next to a button. */
 export const textLinkClass =
   "inline-flex min-h-12 items-center text-[15px] font-semibold underline decoration-[color-mix(in_srgb,currentColor_35%,transparent)] decoration-[1.5px] underline-offset-[6px] transition-[text-decoration-color] duration-(--dur-quick) ease-warm hover:decoration-current";
 

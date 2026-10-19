@@ -1,12 +1,6 @@
-// The work page (prompts/04-work.md, "Tests"), at 1440 and 390, /fr/projets and /en/work: one
-// sheet and one rail link per public project; the rail follows the scroll and its progress line
-// fills (desktop); the hero link and a #slug URL land on their sheet; the media open (MediaReveal
-// scrub, moved here from the lab bench); complete without JavaScript and under reduced motion;
-// ScrollTriggers return to their baseline after leaving and coming back; axe on /fr/projets.
-// 08b: the order is the work order; the real screens of the media manifest are in the server
-// HTML with their alt and intrinsic size; each loop has a poster, a label and a play/pause button,
-// plays in view and never under reduced motion; no horizontal overflow; the removed e-commerce
-// project is nowhere on the page.
+// The work page at 1440 and 390, in both locales: sheets and rail, the hero link and #slug URLs,
+// the media, the real screens and loops, no JavaScript, reduced motion, the ScrollTrigger
+// baseline and axe.
 import AxeBuilder from "@axe-core/playwright";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { expect, test, type Locator, type Page } from "@playwright/test";
@@ -38,7 +32,6 @@ const MESSAGES: Record<"fr" | "en", WorkMessages> = {
 const PATHS = { fr: "/fr/projets", en: "/en/work" } as const;
 const LOCALES = ["fr", "en"] as const;
 const SLUGS = publicProjects().map((p) => p.slug);
-/** The real screens of each sheet (lib/content/media.map.json through the manifest). */
 const SCREENS = publicProjects().map((p) => ({ slug: p.slug, items: sheetMedia(p) }));
 const VIDEOS = SCREENS.flatMap(({ slug, items }) =>
   items.filter((m) => m.asset.kind === "video").map((item) => ({ slug, item })),
@@ -48,14 +41,12 @@ const LAST = SLUGS.at(-1) ?? "dentaflow";
 const rail = (page: Page) => page.locator("nav.rail");
 const fill = (page: Page) => page.locator("[data-rail-fill]");
 
-/** The scaleY of the rail's progress line. */
 const fillScale = (page: Page) =>
   fill(page).evaluate((el) => {
     const t = getComputedStyle(el).transform;
     return t === "none" ? 1 : Math.round(new DOMMatrixReadOnly(t).d * 1000) / 1000;
   });
 
-/** Every frame in `locator` is fully open and its screen at scale 1. */
 const mediaOpen = (locator: Locator) =>
   locator.evaluateAll((frames) =>
     frames.every((el) => {
@@ -69,7 +60,6 @@ const mediaOpen = (locator: Locator) =>
     }),
   );
 
-/** Every child of the sheet head is visible and in place. */
 const headAtRest = (locator: Locator) =>
   locator.evaluate((el) =>
     [...el.children].every((c) => {
@@ -81,14 +71,11 @@ const headAtRest = (locator: Locator) =>
     }),
   );
 
-/** Where a sheet sits relative to the top of the viewport. */
 const topInView = (locator: Locator) => locator.evaluate((el) => el.getBoundingClientRect().top);
 
-/** The sheet's scroll-margin-top, in px. */
+/** px */
 const scrollMargin = (locator: Locator) =>
   locator.evaluate((el) => parseFloat(getComputedStyle(el).scrollMarginTop));
-
-// ---------- with JavaScript and motion ----------
 
 test.describe("with motion", () => {
   test.beforeEach(async ({ page }) => {
@@ -114,7 +101,7 @@ test.describe("with motion", () => {
         await expect(page.getByRole("article", { name })).toHaveAttribute("id", slug);
       }
 
-      // Hidden below 901 px (as in the prototype), so not by role: the anchors are still there.
+      // Hidden below 901 px, so not by role: the anchors are still there.
       const links = rail(page).locator("a");
       await expect(links).toHaveCount(SLUGS.length);
       expect(await links.evaluateAll((els) => els.map((a) => a.getAttribute("href")))).toEqual(
@@ -130,7 +117,7 @@ test.describe("with motion", () => {
       expect(errors).toEqual([]);
     });
 
-    test(`${locale}: under the list, the GitHub link opens the owner's profile in a new tab`, async ({
+    test(`${locale}: under the list, the GitHub link opens my profile in a new tab`, async ({
       page,
       request,
     }) => {
@@ -303,9 +290,6 @@ test.describe("with motion", () => {
   });
 });
 
-// ---------- without JavaScript, and under reduced motion ----------
-
-/** Nothing in main is hidden or clipped, and no screen is zoomed. */
 async function complete(page: Page) {
   return page.evaluate(() => {
     const hidden = [...document.querySelectorAll("main *")].filter((el) => {
@@ -382,16 +366,12 @@ test.describe("reduced motion", () => {
   });
 });
 
-// ---------- real screens (08b) ----------
-
-/** Step 0.3 of prompts/08b-media.md; a slug that is not a project yet (yoga-booking) is absent. */
-/** The e-commerce project removed in 08b, spelled in two parts so that a search of the
-    repository for its name finds nothing outside docs/prototype/ (the prompt's acceptance). */
+/** The removed e-commerce project, spelled in two parts so a search of the repository for its
+    name finds nothing outside docs/prototype/. */
 const REMOVED = new RegExp(["flow", "shop"].join(""), "i");
 
 const ORDER = ["dentaflow", "meetai", "hms", "yoga-booking", "cote-royale"];
 
-/** Whether each video on the page is paused. */
 const pausedStates = (page: Page) =>
   page
     .locator("main video")
@@ -404,7 +384,7 @@ test("the sheets follow the work order, nothing overflows and the removed projec
   await page.goto(PATHS.fr);
   await shellIdle(page);
   const ids = await page.locator("article.project").evaluateAll((els) => els.map((el) => el.id));
-  // 08c: the five projects, all of them, in the work order.
+  // The five projects, all of them, in the work order.
   expect(ids).toEqual(ORDER);
   expect(ids).toEqual([...WORK_ORDER]);
   await expect(page.locator("body")).not.toContainText(REMOVED);
@@ -417,8 +397,7 @@ test("the sheets follow the work order, nothing overflows and the removed projec
   }
 });
 
-// 09: every project has a confirmed status, shown as a warm chip in the sheet head, never as a
-// fact to confirm.
+// Every project has a confirmed status, shown as a warm chip, never as a fact to confirm.
 test("each sheet shows its project's status in the page's language", async ({ request }, info) => {
   test.skip(info.project.name !== "1440", "server HTML: one width is enough");
   for (const locale of LOCALES) {

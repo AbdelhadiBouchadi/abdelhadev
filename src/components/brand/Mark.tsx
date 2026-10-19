@@ -1,6 +1,4 @@
-/* The sunset mark (brand/logo-mark.svg): the sun above the horizon and its reflection.
-   Colours come from tokens; on night the horizon turns Majorelle soft (logo-mark-night.svg).
-   Decorative by default; pass `title` when the mark is the only content of a link or image. */
+/* Decorative by default; pass `title` when the mark is the only content of a link or image. */
 import { cn } from "@/lib/utils";
 
 export interface MarkProps {

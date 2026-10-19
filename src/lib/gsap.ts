@@ -1,10 +1,6 @@
-/* The only module that imports GSAP packages (ESLint enforces it). Plugins are registered once,
-   in the browser only; everything else imports them from here.
-
-   The core, ScrollTrigger and CustomEase are needed on every page and load with it. SplitText and
-   DrawSVGPlugin are only needed by some leaves, so they load on demand (docs/spikes/tbt.md): their
-   loaders import and register the plugin the first time they are called, and return the same
-   promise after that. */
+/* The only module that imports GSAP (ESLint enforces it). SplitText and DrawSVGPlugin are needed
+   by a few leaves only, so they load on demand (docs/spikes/tbt.md): each loader registers its
+   plugin once and returns the same promise after that. */
 import { gsap } from "gsap";
 import { CustomEase } from "gsap/CustomEase";
 import type { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
@@ -23,7 +19,6 @@ if (typeof window !== "undefined") {
 let splitText: Promise<typeof SplitText> | null = null;
 let drawSVG: Promise<typeof DrawSVGPlugin> | null = null;
 
-/** SplitText, registered once. Browser only. */
 export function loadSplitText(): Promise<typeof SplitText> {
   splitText ??= import("gsap/SplitText").then(({ SplitText: plugin }) => {
     gsap.registerPlugin(plugin);
@@ -32,7 +27,6 @@ export function loadSplitText(): Promise<typeof SplitText> {
   return splitText;
 }
 
-/** DrawSVGPlugin, registered once. Browser only. */
 export function loadDrawSVG(): Promise<typeof DrawSVGPlugin> {
   drawSVG ??= import("gsap/DrawSVGPlugin").then(({ DrawSVGPlugin: plugin }) => {
     gsap.registerPlugin(plugin);

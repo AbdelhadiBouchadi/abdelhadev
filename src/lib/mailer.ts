@@ -1,8 +1,4 @@
-/* The one place that talks to Resend. The contact handler depends on the `Mailer` interface, so
-   its tests pass a fake and never touch the network. Each message goes out as the React template
-   (src/emails/contact-form.tsx, which Resend renders with @react-email/render) and its plain-text
-   twin. A failure comes back as a value with a provider code only: Resend's message text never
-   leaves this module (it is not logged and never reaches the browser). */
+/* Resend's message text never leaves this module: a failure comes back with a provider code only. */
 import "server-only";
 import { createElement } from "react";
 import { Resend } from "resend";
@@ -13,9 +9,7 @@ export interface Mail {
   to: string;
   replyTo: string;
   subject: string;
-  /** The plain-text version. */
   text: string;
-  /** What the HTML template shows. */
   content: ContactEmailProps;
 }
 

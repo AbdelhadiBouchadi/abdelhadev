@@ -1,9 +1,5 @@
-/* Scrubs one element between two sets of plain values over a scroll range (the home hero word
-   settling and its meta fading, the about arcs expanding, the home 3D layer dimming, the footer
-   wordmark rising). The wrapper is the element that moves, so its children keep their own
-   transforms. Only transform and opacity values: anything with several coordinated elements is a
-   section's own timeline (useStageTimeline), not a Scrub. Under reduced motion, and without
-   JavaScript, the element stays at its CSS state. */
+/* The wrapper is the element that moves, so its children keep their own transforms. Several
+   coordinated elements belong in a section's own timeline (useStageTimeline), not a Scrub. */
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import { ScrubMotion, type ScrubMotionProps } from "@/primitives/ScrubMotion";
 

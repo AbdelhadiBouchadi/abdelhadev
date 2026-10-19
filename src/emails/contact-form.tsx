@@ -1,23 +1,16 @@
-/* The email the owner receives for each contact form message (src/lib/mailer.ts sends it as
-   Resend's `react`, with a plain-text twin). Owner-only, so always in French (docs/decisions.md).
-
-   Email clients ignore CSS variables, stylesheets and web fonts, so this file breaks the token
-   rule on purpose: every value is copied by hand from src/styles/tokens.css (named beside each
-   one), styles are inline, the font is a system stack, and the layout is one table column of at
-   most 560 px. It is on the check:tokens allow-list and has its own ESLint block for that reason.
-   Plain table markup rather than @react-email/components (deprecated on npm); rendered by
-   @react-email/render. React escapes every value, so a message containing HTML arrives as text. */
+/* Email clients ignore CSS variables, stylesheets and web fonts, so this file breaks the token rule
+   on purpose: each value is copied from src/styles/tokens.css and named beside it. React escapes
+   every value, so a message containing HTML arrives as text. Always French: it is only for me. */
 import type { CSSProperties, ReactNode } from "react";
 
 export interface ContactEmailProps {
   name: string;
   email: string;
-  /** The topic as the form shows it, in French. */
   topic: string;
   message: string;
-  /** The page language the visitor wrote from ("fr" or "en"). */
+  /** The page language the visitor wrote from. */
   locale: string;
-  /** When it was sent, already formatted. */
+  /** Already formatted. */
   sentAt: string;
 }
 

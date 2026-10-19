@@ -1,7 +1,5 @@
-// Motion evidence for the case study (prompts/05-case-study.md, "Evidence"), in test-results/motion/,
-// to compare with docs/prototype/dentaflow.html: three clips at 1440 (the hero intro, the tour, the
-// architecture drawing), the end-state stills of the hero and the architecture, and one full-page
-// still at 390. LineDraw is filmed here since the lab bench was removed in 05.
+// Videos and stills of the case study's motion in test-results/motion/, to compare with
+// docs/prototype/dentaflow.html.
 import { mkdirSync, rmSync } from "node:fs";
 import { test, type Page } from "@playwright/test";
 import { DESKTOP, MOTION_OUT, PHONE, record, wheel } from "./motion-helpers";
@@ -16,7 +14,7 @@ test.beforeEach(() => {
   mkdirSync(MOTION_OUT, { recursive: true });
 });
 
-/** Jumps so the top of `selector` sits `offset` px below the top of the viewport. */
+/** Puts the top of `selector` `offset` px below the top of the viewport. */
 async function at(page: Page, selector: string, offset = 0) {
   const top = await page
     .locator(selector)

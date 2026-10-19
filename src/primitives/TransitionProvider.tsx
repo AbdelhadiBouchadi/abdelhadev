@@ -1,17 +1,8 @@
 "use client";
 
-/* The route curtain (decision T8, design from docs/spikes/route-curtain.md). A small state machine:
-   idle → leaving (the panel rises, the sun sets) → covered (router.push) → arriving (the short
-   loader runs on the new page, then the panel lifts) → idle.
-
-   - The overlay itself is the Loader (components/layout/Loader.tsx), reached through the port in
-     lib/shell.ts: one panel for the first visit, the curtain and the arrival, as in the prototype.
-   - Arrival is a layout effect keyed on the pathname value (spike finding 3: idempotent under
-     StrictMode). Back and Forward arrive without `leave`, so the effect covers the page before the
-     browser paints it (finding 4).
-   - After arrival: scroll to the top or the hash, ScrollTrigger.refresh() (the old page's triggers
-     were already reverted by their own useGSAP scopes on unmount), focus on the new h1.
-   - Clicks while a curtain is up are ignored. */
+/* idle → leaving → covered (router.push) → arriving → idle. Arrival is a layout effect keyed on
+   the pathname, which stays idempotent under StrictMode (docs/spikes/route-curtain.md); Back and
+   Forward arrive without `leave`, so the effect covers the page before the browser paints it. */
 import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
 import { createContext, use, useMemo, useRef, type ReactNode } from "react";
@@ -24,11 +15,10 @@ import { getOverlay, resetReady, routeKind, shellBusy, shellRegistry } from "@/l
 import { applyShellTone, toneAt } from "@/lib/tone";
 import { useSmoothScroll } from "@/primitives/SmoothScroll";
 
-/** An internal, typed href (the same type next-intl's router takes). */
 export type TransitionHref = Parameters<typeof getPathname>[0]["href"];
 
 export interface RouteTransitionApi {
-  /** Covers the page, then navigates. `hash` is kept apart because router.push cannot carry one. */
+  /** `hash` is kept apart because router.push cannot carry one. */
   navigate: (href: TransitionHref, hash?: string) => void;
 }
 
@@ -71,7 +61,7 @@ export function TransitionProvider({ children }: TransitionProviderProps) {
         const path = getPathname({ locale, href });
         const url = hash ? `${path}#${hash}` : path;
 
-        // The current page: scroll there through Lenis, no curtain (prototype behaviour).
+        // The current page: scroll there through Lenis, no curtain.
         if (isSamePath(path, location.pathname)) {
           const target = findHashTarget(hash);
           if (target) history.pushState(history.state, "", `#${hash}`);
@@ -91,7 +81,7 @@ export function TransitionProvider({ children }: TransitionProviderProps) {
           phase.current = "covered";
           // Only now, with the old page hidden, so its intro elements do not vanish in view.
           resetReady();
-          // scroll: false, or Next scrolls the old page before the new one renders (finding 7).
+          // scroll: false, or Next scrolls the old page before the new one renders.
           router.push(url, { scroll: false });
         });
       },

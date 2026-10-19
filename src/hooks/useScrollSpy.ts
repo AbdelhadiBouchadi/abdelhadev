@@ -5,21 +5,17 @@ import { SPY } from "@/lib/motion";
 import { lineRange, SPY_START, spyReduce } from "@/lib/scroll";
 
 export interface ScrollSpyOptions {
-  /** The activation line as a fraction of the viewport height from the top: SPY.list (0.45) for
-      lists such as the work rail, SPY.tour (0.55) for the case study tour. */
+  /** A fraction of the viewport height from the top. */
   line?: number;
 }
 
 export interface ScrollSpy {
-  /** Index into `ids` of the element crossing the line, or -1 before the first one reaches it. */
+  /** -1 before the first element reaches the line. */
   activeIndex: number;
   activeId: string | null;
 }
 
-/** Which of the elements with these ids is crossing the activation line (prototype Pages.work rail
-    and Pages.case tour), through one ScrollTrigger per element and its onToggle. Not an animation,
-    so it runs with and without reduced motion. The triggers die with the component; nothing
-    updates while the page cannot scroll. */
+/** Not an animation, so it runs with and without reduced motion. */
 export function useScrollSpy(
   ids: readonly string[],
   { line = SPY.list }: ScrollSpyOptions = {},

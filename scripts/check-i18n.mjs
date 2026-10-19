@@ -1,5 +1,5 @@
-// pnpm check:i18n: fr.json and en.json have identical keys, no empty values, no prices, and no
-// [TODO placeholders when REQUIRE_CONTENT=1. Rules: scripts/lib/i18n-rules.mjs.
+// Identical keys in fr.json and en.json, no empty values, no prices, and no [TODO placeholders
+// when REQUIRE_CONTENT=1.
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { checkMessages } from "./lib/i18n-rules.mjs";

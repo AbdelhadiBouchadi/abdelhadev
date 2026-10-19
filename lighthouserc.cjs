@@ -1,8 +1,6 @@
-// Lighthouse CI: measure, don't gate (docs/quality.md, "Budgets"). The owner sets budgets from the
-// baseline in docs/baseline.md. Only these assertions hold today:
-// - accessibility 100
-// - CLS at most 0.02
-// - the individual SEO audits except is-crawlable (fails by design outside production, where every page is noindex).
+// Measure, don't gate (docs/quality.md). Budgets come from the baseline in docs/baseline.md; only
+// these assertions hold today: accessibility 100, CLS at most 0.02, and the SEO audits except
+// is-crawlable, which fails by design outside production (every page is noindex there).
 const PORT = 3000;
 const ROUTES = ["/fr", "/en", "/fr/projets", "/fr/mentions-legales"];
 
@@ -25,7 +23,7 @@ module.exports = {
       startServerReadyPattern: "Ready",
       url: ROUTES.map((route) => `http://localhost:${PORT}${route}`),
       numberOfRuns: 3,
-      // Default Lighthouse settings: the mobile profile (Moto G Power, simulated slow 4G, 4x CPU).
+      // The default mobile profile: Moto G Power, simulated slow 4G, 4x CPU.
       settings: { chromeFlags: "--no-sandbox --headless=new" },
     },
     assert: {
@@ -36,7 +34,7 @@ module.exports = {
       },
     },
     upload: {
-      // Reports stay on the machine or in the CI artifact; nothing is sent to a public server.
+      // Reports stay on the machine or in the CI artifact; nothing goes to a public server.
       target: "filesystem",
       outputDir: ".lighthouseci/reports",
     },

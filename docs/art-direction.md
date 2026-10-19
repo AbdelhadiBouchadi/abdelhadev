@@ -1,6 +1,6 @@
 # Art direction
 
-The visual spec is the prototype in `docs/prototype/` (`assets/site.css` holds every value). This file explains the system so agents keep it consistent.
+The visual spec is the prototype in `docs/prototype/` (`assets/site.css` holds every value). This file explains the system so it stays consistent.
 
 ## Concept: an Agadir day
 
@@ -49,7 +49,7 @@ Majorelle is never a resting button fill. Buttons: espresso (`--ink`) on day, `-
 
 - Real product screenshots with seeded fake data, inside rounded frames. Until they exist, the CSS placeholder screens from the prototype (`.screen`) are used and labelled "Screenshot to come".
 - The home 3D scene: glossy floating slabs carrying UI screens (agenda, patient record, chart, invoice, AI chat, calendar) and two capsules (one Majorelle, one glow), warm key light and a cool rim light.
-- No stock photos, no AI-generated people, no photos of the owner.
+- No stock photos, no AI-generated people, no photos of me.
 
 ## Brand
 

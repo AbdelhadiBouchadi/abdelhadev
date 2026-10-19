@@ -1,6 +1,3 @@
-/* The floating pill under 761 px (decision D8, prototype .pill): Work, the home mark, About.
-   Shown and hidden by the same breakpoint as the prototype, above the bottom safe area, every tap
-   target at least 44 px. Follows the section tone (data-shell). */
 import { getTranslations } from "next-intl/server";
 import { Mark } from "@/components/brand/Mark";
 import { NavLink } from "@/components/layout/NavLink";

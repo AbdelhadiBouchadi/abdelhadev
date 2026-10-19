@@ -1,5 +1,5 @@
-// The browser receives only CLIENT_NAMESPACES (src/i18n/client-messages.ts). Every namespace a
-// Client Component translates with must be in that list, or its strings are missing at runtime.
+// Every namespace a Client Component translates with must be in CLIENT_NAMESPACES, or its strings
+// are missing at runtime.
 import { readdirSync, readFileSync } from "node:fs";
 import { join, relative } from "node:path";
 import { fileURLToPath } from "node:url";

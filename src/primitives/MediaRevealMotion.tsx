@@ -1,7 +1,7 @@
 "use client";
 
-/* The client leaf of MediaReveal. The radius comes from its token, read once (lib/css.ts), so the
-   tweened clip-path string carries the token's value. */
+/* The radius is read from its token once (lib/css.ts), so the tweened clip-path string carries
+   the token's value. */
 import { useRef } from "react";
 import { useMotion } from "@/hooks/useMotion";
 import { useReadyGate } from "@/hooks/useReadyGate";

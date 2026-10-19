@@ -1,12 +1,11 @@
-/* Lenis driven by gsap.ticker, as in the prototype: one clock for scroll and animation.
-   Mounted by SmoothScroll in 01; nothing creates it yet. */
+/* Driven by gsap.ticker: one clock for scroll and animation. */
 import Lenis, { type LenisOptions } from "lenis";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { LENIS } from "@/lib/motion";
 
 export interface SmoothScroll {
   lenis: Lenis;
-  /** Removes the ticker hook and destroys the instance. Safe to call twice (StrictMode). */
+  /** Safe to call twice (StrictMode). */
   destroy: () => void;
 }
 

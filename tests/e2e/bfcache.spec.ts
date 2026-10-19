@@ -1,11 +1,8 @@
-// Back/forward cache (01 listed it as not verified): a page restored from the bfcache must come
-// back usable, with the overlay gone, nothing inert and scrolling working (Loader's `pageshow`
-// handler).
+// A page restored from the bfcache must come back usable: overlay gone, nothing inert, scrolling.
 //
-// Playwright's Chromium cannot restore from the bfcache: even with --disable-back-forward-cache
-// dropped, Chromium reports `BackForwardCacheDisabledForDelegate` (the automation embedder turns it
-// off, on any site). So this drives the handler directly, with the state a page frozen under the
-// curtain has, and a `pageshow` event whose `persisted` is true.
+// Playwright's Chromium cannot restore from the bfcache (BackForwardCacheDisabledForDelegate,
+// the automation embedder turns it off), so this drives the Loader's pageshow handler directly
+// with the state of a page frozen under the curtain.
 import { expect, test } from "@playwright/test";
 import { shellIdle, visited } from "./shell-helpers";
 

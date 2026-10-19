@@ -1,6 +1,6 @@
 # Performance baseline (00-foundation)
 
-Measured 2026-10-17 on `feat/00-foundation`, so the owner can set budgets (decision: no budget is enforced before it is measured). Nothing here is a gate yet; Lighthouse CI asserts only accessibility 100, CLS at most 0.02 and the individual SEO audits except `is-crawlable`.
+Measured 2026-10-17 on `feat/00-foundation`, so I can set budgets (decision: no budget is enforced before it is measured). Nothing here is a gate yet; Lighthouse CI asserts only accessibility 100, CLS at most 0.02 and the individual SEO audits except `is-crawlable`.
 
 ## How it was measured
 
@@ -24,11 +24,11 @@ SEO 66 is expected: `is-crawlable` fails by design outside production (`VERCEL_E
 ## Reading the numbers
 
 - **Observed LCP equals FCP** (0.10 to 0.15 s): the text paints at once. The **simulated** LCP of 2.6 to 3.0 s is Lighthouse's estimate on a slow phone, where Lighthouse attributes 82 % to "render delay": the page waits on two preloaded font files and the JavaScript before its estimated largest paint.
-- **Fonts are the largest transfer (185 KiB).** Bricolage Grotesque with its `opsz` and `wdth` axes is one 129 KiB file; Instrument Sans with `wdth` is 56 KiB. `next/font` only accepts extra axes when the weight is variable, so the full weight range ships (Bricolage 200 to 800 instead of the 500 to 800 the design uses). Options for the owner: keep it; drop the `opsz` axis (the design uses `opsz` 24 to 96 for optical sizing, so this is a visual trade); or self-host a subset file with `next/font/local` and a tool such as `fonttools` limited to the used weight and width ranges (likely the largest saving).
+- **Fonts are the largest transfer (185 KiB).** Bricolage Grotesque with its `opsz` and `wdth` axes is one 129 KiB file; Instrument Sans with `wdth` is 56 KiB. `next/font` only accepts extra axes when the weight is variable, so the full weight range ships (Bricolage 200 to 800 instead of the 500 to 800 the design uses). Options: keep it; drop the `opsz` axis (the design uses `opsz` 24 to 96 for optical sizing, so this is a visual trade); or self-host a subset file with `next/font/local` and a tool such as `fonttools` limited to the used weight and width ranges (likely the largest saving).
 - **JavaScript is the framework floor** (155 KiB transferred on every route: React, Next's App Router, next-intl's client provider and the locale switch). GSAP, Lenis and the loader arrive in 01; the 3D chunk (185 to 243 KiB gzip, measured in `docs/spikes/r3f.md`) is home-only and lazy.
 - **Lighthouse can miss LCP regressions caused by the loader** (`docs/spikes/loader-lcp.md`): gate LCP with the PerformanceObserver method from S3, not with Lighthouse alone.
 
-## Proposals for the owner (from docs/quality.md, adjusted to these numbers)
+## Proposals (from docs/quality.md, adjusted to these numbers)
 
 | Metric | Proposal |
 | --- | --- |
@@ -71,7 +71,7 @@ The LCP element is the hero text (the lead paragraph on the placeholder pages), 
 
 **In-browser LCP (S3 method)**, `tests/e2e/lcp.spec.ts` writing `test-results/shell/lcp.json`, 390 px, 150 ms RTT, 1.6 Mbps, CPU 4x. Run alone: first visit 1.04 s, visited load 0.97 s. Run inside the full parallel suite (the file the last run left): 1.17 s and 0.81 s. The hero lead is the LCP element every time, and Chrome reports no LCP entry for the client-side route change. On that profile the loader is up until 6.4 s (first visit) and 6.8 s (visited) when run alone, and 7.9 s and 8.1 s inside the parallel suite: hydration arrives close to the 4.5 s ceiling, then the final push (0.45 s) and the exit (1.45 s) play. With 4x CPU and that network the boot script's 7 s fail-safe fired once in an earlier probe run of the production build.
 
-### Proposals for the owner, updated
+### Proposals, updated
 
 | Metric | Proposal |
 | --- | --- |
@@ -104,7 +104,7 @@ Same machine and tools. Full method and attribution: `docs/spikes/tbt.md`.
 
 The loader ceiling now bounds when the exit starts (3300 ms), so a slow task can no longer keep the overlay up past 4.75 s plus main-thread lateness. On the throttled profile the overlay still ends between 4.7 and 5.5 s, because it follows the end of hydration (`docs/spikes/tbt.md`, "What remains").
 
-### Proposals for the owner
+### Proposals
 
 | Metric | Proposal |
 | --- | --- |
@@ -160,7 +160,7 @@ Same machine and tools. `/fr` and `/en` are now the real home page: the hero, th
 | Overlay gone, first visit | 3.51 to 3.54 s normal; 5.33 to 5.40 s throttled | 01b: 4.91 s throttled median on the shell alone. The 5 s rule holds unthrottled (`loader.spec.ts`); throttled it is over |
 | Lighthouse accessibility | `/fr` 96 (fails the 100 assertion), `/en` 100 | color-contrast on the manifesto's unlit words (WordsLight at 0.14 opacity, 1.32:1), reported, not changed |
 
-### Proposed budgets (for the owner)
+### Proposed budgets
 
 | Metric | Proposal |
 | --- | --- |

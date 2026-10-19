@@ -1,6 +1,5 @@
-// Motion evidence for the home page (prompts/03-home.md): short videos and end-state screenshots
-// in test-results/motion/, to compare with docs/prototype/index.html. Recorded once, from the 1440
-// project; each clip opens its own context at the size it shows.
+// Videos and stills of the home page's motion in test-results/motion/, to compare with
+// docs/prototype/index.html. Each clip opens its own context at the size it shows.
 import { mkdirSync } from "node:fs";
 import { test, type Page } from "@playwright/test";
 import { DESKTOP, MOTION_OUT, PHONE, record, wheel } from "./motion-helpers";
@@ -16,7 +15,7 @@ test.beforeEach(() => {
 const topOf = (page: Page, selector: string) =>
   page.locator(selector).evaluate((el) => el.getBoundingClientRect().top + window.scrollY);
 
-/** Steps the native scroll from `from` to `to` (works on touch emulation, where wheel does not). */
+/** Native scroll, so it works on touch emulation, where wheel does not. */
 async function glide(page: Page, from: number, to: number, step = 40) {
   const dir = Math.sign(to - from);
   for (let y = from; dir * (to - y) > 0; y += dir * step) {

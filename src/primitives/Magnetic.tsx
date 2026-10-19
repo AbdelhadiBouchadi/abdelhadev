@@ -1,9 +1,6 @@
 "use client";
 
-/* The prototype's `.magnetic` (initCursor): the wrapper follows the pointer by 22 % horizontally
-   and 30 % vertically of its offset from the centre, through quickTo (0.6 s, warm), and returns on
-   leave. Fine pointers only, off under reduced motion. GSAP moves the wrapper, never the child,
-   so the child keeps its own Tailwind transforms (AGENTS.md, Motion rules). */
+/* GSAP moves the wrapper, never the child, so the child keeps its own Tailwind transforms. */
 import { useRef, type ReactNode } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { DURATION, EASE, MAGNETIC, MEDIA } from "@/lib/motion";

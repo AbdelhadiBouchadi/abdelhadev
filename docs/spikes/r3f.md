@@ -51,12 +51,12 @@ Chromium launched with `--disable-webgl --disable-webgl2 --disable-3d-apis`: bot
 
 - **Colour**: R3F defaults to ACES filmic tone mapping. Without `flat` the slabs render washed out and do not match the prototype or the plain variant; with `flat` (no tone mapping) they match.
 - **Deprecation**: R3F 9.8.2 with three r186 logs `THREE.Clock: This module has been deprecated` on every load. Harmless today, but R3F trails three's API.
-- **Colours from tokens**: three.js takes colours as numbers or strings, which escaped `check:tokens`. The rule now also flags `0xrrggbb` (committed on this branch). The spike read every colour from the CSS tokens with `getComputedStyle`. The prototype's light colours (`0xfff1e6`, `0xfff4ea`, `0xd9a58a`, `0xffd2b0`, `0x6f80ff`) and the placeholder screen colours are not tokens; the spike approximated them with `sheet`, `sunset` and `majorelle-soft`. 03 needs the owner to decide whether these become tokens.
+- **Colours from tokens**: three.js takes colours as numbers or strings, which escaped `check:tokens`. The rule now also flags `0xrrggbb` (committed on this branch). The spike read every colour from the CSS tokens with `getComputedStyle`. The prototype's light colours (`0xfff1e6`, `0xfff4ea`, `0xd9a58a`, `0xffd2b0`, `0x6f80ff`) and the placeholder screen colours are not tokens; the spike approximated them with `sheet`, `sunset` and `majorelle-soft`. Whether these become tokens is still to decide.
 - **Cleanup**: R3F disposes the renderer on unmount on its own; the plain variant needs an explicit `dispose()` for renderer, geometries, materials and textures (about 10 lines).
 
 ## Recommendation
 
-**Use plain three.js for the home scene in 03**, inside one client component (`components/three/HeroScene.tsx`) loaded with `next/dynamic` and `ssr: false`, with the poster as its fallback. This changes provisional decision T6, so it is the owner's call; `decisions.md` and `AGENTS.md` are unchanged, and `three`, `@react-three/fiber` and `@react-three/drei` stay installed until the owner decides.
+**Use plain three.js for the home scene in 03**, inside one client component (`components/three/HeroScene.tsx`) loaded with `next/dynamic` and `ssr: false`, with the poster as its fallback. This changes provisional decision T6, so it is my call; `decisions.md` and `AGENTS.md` are unchanged, and `three`, `@react-three/fiber` and `@react-three/drei` stay installed until I decide.
 
 Why:
 
@@ -64,7 +64,7 @@ Why:
 2. R3F costs 58 KiB gzip more (31 %) for the same scene and the same first frame. On a mobile network that is roughly 0.3 s more download on a chunk that already arrives late.
 3. R3F needs `flat` to match the art direction and currently logs a deprecation with three r186.
 
-What R3F would give, if the owner keeps it: React lifecycle cleanup and `frameloop="demand"` for free, and drei helpers later. If it stays, use `flat`, `frameloop="demand"` under reduced motion and `dpr={[1, 1.75]}`.
+What R3F would give, if I keep it: React lifecycle cleanup and `frameloop="demand"` for free, and drei helpers later. If it stays, use `flat`, `frameloop="demand"` under reduced motion and `dpr={[1, 1.75]}`.
 
 For 03 either way:
 

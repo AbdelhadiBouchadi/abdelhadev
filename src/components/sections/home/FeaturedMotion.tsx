@@ -1,12 +1,6 @@
 "use client";
 
-/* The featured work's stage timeline (prototype Pages.home, #build).
-   - Desktop (sticky 300 vh): the copy fades up, then the four screens open from the bottom
-     (clip-path) while their inner screens settle from 1.22, one after another, scrubbed.
-   - Mobile (normal flow): the copy fades up when it enters; each screen opens on its own range as
-     it enters.
-   - Reduced motion: nothing is built and everything is at rest.
-   The start states are CSS under html.motion (styles/home.css). */
+/* The start states are CSS under html.motion (styles/home.css). */
 import { readToken, motionAllowed } from "@/lib/css";
 import { gsap } from "@/lib/gsap";
 import { EASE, HOME, SCRUB, STAGGER } from "@/lib/motion";

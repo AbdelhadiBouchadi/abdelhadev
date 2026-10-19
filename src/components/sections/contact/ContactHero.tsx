@@ -1,6 +1,3 @@
-/* The contact hero (prototype .contact-hero), day. The title lines rise at the loader's ready
-   signal (SplitReveal); the lead fades up CONTACT.lead.delay after it (Reveal). Painted under the
-   loader overlay, complete without JavaScript and under reduced motion. */
 import { getTranslations } from "next-intl/server";
 import { CONTACT } from "@/lib/motion";
 import { Reveal } from "@/primitives/Reveal";

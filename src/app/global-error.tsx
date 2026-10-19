@@ -1,11 +1,8 @@
 "use client";
 
-/* An error in the root layout itself: this page replaces it, so it renders its own <html> and
-   has no providers. The language comes from the first segment of the address. Its strings are
-   the `errors` group of that locale's catalogue, imported lazily: a static import would put both
-   whole catalogues in a chunk every page loads, for a page that almost never shows. `use()`
-   resolves the import while the server renders, and in the browser only when this page appears.
-   Plain links and buttons, the site's fonts and tokens. */
+/* Replaces the root layout, so it renders its own <html> and has no providers. Its strings are
+   imported lazily: a static import would put both whole catalogues in a chunk every page loads,
+   for a page that almost never shows. */
 import type { ErrorInfo } from "next/error";
 import { usePathname } from "next/navigation";
 import { use } from "react";

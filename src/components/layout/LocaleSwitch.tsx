@@ -1,10 +1,8 @@
 "use client";
 
-/* The locale switch is a plain link, so switching is a full page load (decision T2): a client-side
-   switch re-rendered the root layout and dropped the html classes set before paint. It is a client
-   component only to read the current route; the server renders the same href, so it works
-   without JavaScript. Visible as "FR / EN" with the current locale marked; the accessible name
-   adds the target language in that language. */
+/* A plain link, so switching is a full page load: a client-side switch re-rendered the root
+   layout and dropped the html classes set before paint. The server renders the same href, so it
+   works without JavaScript. */
 import { useLocale, useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { getPathname, usePathname } from "@/i18n/navigation";

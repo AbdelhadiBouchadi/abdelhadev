@@ -1,8 +1,8 @@
-// Helpers for specs that run with the shell (loader, curtain, Lenis). No test-only switches exist in
-// the app: specs drive it the way a visitor does, through sessionStorage and the html classes.
+// The app has no test-only switches: specs drive it the way a visitor does, through
+// sessionStorage and the html classes.
 import type { Page } from "@playwright/test";
 
-/** Marks the session as visited before any script runs, so every load plays the short loader. */
+/** Every load then plays the short loader. */
 export async function visited(page: Page): Promise<void> {
   await page.addInitScript(() => {
     try {
@@ -13,7 +13,6 @@ export async function visited(page: Page): Promise<void> {
   });
 }
 
-/** Waits until the loader or curtain is gone and nothing is inert. */
 export async function shellIdle(page: Page, timeout = 12_000): Promise<void> {
   try {
     await page.waitForFunction(
@@ -41,8 +40,7 @@ export async function shellIdle(page: Page, timeout = 12_000): Promise<void> {
   }
 }
 
-/** Records, from navigation start, when html gets `ready` and `loader-off`, and whether the
-    horizon was drawn in (its transform changes only during the first-visit draw-in). */
+/** The horizon's transform changes only during the first-visit draw-in. */
 export async function recordLoader(page: Page): Promise<void> {
   await page.addInitScript(() => {
     const marks: Record<string, number> = {};
@@ -97,14 +95,14 @@ export async function loaderRecord(page: Page): Promise<LoaderRecord> {
   });
 }
 
-/** Scrolls the window (Lenis follows native scroll) and lets ScrollTrigger catch up. */
+/** Lenis follows native scroll. */
 export async function scrollToY(page: Page, y: number): Promise<void> {
   await page.evaluate((top) => {
     window.scrollTo({ top, behavior: "instant" });
   }, y);
 }
 
-/** Waits until no CSS transition or animation is running (tone colours take 0.6 s). */
+/** Tone colours take 0.6 s. */
 export async function transitionsSettled(page: Page): Promise<void> {
   await page.waitForFunction(() =>
     document.getAnimations().every((a) => a.playState !== "running"),

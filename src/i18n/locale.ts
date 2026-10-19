@@ -1,4 +1,3 @@
-/* Route helper: narrows the [locale] param, 404s on anything else, and enables static rendering. */
 import { hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";

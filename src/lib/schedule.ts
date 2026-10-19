@@ -1,19 +1,11 @@
-/* One shared task after React's commit, for the primitives' GSAP setup (docs/spikes/tbt.md).
-
-   useGSAP runs inside the hydration commit, where every primitive's setup would interleave GSAP's
-   style writes with ScrollTrigger's layout reads in the one long task React is already running.
-   Primitives queue their setup here instead: it runs in the next macrotask, all together, under
-   the loader overlay (or the route curtain), and before the intro is allowed to start. A queued
-   task that is cancelled (unmount, StrictMode's simulated unmount) never runs.
-
-   Framework-free and timer-injectable so tests/unit can drive it. */
+/* useGSAP runs inside the hydration commit, where every primitive's setup would interleave GSAP's
+   style writes with ScrollTrigger's layout reads in one long task. Queued here, they run together
+   in the next macrotask, under the loader or the curtain (docs/spikes/tbt.md). */
 
 export type Task = () => void;
 
 export interface Scheduler {
-  /** Queues `task` for the next flush. Returns a cancel function. */
   afterCommit: (task: Task) => () => void;
-  /** Runs every queued task now (tests). */
   flush: () => void;
 }
 
@@ -53,5 +45,4 @@ export function createScheduler(
 
 const shared = createScheduler();
 
-/** Queues `task` for the shared flush after the current commit. Returns a cancel function. */
 export const afterCommit: Scheduler["afterCommit"] = shared.afterCommit;

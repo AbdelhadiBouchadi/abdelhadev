@@ -1,17 +1,14 @@
-// Renders the home 3D scene's poster: the resting composition (the scene's still mode, the same
-// frame reduced motion shows), drawn by the real scene, on a transparent background, as WebP at
-// the desktop and mobile aspect ratios. A dev tool, not part of CI. The output is committed under
-// public/media/ and shown without WebGL, when the scene fails and without JavaScript.
+// Renders the home scene's resting composition as WebP posters (desktop and mobile), shown without
+// WebGL, when the scene fails and without JavaScript. A dev tool, not part of CI.
 //
-// Usage: pnpm build && pnpm start, then in another shell:
-//   node scripts/capture-scene-poster.mjs [baseURL]   (default http://localhost:3000)
+// Usage: pnpm build && pnpm start, then node scripts/capture-scene-poster.mjs [baseURL]
 import { mkdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { chromium } from "@playwright/test";
 
 const BASE = process.argv[2] ?? "http://localhost:3000";
 const OUT = resolve(import.meta.dirname, "../public/media");
-/** WebP quality: the poster sits behind the page, a soft image is fine and keeps it small. */
+/** The poster sits behind the page, so a soft image is fine and keeps it small. */
 const QUALITY = 0.72;
 
 const SHOTS = [

@@ -1,7 +1,4 @@
-/* What I build (new in 06, in the timeline's row style), day: the five kinds of software in the
-   owner's fixed order (src/lib/content/about.ts), an ordered list because the order is his
-   priority. Each row has its title and one line; the rows fade up one ABOUT.stagger.services apart
-   when the list enters (Reveal). A Contact link closes the section. */
+/* An ordered list: the order is my priority. */
 import { getTranslations } from "next-intl/server";
 import { ArrowLink } from "@/components/ui/ArrowLink";
 import { SERVICES } from "@/lib/content/about";

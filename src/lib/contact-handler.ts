@@ -1,11 +1,6 @@
-/* What the contact action does, with its outside world passed in (mailer, guard, clock, log), so
-   every branch is unit-tested without the network. The order:
-     1. the honeypot: filled means a bot; report success and send nothing;
-     2. validation with the shared schema: field errors, the visitor's words kept;
-     3. dry run (tests): success, no Arcjet, no Resend;
-     4. Arcjet: rate limit (a translated error) and bots (a silent success);
-     5. one email through Resend (the template and its plain-text twin), replying to the visitor.
-   Logs are fixed phrases and provider codes: never the name, the email or the message. */
+/* The outside world (mailer, guard, clock, log) comes in as arguments, so every branch is
+   unit-tested without the network. Logs hold fixed phrases and provider codes, never what the
+   visitor typed. */
 import "server-only";
 import {
   readContactForm,
@@ -22,13 +17,12 @@ import { SITE } from "@/lib/site";
 
 export interface ContactDeps {
   dryRun: boolean;
-  /** null when the key is missing (allowed outside production only, src/lib/env.ts). */
+  /** null outside production when the key is missing (src/lib/env.ts). */
   mailer: Mailer | null;
   guard: Guard | null;
   from: string;
-  /** The private inbox. null when unset (outside production only). */
   to: string | null;
-  /** The topic as the form shows it, in French: the email is for the owner only. */
+  /** In French whatever the page language: the email is only for me. */
   topicLabel: (data: ContactData) => Promise<string>;
   now: () => Date;
   log: (line: string) => void;
@@ -37,7 +31,7 @@ export interface ContactDeps {
 /** "[Abdelhadev] Une boutique en ligne - Amina" */
 export const contactSubject = (topic: string, name: string) => `[Abdelhadev] ${topic} - ${name}`;
 
-/** When the message was sent, as the owner reads it (French, Agadir time). */
+/** French, Agadir time. */
 export const sentAt = (at: Date) =>
   new Intl.DateTimeFormat("fr-FR", {
     dateStyle: "long",
@@ -45,7 +39,6 @@ export const sentAt = (at: Date) =>
     timeZone: SITE.timeZone,
   }).format(at);
 
-/** What the email template shows (src/emails/contact-form.tsx). No IP address. */
 export function contactContent(data: ContactData, topic: string, at: Date): ContactEmailProps {
   return {
     name: data.name,
@@ -57,7 +50,6 @@ export function contactContent(data: ContactData, topic: string, at: Date): Cont
   };
 }
 
-/** The template's plain-text twin, in French: the same data in the same order. */
 export function contactBody(data: ContactData, topic: string, at: Date): string {
   return [
     "Nouveau message depuis abdelhadev.me",

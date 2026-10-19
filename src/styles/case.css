@@ -1,15 +1,5 @@
-/* The case study (docs/prototype/assets/site.css: .case-*, .facts, .tour*, .steps, .arch*,
-   .diagram*, .next-project, .back-link, .pad, .section-head). Colours are tokens only; the
-   prototype's raw values were already tokens here, except the stage frame's 24 px radius
-   (--r-stage, added in 05).
-
-   The tour has two layouts:
-   - Motion on, from 901 px: steps in a column and a sticky framed stage with every screen stacked
-     on the right; the inline screens are hidden; the active step (data-on, set by TourMotion) is
-     full strength and its number turns Majorelle.
-   - Otherwise (no JavaScript, reduced motion, under 901 px): no stage, each step shows its own
-     screen, nothing is dimmed. From 901 px the step puts its screen beside its text.
-   In the components layer, so Tailwind utilities still win. */
+/* From 901 px with motion, a sticky stage holds every screen and the inline ones hide. Otherwise
+   each step shows its own screen and nothing is dimmed. In the components layer, so Tailwind utilities still win. */
 @layer components {
   .case-pad {
     padding-block: clamp(88px, 14vh, 180px);
@@ -20,7 +10,7 @@
     margin-bottom: clamp(36px, 6vh, 72px);
   }
 
-  /* ---------- hero (night) ---------- */
+  /* hero (night) */
   .case-hero {
     padding-top: calc(var(--header-h) + env(safe-area-inset-top, 0px) + clamp(56px, 10vh, 120px));
   }
@@ -87,7 +77,7 @@
     aspect-ratio: 16 / 8.5;
   }
 
-  /* ---------- product tour (day) ---------- */
+  /* product tour (day) */
   .tour-grid {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
@@ -142,8 +132,8 @@
     position: absolute;
     inset: clamp(12px, 1.6vw, 22px);
   }
-  /* Only the first screen waits on the stage. Under html.motion only, like the stage itself:
-     without JavaScript and under reduced motion no slot is hidden (reduced-motion.spec.ts). */
+  /* Under html.motion only, like the stage: without JavaScript and under reduced motion no slot
+     is hidden. */
   html.motion .tour-slot:not(:first-child) {
     opacity: 0;
   }
@@ -193,7 +183,7 @@
     }
   }
 
-  /* ---------- adaptation (day) ---------- */
+  /* adaptation (day) */
   .steps {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
@@ -244,7 +234,7 @@
     }
   }
 
-  /* ---------- architecture (night) ---------- */
+  /* architecture (night) */
   .arch {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
@@ -316,7 +306,7 @@
     stroke-dasharray: 4 6;
   }
 
-  /* ---------- next project (day) ---------- */
+  /* next project (day) */
   .next-project {
     display: grid;
     gap: 10px;

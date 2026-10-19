@@ -1,9 +1,5 @@
-/* Bricolage Grotesque (display) and Instrument Sans (text), self-hosted by next/font with
-   metric-matched fallbacks so swapping in the web font does not shift layout.
-
-   next/font only accepts extra axes when the weight is variable (no weight list), so both
-   families load their full variable weight range: Bricolage 200 to 800 instead of 500 to 800,
-   Instrument Sans 400 to 700. The CSS uses only the documented weights. */
+/* next/font only accepts extra axes on a variable weight, so both families load their full range
+   (Bricolage 200 to 800, Instrument Sans 400 to 700). The CSS uses only the documented weights. */
 import { Bricolage_Grotesque, Instrument_Sans } from "next/font/google";
 
 export const display = Bricolage_Grotesque({

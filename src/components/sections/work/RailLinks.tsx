@@ -1,8 +1,6 @@
 "use client";
 
-/* The rail's links (prototype .rail a): the active one is the sheet crossing 45 % of the viewport
-   (useScrollSpy, SPY.list), shown with the pill and the Majorelle dot through aria-current. Each
-   link is a real #slug anchor; with JavaScript it scrolls there through Lenis (no curtain). */
+/* Real #slug anchors; with JavaScript they scroll through Lenis, without the curtain. */
 import { useScrollSpy } from "@/hooks/useScrollSpy";
 import { SPY } from "@/lib/motion";
 import { TransitionLink } from "@/primitives/TransitionLink";

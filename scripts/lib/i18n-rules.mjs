@@ -1,6 +1,4 @@
-// Rules behind `pnpm check:i18n` (docs/quality.md). Pure functions so tests/unit can cover them.
-
-/** Flattens nested messages to dot paths: { a: { b: "x" } } -> [["a.b", "x"]]. */
+/** { a: { b: "x" } } -> [["a.b", "x"]] */
 export function flatten(messages, prefix = "") {
   return Object.entries(messages).flatMap(([key, value]) => {
     const path = prefix ? `${prefix}.${key}` : key;
@@ -10,13 +8,12 @@ export function flatten(messages, prefix = "") {
   });
 }
 
-// No prices anywhere (decision P5): price words in both languages and currency symbols or codes.
+// No prices anywhere: price words in both languages and currency symbols or codes.
 const PRICE =
   /(?:\b(?:prix|tarifs?|tarification|devis chiffré|price[sd]?|pricing|costs?|fees?|rates?|dirhams?|euros?|dollars?|MAD|DH|EUR|USD)\b|[€$£¥])/i;
 
 /**
- * Returns the problems found across locales: missing keys, non-string or empty values, price
- * words, and `[TODO` placeholders when `requireContent` is true.
+ * `[TODO` placeholders count only when `requireContent` is true.
  * @param {Record<string, Record<string, unknown>>} byLocale
  */
 export function checkMessages(byLocale, { requireContent = false } = {}) {

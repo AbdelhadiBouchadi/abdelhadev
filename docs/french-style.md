@@ -40,7 +40,7 @@ French is the site's primary language. It is written natively, by a developer in
 | roles and permissions | rôles et droits d'accès | |
 | scope, scoping | périmètre, cadrage | scope |
 | launch, go live | mise en ligne | |
-| degree | "Bachelor of Engineering (B.Eng)" kept in English; never "licence", never "ingénieur" for the owner | licence, diplôme d'ingénieur |
+| degree | "Bachelor of Engineering (B.Eng)" kept in English; never "licence", never "ingénieur" for me | licence, diplôme d'ingénieur |
 | to build (software) | développer, réaliser, concevoir | construire (une application, un logiciel) |
 | secure by design | sécurisé dès la conception | sûr dès la conception |
 | based in (a city) | installé à (legal text), à (elsewhere) | basé à, in a legal text |

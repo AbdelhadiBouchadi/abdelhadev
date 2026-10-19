@@ -1,8 +1,8 @@
 # Primitives
 
-The reusable motion and UI building blocks that the page branches compose (built in 02). A section is written by composing these; it writes its own GSAP only for a choreography that exists on one page only. Values are the prototype's (`docs/prototype/assets/site.js`); every number is a constant in `src/lib/motion.ts`, named below.
+The reusable motion and UI building blocks that the pages compose. A section is written by composing these; it writes its own GSAP only for a choreography that exists on one page only. Values are the prototype's (`docs/prototype/assets/site.js`); every number is a constant in `src/lib/motion.ts`, named below.
 
-Since 03 the home page exercises SplitReveal, WordsLight, Reveal, StickyStage and Scrub, and their end-to-end checks moved there (`tests/e2e/home.spec.ts`, motion evidence in `tests/e2e/home-motion.spec.ts`). Since 04 the work page exercises MediaReveal (scrub) and useScrollSpy (`tests/e2e/work.spec.ts`, motion evidence in `tests/e2e/work-motion.spec.ts`). Since 05 the case study exercises SplitReveal (chars, `ready`, and lines, `enter`), MediaReveal (`intro`), LineDraw and useScrollSpy (`SPY.tour`), and their end-to-end checks live there (`tests/e2e/case.spec.ts`, motion evidence in `tests/e2e/case-motion.spec.ts`). The lab bench and its specs (`primitives.spec.ts`, `primitives-motion.spec.ts`) were removed in 05: every primitive now has a real page. Unit tests: `tests/unit/primitives.test.ts`.
+Every primitive is tested on a real page: the home page for SplitReveal, WordsLight, Reveal, StickyStage and Scrub (`tests/e2e/home.spec.ts`), the work page for MediaReveal (scrub) and useScrollSpy (`tests/e2e/work.spec.ts`), the case study for SplitReveal (chars and lines), MediaReveal (`intro`), LineDraw and useScrollSpy (`SPY.tour`) (`tests/e2e/case.spec.ts`). The motion evidence is in the matching `*-motion.spec.ts`. Unit tests: `tests/unit/primitives.test.ts`.
 
 ## How every primitive is built
 
@@ -52,7 +52,7 @@ Scrubbed word-by-word lighting. Ports `wordsLight`.
 - Words: `opacity REVEAL.wordsFrom (0.14) → 1`, `STAGGER.words` (0.1), `EASE.none`, `SCRUB`.
 - Words are split as inline spans with `aria: "none"`: the words stay in the accessibility tree in order, and the statement can stay a paragraph.
 - Reduced motion and no JavaScript: plain text at full opacity.
-- Contrast: unlit words start at 0.14, the prototype value (1.32:1 on paper, 1.44:1 on night). The owner raised it to 0.5 in 03 after it failed Lighthouse's color-contrast audit on the home manifesto, then restored 0.14 after 07 to match the prototype: the words are scrolled to full opacity before they are read, and they are plain and fully opaque under reduced motion and without JavaScript (both asserted in `reduced-motion.spec.ts` and `no-js.spec.ts`). The a11y spec excludes `[data-words-light]` from axe's color-contrast rule only; Lighthouse still reports it on the manifesto (`docs/baseline.md`).
+- Contrast: unlit words start at 0.14, the prototype value (1.32:1 on paper, 1.44:1 on night). It fails Lighthouse's color-contrast audit on the home manifesto, which is accepted (D10): the words are scrolled to full opacity before they are read, and they are plain and fully opaque under reduced motion and without JavaScript (both asserted in `reduced-motion.spec.ts` and `no-js.spec.ts`). The a11y spec excludes `[data-words-light]` from axe's color-contrast rule only; Lighthouse still reports it on the manifesto (`docs/baseline.md`).
 
 ### Reveal
 
@@ -84,7 +84,7 @@ The clip-path media reveal. Ports `revealMedia` and the case study hero shot (`P
 
 - `scrub` (`MEDIA_REVEAL.scrub`): `inset(18% 6% 0% 6% round var(--r-media))` → `inset(0%)`, inner `scale 1.16 → 1`, linear, scrubbed from `"top 95%"` to `"top 45%"`.
 - `intro` (`MEDIA_REVEAL.intro`): `inset(30% 8% 0% 8% round var(--r-shot))` → `inset(0%)` over `DURATION.shotClip` (1.6 s), inner `scale 1.2 → 1` over `DURATION.shotScale` (1.8 s), `DELAY.shot` (0.5 s) after the ready signal, house ease.
-- Radii come from the tokens (`--r-media` 18 px, `--r-shot` 26 px, added in 02 for the prototype's `.case-shot`), read once in the browser (`readToken`).
+- Radii come from the tokens (`--r-media` 18 px, `--r-shot` 26 px, for the case study hero shot), read once in the browser (`readToken`).
 - Reduced motion and no JavaScript: fully open, no zoom.
 
 ### StickyStage and useStageTimeline
@@ -144,7 +144,7 @@ DrawSVG for diagrams. Ports the architecture diagram of `Pages.case`. Inside it,
 - Wires must be single-segment paths with a stroke. Start state (CSS): nodes at opacity 0, wires hidden until DrawSVG has collapsed them.
 - Reduced motion and no JavaScript: fully drawn.
 
-### ProjectMedia and VideoLoopControl (08b)
+### ProjectMedia and VideoLoopControl
 
 One real screen from the media manifest (`src/lib/media.ts`), server markup placed in a `Screen`'s `media` slot by the section (`ui` may not import primitives). The files are already optimised by `pnpm media`, so there is no `next/image`.
 
@@ -181,13 +181,13 @@ The framed product screen (`.screen`, `.screen-inner`, `.ui-bar`).
 | Prop | Type | Notes |
 |---|---|---|
 | `aspect` | `"default" \| "tall" \| "wide"` | 16 / 10, 4 / 5, 21 / 10; a `className` such as `aspect-[16/8.5]` overrides (case study hero) |
-| `media` | element | a real screen (`ProjectMedia`, 08b), marked `data-media`; it fills the frame from the top |
-| `src`, `alt`, `width`, `height`, `sizes`, `priority` | `next/image` props | a screenshot through `next/image` (unused since 08b) |
-| `layout` | `"agenda" \| "record" \| "plan" \| "invoice" \| "list" \| "chart" \| "chat" \| "site"` | without `src`: the prototype's placeholder skeleton (the last four, added in 04, are the work page's shop tiles, bars, bubbles and site hero band) |
+| `media` | element | a real screen (`ProjectMedia`), marked `data-media`; it fills the frame from the top |
+| `src`, `alt`, `width`, `height`, `sizes`, `priority` | `next/image` props | a screenshot through `next/image` (unused today) |
+| `layout` | `"agenda" \| "record" \| "plan" \| "invoice" \| "list" \| "chart" \| "chat" \| "site"` | without `src`: the prototype's placeholder skeleton (the last four are the work page's shop tiles, bars, bubbles and site hero band) |
 | `label` | string | required with `layout`: announced in place of the screenshot ("Screenshot to come", from messages) |
 | `caption`, `captionHidden` | | renders a `figure` with a `figcaption` (visually hidden with `captionHidden`, as the prototype's work media) |
 
-The inner element carries `data-media-inner` for `MediaReveal` and stage timelines. Placeholders carry `data-placeholder="screen"`, `role="img"` and the label, so 08 can find and replace every one of them.
+The inner element carries `data-media-inner` for `MediaReveal` and stage timelines. Placeholders carry `data-placeholder="screen"`, `role="img"` and the label, so every one of them can be found.
 
 Placeholder colours: the prototype drew its skeletons with raw colours; each maps to a token or a `color-mix` of tokens.
 
@@ -205,11 +205,11 @@ Placeholder colours: the prototype drew its skeletons with raw colours; each map
 
 ### Chip and Chips
 
-`Chip` (`.chip`) with `variant`: `default`, `warm` (glow at 30 %), `todo` (a value the owner has not confirmed: `--majorelle` at 8 % fill and 30 % ring with Majorelle text, `--majorelle-soft` on night, instead of the prototype's raw `rgba(61, 82, 213, …)`). `Chips` renders a list from `items` (strings or `{ label, variant }`) and marks every `[TODO: …]` label as `todo` by itself. On night, a `warm` chip uses `--moon` text (the prototype only used it on day, where it is ink).
+`Chip` (`.chip`) with `variant`: `default`, `warm` (glow at 30 %), `todo` (a value I have not confirmed: `--majorelle` at 8 % fill and 30 % ring with Majorelle text, `--majorelle-soft` on night, instead of the prototype's raw `rgba(61, 82, 213, …)`). `Chips` renders a list from `items` (strings or `{ label, variant }`) and marks every `[TODO: …]` label as `todo` by itself. On night, a `warm` chip uses `--moon` text (the prototype only used it on day, where it is ink).
 
 ### ArrowLink
 
-The prototype's `.link` and `.back-link` as one component with a lucide-react arrow: `variant` `forward` (underlined, arrow after), `back` (quiet, arrow before), `external` (up-right arrow) or `download` (down arrow, for a file: the about page's CV, added in 06). The link element comes in through `as`: `TransitionLink` for internal links (route curtain, localised pathnames through `@/i18n/navigation`), `"a"` for external ones, because `components/ui` may import `lib` only (`docs/architecture.md`).
+The prototype's `.link` and `.back-link` as one component with a lucide-react arrow: `variant` `forward` (underlined, arrow after), `back` (quiet, arrow before), `external` (up-right arrow) or `download` (down arrow, for a file: the about page's CV). The link element comes in through `as`: `TransitionLink` for internal links (route curtain, localised pathnames through `@/i18n/navigation`), `"a"` for external ones, because `components/ui` may import `lib` only (`docs/architecture.md`).
 
 ```tsx
 <ArrowLink as={TransitionLink} href="/work" variant="back">{t("allProjects")}</ArrowLink>
@@ -233,8 +233,8 @@ The prototype's `.link` and `.back-link` as one component with a lucide-react ar
 | `LineDraw` | case-study architecture diagram |
 | `useScrollSpy` | work rail (`SPY.list`), case-study tour (`SPY.tour`, `TourMotion`: the active step and the stage crossfade) |
 | `Screen` | home featured work, work media, case-study hero, tour stage and inline tour screens |
-| `ProjectMedia` | the work sheets' real screens and loops, the case-study tour's screens (08b) |
+| `ProjectMedia` | the work sheets' real screens and loops, the case-study tour's screens |
 | `Chip` | work projects (stack), about stack groups and the timeline's unconfirmed years (`todo`); the case-study and about facts are plain text, as in the prototype's `dl.facts` |
 | `ArrowLink` | case-study back link, work links, footer secondary link, about services Contact, CV download and "right now" links |
 
-Already composed in 02: the footer CTA (`SplitReveal` lines, `enter`, `SHELL.footerCtaStart`) and the footer wordmark (`Scrub`, `yPercent SHELL.footerWordFrom → SHELL.footerWordTo`, the footer from `"top bottom"` to `"bottom bottom"`), which replaced `FooterMotion` with the same numbers.
+The footer composes them too: the CTA (`SplitReveal` lines, `enter`, `SHELL.footerCtaStart`) and the footer wordmark (`Scrub`, `yPercent SHELL.footerWordFrom → SHELL.footerWordTo`, the footer from `"top bottom"` to `"bottom bottom"`).

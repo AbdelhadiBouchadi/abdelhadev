@@ -1,14 +1,8 @@
-/* Reads colour tokens from src/styles/tokens.css at runtime, for code that needs a colour as a
-   value rather than as CSS: the home 3D scene (three.js materials, lights and canvas textures) and
-   the dusk sky tween. Browser only. Keeps tokens.css the only source of colour values: nothing in
-   TypeScript spells a colour (pnpm check:tokens).
+/* Colour tokens as values, for the 3D scene and the dusk sky tween, so nothing in TypeScript spells
+   a colour. Browser only; the reader is injectable for the unit tests. */
 
-   The reader is injectable so tests/unit can drive it without a DOM. */
-
-/** Reads the raw value of a custom property, e.g. "--glow" → its hex value. */
 export type TokenSource = (property: `--${string}`) => string;
 
-/** The computed custom properties of the root element. Browser only. */
 export function rootTokenSource(root: Element = document.documentElement): TokenSource {
   const style = getComputedStyle(root);
   return (property) => style.getPropertyValue(property);
@@ -21,8 +15,7 @@ export class MissingTokenError extends Error {
   }
 }
 
-/** The values of `names` (token names without the leading "--"), trimmed. Throws
-    MissingTokenError naming every token that is empty or absent, so a caller can fall back as a
+/** Throws MissingTokenError naming every empty or absent token, so the caller falls back as a
     whole (the scene shows its poster) instead of drawing with a missing colour. */
 export function readColorTokens<const K extends string>(
   names: readonly K[],
@@ -36,6 +29,6 @@ export function readColorTokens<const K extends string>(
     else out[name] = value;
   }
   if (missing.length > 0) throw new MissingTokenError(missing);
-  // Every name was assigned above (or the function threw), so the partial record is complete.
+  // Every name was assigned above, or the function threw.
   return out as Record<K, string>;
 }

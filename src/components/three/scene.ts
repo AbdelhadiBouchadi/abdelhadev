@@ -1,9 +1,5 @@
-/* The home 3D scene, plain three.js (decision T6), ported from the prototype's createScene
-   (docs/prototype/assets/site.js). A factory with no React and no GSAP: HeroScene.tsx owns the
-   loop, the observers and the lifecycle; this module builds the scene, places the objects for a
-   given scroll progress, renders, and disposes everything it created.
-
-   The placement maths is exported as pure functions so tests/unit can check it without WebGL. */
+/* No React and no GSAP: HeroScene.tsx owns the loop and the lifecycle. The placement maths is pure,
+   so tests/unit checks it without WebGL. */
 import {
   ColorManagement,
   PerspectiveCamera,
@@ -17,8 +13,6 @@ import type { SceneColors } from "@/components/three/palette";
 import { buildObjects, type Placement, type SceneItem } from "@/components/three/slabs";
 import type { MakeCanvas } from "@/components/three/textures";
 import type { SceneProgress } from "@/lib/scene-state";
-
-// ---------- constants (prototype values) ----------
 
 export const CAMERA = { fov: 35, z: 12, near: 0.1, far: 100 } as const;
 
@@ -36,12 +30,10 @@ const LAYOUT = {
   partY: 1.2,
   partLift: 0.12,
   partZ: 1.6,
-  /** How much each scroll beat parts the objects. */
   partFromHero: 0.45,
   partFromManifesto: 0.75,
   /** Exit: the objects fly up by 2.8 half-heights, weighted by depth. */
   exitY: 2.8,
-  /** Parted objects tilt by these angles. */
   partRotX: 0.25,
   partRotY: 0.35,
 } as const;
@@ -50,7 +42,6 @@ const MOTION = {
   /** Idle float: sin(t · 0.6) · 0.08. */
   floatSpeed: 0.6,
   floatAmount: 0.08,
-  /** Idle wobble of the rotation. */
   wobbleX: { speed: 0.4, amount: 0.05 },
   wobbleZ: { speed: 0.3, amount: 0.03 },
   /** Pointer parallax, per unit of depth weight. */
@@ -60,8 +51,6 @@ const MOTION = {
   /** Pointer smoothing per 60 fps frame. */
   pointerLerp: 0.06,
 } as const;
-
-// ---------- pure maths ----------
 
 export interface Frame {
   halfW: number;
@@ -82,18 +71,17 @@ export function mix(a: number, b: number, t: number): number {
   return a + (b - a) * t;
 }
 
-/** The visible half-size of the plane at the origin, for a camera at CAMERA.z. */
 export function frameFor(aspect: number): Frame {
   const halfH = Math.tan(((CAMERA.fov / 2) * Math.PI) / 180) * CAMERA.z;
   return { halfH, halfW: halfH * aspect };
 }
 
-/** How far apart the objects are, in [0, 1]: the hero leaving and the manifesto scrolling. */
+/** [0, 1]: the hero leaving and the manifesto scrolling. */
 export function partOf(progress: Readonly<SceneProgress>): number {
   return Math.min(1, progress.p1 * LAYOUT.partFromHero + progress.p2 * LAYOUT.partFromManifesto);
 }
 
-/** How far up the objects have flown, in [0, 1]: the dusk. */
+/** [0, 1]: the dusk. */
 export function exitOf(progress: Readonly<SceneProgress>): number {
   return progress.p3;
 }
@@ -103,7 +91,7 @@ export function depthOf(z: number): number {
   return 1 + (z + 4) * 0.25;
 }
 
-/** Where an object is at time `t` (seconds) for this progress and pointer. */
+/** `t` in seconds. */
 export function poseOf(
   placement: Placement,
   phase: number,
@@ -137,15 +125,12 @@ export function poseOf(
   };
 }
 
-/** The smoothing factor for one frame lasting `deltaRatio` 60 fps frames (frame-rate independent). */
+/** Frame-rate independent: `deltaRatio` counts 60 fps frames. */
 export function pointerEase(deltaRatio: number): number {
   return 1 - Math.pow(1 - MOTION.pointerLerp, Math.max(0, deltaRatio));
 }
 
-/** The resting composition: nothing parted, nothing flown, no pointer, t = 0 (renderStatic). */
 export const AT_REST: Readonly<SceneProgress> = { p1: 0, p2: 0, p3: 0 };
-
-// ---------- the scene ----------
 
 export interface SceneOptions {
   canvas: HTMLCanvasElement;
@@ -156,15 +141,11 @@ export interface SceneOptions {
 }
 
 export interface SceneHandle {
-  /** Sets the drawing buffer and the camera to a CSS size. */
   size: (width: number, height: number) => void;
-  /** Aims the pointer parallax, in [-1, 1] on both axes (y up). */
+  /** [-1, 1] on both axes, y up. */
   aim: (x: number, y: number) => void;
-  /** Places every object and draws one frame. `deltaRatio` smooths the pointer. */
   render: (seconds: number, progress: Readonly<SceneProgress>, deltaRatio?: number) => void;
-  /** Draws the resting composition (reduced motion, poster capture). */
   renderStatic: () => void;
-  /** Frees geometries, materials, textures and the renderer, and releases the context. */
   dispose: () => void;
 }
 
@@ -175,7 +156,7 @@ export function createScene({
   pixelRatio,
   makeCanvas,
 }: SceneOptions): SceneHandle {
-  // The prototype ran three r128, which used colours as given (no sRGB to linear conversion of
+  // The design was made on three r128, which used colours as given (no sRGB to linear conversion of
   // material and light colours) and encoded the output to sRGB. Turning colour management off
   // keeps that look; textures are still decoded from sRGB and the output encoded to sRGB.
   ColorManagement.enabled = false;

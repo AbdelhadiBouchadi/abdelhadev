@@ -1,6 +1,3 @@
-/* The problem statement (prototype .problem), day: the project's challenge, its words lighting
-   up as the section scrolls by (WordsLight, CASE.problem range). Plain, fully opaque text without
-   JavaScript and under reduced motion. */
 import { getTranslations } from "next-intl/server";
 import type { CaseStudyCopy } from "@/components/sections/case/case-copy";
 import { CASE } from "@/lib/motion";

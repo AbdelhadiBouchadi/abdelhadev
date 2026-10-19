@@ -1,7 +1,3 @@
-/* The next project (prototype .next-project), day: one giant link to the next public project's
-   sheet on the work page (a #slug link through the route curtain; the sheet lands clear of the
-   header after the loader). Its name rises by lines when it enters (SplitReveal lines, enter).
-   When this project is the last one, the link goes to the work page instead. */
 import { getMessages, getTranslations } from "next-intl/server";
 import { nextProject } from "@/lib/content/projects";
 import { isKeyOf } from "@/lib/utils";

@@ -16,8 +16,6 @@ export async function generateMetadata({
   return pageMetadata(locale, "about");
 }
 
-// The about page (prototype about.html, plus the services and process sections of 06): server
-// sections in the prototype's tones, dawn to night, each with its own small motion leaves.
 export default async function AboutPage({ params }: PageProps<"/[locale]/about">) {
   const locale = await resolveLocale(params);
   return (

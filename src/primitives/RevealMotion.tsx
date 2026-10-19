@@ -1,8 +1,7 @@
 "use client";
 
-/* The client leaf of Reveal. It animates from the CSS start state (opacity 0, translateY(y)) to
-   rest. If reduced motion is switched on while html.motion is still set, the reduced branch pins
-   the targets at rest so the CSS start state cannot hide them. */
+/* If reduced motion is switched on while html.motion is still set, the reduced branch pins the
+   targets at rest so the CSS start state cannot hide them. */
 import { useRef } from "react";
 import { useMotion } from "@/hooks/useMotion";
 import { useReadyGate } from "@/hooks/useReadyGate";
@@ -13,13 +12,9 @@ import { DURATION, MEDIA, REVEAL, STAGGER } from "@/lib/motion";
 export interface RevealMotionProps {
   when: "ready" | "enter";
   y: number;
-  /** Default DURATION.fadeUp (1 s). */
   duration?: number;
-  /** Default STAGGER.reveal (0.08). */
   stagger?: number;
-  /** Seconds before it plays. */
   delay?: number;
-  /** `enter` only. Default REVEAL.enterStart ("top 85%"). */
   start?: string;
 }
 

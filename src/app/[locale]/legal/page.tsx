@@ -26,10 +26,8 @@ function Part({ id, title, children }: { id: string; title: string; children: Re
   );
 }
 
-// The legal notice from docs/content.md ("Legal"). No ID, registration or ICE numbers and no street
-// address of the publisher. The contact email is the public one from site.ts. The retention
-// period stays a visible placeholder until the owner supplies it, and site.ts keeps legalReview
-// "pending" until the owner confirms the text.
+// No ID, registration or ICE numbers and no street address. legalReview in site.ts stays
+// "pending" until the text is confirmed.
 export default async function LegalPage({ params }: PageProps<"/[locale]/legal">) {
   const locale = await resolveLocale(params);
   const t = await getTranslations({ locale, namespace: "pages.legal" });

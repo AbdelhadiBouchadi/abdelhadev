@@ -1,6 +1,5 @@
-// Motion evidence for the owner (AGENTS.md, "Quality gates"): short videos and end-state
-// screenshots of the shell's motion in test-results/motion/, to compare with docs/prototype.
-// Recorded once, from the 1440 project; each clip opens its own context at the size it shows.
+// Videos and stills of the shell's motion in test-results/motion/, to compare with docs/prototype.
+// Each clip opens its own context at the size it shows.
 import { mkdirSync } from "node:fs";
 import { test } from "@playwright/test";
 import { DESKTOP, MOTION_OUT, PHONE, record, wheel } from "./motion-helpers";

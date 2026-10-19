@@ -1,7 +1,4 @@
-/* How a project runs (new in 06), day: five numbered cards from the first conversation to
-   delivery, the case study's adaptation cards (.steps, numbered by a CSS counter because the order
-   is the sequence), five across from 1081 px. They fade up one ABOUT.stagger.process apart when
-   the list enters (Reveal). No payment percentages (decision P12). */
+/* No payment percentages (docs/decisions.md). */
 import { getTranslations } from "next-intl/server";
 import { PROCESS } from "@/lib/content/about";
 import { ABOUT } from "@/lib/motion";

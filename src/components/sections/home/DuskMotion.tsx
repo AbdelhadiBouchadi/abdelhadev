@@ -1,10 +1,5 @@
 "use client";
 
-/* The dusk's stage timeline (prototype Pages.home), scrubbed from the section's top at the bottom
-   of the viewport to its bottom at the top: the fixed sky turns paper → sunset → night (linear),
-   the title and sub cross from ink to moon colours, the sub line fades up. Its progress also
-   drives the 3D scene's exit (p3, half of this range). Colours are the tokens, read at runtime.
-   Nothing runs under reduced motion (no fixed sky there). */
 import { readColorTokens } from "@/lib/css-tokens";
 import { motionAllowed } from "@/lib/css";
 import { gsap } from "@/lib/gsap";
@@ -14,10 +9,8 @@ import { useStageTimeline } from "@/primitives/useStageTimeline";
 
 const COLOURS = ["paper", "sunset", "night", "ink", "ink-soft", "moon", "moon-soft"] as const;
 
-/** Where the page is relative to the dusk, mirrored on <html data-dusk> for styles/home.css: the
-    night sections below the dusk show the sky through them only while the dusk is on screen,
-    and keep their own night background otherwise (the sky is night by then, so it looks the
-    same, and their colours stay measurable by contrast checkers). */
+/** Mirrored on <html data-dusk>: the night sections below show the sky through them only while
+    the dusk is on screen, so their colours stay measurable by contrast checkers otherwise. */
 type DuskPhase = "before" | "during" | "after";
 
 function phaseOf(progress: number): DuskPhase {

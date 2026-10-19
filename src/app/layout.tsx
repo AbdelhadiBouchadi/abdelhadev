@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 
-// The real root layout is app/[locale]/layout.tsx (it renders <html lang>). This pass-through exists
-// because app/not-found.tsx needs a layout above it (next-intl App Router setup).
+// app/not-found.tsx needs a layout above it; the real root layout is app/[locale]/layout.tsx.
 export default function RootLayout({ children }: { children: ReactNode }) {
   return children;
 }

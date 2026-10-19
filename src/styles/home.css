@@ -1,20 +1,13 @@
-/* The home page (docs/prototype/assets/site.css, "HOME", with #sky, #sun and #scene-wrap).
-   Two worlds:
-   - html.motion.sky (JavaScript, motion allowed, set by the Sky leaf): the sky, the sun and the 3D
-     layer are fixed behind the whole page and the sections are transparent over them; the sticky
-     stages run; start states hide what the intro and the stages reveal.
-   - otherwise (no JavaScript, reduced motion): every section keeps its own tone background, the
-     sun and the 3D poster or still frame sit inside the hero, nothing is sticky or hidden.
-   The layers' classes are not `sky` and `sun`: `sky` is the class on <html>.
-   Colours are tokens only. In the components layer, so Tailwind utilities still win. */
+/* With html.motion.sky the sky, the sun and the 3D layer are fixed behind the page and the
+   sections are transparent over them; otherwise every section keeps its own background. The layers
+   are not called `sky` and `sun`: `sky` is the class on <html>. In the components layer, so Tailwind utilities still win. */
 @layer components {
-  /* ---------- the sky behind the page ---------- */
+  /* the sky behind the page */
   html.motion.sky main [data-tone] {
     background: transparent;
   }
-  /* The night sections after the dusk show the sky turning only while the dusk is on screen
-     (html[data-dusk], DuskMotion); before and after it they keep their own night, which looks
-     the same once the sky is night and keeps their colours measurable. */
+  /* The night sections after the dusk show the sky only while the dusk is on screen
+     (html[data-dusk]); otherwise they keep their own night, so their colours stay measurable. */
   html.motion.sky[data-dusk="during"] footer[data-tone] {
     background: transparent;
   }
@@ -62,7 +55,7 @@
     transform: translateY(40%);
   }
 
-  /* ---------- the 3D layer ---------- */
+  /* the 3D layer */
   .scene-wrap {
     position: absolute;
     inset: 0;
@@ -103,7 +96,7 @@
     display: none;
   }
 
-  /* ---------- hero ---------- */
+  /* hero */
   .hero {
     position: relative;
     min-height: 100vh;
@@ -174,7 +167,7 @@
     flex-wrap: wrap;
   }
 
-  /* ---------- manifesto ---------- */
+  /* manifesto */
   .manifesto-stage {
     display: flex;
     align-items: center;
@@ -187,7 +180,7 @@
     margin-inline-start: clamp(0px, 8vw, 140px);
   }
 
-  /* ---------- dusk ---------- */
+  /* dusk */
   .dusk-stage {
     display: flex;
     align-items: center;
@@ -220,7 +213,7 @@
     opacity: 0;
   }
 
-  /* ---------- featured work ---------- */
+  /* featured work */
   .featured-stage {
     padding-block: 16vh;
   }
@@ -345,8 +338,7 @@
     }
   }
 
-  /* ---------- testimonials (only when one is confirmed) ----------
-     Night, between the featured work and the footer: the footer's own top padding closes it. */
+  /* testimonials (night): the footer's own top padding closes the section */
   .testimonials-inner {
     display: grid;
     gap: clamp(36px, 6vh, 64px);
@@ -431,7 +423,7 @@
     vertical-align: 0.1em;
   }
 
-  /* ---------- phones ---------- */
+  /* phones */
   @media (max-width: 760px) {
     .hero-meta {
       flex-direction: column;

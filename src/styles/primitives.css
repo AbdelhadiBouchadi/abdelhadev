@@ -1,19 +1,15 @@
-/* Start states and layout of the motion primitives (docs/primitives.md). Every rule is under
-   html.motion, which the boot script sets before first paint unless reduced motion is asked for:
-   without JavaScript, or under reduced motion, nothing here applies and the content is complete,
-   visible and in normal flow (AGENTS.md, Motion rules).
-
-   The values mirror src/lib/motion.ts (MEDIA_REVEAL); tests/unit/primitives.test.ts keeps them in
-   sync. In the components layer, so Tailwind utilities still win. */
+/* Every rule is under html.motion, which the boot script sets before first paint unless reduced
+   motion is asked for. The values mirror MEDIA_REVEAL in src/lib/motion.ts
+   (tests/unit/primitives.test.ts). In the components layer, so Tailwind utilities still win. */
 @layer components {
-  /* ---------- Reveal: the group fades and rises from --reveal-y (set inline by Reveal) ---------- */
+  /* Reveal: --reveal-y is set inline */
   html.motion [data-reveal="children"] > *,
   html.motion [data-reveal="self"] {
     opacity: 0;
     transform: translateY(var(--reveal-y));
   }
 
-  /* ---------- MediaReveal ---------- */
+  /* MediaReveal */
   html.motion [data-media-reveal="scrub"] {
     clip-path: inset(18% 6% 0% 6% round var(--r-media));
   }
@@ -27,7 +23,7 @@
     transform: scale(1.2);
   }
 
-  /* ---------- LineDraw: nodes arrive, wires are drawn by DrawSVG ---------- */
+  /* LineDraw */
   html.motion [data-line-draw] [data-node] {
     opacity: 0;
   }
@@ -35,7 +31,7 @@
     visibility: hidden;
   }
 
-  /* ---------- StickyStage: a tall section with a sticky viewport-tall stage ---------- */
+  /* StickyStage */
   html.motion [data-stage] {
     height: var(--stage-h);
   }

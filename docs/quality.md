@@ -1,6 +1,6 @@
 # Quality
 
-## Commands (created in 00-foundation, run in this order by CI)
+## Commands (run in this order by CI)
 
 | Command | Does |
 |---|---|
@@ -11,6 +11,7 @@
 | `pnpm check:tokens` | no colour literals outside `src/styles/`; no easing or duration literals outside `src/lib/motion.ts` and the CSS tokens; no `rounded-*` value outside the token scale |
 | `pnpm check:i18n` | `fr.json` and `en.json` have identical keys and no empty values; no price words or currency symbols; `[TODO` allowed in development only |
 | `pnpm check:fr` | `fr.json` never uses a phrase `docs/french-style.md` bans (fails, naming the key and the phrase); a regular space before `:` `;` `?` `!` is a warning |
+| `pnpm check:comments` | comments in `src`, `tests` and `scripts` never narrate the repository's history (who asked for what, prompts, build numbers, decision ids) and hold no emoji (fails); filler words and banners are warnings |
 | `pnpm test` | Vitest |
 | `pnpm build` | production build; lists every `[TODO` in content and `site.ts`, and fails on them when `REQUIRE_CONTENT=1` |
 | `pnpm test:e2e` | Playwright, the CI suite below (390 and 1440, no motion evidence) |
@@ -18,7 +19,7 @@
 
 Local only, not in CI: `pnpm test:e2e:full` (the CI suite plus responsive and accessibility at 360 and 430) and `pnpm test:motion` (the motion evidence). Run both before handing over a UI branch.
 
-CI: two jobs on every pull request, `check-build-e2e` (with a secret scan) and `lighthouse`. Both required.
+CI: one job on every pull request, `check-build-smoke` (with a secret scan): the static checks, unit tests, the build and a Playwright smoke (foundation, no JavaScript, a11y) at 1440. The full ci suite and Lighthouse run in `e2e-full.yml`, on `main`, weekly and on demand.
 
 ## Playwright suites
 
@@ -40,15 +41,15 @@ Three entry points share one configuration (`playwright.config.ts`, `e2eConfig(s
 
 ## Budgets
 
-Set by the owner after the foundation measures a baseline (decision lesson: never gate on an unmeasured number). Starting proposals for the owner:
+I set them after a baseline is measured (decision lesson: never gate on an unmeasured number). Starting proposals:
 
 | Metric | Proposal |
 |---|---|
 | LCP (lab, mobile) | warn above 2.5 s, error above 3.5 s, measured per S3's method |
 | CLS | at most 0.02 |
 | TBT | at most 200 ms |
-| JavaScript, initial route without the 3D chunk | measured in 00, then baseline + 15 % |
-| 3D chunk (home only, lazy) | measured in 00 and reported separately |
+| JavaScript, initial route without the 3D chunk | measured in the baseline, then baseline + 15 % |
+| 3D chunk (home only, lazy) | measured in the baseline and reported separately |
 | Lighthouse | Accessibility 100, Best Practices at least 95, SEO audits individually (not the category) outside production (`VERCEL_ENV` is not `production`) |
 
 ## Security

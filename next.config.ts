@@ -3,7 +3,7 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
-// A strict CSP with a hash for the boot script lands before launch (docs/quality.md).
+// A strict CSP with a hash for the boot script comes before launch (docs/quality.md).
 const securityHeaders = [
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
@@ -18,10 +18,9 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
-  // `next dev` otherwise injects its own rules block into AGENTS.md. Tooling must never write rules
-  // there (docs/decisions.md, "Lessons from the first attempt").
+  // `next dev` otherwise injects its own rules block into AGENTS.md (docs/decisions.md).
   agentRules: false,
-  // Decision T11: cacheComponents stays off.
+  // cacheComponents stays off (docs/decisions.md).
   turbopack: {
     rules: {
       "*.css": {
@@ -33,7 +32,7 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       { source: "/:path*", headers: securityHeaders },
-      // The CV files are downloadable from the about page but never indexed on their own (09).
+      // Downloadable from the about page, never indexed on their own.
       { source: "/cv/:path*", headers: [{ key: "X-Robots-Tag", value: "noindex" }] },
     ];
   },

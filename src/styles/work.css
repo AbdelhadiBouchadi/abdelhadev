@@ -1,12 +1,6 @@
-/* The work page (docs/prototype/assets/site.css: .work-hero*, .work-layout, .rail*, .projects,
-   .project*, .media*). Raw colours of the prototype map to tokens:
-     rgba(43,29,26,.07) active rail pill  → --ink at 7 %
-     rgba(43,29,26,.04) sheet shadow       → --ink at 4 %
-   Breakpoints: the rail shows from 901 px (prototype max-width 900), the sheet head has four
-   columns from 1081 px and two from 761 px, and the media keep their spans from 761 px.
-   In the components layer, so Tailwind utilities still win. */
+/* In the components layer, so Tailwind utilities still win. */
 @layer components {
-  /* ---------- hero ---------- */
+  /* hero */
   .work-hero {
     padding-top: calc(var(--header-h) + env(safe-area-inset-top, 0px) + clamp(72px, 14vh, 160px));
     padding-bottom: clamp(56px, 10vh, 120px);
@@ -24,7 +18,7 @@
     margin-top: clamp(28px, 4vh, 48px);
   }
 
-  /* ---------- layout: rail and sheets ---------- */
+  /* layout: rail and sheets */
   .work-layout {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
@@ -45,8 +39,7 @@
       display: block;
     }
   }
-  /* The prototype's 2 px gap between 40 px pills: the 44 px targets overlap by their 2 px borders,
-     so the pills keep the same 42 px rhythm. */
+  /* The 44 px targets overlap by their 2 px borders, so the pills keep a 42 px rhythm. */
   .rail-list {
     display: grid;
     gap: 0;
@@ -61,8 +54,8 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    /* A 44 px tap target (WCAG 2.5.8) around the prototype's 40 px pill: the 2 px transparent
-       borders are hit area only, the pill is painted inside them (padding-box). */
+    /* A 44 px tap target (WCAG 2.5.8): the 2 px transparent borders are hit area only, the pill
+       is painted inside them (padding-box). */
     min-height: 44px;
     width: max-content;
     max-width: 100%;
@@ -120,8 +113,7 @@
     background: var(--line);
     overflow: hidden;
   }
-  /* Empty at rest: the Scrub fills it (scaleY 0 → 1) while motion runs; without JavaScript and
-     under reduced motion it stays an empty track. */
+  /* Empty at rest: the Scrub fills it while motion runs. */
   .rail-fill {
     position: absolute;
     inset: 0;
@@ -130,7 +122,7 @@
     transform: scaleY(0);
   }
 
-  /* ---------- project sheets ---------- */
+  /* project sheets */
   .projects {
     display: grid;
     gap: clamp(28px, 4vh, 48px);
@@ -198,7 +190,7 @@
     font-size: 15.5px;
   }
 
-  /* ---------- media grid ---------- */
+  /* media grid */
   .media {
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
@@ -245,7 +237,7 @@
     margin: clamp(18px, 2.4vw, 28px) 0 0;
   }
 
-  /* ---------- more on GitHub (08c) ---------- */
+  /* more on GitHub */
   .work-main {
     min-width: 0;
   }

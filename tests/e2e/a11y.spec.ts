@@ -12,7 +12,7 @@ async function blocking(page: Page) {
     .analyze();
   const contrast = await new AxeBuilder({ page })
     .withRules(["color-contrast"])
-    // scroll-driven words reach full opacity before being read; verified under reduced motion and no-JS
+    // scroll-driven words reach full opacity before being read; checked under reduced motion and no-JS
     .exclude("[data-words-light]")
     .analyze();
   return [...all.violations, ...contrast.violations]
@@ -29,7 +29,7 @@ test.beforeEach(async ({ page }) => {
 for (const route of ROUTES) {
   test(`a11y ${route.path}`, async ({ page }) => {
     await page.goto(route.path);
-    // After the loader: axe sees the page, not the overlay, and nothing is inert.
+    // After the loader, so axe sees the page and not the overlay.
     await shellIdle(page);
 
     // Day sections at the top, then the night footer in view (the shell has changed tone). Axe

@@ -1,6 +1,5 @@
-// Motion evidence for the about page (prompts/06-about.md, "Evidence"), in test-results/motion/, to
-// compare with docs/prototype/about.html: three clips at 1440 (the dawn intro, the chapters, the
-// timeline into "Right now"), the dawn's end-state still at 1440 and one full-page still at 390.
+// Videos and stills of the about page's motion in test-results/motion/, to compare with
+// docs/prototype/about.html.
 import { mkdirSync, rmSync } from "node:fs";
 import { test, type Page } from "@playwright/test";
 import { DESKTOP, MOTION_OUT, PHONE, record, wheel } from "./motion-helpers";
@@ -15,7 +14,7 @@ test.beforeEach(() => {
   mkdirSync(MOTION_OUT, { recursive: true });
 });
 
-/** Jumps so the top of `selector` sits `offset` px below the top of the viewport. */
+/** Puts the top of `selector` `offset` px below the top of the viewport. */
 async function at(page: Page, selector: string, offset = 0) {
   const top = await page
     .locator(selector)

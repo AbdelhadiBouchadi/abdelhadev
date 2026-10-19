@@ -1,7 +1,3 @@
-// SEO (prompts/09-seo-og-cv.md, "Tests"): titles and descriptions within their lengths and unique
-// per locale, reciprocal hreflang on the real localised paths, a sitemap of public indexable pages
-// only, robots that follow the deployment, structured data that can never hold a forbidden key,
-// the escaping of `<`, the Open Graph cards, the four statuses and the French rules.
 import { describe, expect, it } from "vitest";
 import en from "@messages/en.json";
 import fr from "@messages/fr.json";
@@ -34,7 +30,7 @@ import { isTodo } from "@/lib/todo";
 const MESSAGES = { fr, en } as const;
 const SITE_URL = "https://abdelhadev.me";
 
-/** Every page's title as the browser shows it, and its description, per locale. */
+/** As the browser shows it. */
 function pagesOf(locale: Locale) {
   const { pages, cases } = MESSAGES[locale].seo;
   return [
@@ -287,7 +283,7 @@ describe("project statuses (09)", () => {
     expect(LABELLED_STATUSES).toContain("ready");
   });
 
-  it("use the owner's wording", () => {
+  it("use my wording", () => {
     const by = (slug: string) => PROJECTS.find((p) => p.slug === slug)?.status;
     expect(by("meetai")).toBe("test-mode");
     expect(by("hms")).toBe("used");

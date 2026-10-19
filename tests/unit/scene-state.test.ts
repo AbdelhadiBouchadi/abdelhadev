@@ -1,4 +1,3 @@
-// The home 3D scene's progress store (src/lib/scene-state.ts).
 import { describe, expect, it } from "vitest";
 import { createSceneState, duskToP3, sceneState } from "@/lib/scene-state";
 

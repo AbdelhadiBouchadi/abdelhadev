@@ -1,14 +1,10 @@
 "use client";
 
-/* A shell link that knows whether it points at the current page. `aria-current="page"` on its own
-   page; with `nested`, a page below it (a case study under Work) gets `aria-current="true"`, which
-   the prototype styles the same way (dentaflow.html marks Work). next-intl's usePathname gives the
-   internal path with its params filled in ("/work/dentaflow"). */
+/* With `nested`, a page below it (a case study under Work) gets aria-current="true". */
 import { usePathname } from "@/i18n/navigation";
 import { TransitionLink, type TransitionLinkProps } from "@/primitives/TransitionLink";
 
 export interface NavLinkProps extends TransitionLinkProps {
-  /** Pages below this link's path count as its section. */
   nested?: boolean;
 }
 

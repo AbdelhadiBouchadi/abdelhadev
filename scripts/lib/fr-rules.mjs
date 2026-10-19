@@ -1,13 +1,11 @@
-// Rules behind `pnpm check:fr` (docs/french-style.md). Pure functions so tests/unit can cover them.
 import { flatten } from "./i18n-rules.mjs";
 
 // Letters on either side mean the phrase is part of a longer word.
 const word = (body) => new RegExp(`(?<!\\p{L})(?:${body})(?!\\p{L})`, "iu");
 
 /**
- * Phrases the French copy never uses (docs/french-style.md, glossary), with the inflections a
- * rewrite is likely to produce. Accent-sensitive: "Clinic" in an English proper noun such as
- * "SOS Dental Clinic" is not "clinique dentaire".
+ * Accent-sensitive: "Clinic" in an English proper noun such as "SOS Dental Clinic" is not
+ * "clinique dentaire".
  */
 export const BANNED_FR = [
   { phrase: "clinique dentaire", pattern: word("cliniques? dentaires?") },
@@ -25,9 +23,7 @@ export const BANNED_FR = [
 const LOOSE_SPACE = / [:;?!]/;
 
 /**
- * Returns `{ errors, warnings }` for a French message catalog. Errors name the key and the banned
- * phrase; warnings name the keys with a regular space before `:` `;` `?` or `!` (placeholders
- * aside).
+ * Warnings name the keys with a regular space before `:` `;` `?` or `!`, placeholders aside.
  * @param {Record<string, unknown>} messages
  */
 export function checkFrench(messages) {

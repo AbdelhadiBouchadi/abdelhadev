@@ -1,6 +1,5 @@
-// Prints every accessibility audit that scored below 1 in the Lighthouse runs left in
-// .lighthouseci/ (lhr-*.json), per URL, with the failing elements and what was measured. CI runs it
-// after `pnpm lhci` fails, so the log names the audit instead of only "accessibility 0.96".
+// Prints every accessibility audit below 1 in .lighthouseci/, with the failing elements, so a
+// failed CI log names the audit instead of only "accessibility 0.96".
 //
 // Usage: node scripts/lh-failures.mjs [dir]   (default .lighthouseci)
 import { readdirSync, readFileSync } from "node:fs";

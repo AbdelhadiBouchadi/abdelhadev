@@ -1,23 +1,8 @@
 "use client";
 
-/* The contact form (prototype #contact-form and initForms), a server action through
-   useActionState. The server renders it in every state, so it works as a native post without
-   JavaScript: the page comes back with the field errors, a send error or the confirmation.
-
-   With JavaScript, the shared schema checks the fields before posting (instant errors, nothing
-   sent), and the server checks them again. Errors: aria-invalid, the message joined to the field
-   through aria-describedby, and focus on the first invalid field, which reads its error out. A
-   failed send keeps the visitor's words (they come back in the state and React's reset after the
-   action restores them as default values) and is announced (role="alert").
-
-   Success replaces the form in place (the form stays mounted, hidden, so the WhatsApp card's
-   listener and the action's reset keep their element) and focus moves to its heading; the
-   confirmation rises in (CONTACT.done) unless motion is reduced. "Write another message" is a
-   link to this page, so it works without JavaScript; with it, the form comes back in place,
-   empty, and the name field takes focus.
-
-   A Sonner toast repeats a sent or failed outcome (decision T17). It is additive: the inline
-   confirmation and error line above stay the source of truth, and the toast never moves focus. */
+/* The server renders every state, so the form works as a native post without JavaScript. On
+   success the form stays mounted but hidden, so the WhatsApp card's listener and the action's
+   reset keep their element. The toast only repeats the outcome and never moves focus. */
 import {
   useActionState,
   useEffect,
@@ -59,9 +44,7 @@ export interface ContactFormCopy {
   sending: string;
   success: { title: string; text: string; again: string };
   failed: { send: string; rateLimit: string };
-  /** Toast titles, the region's name and the close button's name. */
   toast: { region: string; close: string; sent: string; failed: string; rateLimit: string };
-  /** The cursor label over the submit button. */
   cursor: string;
 }
 
@@ -69,7 +52,7 @@ export interface ContactFormProps {
   id: string;
   copy: ContactFormCopy;
   locale: Locale;
-  /** This page's path in this locale: "Write another message" without JavaScript. */
+  /** "Write another message" without JavaScript. */
   againHref: string;
 }
 
@@ -79,18 +62,16 @@ const HINT_ID = "h-message";
 
 export function ContactForm({ id, copy, locale, againHref }: ContactFormProps) {
   const [state, formAction, pending] = useActionState(sendContact, INITIAL_CONTACT_STATE);
-  /** Errors found before posting; null once a post goes out. */
+  /** null once a post goes out. */
   const [clientErrors, setClientErrors] = useState<ContactErrors | null>(null);
-  /** The "sent" state the visitor has dismissed with "Write another message". */
   const [dismissed, setDismissed] = useState<ContactState | null>(null);
 
   const root = useRef<HTMLDivElement>(null);
   const form = useRef<HTMLFormElement>(null);
   const done = useRef<HTMLDivElement>(null);
   const doneTitle = useRef<HTMLHeadingElement>(null);
-  /** The state the page was rendered with: only later states move focus or animate. */
+  /** Only later states move focus or animate. */
   const first = useRef(state);
-  /** Bottom right from 761 px; bottom centre below, lifted over the mobile nav pill. */
   const desktop = useMediaQuery(MEDIA.desktop);
   const toastOffset = desktop ? CONTACT.toast.offset : CONTACT.toast.mobileOffset;
 
@@ -109,9 +90,7 @@ export function ContactForm({ id, copy, locale, againHref }: ContactFormProps) {
     if (state.status === "sent") doneTitle.current?.focus();
   }, [state]);
 
-  // The toast repeats the outcome; the inline confirmation and error line stay the source of truth
-  // (the server renders them, so they also work without JavaScript). Once per state, never for the
-  // state the page was rendered with.
+  // Once per state, never for the state the page was rendered with.
   const toasted = useRef(state);
   useEffect(() => {
     if (state === toasted.current) return;
@@ -125,8 +104,7 @@ export function ContactForm({ id, copy, locale, againHref }: ContactFormProps) {
     }
   }, [state, copy]);
 
-  // The confirmation rises in where the form was; the page below moved, so ScrollTrigger measures
-  // again (gsap-scrolltrigger: refresh after a layout change).
+  // The page below moved, so ScrollTrigger measures again.
   useGSAP(
     () => {
       if (state === first.current && dismissed === null) return;
@@ -254,7 +232,6 @@ export function ContactForm({ id, copy, locale, againHref }: ContactFormProps) {
           </span>
           {error("message")}
         </div>
-        {/* The honeypot: off screen, out of the tab order and hidden from assistive technology. */}
         <div className="hp" aria-hidden="true">
           <label htmlFor="f-company">{copy.honeypot}</label>
           <input id="f-company" name="company" tabIndex={-1} autoComplete="off" />
@@ -290,8 +267,7 @@ export function ContactForm({ id, copy, locale, againHref }: ContactFormProps) {
           </a>
         </div>
       </div>
-      {/* Mounted here only, so no other page ships it. Sonner's region is a polite live region
-          and never takes focus; styles are ours (.contact-toast in src/styles/contact.css). */}
+      {/* Mounted here only, so no other page ships it. */}
       <Toaster
         position={desktop ? "bottom-right" : "bottom-center"}
         offset={toastOffset}

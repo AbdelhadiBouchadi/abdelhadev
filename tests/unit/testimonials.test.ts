@@ -1,7 +1,5 @@
-// Testimonials (prompts/08a-final-copy.md, "Tests"): the schema has no field for a person's name;
-// only confirmed testimonials are public; the placeholder report ignores unconfirmed ones, in the
-// module and in the build report; the section renders nothing without items, and a figure with
-// the role and the organisation for one.
+// No field for a person's name, only confirmed testimonials are public, the placeholder report
+// ignores the others, and the section renders nothing without items.
 import { spawnSync } from "node:child_process";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";

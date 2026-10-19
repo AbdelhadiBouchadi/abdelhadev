@@ -1,8 +1,6 @@
-/* Structured data (JSON-LD), built only from site.ts, the content data and message strings the
-   caller passes in: nothing here is a new fact. Rendered on the server by components/ui/JsonLd.
-   Never produced, anywhere: ratings, reviews, offers or prices (decision P5), employers, schools,
-   awards or years of experience (P3, P6), client names (P10). FORBIDDEN_KEYS lists them and
-   tests/unit/seo.test.ts walks every builder's output for them. */
+/* Built only from site.ts, the content data and messages: nothing here is a new fact. Never
+   produced: ratings, reviews, offers, prices, employers, schools, awards, years of experience or
+   client names. tests/unit/seo.test.ts walks every builder's output for FORBIDDEN_KEYS. */
 import type { Locale } from "@/i18n/routing";
 import { STACK } from "@/lib/content/about";
 import { SITE } from "@/lib/site";
@@ -28,13 +26,11 @@ export const FORBIDDEN_KEYS = [
 const PERSON_ID = `${SITE.url}/#person`;
 const WEBSITE_ID = `${SITE.url}/#website`;
 
-/** The technologies the about page names as daily and per-project tools (not the ones he is
-    only exploring). */
+/** Not the ones I am only exploring. */
 export function knowsAbout(): string[] {
   return STACK.filter((group) => group.key !== "exploring").flatMap((group) => [...group.items]);
 }
 
-/** The home page: the person and the website, linked by @id. `homeUrl` is the localised home. */
 export function homeJsonLd({
   locale,
   homeUrl,
@@ -75,7 +71,6 @@ export function homeJsonLd({
   };
 }
 
-/** A breadcrumb trail, from the home page to the current page. */
 export function breadcrumbJsonLd(items: readonly { name: string; url: string }[]): JsonLdObject {
   return {
     "@context": "https://schema.org",
@@ -89,8 +84,7 @@ export function breadcrumbJsonLd(items: readonly { name: string; url: string }[]
   };
 }
 
-/** JSON for a <script type="application/ld+json">: `<` is escaped so no string can close the
-    script element or open a comment. */
+/** `<` is escaped so no string can close the script element or open a comment. */
 export function serializeJsonLd(data: JsonLdObject): string {
   return JSON.stringify(data).replace(/</g, "\\u003c");
 }

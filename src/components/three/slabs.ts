@@ -1,7 +1,5 @@
-/* The floating objects of the home scene (prototype createScene): extruded slabs with round corners carrying
-   a screen texture, and two capsules (Majorelle and glow). Six slabs on desktop; four at 60 %
-   scale on mobile. Positions are fractions of the visible half-width (nx) and half-height (ny),
-   so the composition holds at every aspect ratio. */
+/* Positions are fractions of the visible half-width and half-height, so the composition holds at
+   every aspect ratio. */
 import {
   ExtrudeGeometry,
   Group,
@@ -20,7 +18,7 @@ import {
 import type { SceneColors } from "@/components/three/palette";
 import { createScreenTexture, type MakeCanvas, type ScreenKind } from "@/components/three/textures";
 
-/** Where an object rests: fractions of the visible half-size, depth, and rotation in radians. */
+/** Fractions of the visible half-size, depth, and rotation in radians. */
 export interface Placement {
   nx: number;
   ny: number;
@@ -32,7 +30,7 @@ export interface Placement {
 
 export interface SlabSpec extends Placement {
   kind: ScreenKind;
-  /** Width and height in world units, before the mobile scale. */
+  /** World units, before the mobile scale. */
   w: number;
   h: number;
 }
@@ -53,7 +51,6 @@ const MOBILE: readonly SlabSpec[] = [
   { kind: "chart", w: 2.2, h: 1.5, nx: -0.4, ny: 0.18, z: -3.4, rx: 0.18, ry: 0.3, rz: 0.04 },
 ];
 
-/** Mobile objects are drawn at 60 % of their size. */
 export const MOBILE_UNIT = 0.6;
 
 export function slabSpecs(mobile: boolean): readonly SlabSpec[] {
@@ -64,7 +61,6 @@ export function unitFor(mobile: boolean): number {
   return mobile ? MOBILE_UNIT : 1;
 }
 
-/** The two capsules: the Majorelle one front right, the glow one front left. */
 export function capsulePlacements(mobile: boolean): { blue: Placement; warm: Placement } {
   return {
     blue: { nx: mobile ? 0.8 : 0.95, ny: mobile ? 0.05 : -0.42, z: 1.2, rx: 0.4, ry: 0, rz: 0.9 },
@@ -79,7 +75,6 @@ export function capsulePlacements(mobile: boolean): { blue: Placement; warm: Pla
   };
 }
 
-/** A rectangle with round corners, centred on the origin (prototype roundedShape). */
 export function roundedShape(w: number, h: number, r: number): Shape {
   const s = new Shape();
   const x = -w / 2;
@@ -96,7 +91,6 @@ export function roundedShape(w: number, h: number, r: number): Shape {
   return s;
 }
 
-/** The profile of a capsule of radius `r` and straight length `len`, for a LatheGeometry. */
 export function capsuleProfile(r: number, len: number, segments = 14): Vector2[] {
   const points: Vector2[] = [];
   for (let i = 0; i <= segments; i++) {
@@ -110,14 +104,13 @@ export function capsuleProfile(r: number, len: number, segments = 14): Vector2[]
   return points;
 }
 
-/** One object of the scene and the phase of its idle float. */
 export interface SceneItem {
   object: Object3D;
   placement: Placement;
   phase: number;
 }
 
-/** Everything the slabs created that holds GPU memory, for disposal. */
+/** Everything that holds GPU memory. */
 export interface Owned {
   geometries: BufferGeometry[];
   materials: Material[];
@@ -131,7 +124,6 @@ export interface BuildOptions {
   anisotropy: number;
 }
 
-/** Builds the slabs and capsules. Returns the items to place each frame and what to dispose. */
 export function buildObjects({ mobile, colors, makeCanvas, anisotropy }: BuildOptions): {
   items: SceneItem[];
   owned: Owned;

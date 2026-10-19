@@ -1,11 +1,10 @@
-/* Server environment, parsed once with zod. Importing this module from a Client Component fails
-   the build (server-only), so server values never reach the browser. src/instrumentation.ts
-   imports it when the server starts, so a bad production configuration stops the app at boot
-   instead of at the first message. */
+/* server-only: importing this from a Client Component fails the build. src/instrumentation.ts
+   imports it at startup, so a bad production config stops the app at boot, not at the first
+   message. */
 import "server-only";
 import { z } from "zod";
 
-/** Until the owner has verified abdelhadev.me in Resend, mail goes out from Resend's own domain. */
+/** Resend's own domain until abdelhadev.me is verified there. */
 export const DEFAULT_CONTACT_FROM = "Abdelhadev <onboarding@resend.dev>";
 
 const schema = z
@@ -13,14 +12,13 @@ const schema = z
     NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
     VERCEL_ENV: z.enum(["production", "preview", "development"]).optional(),
     REQUIRE_CONTENT: z.enum(["0", "1"]).optional(),
-    // Contact form (prompt 07). Required in production (below), optional elsewhere.
+    // Contact form: required in production (below), optional elsewhere.
     RESEND_API_KEY: z.string().min(1).optional(),
-    /** The private inbox that receives the form. Never published. */
     CONTACT_TO: z.email().optional(),
-    /** "Name <address>" as Resend expects it. */
+    /** "Name <address>", as Resend expects it. */
     CONTACT_FROM: z.string().min(3).default(DEFAULT_CONTACT_FROM),
     ARCJET_KEY: z.string().min(1).optional(),
-    /** 1: the form validates and reports success without calling Resend or Arcjet (tests). */
+    /** 1: validate and report success without calling Resend or Arcjet (tests only). */
     CONTACT_DRY_RUN: z.enum(["0", "1"]).default("0"),
   })
   .superRefine((value, ctx) => {

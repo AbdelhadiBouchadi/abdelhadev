@@ -1,5 +1,5 @@
-/* The CV's file size, read from public/ when the page renders: the about page is static, so it is
-   measured at build time and always matches the file that ships. Server only (node:fs). */
+/* Read at build time (the about page is static), so the size always matches the file that ships.
+   Server only: node:fs. */
 import "server-only";
 import { statSync } from "node:fs";
 import { join } from "node:path";
@@ -10,7 +10,7 @@ export function cvBytes(locale: Locale): number {
   return statSync(join(process.cwd(), "public", CV[locale].href)).size;
 }
 
-/** A size as people read it: "24 ko" or "1,2 Mo" in French, "24 kB" or "1.2 MB" in English. */
+/** "24 ko" or "1,2 Mo" in French, "24 kB" or "1.2 MB" in English. */
 export function formatFileSize(bytes: number, locale: Locale): string {
   const mega = bytes >= 1024 * 1024;
   const value = mega ? bytes / (1024 * 1024) : Math.max(1, Math.round(bytes / 1024));

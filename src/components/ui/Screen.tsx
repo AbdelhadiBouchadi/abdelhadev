@@ -1,17 +1,8 @@
-/* The framed product screen (prototype .screen). With `media` it holds a real screen from the media
-   manifest (ProjectMedia, 08b, rendered by the section); with `src`, a screenshot through
-   next/image; otherwise one of the prototype's placeholder skeletons, drawn in CSS
-   (src/styles/ui.css) and announced by `label` ("Screenshot to come"). Placeholders carry
-   data-placeholder="screen" so 08 (real screenshots) can find every one of them.
-
-   The inner element carries data-media-inner: MediaReveal and the stage timelines zoom it while
-   the frame around it opens. */
+/* MediaReveal and the stage timelines zoom [data-media-inner] while the frame around it opens. */
 import Image, { type StaticImageData } from "next/image";
 import type { ReactElement, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
-/** The prototype's skeletons: agenda grid, record split, plan lines, invoice (02), and the work
-    page's product list (shop tiles), chart (bars), chat (bubbles) and site (hero band) (04). */
 export type ScreenLayout =
   "agenda" | "record" | "plan" | "invoice" | "list" | "chart" | "chat" | "site";
 export type ScreenAspect = "default" | "tall" | "wide";
@@ -19,9 +10,8 @@ export type ScreenAspect = "default" | "tall" | "wide";
 interface ScreenCommon {
   /** default 16 / 10, tall 4 / 5, wide 21 / 10. */
   aspect?: ScreenAspect;
-  /** Renders the screen in a <figure> with this caption. */
   caption?: ReactNode;
-  /** Keeps the caption for assistive technology only (prototype work media: `figcaption.sr`). */
+  /** Caption for assistive technology only. */
   captionHidden?: boolean;
   className?: string;
 }
@@ -39,7 +29,6 @@ export interface ScreenImageProps extends ScreenCommon {
 }
 
 export interface ScreenMediaProps extends ScreenCommon {
-  /** A real screen (ProjectMedia): it fills the frame from the top. */
   media: ReactElement;
   src?: never;
   layout?: never;
@@ -49,16 +38,14 @@ export interface ScreenMediaProps extends ScreenCommon {
 export interface ScreenPlaceholderProps extends ScreenCommon {
   media?: never;
   src?: never;
-  /** The skeleton the prototype drew for this kind of screen. */
   layout: ScreenLayout;
-  /** Announced in place of the screenshot, e.g. "Screenshot to come" (from messages). */
   label: string;
 }
 
 export type ScreenProps = ScreenImageProps | ScreenMediaProps | ScreenPlaceholderProps;
 
 const AGENDA = "a.b.c.a..bc..a.b..ac.b..a";
-/** Six bars (heights in ui.css); the fifth is Majorelle. */
+/** Heights in ui.css; the fifth bar is Majorelle. */
 const BARS = "....b.";
 
 function Line({ w, dark = false }: { w: 16 | 30 | 40 | 50 | 60 | 70 | 80; dark?: boolean }) {

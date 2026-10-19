@@ -14,8 +14,7 @@ import { getCaseStudy } from "@/lib/content/case-studies";
 import { caseStudyProjects } from "@/lib/content/projects";
 import { caseMetadata, workBreadcrumb } from "@/lib/seo";
 
-// Only the public projects with a case study have a page (decision P7, caseStudyProjects); any
-// other slug, a project without a case study or with a pending permission, is a 404.
+// A project without a case study, or not yet cleared for publication, is a 404.
 export const dynamicParams = false;
 
 export function generateStaticParams() {
@@ -38,8 +37,6 @@ export async function generateMetadata({
   return caseMetadata(locale, slug);
 }
 
-// Tones: hero night, problem, tour and adaptation day, architecture night, next project day,
-// then the night footer with the product's call to action (the @footer slot).
 export default async function CaseStudyPage({ params }: PageProps<"/[locale]/work/[slug]">) {
   const locale = await resolveLocale(params);
   const { slug } = await params;

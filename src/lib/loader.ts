@@ -1,15 +1,5 @@
-/* The loader task registry, framework-free (no React, no GSAP), ported from `Loader` in
-   docs/prototype/assets/site.js.
-
-   A cycle starts when the page starts loading (first visit) or when a route change is covered by
-   the curtain. Anything the page really needs registers with `track(weight, promise)`: fonts,
-   window load, critical images, the home 3D scene. Progress is the settled weight over the total
-   weight. A rejected task counts as settled: a failed image must not hold the page hostage.
-
-   The cycle is ready when the floor has passed AND (every task has settled OR the ceiling has
-   passed). The floor keeps the sunrise readable; the ceiling keeps a slow network from hiding the
-   page. The registry's ceiling is LOADER.tasksDeadlineMs: the loader's final push to 100 % plays
-   after it, so the exit starts by LOADER.ceilingMs and the overlay is gone within 5 s. */
+/* A rejected task counts as settled: a failed image must not hold the page hostage. The floor
+   keeps the sunrise readable; the ceiling keeps a slow network from hiding the page. */
 import { LOADER } from "@/lib/motion";
 
 export type LoaderKind = "first" | "route" | "reduced";
@@ -20,16 +10,14 @@ export interface LoaderClock {
 }
 
 export interface LoaderRegistry {
-  /** Registers a task. Tasks tracked after the cycle is ready are ignored. */
+  /** Tasks tracked after the cycle is ready are ignored. */
   track: (weight: number, task: PromiseLike<unknown>) => void;
-  /** Calls `listener` with progress in [0, 1]; never decreases within a cycle. Returns unsubscribe. */
+  /** Never decreases within a cycle. */
   subscribe: (listener: (progress: number) => void) => () => void;
-  /** Resolves when the current cycle is ready. */
   whenReady: () => Promise<void>;
-  /** Current progress of the current cycle. */
   progress: () => number;
   isReady: () => boolean;
-  /** Starts a new cycle (route change). Tasks of the previous cycle no longer count. */
+  /** Tasks of the previous cycle no longer count. */
   reset: (kind: LoaderKind) => void;
 }
 
@@ -75,9 +63,8 @@ interface Cycle {
 export interface LoaderOptions {
   clock?: LoaderClock;
   ceilingMs?: number;
-  /** Milliseconds of the first cycle that already passed before the registry existed. On a first
-      visit this is the time since navigation start, so the floor and the ceiling count from the
-      start of the page load (as in the prototype), not from hydration. Route cycles start at 0. */
+  /** On a first visit, the time since navigation start, so the floor and the ceiling count from
+      the page load, not from hydration. */
   elapsedMs?: number;
 }
 

@@ -1,8 +1,7 @@
 "use client";
 
-/* Agadir local time (prototype `tick`). The server and hydration render the placeholder; the
-   client time arrives right after hydration and refreshes every 30 s, so the markup never
-   mismatches. */
+/* The server and hydration render the placeholder and the time arrives right after, so the
+   markup never mismatches. */
 import { useSyncExternalStore } from "react";
 import { CLOCK_PLACEHOLDER, CLOCK_REFRESH_MS, formatClock } from "@/lib/clock";
 

@@ -1,20 +1,7 @@
 "use client";
 
-/* The home 3D scene's client component: the lazy chunk (next/dynamic, ssr: false, from
-   SceneLayer). It creates its own canvas, builds the scene (scene.ts) and either
-   - `live`: renders on gsap.ticker (no second rAF loop), reading the scroll progress from
-     lib/scene-state.ts, with pointer parallax on fine pointers; it stops rendering when the dusk's
-     p3 reaches STOP_AT (and hides the canvas), when the document is hidden, when the canvas is
-     out of view and while the loader or a curtain covers the page; or
-   - `still` (reduced motion): one frame of the resting composition, redrawn only on resize; no
-     ticker, no pointer.
-   The first frame compiles the shaders and uploads the textures; `onFrame` fires once it has been
-   presented, and the canvas fades in (DURATION.scene) at the loader's ready signal or at once if
-   the signal already fired. Any failure (no context, a lost context, a missing token) calls
-   `onFail` and SceneLayer shows the poster.
-
-   The canvas is created here rather than rendered by React: forceContextLoss() on unmount leaves a
-   canvas whose context can never be recreated, and StrictMode mounts twice. */
+/* The canvas is created here, not rendered by React: forceContextLoss() on unmount leaves a canvas
+   whose context can never be recreated, and StrictMode mounts twice. */
 import { useEffect, useRef } from "react";
 import { SCENE_TOKENS } from "@/components/three/palette";
 import { createScene, MAX_PIXEL_RATIO, STOP_AT, type SceneHandle } from "@/components/three/scene";
@@ -29,9 +16,7 @@ export type SceneMode = "live" | "still";
 
 export interface HeroSceneProps {
   mode: SceneMode;
-  /** The first frame has been presented. */
   onFrame: () => void;
-  /** The scene could not be created, or its context was lost. */
   onFail: (error: unknown) => void;
 }
 
@@ -92,8 +77,7 @@ export default function HeroScene({ mode, onFrame, onFail }: HeroSceneProps) {
       if (alive) callbacks.current.onFail(new Error("WebGL context lost"));
     });
 
-    // First frame (the resting composition, as the prototype's render(0)); onFrame once the
-    // browser has presented it.
+    // onFrame once the browser has presented the first frame.
     scene.renderStatic();
     const raf = requestAnimationFrame(() => {
       if (alive) callbacks.current.onFrame();

@@ -1,12 +1,10 @@
-/* "Abdelhadev", outlined from Bricolage Grotesque Bold, inline so GSAP can animate each letter
-   (the loader builds it letter by letter). Fill is currentColor; each path carries its index in
-   `data-letter`. Path data is generated from brand/wordmark-animated.svg. */
+/* Inline so GSAP can animate each letter. The path data comes from brand/wordmark-animated.svg
+   (pnpm brand:paths). */
 import { WORDMARK_PATHS, WORDMARK_VIEWBOX } from "@/components/brand/wordmark-paths";
 import { SITE } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 export interface WordmarkProps {
-  /** Hide from assistive technology when the name is already given nearby. */
   decorative?: boolean;
   className?: string;
 }

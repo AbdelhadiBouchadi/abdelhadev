@@ -1,7 +1,5 @@
-// The route curtain (decision T8, docs/spikes/route-curtain.md): cover, navigate, arrive, lift;
-// Back and Forward; same-page hash links; modified and double clicks; no flash of the new page.
-// The same-page hash link is the work hero's "Start with DentaFlow" (#dentaflow) since the lab
-// was removed in 05; it lands on the sheet clear of the header (its scroll-margin-top).
+// The route curtain: cover, navigate, arrive, lift; Back and Forward; same-page hash links;
+// modified and double clicks; no flash of the new page.
 import { readFileSync } from "node:fs";
 import { expect, test, type Page } from "@playwright/test";
 import { scrollToY, shellIdle, visited } from "./shell-helpers";
@@ -25,7 +23,6 @@ interface Frame {
   covered: boolean;
 }
 
-/** Samples every frame: is the arriving page in the DOM, and does the panel cover the viewport? */
 async function startSampler(page: Page, arrivedTitle: string) {
   await page.evaluate((title) => {
     const frames: { arrived: boolean; covered: boolean }[] = [];
@@ -49,11 +46,10 @@ async function startSampler(page: Page, arrivedTitle: string) {
   }, arrivedTitle);
 }
 
-/** The document offset of the element with this id. */
 const offsetOf = (page: Page, id: string) =>
   page.locator(`#${id}`).evaluate((el) => el.getBoundingClientRect().top + window.scrollY);
 
-/** Where a hash link to this id scrolls: its offset less its scroll-margin-top. */
+/** Its offset less its scroll-margin-top. */
 const landing = (page: Page, id: string) =>
   page
     .locator(`#${id}`)
@@ -153,8 +149,7 @@ test("a hash link lands on its target when the click comes before Lenis has seen
   page,
 }) => {
   // Scroll events reach Lenis on the next frame, so a click can arrive while Lenis still holds the
-  // previous scroll position. It used to measure the target from that stale value and overshoot
-  // by the distance it had missed (CI: 382 px at 390, 436 px at 1440).
+  // previous position. Measuring from that stale value overshot by the distance it had missed.
   await page.goto(WORK);
   await shellIdle(page);
   await scrollToY(page, 437);

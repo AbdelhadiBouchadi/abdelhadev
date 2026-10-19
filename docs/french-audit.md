@@ -1,6 +1,6 @@
-# French audit (08a2)
+# French audit
 
-Every French string changed in the French pass, judged against `docs/french-style.md` with the English beside it for the intent. Keys, English, facts, placeholders and proper nouns are unchanged. ★ marks the strings I am least sure about; the owner decides.
+Every French string changed in the French pass, judged against `docs/french-style.md` with the English beside it for the intent. Keys, English, facts, placeholders and proper nouns are unchanged. ★ marks the strings I was least sure about.
 
 `⍽` stands for a no-break space (written `\u00a0` in `messages/fr.json`). Strings that already had a no-break space in a few places now write it as the `\u00a0` escape too: same value, so they are not listed.
 
@@ -81,7 +81,7 @@ Every French string changed in the French pass, judged against `docs/french-styl
 | `projects.hms.challenge` | Donner à un service d'ophtalmologie un outil pour suivre ses patients, ses rendez-vous et ses images de l'œil. | Doter un service d'ophtalmologie d'un outil pour suivre ses patients, ses rendez-vous et l'imagerie oculaire. | « ses images de l'œil » calque « eye images » ; le terme médical est « imagerie oculaire ». |
 | `projects.hms.built` | Un système de gestion réservé au personnel médical du service : données des patients, rendez-vous, imagerie de l'œil et dossiers médicaux. | Un système de gestion réservé au personnel médical du service⍽: données des patients, rendez-vous, imagerie oculaire et dossiers médicaux. | « imagerie de l'œil » : le terme médical est « imagerie oculaire ». |
 
-## Contact email (owner only, `src/emails/contact-form.tsx`, plain-text twin in `src/lib/contact-handler.ts`)
+## Contact email (for me only, `src/emails/contact-form.tsx`, plain-text twin in `src/lib/contact-handler.ts`)
 
 | Key | Before | After | Reason |
 |---|---|---|---|
@@ -93,7 +93,7 @@ Every French string changed in the French pass, judged against `docs/french-styl
 
 - `home.hero.kinds.ai` and `projects.meetai.kind` ("Applications web IA", "Application web IA"): short labels in the hero and on the sheets; "avec IA" would read better but lengthens a label set in display type.
 - `footer.elsewhere` ("Ailleurs"): heads the social links; natural enough in French.
-- `about.experience.items.*.when` ("Octobre 2026"): a month that opens a label keeps its capital. (Ophtachusm's date reads "2024 à 2025" since 08c, decision P18.)
-- `projects.cote-royale.built`: was a draft for 08c; written in 08c from the code audit.
+- `about.experience.items.*.when` ("Octobre 2026"): a month that opens a label keeps its capital. (Ophtachusm's date reads "2024 à 2025", decision P18.)
+- `projects.cote-royale.built`: written from the code audit.
 - Every `[TODO …]` placeholder, testimonial placeholders and proper nouns ("SOS Dental Clinic, Agadir", "Dérive Casablancaise").
-- `src/app/[locale]/opengraph-image.alt.txt` is a single English file shared by both locales; a French alt text needs a per-locale image route (09-seo-og-cv).
+- `src/app/[locale]/opengraph-image.alt.txt` is a single English file shared by both locales; a French alt text needs a per-locale image route.

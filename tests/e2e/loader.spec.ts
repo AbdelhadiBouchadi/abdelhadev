@@ -1,17 +1,14 @@
-// The loader (docs/choreography.md, "Loader"; decision T7): real progress, the floors and the
-// ceiling, the content painted and inert under it, reduced motion, no JavaScript.
+// Real progress, the floors and the ceiling, the content painted and inert under the overlay,
+// reduced motion, no JavaScript.
 import { expect, test } from "@playwright/test";
 import { DURATION, LOADER, LOADER_EXIT_AT } from "@/lib/motion";
 import { loaderRecord, recordLoader, shellIdle, visited } from "./shell-helpers";
 
 const FLOOR_FIRST = LOADER.floorFirstMs;
 const FLOOR_ROUTE = LOADER.floorRouteMs;
-/** The latest moment the exit starts (3300 ms). */
 const CEILING = LOADER.ceilingMs;
-/** The intro (`ready`) starts 0.55 s into the exit. */
 const INTRO_IN_EXIT = LOADER_EXIT_AT.ready * 1000;
-/** Final progress push (0.45 s) plus the exit up to the intro (0.55 s), less 50 ms for GSAP's
-    ticker clock against performance.now(). */
+/** Less 50 ms for GSAP's ticker clock against performance.now(). */
 const EXIT_TO_READY = DURATION.progressEnd * 1000 + INTRO_IN_EXIT - 50;
 /** docs/quality.md: the loader never covers content for more than 5 s, exit included. */
 const COVER_MAX = 5000;
@@ -20,7 +17,7 @@ test("first visit: the full sequence, at least the floor, before the ceiling", a
   await recordLoader(page);
   await page.goto("/fr");
 
-  // The real page is in the DOM and painted under the overlay (spike S3), and inert.
+  // The real page is in the DOM, painted under the overlay, and inert.
   await expect(page.locator("[data-loader]")).toBeVisible();
   const hero = page.locator("main h1");
   await expect(hero).toHaveText(/Abdelhadi Bouchadi/);

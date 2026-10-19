@@ -1,20 +1,17 @@
-/* The screens on the slabs: small product UIs drawn on a 2D canvas and uploaded as textures
-   (prototype screenTexture). Six kinds: agenda, patient record, chart, invoice, AI chat, calendar.
-   Geometry is the prototype's, in canvas pixels; colours come from the tokens (palette.ts). */
+/* Geometry in canvas pixels; colours from the tokens (palette.ts). */
 import { CanvasTexture, SRGBColorSpace } from "three";
 import type { SceneColors } from "@/components/three/palette";
 
 export type ScreenKind = "agenda" | "patient" | "chart" | "invoice" | "ai" | "calendar";
 
-/** Canvas width of every screen; the height follows the slab's aspect ratio. */
+/** The height follows the slab's aspect ratio. */
 const WIDTH = 640;
 const RADIUS = 34;
 const BAR_HEIGHT = 58;
 const TOP = 84;
 const PAD = 30;
 
-/** The 2D context calls drawScreen makes (a subset of CanvasRenderingContext2D, so tests can
-    record them). */
+/** A subset of CanvasRenderingContext2D, so tests can record the calls. */
 export type Pen = Pick<
   CanvasRenderingContext2D,
   | "beginPath"
@@ -43,7 +40,6 @@ function outline(x: Pen, left: number, top: number, w: number, h: number, r: num
   x.closePath();
 }
 
-/** A filled rectangle with round corners (prototype rr). */
 function rr(x: Pen, left: number, top: number, w: number, h: number, r: number, fill: string) {
   outline(x, left, top, w, h, r);
   x.fillStyle = fill;
@@ -57,7 +53,6 @@ function dot(x: Pen, cx: number, cy: number, r: number, fill: string) {
   x.fill();
 }
 
-/** Draws one screen on a canvas of `cw` × `ch` pixels. */
 export function drawScreen(x: Pen, kind: ScreenKind, cw: number, ch: number, c: SceneColors) {
   rr(x, 0, 0, cw, ch, RADIUS, c["scene-screen"]);
   x.save();
@@ -140,10 +135,10 @@ export function drawScreen(x: Pen, kind: ScreenKind, cw: number, ch: number, c: 
   x.restore();
 }
 
-/** A 2D canvas to draw on (document.createElement("canvas") in the browser, a stub in tests). */
+/** A stub in tests. */
 export type MakeCanvas = (width: number, height: number) => HTMLCanvasElement;
 
-/** The screen of a `w` × `h` slab as a texture. Throws when no 2D context is available. */
+/** Throws when no 2D context is available. */
 export function createScreenTexture(
   kind: ScreenKind,
   w: number,

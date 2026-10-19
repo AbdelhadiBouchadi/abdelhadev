@@ -1,11 +1,10 @@
-/* A short page body: one heading, one sentence and its actions (the 404 and the error pages). */
 import type { ReactNode, Ref } from "react";
 
 export interface PagePlaceholderProps {
   title: string;
   lead: string;
   children?: ReactNode;
-  /** The heading, for a page that moves focus to it (the error page). */
+  /** For a page that moves focus to its heading (the error page). */
   headingRef?: Ref<HTMLHeadingElement>;
 }
 

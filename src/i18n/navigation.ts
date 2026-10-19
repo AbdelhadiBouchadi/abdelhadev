@@ -1,4 +1,4 @@
-/* Locale-aware navigation. Use these instead of next/link and next/navigation (ESLint enforces it). */
+/* Use these instead of next/link and next/navigation (ESLint enforces it). */
 import { createNavigation } from "next-intl/navigation";
 import { routing } from "@/i18n/routing";
 

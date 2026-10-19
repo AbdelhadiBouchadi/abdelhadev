@@ -1,4 +1,3 @@
-// Colour tokens read at runtime (src/lib/css-tokens.ts) and the scene's token list.
 import { readFileSync } from "node:fs";
 import { describe, expect, it, vi } from "vitest";
 import { SCENE_TOKENS } from "@/components/three/palette";
@@ -6,7 +5,7 @@ import { MissingTokenError, readColorTokens, rootTokenSource } from "@/lib/css-t
 
 const tokensCss = readFileSync(new URL("../../src/styles/tokens.css", import.meta.url), "utf8");
 
-/** A source that reads tokens.css the way getComputedStyle would (with its leading space). */
+/** With the leading space getComputedStyle keeps. */
 const fromTokensCss = (property: string) => {
   const match = new RegExp(`${property}:\\s*([^;]+);`).exec(tokensCss);
   return match?.[1] ? ` ${match[1]}` : "";

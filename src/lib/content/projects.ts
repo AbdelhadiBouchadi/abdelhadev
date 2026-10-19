@@ -1,8 +1,5 @@
-/* The projects, with only the facts in docs/content.md. Everything else is a placeholder
-   until the owner supplies it. Parsed at module load, so an invalid entry fails the build.
-   The media are the work page sheets of the prototype (docs/prototype/work.html): span, frame
-   tone, aspect and placeholder skeleton, in grid order. Since 08b the slots take the real screens
-   of lib/content/media.map.json in order (sheetMedia); a slot without one keeps its skeleton. */
+/* Only the facts in docs/content.md; anything else is a placeholder. Parsed at module load, so an
+   invalid entry fails the build. A sheet slot without a real screen keeps its skeleton. */
 import { CASE_STUDIES } from "@/lib/content/case-studies";
 import { tourMedia, workMedia, type ProjectMediaItem } from "@/lib/media";
 import {
@@ -31,7 +28,6 @@ const INPUT: ProjectInput[] = [
       { span: 4, tone: "blue", skeleton: "invoice" },
       { span: 4, tone: "plain", skeleton: "chart" },
     ),
-    // Listed on the home featured work (messages: home.featured.features.<item>).
     features: {
       items: ["agenda", "records", "plans", "invoices"],
       confirmed:
@@ -96,7 +92,7 @@ const INPUT: ProjectInput[] = [
     slug: "yoga-booking",
     featured: false,
     status: "working",
-    // Shown without the studio's name (docs/decisions.md, P17).
+    // Shown without the studio's name (docs/decisions.md).
     permission: "confirmed",
     caseStudy: false,
     stack: [
@@ -126,7 +122,7 @@ const INPUT: ProjectInput[] = [
     slug: "cote-royale",
     featured: false,
     status: "concept",
-    // A concept project with no client (docs/decisions.md, P17): shown by the owner's decision.
+    // A concept project with no client, shown on purpose (docs/decisions.md).
     permission: "confirmed",
     caseStudy: false,
     stack: [
@@ -147,8 +143,7 @@ const INPUT: ProjectInput[] = [
   },
 ];
 
-/** The work page order (08b, complete since 08c). A slug missing from INPUT is skipped; a
-    project missing from this list fails the build. */
+/** A slug missing from INPUT is skipped; a project missing from this list fails the build. */
 export const WORK_ORDER = ["dentaflow", "meetai", "hms", "yoga-booking", "cote-royale"] as const;
 
 const rank = (slug: string) => (WORK_ORDER as readonly string[]).indexOf(slug);
@@ -179,39 +174,32 @@ export function getProject(slug: string): Project | undefined {
   return PROJECTS.find((p) => p.slug === slug);
 }
 
-/** The projects the client allows to be named (decision P7): the work page, its rail and the
-    sitemap. */
+/** The projects I may name publicly: the work page, its rail and the sitemap. */
 export function publicProjects(list: readonly Project[] = PROJECTS): Project[] {
   return list.filter((p) => p.permission === "confirmed");
 }
 
-/** The public projects with a case study page: the case study's generateStaticParams, the
-    sitemap and the route list of the tests. Any other slug is a 404. */
+/** Any other slug is a 404. */
 export function caseStudyProjects(list: readonly Project[] = PROJECTS): Project[] {
   return publicProjects(list).filter((p) => p.caseStudy);
 }
 
-/** The real screens on a project's sheet: the map's work entries, in order, up to its slots. */
 export function sheetMedia(p: Project): ProjectMediaItem[] {
   return workMedia(p.slug).slice(0, p.media.length);
 }
 
-/** Every real screen of a project, from the media manifest (08b): the case study tour's when it
-    has one, else the sheet's. */
+/** The case study tour's screens when it has some, else the sheet's. */
 export function screenCount(p: Project): number {
   return p.caseStudy && Object.hasOwn(CASE_STUDIES, p.slug)
     ? tourMedia(p.slug).size
     : sheetMedia(p).length;
 }
 
-/** Whether a sheet links to the case study for the screens it does not show. */
 export function hasMoreScreens(p: Project): boolean {
   return p.caseStudy && screenCount(p) > sheetMedia(p).length;
 }
 
-/** The statuses with a label (messages: work.status.<status>): DentaFlow's general "ready" and
-    the owner's wording for the four others (09). A status without one shows as a fact to
-    confirm (work.status.todo), like a placeholder. */
+/** A status without a label shows as a fact to confirm (work.status.todo). */
 export const LABELLED_STATUSES = ["ready", "test-mode", "used", "working", "concept"] as const;
 
 export type LabelledStatus = (typeof LABELLED_STATUSES)[number];
@@ -220,13 +208,11 @@ function isLabelled(status: string): status is LabelledStatus {
   return LABELLED_STATUSES.some((s) => s === status);
 }
 
-/** The message key of a project's status under work.status, or "todo". */
 export function statusKey(p: Project): LabelledStatus | "todo" {
   return isLabelled(p.status) ? p.status : "todo";
 }
 
-/** The public project after `slug` on the work page, or null when it is the last one (the case
-    study's next-project link then goes to the work page). */
+/** null for the last one: the case study's next link then goes to the work page. */
 export function nextProject(slug: string, list: readonly Project[] = PROJECTS): Project | null {
   const shown = publicProjects(list);
   const i = shown.findIndex((p) => p.slug === slug);

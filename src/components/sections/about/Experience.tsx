@@ -1,9 +1,4 @@
-/* Experience (prototype .timeline), day: four rows, when / what / where, fading up one
-   ABOUT.stagger.timeline apart when the list enters (Reveal). The section head carries the CV
-   download for the page's locale (src/lib/content/cv.ts): its language and its size, measured
-   from the file at build time, are in the label, and it saves under a clean file name. A date the owner has not supplied shows
-   as a visible placeholder chip, never an invented year (decision P6); the education row names
-   no university and no year (decision P3). */
+/* A date I have not supplied shows as a placeholder chip, never an invented year. */
 import { getTranslations } from "next-intl/server";
 import { ArrowLink } from "@/components/ui/ArrowLink";
 import { Chip } from "@/components/ui/Chip";

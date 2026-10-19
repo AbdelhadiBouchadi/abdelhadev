@@ -62,14 +62,14 @@
   --default-transition-duration: var(--dur-base);
   --default-transition-timing-function: var(--ease-warm);
 
-  /* Prototype breakpoints: mobile nav under 761, single column under 901, two-column head from 1081. */
+  /* Mobile nav under 761, single column under 901, two-column head from 1081. */
   --breakpoint-nav: 761px;
   --breakpoint-split: 901px;
   --breakpoint-wide: 1081px;
   --breakpoint-frame: 1440px;
 }
 
-/* ---------- base (prototype) ---------- */
+/* base */
 @layer base {
   [hidden] {
     display: none !important;
@@ -133,14 +133,13 @@
     color: var(--ink);
   }
 
-  /* Page intro elements stay hidden only while motion runs and the loader has not finished.
-     Without JavaScript or with reduced motion, html never gets .motion, so content shows. */
+  /* Without JavaScript or with reduced motion, html never gets .motion, so content shows. */
   html.motion:not(.ready) [data-intro] {
     visibility: hidden;
   }
 }
 
-/* ---------- layout ---------- */
+/* layout */
 @utility wrap {
   width: 100%;
   max-width: var(--frame);
@@ -165,7 +164,7 @@
   }
 }
 
-/* ---------- type (prototype clamp values) ---------- */
+/* type */
 @utility display {
   font-family: var(--display);
   font-weight: 600;
@@ -224,6 +223,5 @@
   }
 }
 
-/* Tone variant: `night:` applies inside a [data-tone="night"] ancestor, like the prototype's
-   `[data-tone="night"] .btn` rules. */
+/* `night:` applies inside a [data-tone="night"] ancestor. */
 @custom-variant night (&:where([data-tone="night"], [data-tone="night"] *));

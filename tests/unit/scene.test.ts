@@ -1,7 +1,5 @@
-// The home 3D scene without WebGL (src/components/three): the placement maths, the mobile and
-// desktop specs, the screen textures' colours, and disposal, on mocked three.js objects that
-// record what is created and freed. What a real GPU does with them is not covered here (see the
-// home e2e spec and the reply's "Not verified").
+// The home 3D scene without WebGL, on mocked three.js objects that record what is created and
+// freed. What a real GPU does with them is not covered here.
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const made = vi.hoisted(() => ({
@@ -165,7 +163,6 @@ const colors = Object.fromEntries(SCENE_TOKENS.map((name) => [name, `token:${nam
   string
 >; // built from SCENE_TOKENS, so every key is present
 
-/** A 2D context that records every fill colour. */
 function recordingPen() {
   const fills: string[] = [];
   const pen = {
@@ -197,8 +194,6 @@ function canvasStub(withContext = true) {
 beforeEach(() => {
   for (const list of Object.values(made)) list.length = 0;
 });
-
-// ---------- maths ----------
 
 describe("placement maths", () => {
   it("mixes linearly", () => {
@@ -335,8 +330,6 @@ describe("screen textures", () => {
     }
   });
 });
-
-// ---------- the scene and its disposal ----------
 
 describe("createScene", () => {
   const options = (mobile: boolean, withContext = true) => ({

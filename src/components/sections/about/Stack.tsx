@@ -1,6 +1,3 @@
-/* What I use (prototype .stack-groups), day: three groups of chips, by how often he reaches for
-   each tool (src/lib/content/about.ts; technology names are not translated). The groups fade up
-   one ABOUT.stagger.stack apart when they enter (Reveal). */
 import { getTranslations } from "next-intl/server";
 import { Chips } from "@/components/ui/Chip";
 import { STACK } from "@/lib/content/about";

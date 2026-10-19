@@ -1,6 +1,4 @@
-// The pure logic behind the motion primitives (docs/primitives.md): ranges, the stage condition,
-// scroll-spy selection, clip paths, trigger lookup, the after-commit scheduler, and the CSS start
-// states that mirror lib/motion.ts.
+// The pure logic behind the motion primitives, and the CSS start states that mirror lib/motion.ts.
 import { readFileSync } from "node:fs";
 import { describe, expect, it, vi } from "vitest";
 import {

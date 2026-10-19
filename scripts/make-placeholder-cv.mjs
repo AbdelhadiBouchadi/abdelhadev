@@ -1,7 +1,5 @@
-// Writes the placeholder CVs (public/cv/abdelhadi-bouchadi-cv-<locale>.pdf): a valid one-page PDF
-// reading "CV placeholder, to be replaced", with no dependency. The owner replaces each file with
-// the real CV and sets its status to "final" in src/lib/content/cv.ts; until then
-// REQUIRE_CONTENT=1 fails the build (scripts/report-todos.mjs). Run: node scripts/make-placeholder-cv.mjs
+// Writes the placeholder CVs in public/cv/ with no dependency. Until each one is replaced and its
+// status set to "final" in src/lib/content/cv.ts, REQUIRE_CONTENT=1 fails the build.
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 
@@ -9,7 +7,7 @@ const root = resolve(import.meta.dirname, "..");
 const LOCALES = ["fr", "en"];
 const TEXT = "CV placeholder, to be replaced";
 
-/** A one-page A4 PDF 1.4 with one line of Helvetica, with a correct cross-reference table. */
+/** One-page A4 PDF 1.4, with a correct cross-reference table. */
 export function placeholderPdf(text) {
   const stream = `BT /F1 24 Tf 72 760 Td (${text.replace(/[\\()]/g, "\\$&")}) Tj ET`;
   const objects = [

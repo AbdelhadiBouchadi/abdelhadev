@@ -1,10 +1,5 @@
-/* The lights of the home scene (prototype createScene): a warm ambient and hemisphere fill, a warm
-   key light from the upper right and a cool Majorelle rim from the lower left.
-
-   The prototype ran three r128, whose lights were "legacy": since r155 three.js uses physically
-   based light units, in which the same look needs the ambient, hemisphere and directional
-   intensities multiplied by π (three.js migration guide, r155). The prototype's numbers are kept
-   and scaled here, so they can still be compared with docs/prototype/assets/site.js. */
+/* three.js has used physical light units since r155, so the intensities of the original r128
+   scene are multiplied by π here (three.js migration guide). */
 import { AmbientLight, DirectionalLight, HemisphereLight, type Light, type Scene } from "three";
 import type { SceneColors } from "@/components/three/palette";
 

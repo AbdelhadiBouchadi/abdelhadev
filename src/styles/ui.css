@@ -1,21 +1,6 @@
-/* Static UI building blocks (src/components/ui): the framed product screen with its placeholder
-   skeletons, and chips. Ported from docs/prototype/assets/site.css (.screen*, .ui-*, .sk*, .chip*).
-
-   The prototype drew its placeholder screens with a few raw colours; here each is a token or a
-   color-mix of tokens (docs/primitives.md lists the mapping):
-     #FFFCF7 screen          → --sheet
-     rgba(43,29,26,.06)      → --ink at 6 %
-     #F3E8DC ui bar, tiles   → --sand 70 % with --sheet
-     #DCC8B5 ui bar pills    → --sand-2 90 % with --ink-soft
-     #EADBCB skeleton line   → --sand
-     #D9C2AC dark line       → --sand-2 88 % with --ink-soft
-     #F6EEE5 empty cell      → --sand 35 % with --sheet
-     #E8D5C2 cell c          → --sand-2
-     #2B1D1A invoice total   → --ink
-     rgba(61,82,213,.08/.3)  → --majorelle at 8 % and 30 % (chip todo)
-   In the components layer, so Tailwind utilities still win. */
+/* In the components layer, so Tailwind utilities still win. */
 @layer components {
-  /* ---------- Screen ---------- */
+  /* Screen */
   .screen {
     aspect-ratio: 16 / 10;
     max-width: 100%;
@@ -46,9 +31,8 @@
     object-fit: cover;
   }
 
-  /* A real screen from the media manifest (ProjectMedia, 08b): it fills the frame from the top,
-     centred, so a narrow frame keeps the app's content rather than its side navigation; the blur
-     placeholder sits behind it until the file has loaded. */
+  /* A real screen fills the frame from the top, so a narrow frame keeps the app's content rather
+     than its side navigation. */
   .media-picture,
   .media-video {
     display: block;
@@ -64,8 +48,8 @@
     background-size: cover;
     background-position: top;
   }
-  /* The play/pause button of a loop (WCAG 2.2.2): a 44 px target in the frame's corner, far
-     enough from the clipped edge for the focus ring. Hidden until its client leaf runs. */
+  /* A 44 px target, far enough from the clipped edge for the focus ring. Hidden until its client
+     leaf runs. */
   .video-toggle {
     position: absolute;
     inset-block-end: 12px;
@@ -207,9 +191,7 @@
   .tiles-row [data-c="a"] {
     background: var(--glow);
   }
-  /* The work page's skeletons (04): product list, chart, chat and site. Bubbles use the tile
-     colour (#F2E7DB in the prototype, the same mix as #F3E8DC); the site's hero band is the
-     prototype's glow-to-rose gradient. */
+  /* Work page skeletons: product list, chart, chat and site. */
   .ui-list-tight {
     gap: 8px;
     margin-top: 6%;
@@ -276,7 +258,7 @@
     background: linear-gradient(120deg, var(--glow), var(--rose));
   }
 
-  /* A captioned screen grows to fill its figure (prototype `.media .screen { height: 100% }`). */
+  /* A captioned screen grows to fill its figure. */
   .screen-figure {
     display: flex;
     flex-direction: column;
@@ -293,7 +275,7 @@
     font-size: 13px;
   }
 
-  /* ---------- Chip ---------- */
+  /* Chip */
   .chips {
     display: flex;
     flex-wrap: wrap;

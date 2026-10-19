@@ -1,5 +1,4 @@
-// pnpm check:tokens: colours, easings, durations and radii come from tokens only.
-// Rules: scripts/lib/token-rules.mjs. Scans every source file under src/.
+// Colours, easings, durations and radii come from tokens only, in every source file under src/.
 import { readdirSync, readFileSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
 import { checkFile, radiusTokens } from "./lib/token-rules.mjs";
@@ -7,8 +6,8 @@ import { checkFile, radiusTokens } from "./lib/token-rules.mjs";
 const root = resolve(import.meta.dirname, "..");
 const EXTENSIONS = /\.(?:ts|tsx|js|jsx|mjs|css)$/;
 // Generated path data has no colours or motion, and its numbers would only be noise.
-// The contact email template: email clients ignore CSS variables and stylesheets, so its values
-// are copied from tokens.css by hand and inlined (each one names its token there).
+// Email clients ignore CSS variables and stylesheets, so the contact email inlines its values
+// (each one names its token).
 const SKIP = new Set(["src/components/brand/wordmark-paths.ts", "src/emails/contact-form.tsx"]);
 
 function* walk(dir) {
