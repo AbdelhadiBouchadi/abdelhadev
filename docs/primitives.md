@@ -144,6 +144,22 @@ DrawSVG for diagrams. Ports the architecture diagram of `Pages.case`. Inside it,
 - Wires must be single-segment paths with a stroke. Start state (CSS): nodes at opacity 0, wires hidden until DrawSVG has collapsed them.
 - Reduced motion and no JavaScript: fully drawn.
 
+### ProjectMedia and VideoLoopControl (08b)
+
+One real screen from the media manifest (`src/lib/media.ts`), server markup placed in a `Screen`'s `media` slot by the section (`ui` may not import primitives). The files are already optimised by `pnpm media`, so there is no `next/image`.
+
+| Prop | Type | Notes |
+|---|---|---|
+| `item` | `ProjectMediaItem` | from `sheetMedia()` (work sheet) or `tourMedia()` (case study tour) |
+| `alt`, `label` | string | messages `work.<slug>.media.<n>.alt` and `.label` (a loop's accessible name, required for a video), read with `mediaCopy()` |
+| `sizes` | string | from the frame's layout |
+| `priority` | boolean | the first screen of the first sheet only: `loading="eager"`, `fetchpriority="high"` |
+| `controls` | `{ play, pause }` | the button's names (messages `work.video`) |
+
+- Image: `<picture>` with AVIF then WebP, `srcset` and `sizes`, intrinsic `width` and `height`, the blur placeholder as the image's background, anchored at the top, centred (`object-position: top`).
+- Video: `<video muted loop playsinline preload="none">` with WebM then MP4, the WebP poster and `aria-label`. `VideoLoopControl` (client leaf, the button itself) plays it while at least half of it is in view and pauses it otherwise; once paused by the visitor it stays paused. Under reduced motion it never starts by itself. The 44 px play/pause button (WCAG 2.2.2) is `hidden` until the leaf runs, so without JavaScript the poster is the content and no dead control shows.
+- No motion of its own: the frame around it keeps `MediaReveal`.
+
 ### useScrollSpy (`src/hooks/useScrollSpy.ts`)
 
 `useScrollSpy(ids, { line })` returns `{ activeIndex, activeId }`: which of the elements with these ids is crossing a horizontal line at `line` of the viewport height. One ScrollTrigger per element (`lineRange` gives `"top 45%"` to `"bottom 45%"`), selection through `onToggle` (`spyReduce`): the latest element to cross is active, in a gap the last one stays, and when it stops crossing the previous one still crossing takes over. `-1` / `null` before the first element reaches the line.
@@ -165,7 +181,8 @@ The framed product screen (`.screen`, `.screen-inner`, `.ui-bar`).
 | Prop | Type | Notes |
 |---|---|---|
 | `aspect` | `"default" \| "tall" \| "wide"` | 16 / 10, 4 / 5, 21 / 10; a `className` such as `aspect-[16/8.5]` overrides (case study hero) |
-| `src`, `alt`, `width`, `height`, `sizes`, `priority` | `next/image` props | a real screenshot; `alt`, `width`, `height` and `sizes` are required |
+| `media` | element | a real screen (`ProjectMedia`, 08b), marked `data-media`; it fills the frame from the top |
+| `src`, `alt`, `width`, `height`, `sizes`, `priority` | `next/image` props | a screenshot through `next/image` (unused since 08b) |
 | `layout` | `"agenda" \| "record" \| "plan" \| "invoice" \| "list" \| "chart" \| "chat" \| "site"` | without `src`: the prototype's placeholder skeleton (the last four, added in 04, are the work page's shop tiles, bars, bubbles and site hero band) |
 | `label` | string | required with `layout`: announced in place of the screenshot ("Screenshot to come", from messages) |
 | `caption`, `captionHidden` | | renders a `figure` with a `figcaption` (visually hidden with `captionHidden`, as the prototype's work media) |
@@ -216,6 +233,7 @@ The prototype's `.link` and `.back-link` as one component with a lucide-react ar
 | `LineDraw` | case-study architecture diagram |
 | `useScrollSpy` | work rail (`SPY.list`), case-study tour (`SPY.tour`, `TourMotion`: the active step and the stage crossfade) |
 | `Screen` | home featured work, work media, case-study hero, tour stage and inline tour screens |
+| `ProjectMedia` | the work sheets' real screens and loops, the case-study tour's screens (08b) |
 | `Chip` | work projects (stack), about stack groups and the timeline's unconfirmed years (`todo`); the case-study and about facts are plain text, as in the prototype's `dl.facts` |
 | `ArrowLink` | case-study back link, work links, footer secondary link, about services Contact, CV download and "right now" links |
 

@@ -3,10 +3,15 @@
 // fills (desktop); the hero link and a #slug URL land on their sheet; the media open (MediaReveal
 // scrub, moved here from the lab bench); complete without JavaScript and under reduced motion;
 // ScrollTriggers return to their baseline after leaving and coming back; axe on /fr/projets.
+// 08b: the order is the work order; the real screens of the media manifest are in the server
+// HTML with their alt and intrinsic size; each loop has a poster, a label and a play/pause button,
+// plays in view and never under reduced motion; no horizontal overflow; the removed e-commerce
+// project is nowhere on the page.
 import AxeBuilder from "@axe-core/playwright";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { expect, test, type Locator, type Page } from "@playwright/test";
-import { publicProjects } from "@/lib/content/projects";
+import { publicProjects, sheetMedia, WORK_ORDER } from "@/lib/content/projects";
+import { mediaCopy } from "@/lib/media";
 import { beyond, bring, collectErrors, liveScrollTriggers } from "./page-helpers";
 import { LEGAL_NAME } from "./routes";
 import { scrollToY, shellIdle, transitionsSettled, visited } from "./shell-helpers";
@@ -18,6 +23,7 @@ interface WorkMessages {
     rail: string;
     caseStudy: string;
     cursor: { caseStudy: string };
+    video: { play: string; pause: string };
   };
   projects: Record<string, { name: string }>;
 }
@@ -28,6 +34,12 @@ const MESSAGES: Record<"fr" | "en", WorkMessages> = {
 const PATHS = { fr: "/fr/projets", en: "/en/work" } as const;
 const LOCALES = ["fr", "en"] as const;
 const SLUGS = publicProjects().map((p) => p.slug);
+/** The real screens of each sheet (lib/content/media.map.json through the manifest). */
+const SCREENS = publicProjects().map((p) => ({ slug: p.slug, items: sheetMedia(p) }));
+const VIDEOS = SCREENS.flatMap(({ slug, items }) =>
+  items.filter((m) => m.asset.kind === "video").map((item) => ({ slug, item })),
+);
+const LAST = SLUGS.at(-1) ?? "dentaflow";
 
 const rail = (page: Page) => page.locator("nav.rail");
 const fill = (page: Page) => page.locator("[data-rail-fill]");
@@ -264,7 +276,8 @@ test.describe("with motion", () => {
 async function complete(page: Page) {
   return page.evaluate(() => {
     const hidden = [...document.querySelectorAll("main *")].filter((el) => {
-      if (el.closest("[hidden]")) return false;
+      // A video's <source> children are never rendered (Chromium computes them hidden).
+      if (el.closest("[hidden]") || el.matches("video > source")) return false;
       const s = getComputedStyle(el);
       return s.visibility === "hidden" || Number(s.opacity) === 0;
     }).length;
@@ -306,9 +319,9 @@ test.describe("without JavaScript", () => {
   test("the rail links are real anchors", async ({ page }, info) => {
     test.skip(info.project.name !== "1440", "the rail shows from 901 px");
     await page.goto(PATHS.fr);
-    await rail(page).getByRole("link", { name: MESSAGES.fr.projects.flowshop?.name }).click();
-    await expect(page).toHaveURL(new RegExp(`${PATHS.fr}#flowshop$`));
-    const sheet = page.locator("#flowshop");
+    await rail(page).getByRole("link", { name: MESSAGES.fr.projects[LAST]?.name }).click();
+    await expect(page).toHaveURL(new RegExp(`${PATHS.fr}#${LAST}$`));
+    const sheet = page.locator(`#${LAST}`);
     expect(await topInView(sheet)).toBeCloseTo(await scrollMargin(sheet), -1);
   });
 });
@@ -332,6 +345,151 @@ test.describe("reduced motion", () => {
         "data-spy-active",
         "meetai",
       );
+    }
+  });
+});
+
+// ---------- real screens (08b) ----------
+
+/** Step 0.3 of prompts/08b-media.md; a slug that is not a project yet (yoga-booking) is absent. */
+/** The e-commerce project removed in 08b, spelled in two parts so that a search of the
+    repository for its name finds nothing outside docs/prototype/ (the prompt's acceptance). */
+const REMOVED = new RegExp(["flow", "shop"].join(""), "i");
+
+const ORDER = ["dentaflow", "meetai", "hms", "yoga-booking", "cote-royale"];
+
+/** Whether each video on the page is paused. */
+const pausedStates = (page: Page) =>
+  page
+    .locator("main video")
+    .evaluateAll((els) => els.map((el) => !(el instanceof HTMLVideoElement) || el.paused));
+
+test("the sheets follow the work order, nothing overflows and the removed project is gone", async ({
+  page,
+}) => {
+  await visited(page);
+  await page.goto(PATHS.fr);
+  await shellIdle(page);
+  const ids = await page.locator("article.project").evaluateAll((els) => els.map((el) => el.id));
+  expect(ids).toEqual(ORDER.filter((slug) => ids.includes(slug)));
+  expect(ids).toEqual([...WORK_ORDER].filter((slug) => SLUGS.includes(slug)));
+  expect(ids).toHaveLength(SLUGS.length);
+  await expect(page.locator("body")).not.toContainText(REMOVED);
+  for (const at of ["top", "bottom"] as const) {
+    if (at === "bottom") await beyond(page, page.locator("[data-projects]"));
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    );
+    expect(overflow, at).toBeLessThanOrEqual(0);
+  }
+});
+
+test.describe("real screens without JavaScript", () => {
+  test.use({ javaScriptEnabled: false });
+
+  for (const locale of LOCALES) {
+    test(`${locale}: every real screen is in the server HTML with its alt and size`, async ({
+      page,
+      request,
+    }) => {
+      const m = MESSAGES[locale];
+      const html = await (await request.get(PATHS[locale])).text();
+      await page.goto(PATHS[locale]);
+      for (const { slug, items } of SCREENS) {
+        const frames = page.locator(`#${slug} [data-media]`);
+        await expect(frames, slug).toHaveCount(items.length);
+        for (const [i, item] of items.entries()) {
+          const { alt, label } = mediaCopy(m, item.key);
+          const { asset } = item;
+          if (asset.kind === "image") {
+            const img = frames.nth(i).locator("img");
+            await expect(img).toHaveAttribute("alt", alt);
+            expect(alt.length).toBeGreaterThan(0);
+            await expect(img).toHaveAttribute("width", String(asset.width));
+            await expect(img).toHaveAttribute("height", String(asset.height));
+            const avif = asset.avif[0]?.src ?? "";
+            expect(html, item.key).toContain(avif);
+          } else {
+            const video = frames.nth(i).locator("video");
+            await expect(video).toHaveAttribute("poster", asset.poster.webp.src);
+            await expect(video).toHaveAttribute("aria-label", label ?? "");
+            await expect(video).toHaveAttribute("width", String(asset.width));
+            await expect(video).toHaveAttribute("height", String(asset.height));
+            await expect(video).toHaveAttribute("preload", "none");
+            expect(html, item.key).toContain(asset.poster.webp.src);
+            // Without JavaScript the poster is the content: no dead button.
+            await expect(frames.nth(i).locator("button")).toBeHidden();
+          }
+        }
+      }
+      // Only the first screen of the first sheet loads eagerly.
+      await expect(page.locator("main img[loading='eager']")).toHaveCount(
+        SCREENS[0]?.items[0]?.asset.kind === "image" ? 1 : 0,
+      );
+    });
+  }
+});
+
+test.describe("loops", () => {
+  test.skip(VIDEOS.length === 0, "no loop is mapped");
+
+  test("each loop has a poster, a label and a play/pause button, and plays in view", async ({
+    page,
+  }) => {
+    test.setTimeout(90_000);
+    const m = MESSAGES.fr;
+    await visited(page);
+    await page.goto(PATHS.fr);
+    await shellIdle(page);
+    for (const [j, { slug }] of VIDEOS.entries()) {
+      const reveal = page
+        .locator(`#${slug} [data-media-reveal]:has([data-video-loop])`)
+        .nth(VIDEOS.slice(0, j).filter((v) => v.slug === slug).length);
+      const frame = reveal.locator("[data-video-loop]");
+      const video = frame.locator("video");
+      await expect(video).toHaveAttribute("poster", /\.webp$/);
+      await expect(video).toHaveAttribute("aria-label", /.+/);
+      await bring(page, reveal, 0.15);
+      // The frame's scrubbed reveal (clip and zoom) settles first: until then the share of the
+      // video in view moves around the 50 % line, and the loop may pause and play again.
+      await expect.poll(() => mediaOpen(reveal)).toBe(true);
+      await expect
+        .poll(() => video.evaluate((el) => !(el instanceof HTMLVideoElement) || el.paused), {
+          timeout: 8000,
+        })
+        .toBe(false);
+      const button = frame.getByRole("button");
+      await expect(button).toHaveAccessibleName(m.work.video.pause);
+      const box = await button.boundingBox();
+      expect(box?.width ?? 0).toBeGreaterThanOrEqual(44);
+      expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);
+      await button.click();
+      await expect
+        .poll(() => video.evaluate((el) => !(el instanceof HTMLVideoElement) || el.paused))
+        .toBe(true);
+      await expect(button).toHaveAccessibleName(m.work.video.play);
+    }
+    // Out of view, nothing plays.
+    await scrollToY(page, 0);
+    await expect.poll(() => pausedStates(page)).toEqual(VIDEOS.map(() => true));
+  });
+});
+
+test.describe("loops under reduced motion", () => {
+  test.use({ reducedMotion: "reduce" });
+  test.skip(VIDEOS.length === 0, "no loop is mapped");
+
+  test("no loop plays by itself; each shows its poster and the play button", async ({ page }) => {
+    await visited(page);
+    await page.goto(PATHS.fr);
+    await shellIdle(page);
+    for (const { slug } of VIDEOS) {
+      await bring(page, page.locator(`#${slug} .media`), 0.1);
+      await page.waitForTimeout(800);
+      expect(await pausedStates(page)).toEqual(VIDEOS.map(() => true));
+    }
+    for (const button of await page.locator("main [data-video-loop] button").all()) {
+      await expect(button).toHaveAccessibleName(MESSAGES.fr.work.video.play);
     }
   });
 });

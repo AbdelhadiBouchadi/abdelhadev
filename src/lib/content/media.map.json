@@ -1,0 +1,95 @@
+{
+  "readme": "Which of the owner's files is shown where (08b). Edit by hand, then run pnpm media. role: work (the work page sheet, in this order, up to its slots), tour (the case study tour, step 1 to 7) or spare (never published, with the reason). key: messages work.<slug>.media.<n> holds alt (and label for a video) in both locales. A file may appear twice (work and tour) with the same key. This is the only place the file names are written.",
+  "projects": {
+    "dentaflow": [
+      { "file": "01-dashboard.png", "role": "work", "key": "work.dentaflow.media.1" },
+      { "file": "02-calendar.png", "role": "work", "key": "work.dentaflow.media.2" },
+      { "file": "03-patients.png", "role": "work", "key": "work.dentaflow.media.3" },
+      { "file": "04-odontogram.png", "role": "work", "key": "work.dentaflow.media.4" },
+      { "file": "05-statistics.png", "role": "work", "key": "work.dentaflow.media.5" },
+      { "file": "02-calendar.png", "role": "tour", "step": 1, "key": "work.dentaflow.media.2" },
+      { "file": "03-patients.png", "role": "tour", "step": 2, "key": "work.dentaflow.media.3" },
+      { "file": "06-patient-file.png", "role": "tour", "step": 3, "key": "work.dentaflow.media.6" },
+      { "file": "04-odontogram.png", "role": "tour", "step": 4, "key": "work.dentaflow.media.4" },
+      {
+        "file": "09-settings-acts.png",
+        "role": "tour",
+        "step": 5,
+        "key": "work.dentaflow.media.9"
+      },
+      { "file": "08-documents.png", "role": "tour", "step": 6, "key": "work.dentaflow.media.8" },
+      { "file": "05-statistics.png", "role": "tour", "step": 7, "key": "work.dentaflow.media.5" },
+      {
+        "file": "07-acts.png",
+        "role": "spare",
+        "note": "the acts performed list; the tour's acts step uses the catalogue, which shows the NGAP import its text names"
+      }
+    ],
+    "meetai": [
+      { "file": "01-meeting-summary.png", "role": "work", "key": "work.meetai.media.1" },
+      { "file": "04-call.png", "role": "work", "key": "work.meetai.media.4" },
+      { "file": "05-new-meeting.png", "role": "work", "key": "work.meetai.media.5" },
+      {
+        "file": "02-meetings.png",
+        "role": "spare",
+        "note": "the owner's photo in the sidebar avatar (P9)"
+      },
+      {
+        "file": "03-agents.png",
+        "role": "spare",
+        "note": "the owner's photo in the sidebar avatar (P9)"
+      },
+      { "file": "06-upgrade.png", "role": "spare", "note": "plan prices (P5)" },
+      { "file": "07-sign-in.png", "role": "spare", "note": "beyond the three slots" }
+    ],
+    "hms": [
+      { "file": "01-dashboard.png", "role": "work", "key": "work.hms.media.1" },
+      { "file": "02-appointments.png", "role": "work", "key": "work.hms.media.2" },
+      { "file": "04-not-authorized.png", "role": "work", "key": "work.hms.media.4" },
+      { "file": "06-sign-in.png", "role": "work", "key": "work.hms.media.6" },
+      {
+        "file": "03-doctors.png",
+        "role": "spare",
+        "note": "real names and email addresses of the medical staff"
+      },
+      {
+        "file": "05-patients.png",
+        "role": "spare",
+        "note": "patient names and the names of the doctors who created them"
+      },
+      {
+        "file": "07-users.png",
+        "role": "spare",
+        "note": "real names and email addresses of the users"
+      },
+      {
+        "file": "08-user-page.png",
+        "role": "spare",
+        "note": "the owner's full personal email address (P13)"
+      }
+    ],
+    "yoga-booking": [
+      { "file": "01-homepage.png", "role": "work", "key": "work.yoga-booking.media.1" },
+      { "file": "04-dashboard.png", "role": "work", "key": "work.yoga-booking.media.4" },
+      { "file": "05-bookings.png", "role": "work", "key": "work.yoga-booking.media.5" },
+      { "file": "06-schedule.png", "role": "work", "key": "work.yoga-booking.media.6" },
+      {
+        "file": "02-sessions.png",
+        "role": "spare",
+        "note": "the owner's photo in the header and photos of people in the class cards"
+      },
+      { "file": "03-session-page.png", "role": "spare", "note": "an instructor's face" },
+      {
+        "file": "07-admin-sessions.png",
+        "role": "spare",
+        "note": "photos of people and the owner's photo in the sidebar"
+      },
+      { "file": "08-sign-in.png", "role": "spare", "note": "beyond the four slots" }
+    ],
+    "cote-royale": [
+      { "file": "01-hero.mp4", "role": "work", "key": "work.cote-royale.media.1" },
+      { "file": "02-scroll-text.mp4", "role": "work", "key": "work.cote-royale.media.2" },
+      { "file": "03-transition.mp4", "role": "work", "key": "work.cote-royale.media.3" }
+    ]
+  }
+}

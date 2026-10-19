@@ -244,13 +244,6 @@
           "text": "A management system for a hospital ophthalmology service, for the medical staff only.",
           "where": "Healthcare"
         },
-        "festival": {
-          "when": "[TODO: year]",
-          "title": "Dérive Casablancaise",
-          "text": "A website and a custom admin panel for a festival in Morocco, to manage all the content.",
-          "where": "Client",
-          "link": "Visit the site"
-        },
         "education": {
           "when": "Final year of a B.Eng",
           "title": "Computer engineering",
@@ -360,7 +353,7 @@
   "work": {
     "meta": {
       "title": "Work",
-      "description": "The software I have built end to end: DentaFlow for dental clinics, a hospital system, an AI app, an online shop and a website."
+      "description": "The software I have built end to end: DentaFlow for dental clinics, a hospital system, an AI app and a website."
     },
     "title": "Software people rely on every day",
     "lead": "{count, plural, one {# project} other {# projects}}, from clinic and hospital software to AI tools and online shops. Each one built end to end, from the data model to the last screen.",
@@ -382,6 +375,99 @@
     "allScreens": "See all {count} screens",
     "cursor": {
       "caseStudy": "Read the case study"
+    },
+    "dentaflow": {
+      "media": {
+        "1": {
+          "alt": "DentaFlow dashboard: today's appointments, the waiting room and outstanding balances, with amounts hidden"
+        },
+        "2": {
+          "alt": "DentaFlow monthly calendar: October's appointments, coloured by treatment type, for one practitioner"
+        },
+        "3": {
+          "alt": "DentaFlow patient list: tags, next appointment and balance due, with insurance filters"
+        },
+        "4": {
+          "alt": "A patient's odontogram in DentaFlow: the full dental chart and the controls to record each tooth"
+        },
+        "5": {
+          "alt": "DentaFlow statistics: the month's takings, kept and missed appointments, with their charts"
+        },
+        "6": {
+          "alt": "A patient file in DentaFlow: contact details, upcoming appointments and a panoramic X-ray in the imaging tab"
+        },
+        "8": {
+          "alt": "DentaFlow documents: numbered prescriptions, quotes, invoices and certificates, with the patient and the date"
+        },
+        "9": {
+          "alt": "The acts catalogue in DentaFlow settings: codes, categories, durations and the NGAP nomenclature import"
+        }
+      }
+    },
+    "meetai": {
+      "media": {
+        "1": {
+          "alt": "A meeting summary in MeetAI: the overview and notes written by the AI, with the transcript and recording tabs"
+        },
+        "4": {
+          "alt": "Before the call in MeetAI: microphone and camera settings, then the button to join the call"
+        },
+        "5": {
+          "alt": "A new meeting in MeetAI, not started yet, with the button to start it"
+        }
+      }
+    },
+    "hms": {
+      "media": {
+        "1": {
+          "alt": "Ophtachusm home: patient and appointment counts, below the logos of the department and its partners"
+        },
+        "2": {
+          "alt": "Ophtachusm appointment calendar: each weekday given to one clinic, such as glaucoma or retina"
+        },
+        "4": {
+          "alt": "An Ophtachusm account awaiting approval: access opens once an administrator approves it"
+        },
+        "6": {
+          "alt": "The Ophtachusm sign-in page, by email address and password, for the department's staff only"
+        }
+      }
+    },
+    "yoga-booking": {
+      "media": {
+        "1": {
+          "alt": "Home page of the yoga booking platform: the welcome title, the menu and the sign-in button"
+        },
+        "4": {
+          "alt": "The admin dashboard: sessions, monthly bookings, an activity chart and the list of published sessions"
+        },
+        "5": {
+          "alt": "Booking management: confirmed, cancelled and completed bookings, for upcoming or past sessions"
+        },
+        "6": {
+          "alt": "The monthly class schedule in the admin panel, each session on its time slot"
+        }
+      }
+    },
+    "cote-royale": {
+      "media": {
+        "1": {
+          "alt": "The Côte Royale site opening: a black and white campaign photo and the title “Effortless Elegance”",
+          "label": "Looping video of the Côte Royale site opening"
+        },
+        "2": {
+          "alt": "Scrolling the Côte Royale home page: the text lights up as it scrolls, then the three fragrances one by one",
+          "label": "Looping video of scrolling the Côte Royale home page"
+        },
+        "3": {
+          "alt": "Moving around Côte Royale, from the menu to a fragrance page, then from one fragrance to the next, with the transitions",
+          "label": "Looping video of the page transitions on Côte Royale"
+        }
+      }
+    },
+    "video": {
+      "play": "Play the video",
+      "pause": "Pause the video"
     }
   },
   "case": {
@@ -418,13 +504,6 @@
       "kind": "Dental clinic management",
       "challenge": "Run the full day of a dental clinic in one place: appointments, patients, treatments and billing.",
       "built": "A management system adapted to each clinic before launch, with its own database, its own deployment and the clinic's name on it.",
-      "media": {
-        "s1": "[TODO: describe the screen, DentaFlow 1]",
-        "s2": "[TODO: describe the screen, DentaFlow 2]",
-        "s3": "[TODO: describe the screen, DentaFlow 3]",
-        "s4": "[TODO: describe the screen, DentaFlow 4]",
-        "s5": "[TODO: describe the screen, DentaFlow 5]"
-      },
       "case": {
         "meta": {
           "description": "A management system for dental clinics: agenda, patients, treatments and billing. Adapted to each clinic before launch, with its own database and its own deployment."
@@ -432,14 +511,7 @@
         "lead": "A management system for dental clinics: agenda, patients, treatments and billing. Adapted to each clinic before launch, with its own database and its own deployment.",
         "footer": "DentaFlow in your clinic?",
         "screens": {
-          "hero": "[TODO: describe the screen, DentaFlow opening]",
-          "agenda": "[TODO: describe the screen, DentaFlow agenda]",
-          "patients": "[TODO: describe the screen, DentaFlow patients]",
-          "record": "[TODO: describe the screen, DentaFlow patient record]",
-          "odontogram": "[TODO: describe the screen, DentaFlow dental chart]",
-          "acts": "[TODO: describe the screen, DentaFlow acts catalogue]",
-          "documents": "[TODO: describe the screen, DentaFlow documents]",
-          "statistics": "[TODO: describe the screen, DentaFlow statistics]"
+          "hero": "[TODO: describe the screen, DentaFlow opening]"
         },
         "tour": {
           "agenda": {
@@ -519,47 +591,19 @@
       "name": "Ophtachusm",
       "kind": "Hospital management system",
       "challenge": "Give an ophthalmology service a tool to follow its patients, appointments and eye images.",
-      "built": "A management system for the service's medical staff only: patient data, appointments, eye imaging and medical records.",
-      "media": {
-        "s1": "[TODO: describe the screen, Ophtachusm 1]",
-        "s2": "[TODO: describe the screen, Ophtachusm 2]",
-        "s3": "[TODO: describe the screen, Ophtachusm 3]",
-        "s4": "[TODO: describe the screen, Ophtachusm 4]"
-      }
+      "built": "A management system for the service's medical staff only: patient data, appointments, eye imaging and medical records."
     },
     "meetai": {
       "name": "MeetAI",
       "kind": "AI web app",
       "challenge": "[TODO: the problem MeetAI solves, in one sentence]",
-      "built": "[TODO: what I built, and how the AI part helps the user]",
-      "media": {
-        "s1": "[TODO: describe the screen, MeetAI 1]",
-        "s2": "[TODO: describe the screen, MeetAI 2]",
-        "s3": "[TODO: describe the screen, MeetAI 3]"
-      }
-    },
-    "flowshop": {
-      "name": "FlowShop",
-      "kind": "E-commerce",
-      "challenge": "[TODO: the shop's goal and who it serves]",
-      "built": "[TODO: what I built: catalogue, checkout, admin]",
-      "media": {
-        "s1": "[TODO: describe the screen, FlowShop 1]",
-        "s2": "[TODO: describe the screen, FlowShop 2]",
-        "s3": "[TODO: describe the screen, FlowShop 3]",
-        "s4": "[TODO: describe the screen, FlowShop 4]"
-      }
+      "built": "[TODO: what I built, and how the AI part helps the user]"
     },
     "cote-royale": {
       "name": "Côte Royale",
       "kind": "Website",
       "challenge": "[TODO: the client's goal for the website]",
-      "built": "An interface-driven experience animated with GSAP and TypeScript, for a polished design and UX. (draft, confirm in 08)",
-      "media": {
-        "s1": "[TODO: describe the screen, Côte Royale 1]",
-        "s2": "[TODO: describe the screen, Côte Royale 2]",
-        "s3": "[TODO: describe the screen, Côte Royale 3]"
-      }
+      "built": "An interface-driven experience animated with GSAP and TypeScript, for a polished design and UX. (draft, confirm in 08)"
     }
   },
   "testimonials": {

@@ -1,8 +1,10 @@
-/* The five projects, with only the facts in docs/content.md. Everything else is a placeholder
+/* The projects, with only the facts in docs/content.md. Everything else is a placeholder
    until the owner supplies it. Parsed at module load, so an invalid entry fails the build.
    The media are the work page sheets of the prototype (docs/prototype/work.html): span, frame
-   tone, aspect and placeholder skeleton, in grid order, until 08 brings the real screenshots. */
+   tone, aspect and placeholder skeleton, in grid order. Since 08b the slots take the real screens
+   of lib/content/media.map.json in order (sheetMedia); a slot without one keeps its skeleton. */
 import { CASE_STUDIES } from "@/lib/content/case-studies";
+import { tourMedia, workMedia, type ProjectMediaItem } from "@/lib/media";
 import {
   projects as projectsSchema,
   type MediaItem,
@@ -38,21 +40,6 @@ const INPUT: ProjectInput[] = [
     copyKey: "projects.dentaflow",
   },
   {
-    slug: "hms",
-    featured: false,
-    status: "[TODO: Ophtachusm status (live, ready or in-progress)]",
-    permission: "confirmed",
-    caseStudy: false,
-    stack: "[TODO: Ophtachusm stack]",
-    media: media(
-      { span: 8, tone: "dark", skeleton: "chart" },
-      { span: 4, tone: "warm", skeleton: "record" },
-      { span: 6, tone: "plain", skeleton: "agenda" },
-      { span: 6, tone: "blue", skeleton: "plan" },
-    ),
-    copyKey: "projects.hms",
-  },
-  {
     slug: "meetai",
     featured: false,
     status: "[TODO: MeetAI status (live, ready or in-progress)]",
@@ -67,19 +54,19 @@ const INPUT: ProjectInput[] = [
     copyKey: "projects.meetai",
   },
   {
-    slug: "flowshop",
+    slug: "hms",
     featured: false,
-    status: "[TODO: FlowShop status (live, ready or in-progress)]",
+    status: "[TODO: Ophtachusm status (live, ready or in-progress)]",
     permission: "confirmed",
     caseStudy: false,
-    stack: "[TODO: FlowShop stack]",
+    stack: "[TODO: Ophtachusm stack]",
     media: media(
-      { span: 6, tone: "warm", skeleton: "list" },
-      { span: 6, tone: "plain", skeleton: "invoice" },
-      { span: 4, tone: "blue", skeleton: "chart" },
-      { span: 8, tone: "plain", skeleton: "list" },
+      { span: 8, tone: "dark", skeleton: "chart" },
+      { span: 4, tone: "warm", skeleton: "record" },
+      { span: 6, tone: "plain", skeleton: "agenda" },
+      { span: 6, tone: "blue", skeleton: "plan" },
     ),
-    copyKey: "projects.flowshop",
+    copyKey: "projects.hms",
   },
   {
     slug: "cote-royale",
@@ -98,7 +85,19 @@ const INPUT: ProjectInput[] = [
   },
 ];
 
-export const PROJECTS: readonly Project[] = projectsSchema.parse(INPUT);
+/** The work page order (08b). It may name a project that is not in INPUT yet (yoga-booking
+    arrives in 08c): an absent slug is skipped. A project missing from this list fails the build. */
+export const WORK_ORDER = ["dentaflow", "meetai", "hms", "yoga-booking", "cote-royale"] as const;
+
+const rank = (slug: string) => (WORK_ORDER as readonly string[]).indexOf(slug);
+
+export const PROJECTS: readonly Project[] = projectsSchema
+  .parse(INPUT)
+  .sort((a, b) => rank(a.slug) - rank(b.slug));
+
+for (const p of PROJECTS) {
+  if (rank(p.slug) === -1) throw new Error(`${p.slug} is missing from WORK_ORDER`);
+}
 
 // A case study exists exactly for the projects that say so, or the build fails.
 for (const p of PROJECTS) {
@@ -130,15 +129,22 @@ export function caseStudyProjects(list: readonly Project[] = PROJECTS): Project[
   return publicProjects(list).filter((p) => p.caseStudy);
 }
 
-/** Every screen of a project: the case study's tour when it has one, else the sheet's media. */
+/** The real screens on a project's sheet: the map's work entries, in order, up to its slots. */
+export function sheetMedia(p: Project): ProjectMediaItem[] {
+  return workMedia(p.slug).slice(0, p.media.length);
+}
+
+/** Every real screen of a project, from the media manifest (08b): the case study tour's when it
+    has one, else the sheet's. */
 export function screenCount(p: Project): number {
-  const study = p.caseStudy ? CASE_STUDIES[p.slug] : undefined;
-  return study ? study.tour.length : p.media.length;
+  return p.caseStudy && Object.hasOwn(CASE_STUDIES, p.slug)
+    ? tourMedia(p.slug).size
+    : sheetMedia(p).length;
 }
 
 /** Whether a sheet links to the case study for the screens it does not show. */
 export function hasMoreScreens(p: Project): boolean {
-  return p.caseStudy && screenCount(p) > p.media.length;
+  return p.caseStudy && screenCount(p) > sheetMedia(p).length;
 }
 
 /** The public project after `slug` on the work page, or null when it is the last one (the case

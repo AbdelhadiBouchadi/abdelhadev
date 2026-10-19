@@ -1,12 +1,13 @@
-/* The framed product screen (prototype .screen). With `src` it shows a real screenshot through
-   next/image; without it, one of the prototype's placeholder skeletons, drawn in CSS
+/* The framed product screen (prototype .screen). With `media` it holds a real screen from the media
+   manifest (ProjectMedia, 08b, rendered by the section); with `src`, a screenshot through
+   next/image; otherwise one of the prototype's placeholder skeletons, drawn in CSS
    (src/styles/ui.css) and announced by `label` ("Screenshot to come"). Placeholders carry
    data-placeholder="screen" so 08 (real screenshots) can find every one of them.
 
    The inner element carries data-media-inner: MediaReveal and the stage timelines zoom it while
    the frame around it opens. */
 import Image, { type StaticImageData } from "next/image";
-import type { ReactNode } from "react";
+import type { ReactElement, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 /** The prototype's skeletons: agenda grid, record split, plan lines, invoice (02), and the work
@@ -32,11 +33,21 @@ export interface ScreenImageProps extends ScreenCommon {
   height: number;
   sizes: string;
   priority?: boolean;
+  media?: never;
+  layout?: never;
+  label?: never;
+}
+
+export interface ScreenMediaProps extends ScreenCommon {
+  /** A real screen (ProjectMedia): it fills the frame from the top. */
+  media: ReactElement;
+  src?: never;
   layout?: never;
   label?: never;
 }
 
 export interface ScreenPlaceholderProps extends ScreenCommon {
+  media?: never;
   src?: never;
   /** The skeleton the prototype drew for this kind of screen. */
   layout: ScreenLayout;
@@ -44,7 +55,7 @@ export interface ScreenPlaceholderProps extends ScreenCommon {
   label: string;
 }
 
-export type ScreenProps = ScreenImageProps | ScreenPlaceholderProps;
+export type ScreenProps = ScreenImageProps | ScreenMediaProps | ScreenPlaceholderProps;
 
 const AGENDA = "a.b.c.a..bc..a.b..ac.b..a";
 /** Six bars (heights in ui.css); the fifth is Majorelle. */
@@ -162,7 +173,11 @@ export function Screen(props: ScreenProps) {
   const { aspect = "default", caption, captionHidden = false, className } = props;
   const screen = (
     <div className={cn("screen", caption === undefined && className)} data-aspect={aspect}>
-      {props.src === undefined ? (
+      {props.media !== undefined ? (
+        <div className="screen-inner" data-media-inner="" data-image="" data-media="">
+          {props.media}
+        </div>
+      ) : props.src === undefined ? (
         <div
           className="screen-inner"
           data-media-inner=""

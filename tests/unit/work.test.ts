@@ -5,10 +5,11 @@ import { createTranslator } from "next-intl";
 import { describe, expect, it } from "vitest";
 import en from "@messages/en.json";
 import fr from "@messages/fr.json";
-import { PROJECTS, publicProjects } from "@/lib/content/projects";
+import { getProject, PROJECTS, publicProjects, WORK_ORDER } from "@/lib/content/projects";
 import { MAX_SHEET_MEDIA, project, projects, type Project } from "@/lib/content/schema";
 
-const [dentaflow, hms] = PROJECTS;
+const dentaflow = getProject("dentaflow");
+const hms = getProject("hms");
 if (!dentaflow || !hms) throw new Error("the projects are missing");
 
 const pending: Project = {
@@ -24,15 +25,12 @@ describe("publicProjects", () => {
     expect(publicProjects(fixture).map((p) => p.slug)).toEqual(["dentaflow", "hms"]);
   });
 
-  it("shows all five projects today, DentaFlow first and the only case study", () => {
+  it("shows the projects in the work order (08b), DentaFlow first and the only case study", () => {
     const list = publicProjects();
-    expect(list.map((p) => p.slug)).toEqual([
-      "dentaflow",
-      "hms",
-      "meetai",
-      "flowshop",
-      "cote-royale",
-    ]);
+    expect(list.map((p) => p.slug)).toEqual(["dentaflow", "meetai", "hms", "cote-royale"]);
+    // yoga-booking is in the order but not a project yet (08c): it is skipped, nothing breaks.
+    expect(WORK_ORDER).toEqual(["dentaflow", "meetai", "hms", "yoga-booking", "cote-royale"]);
+    expect(getProject("yoga-booking")).toBeUndefined();
     expect(list.filter((p) => p.caseStudy).map((p) => p.slug)).toEqual(["dentaflow"]);
   });
 
@@ -44,7 +42,6 @@ describe("publicProjects", () => {
       dentaflow: ["7 warm", "5 plain", "4 plain", "4 blue", "4 plain"],
       hms: ["8 dark", "4 warm", "6 plain", "6 blue"],
       meetai: ["5 blue", "7 plain", "12 warm"],
-      flowshop: ["6 warm", "6 plain", "4 blue", "8 plain"],
       "cote-royale": ["12 warm", "6 plain", "6 blue"],
     });
     for (const p of PROJECTS) for (const m of p.media) expect(m.kind).toBe("image");
