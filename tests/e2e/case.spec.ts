@@ -2,7 +2,7 @@
 // and /en/work/dentaflow: the hero name and first screen reach their end state after the loader;
 // the tour (desktop: the step crossing 55 % is active and its stage screen alone is shown; mobile:
 // no stage, one inline screen per step); the diagram fully drawn (LineDraw, moved here from the
-// lab bench); the next-project link lands on the HMS sheet through the curtain, with the shell
+// lab bench); the next-project link lands on the Ophtachusm sheet through the curtain, with the shell
 // footer back; projects without a case study are 404s; complete without JavaScript and under
 // reduced motion; ScrollTriggers back to their baseline; axe at the top and at the architecture.
 import AxeBuilder from "@axe-core/playwright";
@@ -199,7 +199,7 @@ test.describe("with motion", () => {
   });
 
   for (const locale of LOCALES) {
-    test(`${locale}: the next project link lands on the HMS sheet through the curtain`, async ({
+    test(`${locale}: the next project link lands on the Ophtachusm sheet through the curtain`, async ({
       page,
     }) => {
       const m = MESSAGES[locale];

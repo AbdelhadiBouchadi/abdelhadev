@@ -40,10 +40,10 @@ const INPUT: ProjectInput[] = [
   {
     slug: "hms",
     featured: false,
-    status: "[TODO: HMS status (live, ready or in-progress)]",
+    status: "[TODO: Ophtachusm status (live, ready or in-progress)]",
     permission: "confirmed",
     caseStudy: false,
-    stack: "[TODO: HMS stack]",
+    stack: "[TODO: Ophtachusm stack]",
     media: media(
       { span: 8, tone: "dark", skeleton: "chart" },
       { span: 4, tone: "warm", skeleton: "record" },

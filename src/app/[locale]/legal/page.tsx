@@ -28,8 +28,9 @@ function Part({ id, title, children }: { id: string; title: string; children: Re
 }
 
 // The legal notice from docs/content.md ("Legal"). No ID, registration or ICE numbers and no street
-// address of the publisher. Placeholders (the email, unset until the owner has a mailbox on the
-// domain, and the retention period) stay visible until the owner supplies them, and site.ts keeps legalReview "pending" until the owner confirms the text.
+// address of the publisher. The contact email is the public one from site.ts. The retention
+// period stays a visible placeholder until the owner supplies it, and site.ts keeps legalReview
+// "pending" until the owner confirms the text.
 export default async function LegalPage({ params }: PageProps<"/[locale]/legal">) {
   const locale = await resolveLocale(params);
   const t = await getTranslations({ locale, namespace: "pages.legal" });
@@ -55,7 +56,10 @@ export default async function LegalPage({ params }: PageProps<"/[locale]/legal">
         <Part id="legal-publisher" title={t("publisher.title")}>
           <p>{t("publisher.body", { name, place: placeName(locale) })}</p>
           <p>
-            {t("publisher.contact")} <span>{t("publisher.emailPending")}</span>
+            {t("publisher.contact")}{" "}
+            <a href={`mailto:${SITE.email}`} className={inlineLink}>
+              {SITE.email}
+            </a>
           </p>
         </Part>
 

@@ -10,3 +10,10 @@ const PATTERN = new RegExp(`^\\[${MARK}: .+\\]$`);
 export function isTodo(value: unknown): value is Todo {
   return typeof value === "string" && PATTERN.test(value);
 }
+
+const INSIDE = new RegExp(`\\[${MARK}\\b`);
+
+/** Whether a text holds a placeholder anywhere (a sentence that still contains one). */
+export function hasTodo(value: string): boolean {
+  return INSIDE.test(value);
+}

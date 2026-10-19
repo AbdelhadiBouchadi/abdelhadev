@@ -20,8 +20,9 @@ export const SITE = {
     href: `https://wa.me/${WHATSAPP_E164.slice(1)}`,
     display: "+212 6 37 02 50 32",
   },
-  // No public email yet: it stays unset until the owner has a mailbox on the domain. The legal
-  // notice shows its own placeholder until then (messages: pages.legal.publisher.emailPending).
+  /** The public email (supplied by the owner in 08a), shown in the footer and the legal notice.
+      It forwards to a private inbox that never appears in the repository. */
+  email: "contact@abdelhadev.me",
   linkedin: "https://www.linkedin.com/in/abdelhadi-bouchadi-904b5b359/",
   github: "https://github.com/AbdelhadiBouchadi",
   /** "pending" until the owner has had the legal notice reviewed; the build fails on it with

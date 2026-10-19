@@ -2,7 +2,8 @@
 // CV placeholder gate (cv.ts and the build report), the words that must appear nowhere in the
 // copy, the placeholder PDFs, the data's order and the CSS start state of the arcs.
 import { spawnSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import en from "@messages/en.json";
 import fr from "@messages/fr.json";
@@ -28,9 +29,19 @@ describe("site channels", () => {
     expect(SITE.whatsapp.display.replaceAll(" ", "")).toBe(SITE.whatsapp.e164);
   });
 
-  it("has no email key: the public email stays unset until the owner has a mailbox", () => {
-    expect(Object.keys(SITE).some((key) => /mail/i.test(key))).toBe(false);
-    expect(JSON.stringify(SITE)).not.toMatch(/@gmail\./i);
+  it("has the public email and no other email-like string", () => {
+    expect(SITE.email).toBe("contact@abdelhadev.me");
+    const source = readFileSync("src/lib/site.ts", "utf8");
+    expect(source.match(/[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g)).toEqual(["contact@abdelhadev.me"]);
+  });
+
+  it("never holds the private inbox: no file in src, messages, docs or public names gmail.com", () => {
+    const hits = ["src", "messages", "docs", "public"]
+      .flatMap((dir) => readdirSync(dir, { recursive: true, withFileTypes: true }))
+      .filter((entry) => entry.isFile())
+      .map((entry) => join(entry.parentPath, entry.name))
+      .filter((file) => /gmail\.com/i.test(readFileSync(file, "latin1")));
+    expect(hits).toEqual([]);
   });
 });
 
@@ -91,7 +102,7 @@ describe("placeholder PDF", () => {
 });
 
 describe("copy", () => {
-  // Decision P3: no university, no year of study, no degree title until the owner confirms.
+  // Decision P3: no university, no graduation year, never "engineer", "student" or "étudiant".
   const BANNED = [
     /karabuk/i,
     /third[- ]year/i,
@@ -103,6 +114,10 @@ describe("copy", () => {
     /\bengineers?\b/i,
   ];
 
+  // The degree (08a): stated only in the education entry of the timeline.
+  const DEGREE = [/B\.Eng/, /\blicence\b/i];
+  const EDUCATION = "about.experience.items.education.";
+
   it("never names the university, a year of study or a degree title", () => {
     for (const [locale, messages] of [
       ["fr", fr],
@@ -110,8 +125,15 @@ describe("copy", () => {
     ] as const) {
       for (const [key, value] of flatten(messages)) {
         for (const word of BANNED) expect(value, `${locale}: ${key}`).not.toMatch(word);
+        if (key.startsWith(EDUCATION)) continue;
+        for (const word of DEGREE) expect(value, `${locale}: ${key}`).not.toMatch(word);
       }
     }
+  });
+
+  it("states the degree in the education entry only, as the owner wrote it", () => {
+    expect(fr.about.experience.items.education.when).toBe("Dernière année de licence");
+    expect(en.about.experience.items.education.when).toBe("Final year of a B.Eng");
   });
 
   it("has a title and a line for each service, in the owner's order", () => {

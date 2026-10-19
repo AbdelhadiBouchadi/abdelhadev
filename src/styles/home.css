@@ -19,6 +19,7 @@
     background: transparent;
   }
   html.motion.sky:not([data-dusk="during"]) #featured[data-tone],
+  html.motion.sky:not([data-dusk="during"]) #testimonials[data-tone],
   html.motion.sky[data-dusk="after"] [data-dusk-tone] {
     background: var(--night);
   }
@@ -342,6 +343,92 @@
       align-items: center;
       padding-block: 0;
     }
+  }
+
+  /* ---------- testimonials (only when one is confirmed) ----------
+     Night, between the featured work and the footer: the footer's own top padding closes it. */
+  .testimonials-inner {
+    display: grid;
+    gap: clamp(36px, 6vh, 64px);
+    padding-top: clamp(72px, 12vh, 140px);
+  }
+  .testimonials-title {
+    margin: 0;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 18px;
+    color: var(--glow);
+    font-variation-settings:
+      "wdth" 90,
+      "opsz" 24;
+  }
+  .testimonial-list {
+    display: grid;
+    gap: clamp(56px, 10vh, 112px);
+  }
+  .testimonial {
+    display: grid;
+    gap: 26px;
+    margin: 0;
+    max-width: 24em;
+    font-size: clamp(26px, 3vw, 46px);
+  }
+  .testimonial blockquote {
+    margin: 0;
+  }
+  .testimonial blockquote p {
+    position: relative;
+    margin: 0;
+    font-family: var(--display);
+    font-weight: 500;
+    font-size: 1em;
+    line-height: 1.14;
+    letter-spacing: -0.02em;
+    color: var(--moon);
+    font-variation-settings:
+      "wdth" 94,
+      "opsz" 72;
+    text-wrap: pretty;
+    quotes: "\201C" "\201D";
+  }
+  .testimonial blockquote p:lang(fr) {
+    quotes: "\00AB\00A0" "\00A0\00BB";
+  }
+  /* The opening mark hangs in the margin so the text keeps its edge. */
+  .testimonial blockquote p::before {
+    content: open-quote;
+    position: absolute;
+    inset-inline-end: 100%;
+    padding-inline-end: 0.12em;
+    color: var(--glow);
+  }
+  .testimonial blockquote p::after {
+    content: close-quote;
+    color: var(--glow);
+  }
+  .testimonial figcaption {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 6px 14px;
+    font-family: var(--text);
+    font-size: 15px;
+    line-height: 1.4;
+    color: var(--moon-soft);
+  }
+  .testimonial figcaption span:first-child {
+    color: var(--moon);
+    font-weight: 600;
+  }
+  .testimonial figcaption span + span::before {
+    content: "";
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    margin-inline-end: 14px;
+    border-radius: 50%;
+    background: var(--glow);
+    vertical-align: 0.1em;
   }
 
   /* ---------- phones ---------- */

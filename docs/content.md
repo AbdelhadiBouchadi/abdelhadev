@@ -32,12 +32,21 @@ First person singular. Plain, specific, calm. Say what was built, for whom, with
 | Slug | Name | Kind | Status | What is known |
 |---|---|---|---|---|
 | `dentaflow` | DentaFlow | Dental clinic management | Ready for clinics | Agenda, patients, treatments, billing (owner confirms the list); adapted per clinic with its own name, database and deployment; Next.js, TypeScript, tRPC, Drizzle, PostgreSQL (Neon), Better Auth. WhatsApp reminders are not live. |
-| `hms` | HMS | Hospital management system | `[TODO]` | A management system for a hospital ophthalmology service: patient data, appointments, eye images and medical records; only the medical staff have access. Built for friends who are residents there. Never name the hospital or the resident, never claim it is in use. Status, stack and year `[TODO]`. |
+| `hms` | Ophtachusm | Hospital management system | `[TODO]` | A management system for a hospital ophthalmology service: patient data, appointments, eye images and medical records; only the medical staff have access. Built for friends who are residents there. Date: January 2025 (08a). The display name replaced "HMS" in 08a; the slug `hms` and the `#hms` anchor stay. Never name the hospital or the resident, never claim it is in use. Status and stack `[TODO]`. |
 | `meetai` | MeetAI | AI web app | `[TODO]` | Everything else `[TODO]` |
 | `flowshop` | FlowShop | E-commerce | `[TODO]` | Everything else `[TODO]` |
 | `cote-royale` | Côte Royale | Website | `[TODO]` | Client permission to name `[TODO]` |
 
 Never mention the internship project or its client.
+
+DentaFlow's date is October 2026 (08a). Project dates (month and year) may be published once the owner supplies them; years of experience may not (decision P6).
+
+### Pending projects (not on the work page yet)
+
+Copy comes from the owner's briefing (08c). They are not in `src/lib/content/projects.ts` yet.
+
+- **Dérive Casablancaise:** a website and a fully custom admin panel for a festival in Morocco, to manage all the content. Live at `https://derive-casablancaise.com`; the name and the link may be published (the about timeline links to it since 08a). Year `[TODO]`. The client's personal name is never put in the repository.
+- **Yoga session booking platform** (name `[TODO]`): for a client, a friend of a family member. Users book sessions from the available slots; a fully custom admin panel with role-based access (admin, instructors and others) where sessions are created and edited. Stack: Next.js, shadcn/ui, server actions, a data access layer, Prisma, PostgreSQL on Neon, Better Auth. Name, year, client permission and screenshots `[TODO]`.
 
 A project is shown by name on a public page only after the owner confirms permission (Côte Royale first). Until then it is hidden from lists and the sitemap.
 
@@ -46,24 +55,27 @@ A project is shown by name on a public page only after the owner confirms permis
 The only facts that may be published (supplied by the owner in 06). Everything else stays a visible `[TODO: …]`.
 
 - **Who:** full-stack developer from Agadir, independent (auto-entrepreneur). Freelancer since late 2022, working alone, for French, English and Moroccan clients.
-- **Education:** "Formation en génie informatique" / "Computer engineering background" only. The university and the graduation year are never shown. The words "ingénieur", "engineer", "student", "étudiant" and any year of study appear nowhere until the owner confirms his degree status (decision P3).
+- **Education:** final year of a B.Eng in Computer Engineering (supplied in 08a). FR: "Dernière année de licence en génie informatique"; on the timeline, "Génie informatique" / "Dernière année de licence" and "Computer engineering" / "Final year of a B.Eng". The degree is stated in that education entry only. The university and the graduation year are never shown. The owner is never called "ingénieur", "engineer", "student" or "étudiant" (decision P3).
 - **Languages and availability:** French, English and Arabic (Darija), all fluent. Morocco time zone. Remote only, not on site. Open to freelance projects and to a remote position, said without hours or studies ("parlons-en" / "let's talk", decision P11).
 - **What he builds, in this order:** (1) management systems for clinics and health services, (2) AI-powered web apps, (3) online shops, (4) websites with a custom admin panel, (5) other web projects ("anything web").
 - **Stack:** every day Next.js, TypeScript, tRPC, Drizzle ORM, PostgreSQL (Neon), Better Auth, Arcjet, shadcn/ui. Per project AI SDK, OpenAI API, Shopify headless through its GraphQL API (online shops), WordPress as a CMS when a client insists, GSAP. Exploring Trigger.dev and Browserbase by building a browser-automation app (never presented as a product).
 - **Websites:** Next.js with PostgreSQL (Neon) and a custom admin panel so the client manages everything.
 - **Process:** he listens first; within 24 hours he turns the notes into a technical plan, models the data and splits the project into small tasks; the quote (devis) arrives 24 to 48 hours after the first conversation (decision P12); after the client accepts and signs, an advance invoice, then development; just before launch, the balance invoice and delivery of everything. The payment percentages are not published.
-- **Why clinics:** part of his circle are doctors. He built HMS for a hospital ophthalmology service, for friends who are residents there. DentaFlow was born from his brother's dental clinic, which showed him what dentists need. He wants healthcare staff to save time for what matters.
-- **Other client work:** a website with a fully custom admin panel for a festival-organisation company in Morocco.
-- **Never publish:** the names of the hospital, of the resident friend, of the festival company, or of the clinic on the about page; the owner's personal email address; any claim that HMS is in use; any claim about income, savings or results for clinics; photos of the owner (decision P9).
-- Years of the projects, earlier roles and the CV itself are `[TODO]` until the owner supplies them (the CV is a placeholder file, `src/lib/content/cv.ts`).
+- **Why clinics:** part of his circle are doctors. He built Ophtachusm for a hospital ophthalmology service, for friends who are residents there. DentaFlow was born from his brother's dental clinic, which showed him what dentists need. He wants healthcare staff to save time for what matters.
+- **Other client work:** Dérive Casablancaise, a website with a fully custom admin panel for a festival in Morocco (`https://derive-casablancaise.com`, linked from the timeline). Its year is `[TODO]`.
+- **Never publish:** the names of the hospital, of the resident friend, of any client as a person, or of the clinic on the about page; the private inbox the public email forwards to; any claim that Ophtachusm is in use; any claim about income, savings or results for clinics; photos of the owner (decision P9).
+- The festival site's year, earlier roles and the CV itself are `[TODO]` until the owner supplies them (the CV is a placeholder file, `src/lib/content/cv.ts`).
 
-## Testimonial
+## Testimonials
 
-SOS Dental Clinic, Agadir. Role and organisation only, no personal name. The wording of the role and what was delivered are `[TODO]` until the owner confirms. The section renders only when the data says `confirmed: true`.
+`src/lib/content/testimonials.ts`: `{ id, role, organisation, text, confirmed }`, every text through `messages testimonials.<id>.*`, validated with zod. There is no field for a person's name (decision P10): a testimonial shows role and organisation only, and no client's personal name is ever put in the repository.
+
+- Two entries, both `confirmed: false`: `sos-dental` (SOS Dental Clinic, Agadir) and `festival` (Dérive Casablancaise). Role and text are placeholders until the owner pastes the real, approved wording. Praise is never written by an agent.
+- Confirmed-only rendering: `publicTestimonials()` returns the confirmed entries, and the home section (between the featured work and the footer call to action) renders nothing at all while there are none. The build report ignores the placeholders of unconfirmed entries (they never ship) and lists any placeholder left in a confirmed one.
 
 ## Contact
 
-- Channels: the contact form (email through Resend) and WhatsApp. The WhatsApp number and the public email address are in `src/lib/site.ts`, supplied by the owner.
+- Channels: the contact form (email through Resend) and WhatsApp. The WhatsApp number and the public email address (`contact@abdelhadev.me`, decision P13, shown in the footer and the legal notice) are in `src/lib/site.ts`, supplied by the owner.
 - The form sends to a private inbox (`CONTACT_TO`) that is never published. Its topics follow what he builds: clinic or health-service management software, an AI-powered web app, an online shop, a website with an admin panel, something else.
 - The process shown is the about page's own (`about.process`, steps 1 to 4, read from the same messages): he listens; within 24 hours he turns the notes into a technical plan, models the data and splits the project into tasks; the quote arrives 24 to 48 hours after the first conversation; after acceptance and signature, an advance invoice, then development. The about page adds the last step: the balance invoice and delivery. No payment percentages (decision P12).
 - The form confirmation is on screen only ("Message sent"). There is no automatic email to the visitor yet.
@@ -76,4 +88,4 @@ SOS Dental Clinic, Agadir. Role and organisation only, no personal name. The wor
 
 ## Not yet supplied by the owner
 
-Public email (unset until a mailbox exists on the domain), project details and years listed as `[TODO]`, the final CV, real screenshots with seeded data, testimonial wording. Supplied in 06: LinkedIn, GitHub and WhatsApp (`src/lib/site.ts`).
+Project details and years listed as `[TODO]`, the final CV, real screenshots with seeded data, testimonial wording. Supplied in 06: LinkedIn, GitHub and WhatsApp (`src/lib/site.ts`).
