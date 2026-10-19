@@ -69,6 +69,9 @@
         "invoice": "Invoice"
       },
       "placeholder": "Screenshot to come"
+    },
+    "testimonials": {
+      "title": "What clients say"
     }
   },
   "footer": {
@@ -89,8 +92,7 @@
       "publisher": {
         "title": "Publisher",
         "body": "This site is published by {name}, auto-entrepreneur, a full-stack developer based in {place}.",
-        "contact": "To reach me:",
-        "emailPending": "[TODO: public email address, to be set up on the domain]"
+        "contact": "To reach me:"
       },
       "director": {
         "title": "Publication director",
@@ -231,25 +233,26 @@
           "where": "Agadir, Morocco"
         },
         "dentaflow": {
-          "when": "[TODO: DentaFlow year]",
+          "when": "October 2026",
           "title": "DentaFlow",
           "text": "Dental clinic management software, ready to be adapted to new clinics.",
           "where": "Product"
         },
         "hms": {
-          "when": "[TODO: HMS year]",
-          "title": "HMS",
+          "when": "January 2025",
+          "title": "Ophtachusm",
           "text": "A management system for a hospital ophthalmology service, for the medical staff only.",
           "where": "Healthcare"
         },
         "festival": {
-          "when": "[TODO: year of the festival company website]",
-          "title": "Website and custom admin panel",
-          "text": "For a festival-organisation company in Morocco: a website and an admin panel to manage all the content.",
-          "where": "Client"
+          "when": "[TODO: year]",
+          "title": "Dérive Casablancaise",
+          "text": "A website and a custom admin panel for a festival in Morocco, to manage all the content.",
+          "where": "Client",
+          "link": "Visit the site"
         },
         "education": {
-          "when": "Education",
+          "when": "Final year of a B.Eng",
           "title": "Computer engineering",
           "where": "Education"
         }
@@ -513,15 +516,15 @@
       }
     },
     "hms": {
-      "name": "HMS",
+      "name": "Ophtachusm",
       "kind": "Hospital management system",
       "challenge": "Give an ophthalmology service a tool to follow its patients, appointments and eye images.",
       "built": "A management system for the service's medical staff only: patient data, appointments, eye imaging and medical records.",
       "media": {
-        "s1": "[TODO: describe the screen, HMS 1]",
-        "s2": "[TODO: describe the screen, HMS 2]",
-        "s3": "[TODO: describe the screen, HMS 3]",
-        "s4": "[TODO: describe the screen, HMS 4]"
+        "s1": "[TODO: describe the screen, Ophtachusm 1]",
+        "s2": "[TODO: describe the screen, Ophtachusm 2]",
+        "s3": "[TODO: describe the screen, Ophtachusm 3]",
+        "s4": "[TODO: describe the screen, Ophtachusm 4]"
       }
     },
     "meetai": {
@@ -557,6 +560,18 @@
         "s2": "[TODO: describe the screen, Côte Royale 2]",
         "s3": "[TODO: describe the screen, Côte Royale 3]"
       }
+    }
+  },
+  "testimonials": {
+    "sos-dental": {
+      "role": "[TODO: role]",
+      "organisation": "SOS Dental Clinic, Agadir",
+      "text": "[TODO: testimonial text]"
+    },
+    "festival": {
+      "role": "[TODO: role]",
+      "organisation": "Dérive Casablancaise",
+      "text": "[TODO: testimonial text]"
     }
   }
 }

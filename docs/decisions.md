@@ -9,16 +9,17 @@ Status: **Fixed**, **Provisional** (fixed unless the named spike fails), **Open*
 |---|---|---|
 | P1 | Two jobs: win freelance clients and be a professional profile for LinkedIn, job portals and recruiters. | Fixed |
 | P2 | Positioning is broad: a full-stack developer who builds web applications people rely on (management systems, AI-powered apps, client platforms, websites). Clinic and hospital software is the strongest proof and appears as featured work, not as the whole message. | Fixed |
-| P3 | Based in Agadir, Morocco. The university and the graduation year are not published; the degree is not named as ingénieur or student until the owner confirms. | Fixed |
+| P3 | Based in Agadir, Morocco. The university and the graduation year are not published. The degree is stated only as "final year of a B.Eng in Computer Engineering". The owner is never called ingénieur, engineer, student or étudiant. | Fixed |
 | P4 | Clinic offer: DentaFlow is prebuilt and adapted per clinic after a quote (own name, database, deployment). | Fixed |
 | P5 | No prices anywhere. The process explains that the quote comes after scoping and data modelling. | Fixed |
-| P6 | No years-of-experience claims. No invented metrics, clients, reviews or dates. | Fixed |
+| P6 | No years-of-experience claims. No invented metrics, clients, reviews or dates. Update (08a): project dates (month and year) supplied by the owner may be published, for DentaFlow (October 2026) and Ophtachusm (January 2025); years of experience still may not. | Fixed |
 | P7 | The internship project and its client are never mentioned. A client project is named on a public page only with the client's permission: `permission: "confirmed"` in `src/lib/content/projects.ts`, read through `publicProjects()` by the work page, its rail and the sitemap. Update (04): the owner cleared Côte Royale; all five projects are `confirmed`, and the field stays as the switch for any future project that is not cleared. | Fixed |
 | P8 | DentaFlow WhatsApp reminders are not presented as live. | Fixed |
 | P9 | The owner does not appear on camera. Warmth comes from colour, light, copy, motion and the 3D scene. | Fixed |
-| P10 | Testimonials show role and organisation only. The SOS Dental Clinic testimonial names no person. | Fixed |
+| P10 | Testimonials show role and organisation only. The SOS Dental Clinic testimonial names no person. No personal name appears in any testimonial, or anywhere in the repository for a client: the testimonial data has no field for one. A testimonial is rendered only once it is `confirmed: true` (`src/lib/content/testimonials.ts`). | Fixed |
 | P11 | Availability: open to freelance projects and to a remote position, said without hours or studies. | Fixed |
 | P12 | The process may state that the quote arrives 24 to 48 hours after the first conversation: it is how he works, not a reply-time promise. The percentages of the advance and balance invoices are not published. | Fixed |
+| P13 | The public email is `contact@abdelhadev.me` (replaces "no public email yet", 08a), in `src/lib/site.ts`, shown in the footer and the legal notice. It forwards to a private inbox that never appears in the repository, the messages, the docs or the tests. | Fixed |
 
 ## Design
 

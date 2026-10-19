@@ -69,6 +69,9 @@
         "invoice": "Facture"
       },
       "placeholder": "Capture à venir"
+    },
+    "testimonials": {
+      "title": "Ce qu'en disent mes clients"
     }
   },
   "footer": {
@@ -89,8 +92,7 @@
       "publisher": {
         "title": "Éditeur du site",
         "body": "Ce site est édité par {name}, auto-entrepreneur, développeur full-stack basé à {place}.",
-        "contact": "Pour me joindre :",
-        "emailPending": "[TODO: adresse e-mail publique, à créer sur le domaine]"
+        "contact": "Pour me joindre :"
       },
       "director": {
         "title": "Directeur de la publication",
@@ -231,25 +233,26 @@
           "where": "Agadir, Maroc"
         },
         "dentaflow": {
-          "when": "[TODO: année de DentaFlow]",
+          "when": "Octobre 2026",
           "title": "DentaFlow",
           "text": "Un logiciel de gestion de cabinet dentaire, prêt à être adapté à de nouveaux cabinets.",
           "where": "Produit"
         },
         "hms": {
-          "when": "[TODO: année du HMS]",
-          "title": "HMS",
+          "when": "Janvier 2025",
+          "title": "Ophtachusm",
           "text": "Un système de gestion pour un service d'ophtalmologie hospitalier, réservé au personnel médical.",
           "where": "Santé"
         },
         "festival": {
-          "when": "[TODO: année du site pour la société de festivals]",
-          "title": "Site web et espace d'administration sur mesure",
-          "text": "Pour une société d'organisation de festivals au Maroc : un site et un espace d'administration pour gérer tous les contenus.",
-          "where": "Client"
+          "when": "[TODO: year]",
+          "title": "Dérive Casablancaise",
+          "text": "Un site et un espace d'administration sur mesure pour un festival au Maroc, pour gérer tous les contenus.",
+          "where": "Client",
+          "link": "Voir le site"
         },
         "education": {
-          "when": "Formation",
+          "when": "Dernière année de licence",
           "title": "Génie informatique",
           "where": "Formation"
         }
@@ -513,15 +516,15 @@
       }
     },
     "hms": {
-      "name": "HMS",
+      "name": "Ophtachusm",
       "kind": "Système de gestion hospitalière",
       "challenge": "Donner à un service d'ophtalmologie un outil pour suivre ses patients, ses rendez-vous et ses images de l'œil.",
       "built": "Un système de gestion réservé au personnel médical du service : données des patients, rendez-vous, imagerie de l'œil et dossiers médicaux.",
       "media": {
-        "s1": "[TODO: décrire l'écran 1 de HMS]",
-        "s2": "[TODO: décrire l'écran 2 de HMS]",
-        "s3": "[TODO: décrire l'écran 3 de HMS]",
-        "s4": "[TODO: décrire l'écran 4 de HMS]"
+        "s1": "[TODO: décrire l'écran 1 d'Ophtachusm]",
+        "s2": "[TODO: décrire l'écran 2 d'Ophtachusm]",
+        "s3": "[TODO: décrire l'écran 3 d'Ophtachusm]",
+        "s4": "[TODO: décrire l'écran 4 d'Ophtachusm]"
       }
     },
     "meetai": {
@@ -557,6 +560,18 @@
         "s2": "[TODO: décrire l'écran 2 de Côte Royale]",
         "s3": "[TODO: décrire l'écran 3 de Côte Royale]"
       }
+    }
+  },
+  "testimonials": {
+    "sos-dental": {
+      "role": "[TODO: role]",
+      "organisation": "SOS Dental Clinic, Agadir",
+      "text": "[TODO: texte du témoignage]"
+    },
+    "festival": {
+      "role": "[TODO: role]",
+      "organisation": "Dérive Casablancaise",
+      "text": "[TODO: texte du témoignage]"
     }
   }
 }

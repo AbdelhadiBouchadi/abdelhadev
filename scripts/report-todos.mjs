@@ -17,16 +17,49 @@ function* files(path) {
   }
 }
 
+// A testimonial that is not confirmed is never rendered (src/lib/content/testimonials.ts), so the
+// placeholders under its messages (testimonials.<id>) never ship and are not listed. Its entries
+// are written `entry("<id>", <confirmed>)`, one per line.
+const hidden = new Set(
+  [
+    ...readFileSync(join(root, "src/lib/content/testimonials.ts"), "utf8").matchAll(
+      /^\s*entry\("([a-z0-9-]+)",\s*false\)/gm,
+    ),
+  ].map((m) => m[1]),
+);
+
+/** The key path of each line of a pretty-printed JSON file (one key or bracket per line). */
+function keyPaths(lines) {
+  const stack = [];
+  return lines.map((line) => {
+    const open = /^\s*(?:"([^"]+)":\s*)?[{[]\s*$/.exec(line);
+    if (open) {
+      stack.push(open[1] ?? "");
+      return [...stack];
+    }
+    if (/^\s*[}\]],?\s*$/.test(line)) {
+      const path = [...stack];
+      stack.pop();
+      return path;
+    }
+    const leaf = /^\s*"([^"]+)":/.exec(line);
+    return leaf ? [...stack, leaf[1]] : [...stack];
+  });
+}
+
 const found = [];
 for (const source of SOURCES) {
   for (const file of files(source)) {
-    readFileSync(file, "utf8")
-      .split("\n")
-      .forEach((line, i) => {
-        for (const m of line.matchAll(/\[TODO[^\]]*\]/g)) {
-          found.push(`${relative(root, file).replaceAll("\\", "/")}:${i + 1}  ${m[0]}`);
-        }
-      });
+    const lines = readFileSync(file, "utf8").split("\n");
+    const paths = file.endsWith(".json") ? keyPaths(lines) : [];
+    lines.forEach((line, i) => {
+      // path[0] is the file's root object.
+      const path = paths[i] ?? [];
+      if (path[1] === "testimonials" && hidden.has(path[2])) return;
+      for (const m of line.matchAll(/\[TODO[^\]]*\]/g)) {
+        found.push(`${relative(root, file).replaceAll("\\", "/")}:${i + 1}  ${m[0]}`);
+      }
+    });
   }
 }
 

@@ -22,6 +22,13 @@ export const EXPERIENCE = [
   { key: "education", detail: false },
 ] as const;
 
+/** Timeline entries that link to the live site (messages: about.experience.items.<key>.link).
+    Dérive Casablancaise: name and link supplied by the owner in 08a; the client's personal name
+    is never in the repository. */
+export const EXPERIENCE_LINKS: Readonly<Partial<Record<ExperienceKey, string>>> = {
+  festival: "https://derive-casablancaise.com",
+};
+
 /** The stack, by how often he reaches for it (messages: about.stack.groups.<key>). */
 export const STACK = [
   {

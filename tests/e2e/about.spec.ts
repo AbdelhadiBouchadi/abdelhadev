@@ -2,7 +2,8 @@
 // arcs and the title reach their end state after the loader; each chapter's statement lights up
 // as it is scrolled through; services, process, experience, stack and "Right now" reach their end
 // state; the footer's LinkedIn and GitHub links and the CV link are right for the locale and the
-// CV is served as a PDF; the raw HTML has every section title and the five services in order;
+// CV is served as a PDF; the timeline's dates, the festival link and the public email in the
+// footer and the legal notice (08a); the raw HTML has every section title and the five services in order;
 // complete and still under reduced motion; ScrollTriggers back to their baseline; axe at the top
 // and at "Right now" (night).
 import AxeBuilder from "@axe-core/playwright";
@@ -26,7 +27,11 @@ interface AboutMessages {
     chapters: Record<string, { label: string; text: string }>;
     services: { title: string; items: Record<string, Item> };
     process: { title: string };
-    experience: { title: string; cv: string };
+    experience: {
+      title: string;
+      cv: string;
+      items: Record<string, { when: string; title: string; link?: string }>;
+    };
     stack: { title: string };
     now: { title: string };
   };
@@ -229,7 +234,17 @@ test.describe("with motion", () => {
     const others: string[] = [];
     const run = async (at: string) => {
       await transitionsSettled(page);
-      const { violations } = await new AxeBuilder({ page }).withTags(tags).analyze();
+      // Decision D10: unlit words wait at 0.14 by design and are scrolled to full opacity before
+      // they are read, so only they are left out of the contrast check (as in a11y.spec).
+      const rules = await new AxeBuilder({ page })
+        .withTags(tags)
+        .disableRules(["color-contrast"])
+        .analyze();
+      const contrastRun = await new AxeBuilder({ page })
+        .withRules(["color-contrast"])
+        .exclude("[data-words-light]")
+        .analyze();
+      const violations = [...rules.violations, ...contrastRun.violations];
       for (const v of violations) {
         if (v.impact !== "serious" && v.impact !== "critical") continue;
         for (const node of v.nodes) {
@@ -305,6 +320,46 @@ for (const locale of LOCALES) {
           .map((el) => el.textContent ?? ""),
       );
     expect(small).toEqual([]);
+  });
+}
+
+// ---------- final copy (08a): dates, the festival link, the public email ----------
+
+const LEGAL = { fr: "/fr/mentions-legales", en: "/en/legal-notice" } as const;
+
+for (const locale of LOCALES) {
+  test(`${locale}: the timeline dates, the festival link and the public email`, async ({
+    page,
+  }) => {
+    const m = MESSAGES[locale];
+    const items = m.about.experience.items;
+    await page.goto(PATHS[locale]);
+
+    const timeline = page.locator(".timeline");
+    for (const key of ["dentaflow", "hms"]) {
+      const row = timeline.locator("li", { hasText: items[key]?.title ?? key });
+      await expect(row.locator(".when")).toHaveText(items[key]?.when ?? key);
+    }
+    await expect(timeline).toContainText("Ophtachusm");
+    await expect(page.locator("body")).not.toContainText(/\bHMS\b/);
+
+    const festival = timeline.getByRole("link", {
+      name: `${items.festival?.link ?? "link"} (${m.footer.newTab})`,
+    });
+    await expect(festival).toHaveAttribute("href", "https://derive-casablancaise.com");
+    await expect(festival).toHaveAttribute("target", "_blank");
+    await expect(festival).toHaveAttribute("rel", "noopener noreferrer");
+    expect((await festival.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(44);
+
+    const email = page.locator("footer").getByRole("link", { name: SITE.email });
+    await expect(email).toHaveAttribute("href", `mailto:${SITE.email}`);
+    expect((await email.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(44);
+
+    await page.goto(LEGAL[locale]);
+    await expect(page.locator("main").getByRole("link", { name: SITE.email })).toHaveAttribute(
+      "href",
+      `mailto:${SITE.email}`,
+    );
   });
 }
 

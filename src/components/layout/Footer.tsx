@@ -8,7 +8,8 @@
    wordmark keeps its resting offset from CSS and the heading is never split.
 
    The legal name is plain, server-rendered text here on every page (AGENTS.md, "Content, identity
-   and legal"). The LinkedIn and GitHub links (src/lib/site.ts) open in a new tab, which their
+   and legal"). The public email (a mailto: link with the address as its text) and the LinkedIn
+   and GitHub links come from src/lib/site.ts; LinkedIn and GitHub open in a new tab, which their
    accessible name says; each is a 44 px target. The copy makes no availability or client claims
    (decision P6).
 
@@ -121,6 +122,11 @@ export async function Footer({ cta }: FooterProps = {}) {
           <div>
             <h2 className={colHeading}>{t("elsewhere")}</h2>
             <ul className={colList}>
+              <li>
+                <a href={`mailto:${SITE.email}`} className={colLink}>
+                  {SITE.email}
+                </a>
+              </li>
               {CHANNELS.map(({ key, label, href }) => (
                 <li key={key}>
                   <a href={href} className={colLink} target="_blank" rel="noopener noreferrer">

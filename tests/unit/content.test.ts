@@ -41,7 +41,7 @@ describe("placeholders", () => {
   });
 
   it("lists the identity values the owner still has to supply and the pending legal review", () => {
-    // LinkedIn, GitHub and WhatsApp were supplied in 06; the public email is not a key yet.
+    // LinkedIn, GitHub and WhatsApp were supplied in 06, the public email in 08a.
     expect(todoReport()).toEqual(["legalReview: pending"]);
     expect(todoReport({ ...SITE, github: "[TODO: GitHub]" })).toEqual([
       "github: [TODO: GitHub]",

@@ -2,7 +2,7 @@
 // the loader hands over to the hero intro; each beat reaches its end state when scrolled; the
 // header turns to night at the dusk's centre and nowhere earlier; the featured screens open; the
 // 3D layer reports its state (live, poster without WebGL, still under reduced motion); without
-// JavaScript the page is complete; no console errors; ScrollTriggers return to their baseline; axe.
+// JavaScript the page is complete, with no testimonials markup while none is confirmed (08a); no console errors; ScrollTriggers return to their baseline; axe.
 //
 // It also carries the assertions that lived on the lab bench until 02 (the shell: header hide and
 // return, tone switching, the cursor label; the primitives: Reveal, SplitReveal, WordsLight,
@@ -10,6 +10,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { expect, test, type Locator, type Page } from "@playwright/test";
+import { publicTestimonials } from "@/lib/content/testimonials";
 import { beyond, collectErrors, docTop, liveScrollTriggers } from "./page-helpers";
 import { LEGAL_NAME } from "./routes";
 import { scrollToY, shellIdle, transitionsSettled, visited } from "./shell-helpers";
@@ -20,6 +21,7 @@ interface HomeMessages {
     manifesto: { statement: string };
     dusk: { title: string; sub: string };
     featured: { title: string; cta: string; product: string };
+    testimonials: { title: string };
   };
   cursor: { write: string };
   nav: { home: string; work: string };
@@ -445,7 +447,17 @@ test.describe("with motion", () => {
       const others: string[] = [];
       const run = async (at: string) => {
         await transitionsSettled(page);
-        const { violations } = await new AxeBuilder({ page }).withTags(tags).analyze();
+        // Decision D10: unlit words wait at 0.14 by design and are scrolled to full opacity
+        // before they are read, so only they are left out of the contrast check (as in a11y.spec).
+        const rules = await new AxeBuilder({ page })
+          .withTags(tags)
+          .disableRules(["color-contrast"])
+          .analyze();
+        const contrastRun = await new AxeBuilder({ page })
+          .withRules(["color-contrast"])
+          .exclude("[data-words-light]")
+          .analyze();
+        const violations = [...rules.violations, ...contrastRun.violations];
         for (const v of violations) {
           if (v.impact !== "serious" && v.impact !== "critical") continue;
           for (const node of v.nodes) {
@@ -547,6 +559,18 @@ test.describe("reduced motion", () => {
 
 test.describe("without JavaScript", () => {
   test.use({ javaScriptEnabled: false });
+
+  // Testimonials render only once confirmed (src/lib/content/testimonials.ts, decision P10).
+  test("no testimonials markup while none is confirmed", async ({ request }) => {
+    test.skip(publicTestimonials().length > 0, "a testimonial is confirmed");
+    for (const locale of LOCALES) {
+      const raw = await (await request.get(`/${locale}`)).text();
+      expect(raw).not.toContain('id="testimonials"');
+      expect(raw).not.toContain("data-testimonial");
+      expect(raw).not.toContain("<blockquote");
+      expect(raw).not.toContain(MESSAGES[locale].home.testimonials.title.replaceAll("'", "&#x27;"));
+    }
+  });
 
   for (const locale of LOCALES) {
     test(`${locale}: the page is complete and the poster is visible`, async ({ page }) => {
