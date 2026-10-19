@@ -62,15 +62,15 @@ export function contactBody(data: ContactData, topic: string, at: Date): string 
   return [
     "Nouveau message depuis abdelhadev.me",
     "",
-    `Nom : ${data.name}`,
-    `Email : ${data.email}`,
-    `Projet : ${topic} (${data.topic satisfies Topic})`,
+    `Nom : ${data.name}`,
+    `E-mail : ${data.email}`,
+    `Projet : ${topic} (${data.topic satisfies Topic})`,
     "",
-    "Message :",
+    "Message :",
     data.message,
     "",
     "---",
-    `Langue de la page : ${data.locale}`,
+    `Langue de la page : ${data.locale}`,
     `Envoyé le ${sentAt(at)}`,
   ].join("\n");
 }

@@ -1,6 +1,6 @@
 {
   "meta": {
-    "description": "Abdelhadi Bouchadi, développeur full-stack à Agadir, Maroc. Systèmes de gestion, applications web avec IA, plateformes clients et sites."
+    "description": "Abdelhadi Bouchadi, développeur full-stack à Agadir, Maroc. Systèmes de gestion, applications web avec IA, plateformes clients et sites web."
   },
   "common": {
     "skipLink": "Aller au contenu",
@@ -25,7 +25,7 @@
   "home": {
     "meta": {
       "title": "Développeur full-stack à Agadir",
-      "description": "Abdelhadi Bouchadi conçoit des applications web fiables : systèmes de gestion, applications IA et plateformes clients, du modèle de données au dernier écran."
+      "description": "Abdelhadi Bouchadi conçoit des applications web fiables\u00a0: systèmes de gestion, applications IA et plateformes clients, du modèle de données au dernier écran."
     },
     "hero": {
       "name": "Abdelhadev, Abdelhadi Bouchadi, développeur full-stack à Agadir",
@@ -37,12 +37,12 @@
         "ai": "Applications web IA",
         "platforms": "Plateformes clients"
       },
-      "intro": "Je conçois des applications web sur lesquelles on s'appuie au quotidien : systèmes de gestion, applications dopées à l'IA et plateformes clients, du modèle de données jusqu'au dernier écran. Un travail soigné, expliqué simplement, livré par étapes que vous voyez.",
+      "intro": "Je conçois des applications web sur lesquelles on s'appuie au quotidien\u00a0: systèmes de gestion, applications avec IA et plateformes clients, du modèle de données jusqu'au dernier écran. Un travail soigné, expliqué simplement, livré par étapes que vous pouvez suivre.",
       "seeWork": "Voir les projets"
     },
     "manifesto": {
       "label": "Ma façon de travailler",
-      "statement": "On confie à un logiciel ses plannings, ses données et son activité de tous les jours. Je construis des applications qui méritent cette confiance : sûres dès la conception, et assez simples pour qu'on n'ait jamais besoin d'un manuel."
+      "statement": "On confie à un logiciel son planning, ses données et la marche de son activité au quotidien. Je développe des applications qui méritent cette confiance\u00a0: sécurisées dès la conception, et assez simples pour se passer de mode d'emploi."
     },
     "dusk": {
       "label": "Après la fermeture",
@@ -75,7 +75,7 @@
     }
   },
   "footer": {
-    "cta": "Un projet en tête ?",
+    "cta": "Un projet en tête\u00a0?",
     "seeWork": "Voir les projets",
     "pages": "Pages",
     "elsewhere": "Ailleurs",
@@ -88,11 +88,11 @@
   "pages": {
     "legal": {
       "title": "Mentions légales",
-      "updated": "Dernière mise à jour : {date}",
+      "updated": "Dernière mise à jour\u00a0: {date}",
       "publisher": {
         "title": "Éditeur du site",
-        "body": "Ce site est édité par {name}, auto-entrepreneur, développeur full-stack basé à {place}.",
-        "contact": "Pour me joindre :"
+        "body": "Ce site est édité par {name}, auto-entrepreneur, développeur full-stack installé à {place}.",
+        "contact": "Pour me joindre\u00a0:"
       },
       "director": {
         "title": "Directeur de la publication",
@@ -101,33 +101,33 @@
       "host": {
         "title": "Hébergement",
         "body": "Le site est hébergé par {host}, {address}.",
-        "site": "Site de l'hébergeur :"
+        "site": "Site de l'hébergeur\u00a0:"
       },
       "ip": {
         "title": "Propriété intellectuelle",
-        "body": "Les textes, la marque {brand}, son logo et les éléments graphiques de ce site m'appartiennent, sauf mention contraire. Leur reproduction, totale ou partielle, demande mon accord écrit préalable.",
-        "names": "Les noms de produits et de technologies cités appartiennent à leurs propriétaires."
+        "body": "Les textes, la marque {brand}, son logo et les éléments graphiques de ce site m'appartiennent, sauf mention contraire. Toute reproduction, totale ou partielle, nécessite mon accord écrit préalable.",
+        "names": "Les noms de produits et de technologies cités appartiennent à leurs propriétaires respectifs."
       },
       "data": {
         "title": "Données personnelles",
-        "collected": "Le formulaire de contact recueille votre nom, votre adresse e-mail, le type de projet et votre message. Ils me sont envoyés par e-mail dans ma boîte de réception. Je m'en sers uniquement pour vous répondre ; ces données ne sont ni vendues ni utilisées pour de la publicité.",
-        "processor": "L'envoi passe par le service Resend, qui agit comme sous-traitant pour cette transmission.",
+        "collected": "Le formulaire de contact recueille votre nom, votre adresse e-mail, le type de projet et votre message. Ces informations me sont transmises par e-mail. Je les utilise uniquement pour vous répondre\u00a0; elles ne sont ni vendues ni utilisées à des fins publicitaires.",
+        "processor": "L'envoi est assuré par le service Resend, qui intervient en qualité de sous-traitant pour cette transmission.",
         "protection": "Pour limiter le nombre de messages envoyés depuis une même connexion et bloquer les robots, le service Arcjet traite l'adresse IP de votre appareil au moment de l'envoi.",
-        "stored": "Rien n'est enregistré sur ce site : il n'a pas de base de données et ne garde aucune copie des messages.",
-        "whatsapp": "Si vous choisissez WhatsApp, votre message passe par ce service et relève de ses propres conditions.",
-        "retention": "Durée de conservation des messages : {retention}",
+        "stored": "Ce site ne conserve rien\u00a0: il n'utilise pas de base de données et ne garde aucune copie des messages.",
+        "whatsapp": "Si vous choisissez WhatsApp, votre message transite par ce service et reste soumis à ses propres conditions d'utilisation.",
+        "retention": "Durée de conservation des messages\u00a0: {retention}",
         "retentionValue": "[TODO: durée de conservation des messages reçus par le formulaire]",
         "rights": "Vous pouvez demander l'accès à vos données, leur rectification ou leur suppression en m'écrivant à l'adresse indiquée plus haut."
       },
       "storage": {
         "title": "Cookies et stockage local",
         "cookies": "Ce site ne dépose aucun cookie publicitaire ni de mesure d'audience.",
-        "session": "Il enregistre aussi une information dans le stockage de session de votre navigateur : le fait que vous avez déjà vu l'animation d'ouverture, pour la raccourcir sur les pages suivantes. Elle disparaît quand vous fermez l'onglet.",
-        "language": "Il peut déposer un seul cookie, NEXT_LOCALE, qui retient la langue dans laquelle vous lisez le site. C'est un cookie de session : il disparaît quand vous fermez le navigateur."
+        "session": "Il enregistre aussi une information dans le stockage de session de votre navigateur\u00a0: le fait que vous avez déjà vu l'animation d'ouverture, pour la raccourcir sur les pages suivantes. Elle est effacée à la fermeture de l'onglet.",
+        "language": "Il peut déposer un seul cookie, NEXT_LOCALE, qui mémorise la langue dans laquelle vous consultez le site. C'est un cookie de session\u00a0: il est supprimé à la fermeture du navigateur."
       },
       "links": {
         "title": "Liens externes",
-        "body": "Les liens vers d'autres sites, comme LinkedIn, GitHub, WhatsApp ou l'hébergeur, quittent ce site. Je ne contrôle pas leur contenu."
+        "body": "Les liens vers d'autres sites, comme LinkedIn, GitHub, WhatsApp ou celui de l'hébergeur, vous font quitter ce site. Je n'ai aucun contrôle sur leur contenu."
       }
     },
     "notFound": {
@@ -139,10 +139,10 @@
   "about": {
     "meta": {
       "title": "À propos",
-      "description": "Développeur full-stack indépendant à Agadir : systèmes de gestion, applications IA, boutiques en ligne et sites avec espace d'administration."
+      "description": "Développeur full-stack indépendant à Agadir\u00a0: systèmes de gestion, applications IA, boutiques en ligne et sites avec espace d'administration."
     },
-    "title": "Un développeur d'Agadir qui construit des logiciels auxquels on confie son travail",
-    "lead": "Je suis Abdelhadi Bouchadi. Je conçois et construis des applications web de la base de données au dernier écran, pour des cabinets, des services de santé et des petites équipes.",
+    "title": "Développeur à Agadir, je crée des logiciels auxquels on peut confier son travail",
+    "lead": "Je suis Abdelhadi Bouchadi. Je conçois et développe des applications web de la base de données au dernier écran, pour des cabinets, des services de santé et des petites équipes.",
     "facts": {
       "languages": {
         "term": "Langues",
@@ -153,26 +153,26 @@
         "value": "Maroc"
       },
       "mode": {
-        "term": "Travail",
+        "term": "Collaboration",
         "value": "À distance"
       }
     },
     "chapters": {
       "who": {
         "label": "Qui je suis",
-        "text": "Je suis d'Agadir, développeur full-stack indépendant. Je construis des applications web de bout en bout avec Next.js et TypeScript, pour des personnes qui n'ont pas le temps d'apprendre des outils compliqués."
+        "text": "Je suis développeur full-stack indépendant, originaire d'Agadir. Je réalise des applications web de bout en bout avec Next.js et TypeScript, pour des personnes qui n'ont pas le temps de se former à des outils compliqués."
       },
       "how": {
         "label": "Comment je travaille",
-        "text": "Je commence par vous écouter. Je modélise ensuite vos données et je découpe le projet en tâches. Vous recevez un devis 24 à 48 heures après notre premier échange, puis je construis et je livre."
+        "text": "Je commence par vous écouter. Je modélise ensuite vos données et je découpe le projet en tâches. Vous recevez un devis 24 à 48 heures après notre premier échange, puis je développe et je livre."
       },
       "why": {
-        "label": "Pourquoi les cabinets",
-        "text": "Une partie de mon entourage est médecin. J'ai construit un outil pour un service d'ophtalmologie hospitalier, et DentaFlow est né de la clinique dentaire de mon frère. Je veux que les soignants gagnent du temps pour l'essentiel."
+        "label": "Pourquoi la santé",
+        "text": "Plusieurs de mes proches sont médecins. J'ai développé un outil pour un service hospitalier d'ophtalmologie, et DentaFlow est né dans le cabinet dentaire de mon frère. Je veux que les soignants gagnent du temps pour se consacrer à l'essentiel."
       }
     },
     "services": {
-      "title": "Ce que je construis",
+      "title": "Ce que je développe",
       "items": {
         "clinics": {
           "title": "Systèmes de gestion pour cabinets et services de santé",
@@ -180,15 +180,15 @@
         },
         "ai": {
           "title": "Applications web avec IA",
-          "text": "Des fonctions d'IA dans votre application, avec l'AI SDK ou l'API OpenAI."
+          "text": "Des fonctionnalités d'IA intégrées à votre application, avec l'AI SDK ou l'API OpenAI."
         },
         "shops": {
           "title": "Boutiques en ligne",
-          "text": "Shopify en headless, relié à une interface Next.js par l'API GraphQL."
+          "text": "Shopify en mode headless, relié à une interface Next.js par son API GraphQL."
         },
         "websites": {
           "title": "Sites web avec espace d'administration",
-          "text": "Un site Next.js et un espace d'administration sur mesure pour gérer tout le contenu. WordPress comme CMS si vous le préférez."
+          "text": "Un site Next.js et un espace d'administration sur mesure pour gérer vous-même tout le contenu. WordPress comme CMS si vous préférez."
         },
         "other": {
           "title": "Autres projets web",
@@ -198,15 +198,15 @@
     },
     "process": {
       "title": "Comment se déroule un projet",
-      "lead": "De la première conversation à la livraison.",
+      "lead": "Du premier échange à la livraison.",
       "steps": {
         "listen": {
           "title": "Écoute",
-          "text": "Vous parlez, je prends des notes sur vos besoins."
+          "text": "Vous m'expliquez votre besoin, je prends des notes."
         },
         "scope": {
           "title": "Cadrage",
-          "text": "En 24 heures, je traduis vos besoins en plan technique, je modélise les données et je découpe le projet en tâches."
+          "text": "Sous 24 heures, je transforme vos besoins en plan technique, je modélise les données et je découpe le projet en tâches."
         },
         "quote": {
           "title": "Devis",
@@ -214,11 +214,11 @@
         },
         "build": {
           "title": "Développement",
-          "text": "Après votre accord et votre signature, une facture d'acompte, puis je construis."
+          "text": "Une fois le devis accepté et signé, je vous envoie la facture d'acompte, puis je commence le développement."
         },
         "deliver": {
           "title": "Livraison",
-          "text": "Juste avant la mise en ligne, la facture du solde, puis je vous livre tout."
+          "text": "Juste avant la mise en ligne, je vous envoie la facture de solde, puis je vous remets l'ensemble du projet."
         }
       }
     },
@@ -229,30 +229,30 @@
         "freelance": {
           "when": "Depuis fin 2022",
           "title": "Développeur full-stack indépendant",
-          "text": "Des applications web conçues seul, de bout en bout, pour des clients français, anglais et marocains.",
+          "text": "Des applications web que je réalise seul, de bout en bout, pour des clients français, anglais et marocains.",
           "where": "Agadir, Maroc"
         },
         "dentaflow": {
           "when": "Octobre 2026",
           "title": "DentaFlow",
-          "text": "Un logiciel de gestion de cabinet dentaire, prêt à être adapté à de nouveaux cabinets.",
+          "text": "Un logiciel de gestion pour cabinets dentaires, prêt à être adapté à chaque nouveau cabinet.",
           "where": "Produit"
         },
         "hms": {
           "when": "Janvier 2025",
           "title": "Ophtachusm",
-          "text": "Un système de gestion pour un service d'ophtalmologie hospitalier, réservé au personnel médical.",
+          "text": "Un système de gestion pour un service hospitalier d'ophtalmologie, réservé au personnel médical.",
           "where": "Santé"
         },
         "festival": {
           "when": "[TODO: year]",
           "title": "Dérive Casablancaise",
-          "text": "Un site et un espace d'administration sur mesure pour un festival au Maroc, pour gérer tous les contenus.",
+          "text": "Un site web et son espace d'administration sur mesure pour un festival au Maroc, qui permet de gérer tout le contenu.",
           "where": "Client",
           "link": "Voir le site"
         },
         "education": {
-          "when": "Dernière année de licence",
+          "when": "Dernière année de Bachelor of Engineering (B.Eng)",
           "title": "Génie informatique",
           "where": "Formation"
         }
@@ -271,17 +271,17 @@
       "cards": {
         "dentaflow": {
           "title": "DentaFlow est prêt pour de nouveaux cabinets",
-          "text": "Chaque cabinet a son nom, sa base de données et son déploiement.",
+          "text": "Chaque cabinet a son propre nom, sa propre base de données et son propre déploiement.",
           "link": "Lire l'étude de cas"
         },
         "open": {
-          "title": "Ouvert aux projets freelance, et à un poste à distance",
+          "title": "Disponible pour des missions freelance, et ouvert à un poste à distance",
           "text": "Parlons-en.",
           "link": "Contact"
         },
         "exploring": {
           "title": "J'explore l'automatisation de navigateur",
-          "text": "Je me forme à Trigger.dev et Browserbase en construisant une application d'automatisation."
+          "text": "Je me forme à Trigger.dev et Browserbase en développant une application d'automatisation."
         }
       }
     }
@@ -289,19 +289,19 @@
   "contact": {
     "meta": {
       "title": "Contact",
-      "description": "Écrivez-moi pour parler de votre projet : logiciel de gestion, application IA, boutique en ligne ou site web."
+      "description": "Écrivez-moi pour parler de votre projet\u00a0: logiciel de gestion, application IA, boutique en ligne ou site web."
     },
     "title": "Parlons de votre projet",
-    "lead": "Écrivez-moi par email avec le formulaire, ou continuez sur WhatsApp. Dans les deux cas, je lis chaque message moi-même.",
-    "channels": "Les façons de me contacter",
+    "lead": "Écrivez-moi par e-mail grâce au formulaire, ou poursuivez sur WhatsApp. Dans les deux cas, je lis chaque message personnellement.",
+    "channels": "Pour me contacter",
     "form": {
       "title": "Envoyer un message",
       "intro": "Il arrive directement dans ma boîte de réception.",
       "labels": {
         "name": "Votre nom",
-        "email": "Email",
+        "email": "E-mail",
         "topic": "Votre projet",
-        "message": "De quoi avez-vous besoin ?"
+        "message": "De quoi avez-vous besoin\u00a0?"
       },
       "topicPlaceholder": "Choisissez une option",
       "topics": {
@@ -311,25 +311,25 @@
         "website": "Un site web avec espace d'administration",
         "other": "Autre chose"
       },
-      "hint": "Décrivez comment votre équipe travaille aujourd'hui et ce qui vous ralentit : c'est un excellent début.",
+      "hint": "Expliquez comment votre équipe travaille aujourd'hui et ce qui vous fait perdre du temps\u00a0: c'est un très bon point de départ.",
       "honeypot": "Société",
       "errors": {
         "name": "Indiquez votre nom pour que je sache à qui répondre.",
-        "email": "Indiquez une adresse email comme nom@exemple.ma.",
+        "email": "Indiquez une adresse e-mail valide, par exemple nom@exemple.ma.",
         "topic": "Choisissez l'option la plus proche.",
-        "message": "Dites-m'en un peu plus, au moins deux phrases."
+        "message": "Dites-m'en un peu plus\u00a0: deux phrases au moins."
       },
       "privacy": "Vos informations servent uniquement à vous répondre.",
       "submit": "Envoyer le message",
       "sending": "Envoi en cours…",
       "success": {
         "title": "Message envoyé",
-        "text": "Merci. Je vous réponds personnellement.",
+        "text": "Merci. Je vous répondrai personnellement.",
         "again": "Écrire un autre message"
       },
       "failed": {
-        "send": "Le message n'a pas pu être envoyé. Vos mots sont conservés : réessayez, ou écrivez-moi sur WhatsApp.",
-        "rateLimit": "Trop de messages en peu de temps. Réessayez plus tard ou écrivez-moi sur WhatsApp."
+        "send": "Le message n'a pas pu être envoyé. Votre texte est conservé\u00a0: réessayez, ou écrivez-moi sur WhatsApp.",
+        "rateLimit": "Trop de messages envoyés en peu de temps. Réessayez un peu plus tard, ou écrivez-moi sur WhatsApp."
       },
       "toast": {
         "region": "Notifications",
@@ -340,35 +340,35 @@
       }
     },
     "whatsapp": {
-      "title": "Plutôt WhatsApp ?",
-      "intro": "Le message du formulaire est copié ici, pour l'envoyer sur WhatsApp à la place.",
+      "title": "Plutôt WhatsApp\u00a0?",
+      "intro": "Votre message est repris ici\u00a0: vous pouvez l'envoyer sur WhatsApp à la place.",
       "action": "Continuer sur WhatsApp",
       "previewLabel": "Aperçu du message WhatsApp",
       "numberLabel": "Numéro WhatsApp",
       "greeting": "Bonjour Abdelhadi,",
       "name": "Je m'appelle {name}.",
-      "topic": "Mon projet : {topic}."
+      "topic": "Mon projet\u00a0: {topic}."
     },
     "next": {
-      "title": "Et ensuite ?"
+      "title": "Et ensuite\u00a0?"
     },
     "cursor": {
       "send": "Envoyer",
-      "whatsapp": "Ouvre WhatsApp"
+      "whatsapp": "Ouvrir WhatsApp"
     }
   },
   "work": {
     "meta": {
       "title": "Projets",
-      "description": "Les logiciels que j'ai construits de bout en bout : DentaFlow pour les cabinets dentaires, un système hospitalier, une application IA, une boutique en ligne et un site web."
+      "description": "Les logiciels que j'ai développés de bout en bout\u00a0: DentaFlow pour les cabinets dentaires, un système hospitalier, une application IA, une boutique en ligne et un site web."
     },
     "title": "Des logiciels sur lesquels on s'appuie au quotidien",
-    "lead": "{count, plural, one {# projet} other {# projets}}, du logiciel de cabinet et d'hôpital aux outils IA et aux boutiques en ligne. Chacun construit de bout en bout, du modèle de données au dernier écran.",
+    "lead": "{count, plural, one {# projet} other {# projets}}, des logiciels pour cabinets et hôpitaux aux outils d'IA et aux boutiques en ligne. Chacun développé de bout en bout, du modèle de données au dernier écran.",
     "start": "Commencer par DentaFlow",
     "projects": "Projets",
     "rail": "Projets sur cette page",
-    "challenge": "Le défi",
-    "built": "Ce que j'ai construit",
+    "challenge": "L'enjeu",
+    "built": "Ce que j'ai réalisé",
     "stack": "Stack",
     "caseStudy": "Étude de cas",
     "demo": "Demander une démo",
@@ -400,11 +400,11 @@
     },
     "adapt": {
       "title": "Adapté à chaque cabinet",
-      "lead": "DentaFlow est prêt. Ce qui change pour chaque cabinet se fait avant la mise en service."
+      "lead": "DentaFlow est prêt. L'adaptation à chaque cabinet se fait avant la mise en service."
     },
     "arch": {
-      "title": "Comment c'est construit",
-      "lead": "Typé de la base de données à l'écran, pour qu'un changement soit vérifié partout.",
+      "title": "Comment il est conçu",
+      "lead": "Un typage strict de bout en bout, de la base de données à l'écran\u00a0: chaque modification est vérifiée partout.",
       "diagramBox": "Schéma de l'architecture"
     },
     "next": "Projet suivant",
@@ -416,8 +416,8 @@
     "dentaflow": {
       "name": "DentaFlow",
       "kind": "Gestion de cabinet dentaire",
-      "challenge": "Faire tourner toute la journée d'un cabinet dentaire au même endroit : rendez-vous, patients, soins et facturation.",
-      "built": "Un système de gestion adapté à chaque cabinet avant la mise en service, avec sa propre base de données, son propre déploiement et le nom du cabinet.",
+      "challenge": "Gérer toute la journée d'un cabinet dentaire depuis un seul outil\u00a0: rendez-vous, patients, soins et facturation.",
+      "built": "Un système de gestion adapté à chaque cabinet avant sa mise en service\u00a0: sa propre base de données, son propre déploiement et le nom du cabinet dans l'application.",
       "media": {
         "s1": "[TODO: décrire l'écran 1 de DentaFlow]",
         "s2": "[TODO: décrire l'écran 2 de DentaFlow]",
@@ -427,10 +427,10 @@
       },
       "case": {
         "meta": {
-          "description": "Un système de gestion pour cabinets dentaires : agenda, patients, soins et facturation. Adapté à chaque cabinet avant la mise en service, avec sa propre base de données et son propre déploiement."
+          "description": "Un système de gestion pour cabinets dentaires\u00a0: agenda, patients, soins et facturation. Adapté à chaque cabinet avant la mise en service, avec sa propre base de données et son propre déploiement."
         },
-        "lead": "Un système de gestion pour cabinets dentaires : agenda, patients, soins et facturation. Adapté à chaque cabinet avant la mise en service, avec sa propre base de données et son propre déploiement.",
-        "footer": "DentaFlow dans votre cabinet ?",
+        "lead": "Un système de gestion pour cabinets dentaires\u00a0: agenda, patients, soins et facturation. Adapté à chaque cabinet avant la mise en service, avec sa propre base de données et son propre déploiement.",
+        "footer": "DentaFlow dans votre cabinet\u00a0?",
         "screens": {
           "hero": "[TODO: décrire l'écran d'ouverture de DentaFlow]",
           "agenda": "[TODO: décrire l'écran agenda de DentaFlow]",
@@ -444,7 +444,7 @@
         "tour": {
           "agenda": {
             "title": "L'agenda du cabinet",
-            "text": "Les rendez-vous de la journée et de la semaine, avec leur type."
+            "text": "Les rendez-vous du jour et de la semaine, avec leur type."
           },
           "patients": {
             "title": "Tous les patients",
@@ -492,10 +492,10 @@
         "arch": {
           "database": {
             "title": "Une base de données par cabinet",
-            "text": "PostgreSQL, accessible avec Drizzle."
+            "text": "PostgreSQL, interrogée avec Drizzle."
           },
           "types": {
-            "title": "Des types de bout en bout",
+            "title": "Un typage de bout en bout",
             "text": "tRPC partage les mêmes types entre le serveur et l'interface."
           },
           "access": {
@@ -504,12 +504,12 @@
           }
         },
         "diagram": {
-          "label": "Architecture : le navigateur parle à l'application Next.js, qui appelle les procédures tRPC, qui interrogent avec Drizzle la base PostgreSQL de chaque cabinet. Better Auth se trouve à côté de l'application.",
+          "label": "Architecture\u00a0: le navigateur communique avec l'application Next.js, qui appelle les procédures tRPC, qui interrogent avec Drizzle la base PostgreSQL de chaque cabinet. Better Auth fonctionne aux côtés de l'application.",
           "browser": "Navigateur",
           "browserSub": "Le cabinet",
           "appSub": "L'application",
-          "apiSub": "API typée",
-          "ormSub": "Requêtes typées",
+          "apiSub": "Typage de l'API",
+          "ormSub": "Typage des requêtes",
           "databaseSub": "Une par cabinet",
           "authSub": "Authentification"
         }
@@ -518,8 +518,8 @@
     "hms": {
       "name": "Ophtachusm",
       "kind": "Système de gestion hospitalière",
-      "challenge": "Donner à un service d'ophtalmologie un outil pour suivre ses patients, ses rendez-vous et ses images de l'œil.",
-      "built": "Un système de gestion réservé au personnel médical du service : données des patients, rendez-vous, imagerie de l'œil et dossiers médicaux.",
+      "challenge": "Doter un service d'ophtalmologie d'un outil pour suivre ses patients, ses rendez-vous et l'imagerie oculaire.",
+      "built": "Un système de gestion réservé au personnel médical du service\u00a0: données des patients, rendez-vous, imagerie oculaire et dossiers médicaux.",
       "media": {
         "s1": "[TODO: décrire l'écran 1 d'Ophtachusm]",
         "s2": "[TODO: décrire l'écran 2 d'Ophtachusm]",

@@ -109,7 +109,7 @@ export function ContactFormEmail({
                 </p>
                 <h1 style={s.heading}>Nouveau message depuis abdelhadev.me</h1>
                 <Field label="Nom">{name}</Field>
-                <Field label="Email">
+                <Field label="E-mail">
                   <a href={mailto} style={s.link}>
                     {email}
                   </a>
@@ -121,7 +121,7 @@ export function ContactFormEmail({
                   Répondre
                 </a>
                 <p style={s.meta}>
-                  Langue de la page : {locale} · Envoyé le {sentAt}
+                  Langue de la page&nbsp;: {locale} · Envoyé le {sentAt}
                 </p>
               </td>
             </tr>

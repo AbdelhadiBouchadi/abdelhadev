@@ -20,6 +20,7 @@ Status: **Fixed**, **Provisional** (fixed unless the named spike fails), **Open*
 | P11 | Availability: open to freelance projects and to a remote position, said without hours or studies. | Fixed |
 | P12 | The process may state that the quote arrives 24 to 48 hours after the first conversation: it is how he works, not a reply-time promise. The percentages of the advance and balance invoices are not published. | Fixed |
 | P13 | The public email is `contact@abdelhadev.me` (replaces "no public email yet", 08a), in `src/lib/site.ts`, shown in the footer and the legal notice. It forwards to a private inbox that never appears in the repository, the messages, the docs or the tests. | Fixed |
+| P14 | French copy is written natively under `docs/french-style.md`, never translated word for word from the English, and `pnpm check:fr` guards it (08a2). The degree is written in French as "Dernière année de Bachelor of Engineering (B.Eng)", never "licence". | Fixed |
 
 ## Design
 

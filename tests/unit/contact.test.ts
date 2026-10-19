@@ -95,7 +95,9 @@ describe("contact schema", () => {
       }
       for (const topic of TOPICS) expect(messages.contact.form.topics[topic]).toBeTruthy();
     }
-    expect(fr.contact.form.errors.email).toBe("Indiquez une adresse email comme nom@exemple.ma.");
+    expect(fr.contact.form.errors.email).toBe(
+      "Indiquez une adresse e-mail valide, par exemple nom@exemple.ma.",
+    );
     expect(en.contact.form.errors.email).toBe("Enter an email address like name@example.com.");
   });
 
@@ -216,7 +218,7 @@ describe("contact handler", () => {
       content: { name: VALID.name, email: VALID.email, topic, message: VALID.message },
     });
     expect(mail?.text).toContain(VALID.message);
-    expect(mail?.text).toContain("Langue de la page : fr");
+    expect(mail?.text).toContain("Langue de la page : fr");
     expect(mail?.content.sentAt).toContain("18 octobre 2026");
     expect(mail?.text).not.toMatch(/\b\d{1,3}(?:\.\d{1,3}){3}\b/);
     expect(lines).toEqual(["contact: sent"]);
