@@ -13,11 +13,10 @@ import { ArrowLink } from "@/components/ui/ArrowLink";
 import { buttonClass, buttonSize, SunDot } from "@/components/ui/Button";
 import { Chips, type ChipItem } from "@/components/ui/Chip";
 import { Screen } from "@/components/ui/Screen";
-import { hasMoreScreens, screenCount, sheetMedia } from "@/lib/content/projects";
+import { hasMoreScreens, screenCount, sheetMedia, statusKey } from "@/lib/content/projects";
 import type { Project } from "@/lib/content/schema";
 import { mediaCopy } from "@/lib/media";
 import { STAGGER, WORK } from "@/lib/motion";
-import { isTodo } from "@/lib/todo";
 import { cn, isKeyOf } from "@/lib/utils";
 import { MediaReveal } from "@/primitives/MediaReveal";
 import { ProjectMedia } from "@/primitives/ProjectMedia";
@@ -45,12 +44,12 @@ export async function ProjectSheet({ project, first = false }: ProjectSheetProps
   const controls = { play: t("video.play"), pause: t("video.pause") };
   const titleId = `${slug}-title`;
 
-  // Only "ready" has a label so far; an unconfirmed status shows as a fact to confirm.
-  const status: ChipItem | null = isTodo(project.status)
-    ? { label: t("status.todo"), variant: "todo" }
-    : project.status === "ready"
-      ? { label: t("status.ready"), variant: "warm" }
-      : null;
+  // A status without a label (a placeholder) shows as a fact to confirm.
+  const key = statusKey(project);
+  const status: ChipItem =
+    key === "todo"
+      ? { label: t("status.todo"), variant: "todo" }
+      : { label: t(`status.${key}`), variant: "warm" };
   const stack = typeof project.stack === "string" ? [project.stack] : project.stack;
   const caseStudy = { pathname: "/work/[slug]", params: { slug } } as const;
 
@@ -68,7 +67,7 @@ export async function ProjectSheet({ project, first = false }: ProjectSheetProps
             {copy.name}
           </h2>
           <p className="project-kind">{copy.kind}</p>
-          {status ? <Chips items={[status]} /> : null}
+          <Chips items={[status]} />
           <div className="project-actions">
             {project.caseStudy ? (
               <>

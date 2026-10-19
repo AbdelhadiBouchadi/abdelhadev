@@ -19,7 +19,7 @@ Measured 2026-10-17 on `feat/00-foundation`, so the owner can set budgets (decis
 
 Other medians, identical on every route: CSS 6.1 KiB, HTML 5.5 KiB, Speed Index 0.77 s, Time to Interactive 3.0 s. The LCP element is the lead paragraph on every route.
 
-SEO 66 is expected: `is-crawlable` fails by design while `INDEXABLE` is false (`noindex, nofollow`). Every individual SEO audit that CI asserts passes.
+SEO 66 is expected: `is-crawlable` fails by design outside production (`VERCEL_ENV` is not `production`) (`noindex, nofollow`). Every individual SEO audit that CI asserts passes.
 
 ## Reading the numbers
 
@@ -39,7 +39,7 @@ SEO 66 is expected: `is-crawlable` fails by design while `INDEXABLE` is false (`
 | JavaScript transfer, initial route without the 3D chunk | 155 KiB today; set after 01 adds GSAP and Lenis, then that number + 15 % |
 | Fonts transfer | 185 KiB today; decide on the axes above, then that number + 5 % |
 | 3D chunk (home only, lazy) | reported separately: 185 KiB gzip with plain three.js, 243 KiB with R3F |
-| Lighthouse | Accessibility 100, Best Practices at least 95, SEO audits individually while `INDEXABLE` is false |
+| Lighthouse | Accessibility 100, Best Practices at least 95, SEO audits individually outside production (`VERCEL_ENV` is not `production`) |
 
 ## 01-shell (2026-10-17)
 

@@ -129,7 +129,8 @@ describe("the case study copy", () => {
 });
 
 describe("sitemap", () => {
-  it("lists every public page and only the case studies that exist, in both locales", () => {
+  // 09: the legal notice is noindex, so it is not listed.
+  it("lists every indexable page and only the case studies that exist, in both locales", () => {
     const urls = sitemap().map((entry) => entry.url.replace("https://abdelhadev.me", ""));
     expect(urls.toSorted()).toEqual(
       [
@@ -143,8 +144,6 @@ describe("sitemap", () => {
         "/en/about",
         "/fr/contact",
         "/en/contact",
-        "/fr/mentions-legales",
-        "/en/legal-notice",
       ].toSorted(),
     );
     expect(urls.some((url) => url.includes("/hms"))).toBe(false);

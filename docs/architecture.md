@@ -66,8 +66,11 @@ abdelhadev/
 │   │   ├── scene-state.ts  the home 3D scene's scroll progress { p1, p2, p3 }, written by sections
 │   │   ├── css-tokens.ts   colour tokens read at runtime (the 3D scene, the dusk sky)
 │   │   ├── fonts.ts    next/font definitions
-│   │   ├── site.ts     identity, contact channels, social links, INDEXABLE flag
-│   │   ├── seo.ts      metadata helpers, alternates, JSON-LD builders
+│   │   ├── site.ts     identity, contact channels, social links
+│   │   ├── seo.ts      page metadata from messages seo.*, alternates, robots (production only, VERCEL_ENV), sitemap entries
+│   │   ├── routes.ts   the page table (href, indexable) shared by seo.ts, the sitemap and the tests
+│   │   ├── json-ld.ts  JSON-LD builders (Person, WebSite, BreadcrumbList) and the escaping serialiser
+│   │   ├── og.ts       the Open Graph cards: names, paths, copy and alt text
 │   │   ├── env.ts      zod-validated environment (server-only parts guarded)
 │   │   ├── contact-schema.ts   the contact form's zod schema and state, shared by form and action
 │   │   ├── contact-handler.ts  the contact action's logic, its mailer, guard and clock passed in
@@ -119,7 +122,7 @@ Localised pathnames in `src/i18n/routing.ts`:
 | `favicons/apple-touch-icon.png` | `src/app/apple-icon.png` | Next convention for Apple touch icon |
 | `favicons/icon-192.png`, `icon-512.png`, `icon-maskable-512.png` | `public/brand/` | Referenced from `src/app/manifest.ts` |
 | `logo-*.svg`, `wordmark-*.svg` | `public/brand/` | Static use: emails, CV, downloads, press |
-| `og-image.png` | `src/app/[locale]/opengraph-image.png` until 09 generates localised images | Next convention |
+| `og-image.png` | brand kit only; since 09 the cards are generated per page and locale by `src/app/[locale]/og/[card]/route.tsx` (`next/og`, prerendered at build) | `lib/og.ts` |
 | `logo-mark-animated.svg`, `wordmark-animated.svg` | `src/components/brand/` as React components, paths generated into `wordmark-paths.ts` by `scripts/build-brand-paths.mjs` | Inline SVG so GSAP can animate the sun and each letter; colours via tokens and `currentColor` |
 | `build_brand.py`, `README.md` and all originals | `brand/` at the repo root | Source of truth to regenerate the kit |
 

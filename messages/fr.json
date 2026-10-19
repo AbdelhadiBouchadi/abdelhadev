@@ -1,7 +1,4 @@
 {
-  "meta": {
-    "description": "Abdelhadi Bouchadi, développeur full-stack à Agadir, Maroc. Systèmes de gestion, applications web avec IA, plateformes clients et sites web."
-  },
   "common": {
     "skipLink": "Aller au contenu",
     "localeSwitch": "English"
@@ -23,10 +20,6 @@
     "status": "Chargement, {percent} pour cent"
   },
   "home": {
-    "meta": {
-      "title": "Développeur full-stack à Agadir",
-      "description": "Abdelhadi Bouchadi conçoit des applications web fiables\u00a0: systèmes de gestion, applications IA et plateformes clients, du modèle de données au dernier écran."
-    },
     "hero": {
       "name": "Abdelhadev, Abdelhadi Bouchadi, développeur full-stack à Agadir",
       "role": "Développeur full-stack",
@@ -133,14 +126,11 @@
     "notFound": {
       "title": "Page introuvable",
       "lead": "Cette adresse ne mène à aucune page.",
-      "back": "Retour à l'accueil"
+      "back": "Retour à l'accueil",
+      "work": "Voir les projets"
     }
   },
   "about": {
-    "meta": {
-      "title": "À propos",
-      "description": "Développeur full-stack indépendant à Agadir\u00a0: systèmes de gestion, applications IA, boutiques en ligne et sites avec espace d'administration."
-    },
     "title": "Développeur à Agadir, je crée des logiciels auxquels on peut confier son travail",
     "lead": "Je suis Abdelhadi Bouchadi. Je conçois et développe des applications web de la base de données au dernier écran, pour des cabinets, des services de santé et des petites équipes.",
     "facts": {
@@ -224,7 +214,7 @@
     },
     "experience": {
       "title": "Expérience",
-      "cv": "Télécharger mon CV (PDF)",
+      "cv": "Télécharger mon CV en français (PDF, {size})",
       "items": {
         "freelance": {
           "when": "Depuis fin 2022",
@@ -286,10 +276,6 @@
     }
   },
   "contact": {
-    "meta": {
-      "title": "Contact",
-      "description": "Écrivez-moi pour parler de votre projet\u00a0: logiciel de gestion, application IA, boutique en ligne ou site web."
-    },
     "title": "Parlons de votre projet",
     "lead": "Écrivez-moi par e-mail grâce au formulaire, ou poursuivez sur WhatsApp. Dans les deux cas, je lis chaque message personnellement.",
     "channels": "Pour me contacter",
@@ -357,10 +343,6 @@
     }
   },
   "work": {
-    "meta": {
-      "title": "Projets",
-      "description": "Quelques projets que j'ai développés de bout en bout\u00a0: systèmes de gestion, applications IA, plateformes de réservation et sites vitrines."
-    },
     "title": "Quelques projets que j'ai développés",
     "lead": "Des systèmes de gestion, des applications IA, des plateformes de réservation et des sites qui racontent une marque.",
     "start": "Commencer par DentaFlow",
@@ -374,6 +356,10 @@
     "ask": "Poser une question sur ce projet",
     "status": {
       "ready": "Prêt pour les cabinets",
+      "test-mode": "Déployé, abonnement en mode test",
+      "used": "Utilisé par le service pendant plusieurs mois",
+      "working": "Fonctionnel, sans paiement en ligne",
+      "concept": "Projet de démonstration",
       "todo": "Détails à confirmer"
     },
     "screenshot": "Capture à venir",
@@ -512,9 +498,6 @@
       "challenge": "Gérer toute la journée d'un cabinet dentaire depuis un seul outil\u00a0: rendez-vous, patients, soins et facturation.",
       "built": "Un système de gestion adapté à chaque cabinet avant sa mise en service\u00a0: sa propre base de données, son propre déploiement et le nom du cabinet dans l'application.",
       "case": {
-        "meta": {
-          "description": "Un système de gestion pour cabinets dentaires\u00a0: agenda, patients, soins et facturation. Adapté à chaque cabinet avant la mise en service, avec sa propre base de données et son propre déploiement."
-        },
         "lead": "Un système de gestion pour cabinets dentaires\u00a0: agenda, patients, soins et facturation. Adapté à chaque cabinet avant la mise en service, avec sa propre base de données et son propre déploiement.",
         "footer": "DentaFlow dans votre cabinet\u00a0?",
         "screens": {
@@ -630,5 +613,57 @@
       "organisation": "Dérive Casablancaise",
       "text": "[TODO: texte du témoignage]"
     }
+  },
+  "seo": {
+    "jobTitle": "Développeur full-stack",
+    "ogAlt": "{brand}\u00a0: {title}. {line}",
+    "pages": {
+      "home": {
+        "title": "Abdelhadi Bouchadi, développeur full-stack à Agadir",
+        "description": "Développeur full-stack à Agadir, je conçois des systèmes de gestion, des applications web avec IA et des plateformes clients, du modèle de données aux écrans.",
+        "ogTitle": "Développeur full-stack à Agadir",
+        "ogLine": "Systèmes de gestion, applications IA et plateformes clients"
+      },
+      "work": {
+        "title": "Projets web et logiciels de gestion",
+        "description": "Les projets que j'ai développés\u00a0: DentaFlow pour les cabinets dentaires, MeetAI et ses agents IA, Ophtachusm, une plateforme de réservation et Côte Royale.",
+        "ogTitle": "Quelques projets que j'ai développés",
+        "ogLine": "DentaFlow, MeetAI, Ophtachusm, Réservation de yoga, Côte Royale"
+      },
+      "about": {
+        "title": "À propos, développeur full-stack à Agadir",
+        "description": "Développeur full-stack indépendant à Agadir\u00a0: ce que je développe, le déroulement d'un projet du premier échange au devis, et les outils que j'utilise.",
+        "ogTitle": "À propos",
+        "ogLine": "Développeur full-stack indépendant à Agadir, Maroc"
+      },
+      "contact": {
+        "title": "Contact\u00a0: parlons de votre projet",
+        "description": "Parlez-moi de votre projet par le formulaire ou sur WhatsApp\u00a0: logiciel de gestion, application IA, boutique en ligne ou site avec espace d'administration.",
+        "ogTitle": "Un projet en tête\u00a0?",
+        "ogLine": "Écrivez-moi par le formulaire ou sur WhatsApp"
+      },
+      "legal": {
+        "title": "Mentions légales",
+        "description": "Mentions légales du site abdelhadev.me\u00a0: éditeur, hébergement, propriété intellectuelle, données personnelles du formulaire de contact et cookies."
+      },
+      "notFound": {
+        "title": "Page introuvable",
+        "description": "Cette adresse ne mène à aucune page du site. Vous pouvez revenir à l'accueil ou parcourir les projets d'Abdelhadi Bouchadi, développeur full-stack."
+      }
+    },
+    "cases": {
+      "dentaflow": {
+        "title": "DentaFlow, gestion de cabinet dentaire",
+        "description": "DentaFlow, logiciel de gestion de cabinet dentaire\u00a0: agenda, patients, soins et facturation, adapté à chaque cabinet avec sa base de données et son déploiement.",
+        "ogTitle": "DentaFlow",
+        "ogLine": "Gestion de cabinet dentaire"
+      }
+    }
+  },
+  "errors": {
+    "title": "Cette page n'a pas pu s'afficher",
+    "lead": "Une erreur s'est produite pendant son chargement. Vous pouvez réessayer\u00a0; si elle se reproduit, revenez à l'accueil.",
+    "retry": "Réessayer",
+    "home": "Retour à l'accueil"
   }
 }

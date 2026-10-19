@@ -10,7 +10,8 @@ import fr from "@messages/fr.json";
 import { flatten } from "@scripts/lib/i18n-rules.mjs";
 import { placeholderPdf } from "@scripts/make-placeholder-cv.mjs";
 import { EXPERIENCE, SERVICES } from "@/lib/content/about";
-import { CV, todoReport } from "@/lib/content/cv";
+import { CV, CV_ACTION, todoReport } from "@/lib/content/cv";
+import { cvBytes, formatFileSize } from "@/lib/content/cv-file";
 import { ABOUT } from "@/lib/motion";
 import { SITE } from "@/lib/site";
 
@@ -47,17 +48,36 @@ describe("site channels", () => {
 
 describe("CV gate", () => {
   it("lists every placeholder CV and nothing once both are final", () => {
-    expect(todoReport()).toEqual(["cv.fr: placeholder", "cv.en: placeholder"]);
-    const final = { href: "/cv/x.pdf", status: "final" } as const;
+    expect(todoReport()).toEqual(["cv.fr: placeholder", "cv.en: placeholder", CV_ACTION]);
+    const final = { href: "/cv/x.pdf", filename: "x.pdf", status: "final" } as const;
     expect(todoReport({ fr: final, en: final })).toEqual([]);
     expect(todoReport({ fr: final, en: { ...final, status: "placeholder" } })).toEqual([
       "cv.en: placeholder",
+      CV_ACTION,
     ]);
+    expect(CV_ACTION).toContain("public/cv/");
   });
 
-  it("links one PDF per locale under /cv/", () => {
+  it("links one PDF per locale under /cv/, saved under a clean name", () => {
     expect(CV.fr.href).toBe("/cv/abdelhadi-bouchadi-cv-fr.pdf");
     expect(CV.en.href).toBe("/cv/abdelhadi-bouchadi-cv-en.pdf");
+    for (const file of Object.values(CV)) expect(file.filename).toMatch(/^[A-Za-z-]+\.pdf$/);
+  });
+
+  it("ships a real PDF for each locale: it starts with %PDF and is under 2 MB", () => {
+    for (const locale of ["fr", "en"] as const) {
+      const file = readFileSync(join("public", CV[locale].href));
+      expect(file.subarray(0, 4).toString("latin1"), locale).toBe("%PDF");
+      expect(file.byteLength, locale).toBeLessThan(2 * 1024 * 1024);
+      expect(cvBytes(locale)).toBe(file.byteLength);
+    }
+  });
+
+  it("shows the size as people read it in each language", () => {
+    expect(formatFileSize(600, "fr")).toMatch(/^1\s?ko$/);
+    expect(formatFileSize(24_000, "en")).toBe("23 kB");
+    expect(formatFileSize(1_300_000, "fr")).toMatch(/^1,2\s?Mo$/);
+    expect(formatFileSize(1_300_000, "en")).toBe("1.2 MB");
   });
 
   it("fails the build report with REQUIRE_CONTENT=1 while a CV is a placeholder", () => {
@@ -68,6 +88,7 @@ describe("CV gate", () => {
     expect(run.status).toBe(1);
     expect(run.stderr).toContain("cv.fr: placeholder");
     expect(run.stderr).toContain("cv.en: placeholder");
+    expect(run.stderr).toContain(CV_ACTION);
   });
 });
 

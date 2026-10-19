@@ -10,8 +10,7 @@ export async function generateMetadata({
   params,
 }: PageProps<"/[locale]/legal">): Promise<Metadata> {
   const locale = await resolveLocale(params);
-  const t = await getTranslations({ locale, namespace: "pages.legal" });
-  return pageMetadata("/legal", locale, { title: t("title") });
+  return pageMetadata(locale, "legal");
 }
 
 const inlineLink = "font-semibold underline decoration-1 underline-offset-4";

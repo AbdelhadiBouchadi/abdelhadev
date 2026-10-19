@@ -42,7 +42,7 @@ const INPUT: ProjectInput[] = [
   {
     slug: "meetai",
     featured: false,
-    status: "[TODO: MeetAI status (live, ready or in-progress)]",
+    status: "test-mode",
     permission: "confirmed",
     caseStudy: false,
     stack: [
@@ -70,7 +70,7 @@ const INPUT: ProjectInput[] = [
   {
     slug: "hms",
     featured: false,
-    status: "[TODO: Ophtachusm status (live, ready or in-progress)]",
+    status: "used",
     permission: "confirmed",
     caseStudy: false,
     stack: [
@@ -95,7 +95,7 @@ const INPUT: ProjectInput[] = [
   {
     slug: "yoga-booking",
     featured: false,
-    status: "[TODO: Yoga booking status (live, ready or in-progress)]",
+    status: "working",
     // Shown without the studio's name (docs/decisions.md, P17).
     permission: "confirmed",
     caseStudy: false,
@@ -125,7 +125,7 @@ const INPUT: ProjectInput[] = [
   {
     slug: "cote-royale",
     featured: false,
-    status: "[TODO: Côte Royale status (live, ready or in-progress)]",
+    status: "concept",
     // A concept project with no client (docs/decisions.md, P17): shown by the owner's decision.
     permission: "confirmed",
     caseStudy: false,
@@ -207,6 +207,22 @@ export function screenCount(p: Project): number {
 /** Whether a sheet links to the case study for the screens it does not show. */
 export function hasMoreScreens(p: Project): boolean {
   return p.caseStudy && screenCount(p) > sheetMedia(p).length;
+}
+
+/** The statuses with a label (messages: work.status.<status>): DentaFlow's general "ready" and
+    the owner's wording for the four others (09). A status without one shows as a fact to
+    confirm (work.status.todo), like a placeholder. */
+export const LABELLED_STATUSES = ["ready", "test-mode", "used", "working", "concept"] as const;
+
+export type LabelledStatus = (typeof LABELLED_STATUSES)[number];
+
+function isLabelled(status: string): status is LabelledStatus {
+  return LABELLED_STATUSES.some((s) => s === status);
+}
+
+/** The message key of a project's status under work.status, or "todo". */
+export function statusKey(p: Project): LabelledStatus | "todo" {
+  return isLabelled(p.status) ? p.status : "todo";
 }
 
 /** The public project after `slug` on the work page, or null when it is the last one (the case

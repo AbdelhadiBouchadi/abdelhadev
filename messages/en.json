@@ -1,7 +1,4 @@
 {
-  "meta": {
-    "description": "Abdelhadi Bouchadi, full-stack developer in Agadir, Morocco. Management systems, AI web apps, client platforms and websites."
-  },
   "common": {
     "skipLink": "Skip to content",
     "localeSwitch": "Français"
@@ -23,10 +20,6 @@
     "status": "Loading, {percent} percent"
   },
   "home": {
-    "meta": {
-      "title": "Full-stack developer in Agadir",
-      "description": "Abdelhadi Bouchadi builds dependable web applications: management systems, AI apps and client platforms, from the data model to the last screen."
-    },
     "hero": {
       "name": "Abdelhadev, Abdelhadi Bouchadi, full-stack developer in Agadir",
       "role": "Full-stack developer",
@@ -133,14 +126,11 @@
     "notFound": {
       "title": "Page not found",
       "lead": "This address does not lead to a page.",
-      "back": "Back to the home page"
+      "back": "Back to the home page",
+      "work": "See the work"
     }
   },
   "about": {
-    "meta": {
-      "title": "About",
-      "description": "Independent full-stack developer in Agadir: management systems, AI apps, online shops and websites with an admin panel."
-    },
     "title": "A developer from Agadir, building software people trust with their work",
     "lead": "I'm Abdelhadi Bouchadi. I design and build web applications from the data model to the last screen, for clinics, health services and small teams.",
     "facts": {
@@ -224,7 +214,7 @@
     },
     "experience": {
       "title": "Experience",
-      "cv": "Download my CV (PDF)",
+      "cv": "Download my CV in English (PDF, {size})",
       "items": {
         "freelance": {
           "when": "Since late 2022",
@@ -286,10 +276,6 @@
     }
   },
   "contact": {
-    "meta": {
-      "title": "Contact",
-      "description": "Write to me about your project: management software, AI app, online shop or website."
-    },
     "title": "Let's talk about your project",
     "lead": "Write to me by email with the form, or continue on WhatsApp. Either way, I read every message myself.",
     "channels": "Ways to contact me",
@@ -357,10 +343,6 @@
     }
   },
   "work": {
-    "meta": {
-      "title": "Work",
-      "description": "Some projects I've built end to end: management systems, AI apps, booking platforms and showcase sites."
-    },
     "title": "Some projects I've built",
     "lead": "Management systems, AI apps, booking platforms and sites that tell a brand's story.",
     "start": "Start with DentaFlow",
@@ -374,6 +356,10 @@
     "ask": "Ask about this project",
     "status": {
       "ready": "Ready for clinics",
+      "test-mode": "Deployed, subscription in test mode",
+      "used": "Used by the department for several months",
+      "working": "Working, without online payments",
+      "concept": "Concept project",
       "todo": "Details to confirm"
     },
     "screenshot": "Screenshot to come",
@@ -512,9 +498,6 @@
       "challenge": "Run the full day of a dental clinic in one place: appointments, patients, treatments and billing.",
       "built": "A management system adapted to each clinic before launch, with its own database, its own deployment and the clinic's name on it.",
       "case": {
-        "meta": {
-          "description": "A management system for dental clinics: agenda, patients, treatments and billing. Adapted to each clinic before launch, with its own database and its own deployment."
-        },
         "lead": "A management system for dental clinics: agenda, patients, treatments and billing. Adapted to each clinic before launch, with its own database and its own deployment.",
         "footer": "DentaFlow in your clinic?",
         "screens": {
@@ -630,5 +613,57 @@
       "organisation": "Dérive Casablancaise",
       "text": "[TODO: testimonial text]"
     }
+  },
+  "seo": {
+    "jobTitle": "Full-stack developer",
+    "ogAlt": "{brand}: {title}. {line}",
+    "pages": {
+      "home": {
+        "title": "Abdelhadi Bouchadi, full-stack developer in Agadir",
+        "description": "Full-stack developer in Agadir, Morocco. I build management systems, AI-powered web apps and client platforms, from the data model to the last screen.",
+        "ogTitle": "Full-stack developer in Agadir",
+        "ogLine": "Management systems, AI web apps and client platforms"
+      },
+      "work": {
+        "title": "Work: web apps and management software",
+        "description": "Projects I have built: DentaFlow for dental clinics, MeetAI and its AI agents, Ophtachusm, a yoga booking platform and the Côte Royale concept site.",
+        "ogTitle": "Some projects I've built",
+        "ogLine": "DentaFlow, MeetAI, Ophtachusm, Yoga booking, Côte Royale"
+      },
+      "about": {
+        "title": "About: full-stack developer in Agadir",
+        "description": "Independent full-stack developer in Agadir: what I build, how a project runs from the first conversation to the quote, and the tools I use every day.",
+        "ogTitle": "About",
+        "ogLine": "Independent full-stack developer in Agadir, Morocco"
+      },
+      "contact": {
+        "title": "Contact: tell me about your project",
+        "description": "Tell me about your project through the form or on WhatsApp: management software, an AI app, an online shop or a website with an admin panel.",
+        "ogTitle": "Have a project in mind?",
+        "ogLine": "Write to me through the form or on WhatsApp"
+      },
+      "legal": {
+        "title": "Legal notice",
+        "description": "Legal notice for abdelhadev.me: publisher, hosting, intellectual property, personal data sent through the contact form, and cookies."
+      },
+      "notFound": {
+        "title": "Page not found",
+        "description": "This address does not lead to a page on this site. Go back to the home page or browse the projects of Abdelhadi Bouchadi, full-stack developer."
+      }
+    },
+    "cases": {
+      "dentaflow": {
+        "title": "DentaFlow, dental clinic management",
+        "description": "DentaFlow, management software for dental clinics: agenda, patients, treatments and billing, adapted to each clinic with its own database and deployment.",
+        "ogTitle": "DentaFlow",
+        "ogLine": "Dental clinic management"
+      }
+    }
+  },
+  "errors": {
+    "title": "This page could not be displayed",
+    "lead": "Something failed while it was loading. You can try again; if it happens again, go back to the home page.",
+    "retry": "Try again",
+    "home": "Back to the home page"
   }
 }

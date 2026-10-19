@@ -43,11 +43,15 @@ test.describe("locale redirect on /", () => {
   });
 });
 
-test("the sitemap lists every route with its alternates, and only the case studies that exist", async ({
+test("the sitemap lists every indexable route with its alternates, and only the case studies that exist", async ({
   request,
 }) => {
   const xml = await (await request.get("/sitemap.xml")).text();
-  for (const route of ROUTES) expect(xml).toContain(`https://abdelhadev.me${route.path}</loc>`);
+  for (const route of ROUTES) {
+    const loc = `https://abdelhadev.me${route.path}</loc>`;
+    if (route.indexable) expect(xml).toContain(loc);
+    else expect(xml).not.toContain(loc);
+  }
   expect(xml).toContain('hreflang="fr"');
   expect(xml).toContain('hreflang="en"');
   expect(xml).not.toContain("/lab");
@@ -56,11 +60,15 @@ test("the sitemap lists every route with its alternates, and only the case studi
   expect(xml).not.toContain("/work/hms");
 });
 
-test("robots meta is noindex while INDEXABLE is false", async ({ page, request }) => {
+test("outside production, pages are noindex and robots.txt disallows everything", async ({
+  page,
+  request,
+}) => {
   await page.goto("/fr");
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", "noindex, nofollow");
   const robots = await (await request.get("/robots.txt")).text();
-  expect(robots).toContain("Sitemap: https://abdelhadev.me/sitemap.xml");
+  expect(robots).toContain("Disallow: /");
+  expect(robots).not.toContain("Sitemap:");
 });
 
 test("the favicon, Apple icon and manifest are served and linked", async ({ page, request }) => {
@@ -89,6 +97,9 @@ test("unknown pages are a localised 404", async ({ page }) => {
   const response = await page.goto("/fr/nope");
   expect(response?.status()).toBe(404);
   await expect(page.locator("h1")).toHaveText("Page introuvable");
+  await expect(
+    page.locator("main").getByRole("link", { name: "Voir les projets" }),
+  ).toHaveAttribute("href", "/fr/projets");
   expect((await page.goto("/fr/projets/nope"))?.status()).toBe(404);
   // Projects without a case study, and the removed lab.
   expect((await page.goto("/fr/projets/hms"))?.status()).toBe(404);

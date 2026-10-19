@@ -7,7 +7,20 @@ export const todo = z.custom<Todo>(isTodo, {
   message: "Expected a placeholder",
 });
 
-export const projectStatus = z.enum(["live", "ready", "in-progress"]);
+/** A project's status. Each value has its label at messages work.status.<value>: the general
+    ones (live, ready, in-progress) and the owner's wording for one project (09: MeetAI
+    test-mode, Ophtachusm used, Yoga booking working, Côte Royale concept). */
+export const projectStatus = z.enum([
+  "live",
+  "ready",
+  "in-progress",
+  "test-mode",
+  "used",
+  "working",
+  "concept",
+]);
+
+export type ProjectStatus = z.infer<typeof projectStatus>;
 
 /** The work page shows at most this many media per project; the full set lives in the case study. */
 export const MAX_SHEET_MEDIA = 5;

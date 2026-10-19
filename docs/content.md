@@ -35,15 +35,15 @@ Every fact below comes from the owner or from a code audit (08c). Nothing is str
 
 ### Where each fact lives
 
-The sheet has six slots (name, kind, status chip, « L'enjeu » / "The challenge", « Ce que j'ai réalisé » / "What I built", stack). Since 08c the summary is in `projects.<slug>.challenge` and the points in `projects.<slug>.built`, as one paragraph; the stack is in `projects.ts`. Date, role, numbers and the architecture diagram have **no slot** on the sheet and live only here until the owner decides where they go (open question, 08c). Statuses stay `[TODO]`: the owner has not said live, ready or in progress for any project but DentaFlow.
+The sheet has six slots (name, kind, status chip, « L'enjeu » / "The challenge", « Ce que j'ai réalisé » / "What I built", stack). Since 08c the summary is in `projects.<slug>.challenge` and the points in `projects.<slug>.built`, as one paragraph; the stack is in `projects.ts`. Date, role, numbers and the architecture diagram have **no slot** on the sheet and live only here until the owner decides where they go (open question, 08c). Statuses (09, owner's wording to confirm): each has its label at `work.status.<status>` and shows on the sheet and the case study.
 
 | Slug | Name (FR / EN) | Kind (FR / EN) | Date | Role | Status |
 |---|---|---|---|---|---|
 | `dentaflow` | DentaFlow | Gestion de cabinet dentaire / Dental clinic management | Octobre 2026 / October 2026 | | `ready` |
-| `meetai` | MeetAI | Application web avec agents IA / AI web app | Juin 2025 / June 2025 | Développement et déploiement / Development and deployment | `[TODO]` |
-| `hms` | Ophtachusm | Gestion d'un service d'ophtalmologie / Ophthalmology department management | 2024 à 2025 / 2024 to 2025 (P18) | Conception et développement / Design and development | `[TODO]` |
-| `yoga-booking` | Réservation de yoga / Yoga booking | Plateforme de réservation / Booking platform | 2025 à 2026 / 2025 to 2026 | Conception et développement / Design and development | `[TODO]` |
-| `cote-royale` | Côte Royale | Site vitrine (projet de démonstration) / Showcase site (concept project) | 2025 | Conception et développement / Design and development | `[TODO]` |
+| `meetai` | MeetAI | Application web avec agents IA / AI web app | Juin 2025 / June 2025 | Développement et déploiement / Development and deployment | Déployé, abonnement en mode test / Deployed, subscription in test mode |
+| `hms` | Ophtachusm | Gestion d'un service d'ophtalmologie / Ophthalmology department management | 2024 à 2025 / 2024 to 2025 (P18) | Conception et développement / Design and development | Utilisé par le service pendant plusieurs mois / Used by the department for several months |
+| `yoga-booking` | Réservation de yoga / Yoga booking | Plateforme de réservation / Booking platform | 2025 à 2026 / 2025 to 2026 | Conception et développement / Design and development | Fonctionnel, sans paiement en ligne / Working, without online payments |
+| `cote-royale` | Côte Royale | Site vitrine (projet de démonstration) / Showcase site (concept project) | 2025 | Conception et développement / Design and development | Projet de démonstration / Concept project |
 
 ### DentaFlow
 

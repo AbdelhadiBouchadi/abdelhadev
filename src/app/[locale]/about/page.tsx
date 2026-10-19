@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
 import { AboutHero } from "@/components/sections/about/AboutHero";
 import { Chapters } from "@/components/sections/about/Chapters";
 import { Experience } from "@/components/sections/about/Experience";
@@ -14,8 +13,7 @@ export async function generateMetadata({
   params,
 }: PageProps<"/[locale]/about">): Promise<Metadata> {
   const locale = await resolveLocale(params);
-  const t = await getTranslations({ locale, namespace: "about.meta" });
-  return pageMetadata("/about", locale, { title: t("title"), description: t("description") });
+  return pageMetadata(locale, "about");
 }
 
 // The about page (prototype about.html, plus the services and process sections of 06): server

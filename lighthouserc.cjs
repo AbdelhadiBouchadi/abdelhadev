@@ -2,7 +2,7 @@
 // baseline in docs/baseline.md. Only these assertions hold today:
 // - accessibility 100
 // - CLS at most 0.02
-// - the individual SEO audits except is-crawlable (fails by design while INDEXABLE is false).
+// - the individual SEO audits except is-crawlable (fails by design outside production, where every page is noindex).
 const PORT = 3000;
 const ROUTES = ["/fr", "/en", "/fr/projets", "/fr/mentions-legales"];
 

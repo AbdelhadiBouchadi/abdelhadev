@@ -41,9 +41,6 @@ export const SITE = {
   },
 } as const;
 
-/** Search engines may index the site. Flipped by the owner at launch (prompt 10). */
-export const INDEXABLE: boolean = false;
-
 /** Lists every placeholder in SITE as `key: value`, and the legal review while it is pending. */
 export function todoReport(site: Readonly<Record<string, unknown>> = SITE): string[] {
   return Object.entries(site)

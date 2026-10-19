@@ -4,8 +4,8 @@
    when a Client Component translates with a namespace missing here. */
 import type { AbstractIntlMessages } from "next-intl";
 
-/** Loader: loader. LocaleSwitch: common. */
-export const CLIENT_NAMESPACES = ["loader", "common"] as const;
+/** Loader: loader. LocaleSwitch: common. The error page ([locale]/error.tsx): errors. */
+export const CLIENT_NAMESPACES = ["loader", "common", "errors"] as const;
 
 export function pickClientMessages(messages: AbstractIntlMessages): AbstractIntlMessages {
   return Object.fromEntries(
