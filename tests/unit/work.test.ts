@@ -1,5 +1,5 @@
 // The work page's data and copy (prompts/04-work.md, "Tests"): publicProjects() and the schema
-// rules, and the plural in the lead. The derived screen count, the case study list and the
+// rules, and the work page copy (08c). The derived screen count, the case study list and the
 // sitemap moved to tests/unit/case.test.ts in 05.
 import { createTranslator } from "next-intl";
 import { describe, expect, it } from "vitest";
@@ -25,12 +25,10 @@ describe("publicProjects", () => {
     expect(publicProjects(fixture).map((p) => p.slug)).toEqual(["dentaflow", "hms"]);
   });
 
-  it("shows the projects in the work order (08b), DentaFlow first and the only case study", () => {
+  it("shows the five projects in the work order (08c), DentaFlow first and the only case study", () => {
     const list = publicProjects();
-    expect(list.map((p) => p.slug)).toEqual(["dentaflow", "meetai", "hms", "cote-royale"]);
-    // yoga-booking is in the order but not a project yet (08c): it is skipped, nothing breaks.
+    expect(list.map((p) => p.slug)).toEqual([...WORK_ORDER]);
     expect(WORK_ORDER).toEqual(["dentaflow", "meetai", "hms", "yoga-booking", "cote-royale"]);
-    expect(getProject("yoga-booking")).toBeUndefined();
     expect(list.filter((p) => p.caseStudy).map((p) => p.slug)).toEqual(["dentaflow"]);
   });
 
@@ -42,14 +40,18 @@ describe("publicProjects", () => {
       dentaflow: ["7 warm", "5 plain", "4 plain", "4 blue", "4 plain"],
       hms: ["8 dark", "4 warm", "6 plain", "6 blue"],
       meetai: ["5 blue", "7 plain", "12 warm"],
+      "yoga-booking": ["7 warm", "5 plain", "6 blue", "6 plain"],
       "cote-royale": ["12 warm", "6 plain", "6 blue"],
     });
     for (const p of PROJECTS) for (const m of p.media) expect(m.kind).toBe("image");
   });
 
-  it("starts Côte Royale's stack with GSAP and TypeScript, the rest a placeholder", () => {
-    const cote = PROJECTS.find((p) => p.slug === "cote-royale");
-    expect(cote?.stack).toEqual(["GSAP", "TypeScript", expect.stringMatching(/^\[TODO: .+\]$/)]);
+  it("has a real stack for every project (08c), no placeholder left", () => {
+    for (const p of PROJECTS) {
+      expect(Array.isArray(p.stack), p.slug).toBe(true);
+      for (const name of p.stack) expect(name, p.slug).not.toMatch(/\[TODO/);
+    }
+    expect(getProject("cote-royale")?.stack).toContain("GSAP (ScrollTrigger)");
   });
 });
 
@@ -87,15 +89,18 @@ describe("project schema", () => {
   });
 });
 
-describe("the work lead", () => {
-  for (const [locale, messages, one, five] of [
-    ["fr", fr, "1 projet,", "5 projets,"],
-    ["en", en, "1 project,", "5 projects,"],
+describe("the work page copy (08c)", () => {
+  for (const [locale, messages, title, shop] of [
+    ["fr", fr, "Quelques projets que j'ai développés", /boutique/i],
+    ["en", en, "Some projects I've built", /\bshops?\b/i],
   ] as const) {
-    it(`${locale}: counts the projects with a plural`, () => {
+    it(`${locale}: the heading, a lead without a count or a shop, the GitHub link`, () => {
       const t = createTranslator({ locale, messages, namespace: "work" });
-      expect(t("lead", { count: 1 })).toMatch(new RegExp(`^${one}`));
-      expect(t("lead", { count: 5 })).toMatch(new RegExp(`^${five}`));
+      expect(t("title")).toBe(title);
+      expect(t("lead")).not.toMatch(/\d/);
+      expect(t("lead")).not.toMatch(shop);
+      expect(t("meta.description")).not.toMatch(shop);
+      expect(t("github")).toMatch(/GitHub/);
     });
   }
 });

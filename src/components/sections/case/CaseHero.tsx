@@ -3,14 +3,18 @@
    then the lead and the facts fade up one STAGGER.caseLater apart (Reveal), and the first screen
    opens from inset(30% 8% 0 8%) while it settles from 1.2 (MediaReveal intro). Everything is
    painted under the loader overlay and complete without JavaScript and under reduced motion.
-   Facts: role and delivery from messages, status as on the work page, stack from the data. */
-import { getTranslations } from "next-intl/server";
+   Facts: role and delivery from messages, status as on the work page, stack from the data.
+   The screen is the project's case hero (role hero, place case, lib/content/media.map.json, 08c);
+   without one it keeps the placeholder skeleton. */
+import { getMessages, getTranslations } from "next-intl/server";
 import type { CaseStudyCopy } from "@/components/sections/case/case-copy";
 import { ArrowLink } from "@/components/ui/ArrowLink";
 import { Screen } from "@/components/ui/Screen";
 import type { CaseStudy, Project } from "@/lib/content/schema";
+import { heroMedia, mediaCopy } from "@/lib/media";
 import { CASE, STAGGER } from "@/lib/motion";
 import { MediaReveal } from "@/primitives/MediaReveal";
+import { ProjectMedia } from "@/primitives/ProjectMedia";
 import { Reveal } from "@/primitives/Reveal";
 import { SplitReveal } from "@/primitives/SplitReveal";
 import { ToneSection } from "@/primitives/ToneSection";
@@ -25,6 +29,9 @@ export interface CaseHeroProps {
 export async function CaseHero({ project, study, copy }: CaseHeroProps) {
   const t = await getTranslations("case");
   const work = await getTranslations("work");
+  const messages = await getMessages();
+  const shot = heroMedia(project.slug, "case")[0];
+  const shotCopy = shot ? mediaCopy(messages, shot.key) : null;
   // Only "ready" has a label so far; anything else shows as a fact to confirm (as on the sheet).
   const status = project.status === "ready" ? work("status.ready") : work("status.todo");
   const stack = typeof project.stack === "string" ? project.stack : project.stack.join(", ");
@@ -74,14 +81,32 @@ export async function CaseHero({ project, study, copy }: CaseHeroProps) {
           variant="intro"
           className="case-shot"
           data-frame={study.hero.tone}
-          data-cursor={work("screenshot")}
+          data-cursor={shot ? undefined : work("screenshot")}
         >
-          <Screen
-            layout={study.hero.skeleton}
-            label={work("screenshot")}
-            caption={copy.case.screens.hero}
-            captionHidden
-          />
+          {shot && shotCopy ? (
+            <Screen
+              // A loop's description is its hidden caption; an image's is its alt.
+              caption={shot.asset.kind === "video" ? shotCopy.alt : undefined}
+              captionHidden
+              media={
+                <ProjectMedia
+                  item={shot}
+                  alt={shotCopy.alt}
+                  label={shotCopy.label}
+                  sizes="(min-width: 1440px) 1360px, 100vw"
+                  priority
+                  controls={{ play: work("video.play"), pause: work("video.pause") }}
+                />
+              }
+            />
+          ) : (
+            <Screen
+              layout={study.hero.skeleton}
+              label={work("screenshot")}
+              caption={copy.case.screens.hero}
+              captionHidden
+            />
+          )}
         </MediaReveal>
       </div>
       <div className="case-hero-tail" />

@@ -10,7 +10,7 @@
           "bytes": 372032,
           "src": "/work/cote-royale/01-hero.mp4"
         },
-        "pipeline": "61f5d21594f4",
+        "pipeline": "47a8130249c5",
         "poster": {
           "avif": {
             "bytes": 28731,
@@ -37,7 +37,7 @@
           "bytes": 1234710,
           "src": "/work/cote-royale/02-scroll-text.mp4"
         },
-        "pipeline": "61f5d21594f4",
+        "pipeline": "47a8130249c5",
         "poster": {
           "avif": {
             "bytes": 17700,
@@ -64,7 +64,7 @@
           "bytes": 688682,
           "src": "/work/cote-royale/03-transition.mp4"
         },
-        "pipeline": "61f5d21594f4",
+        "pipeline": "47a8130249c5",
         "poster": {
           "avif": {
             "bytes": 16000,
@@ -100,13 +100,18 @@
             "bytes": 64768,
             "src": "/work/dentaflow/01-dashboard-1440.avif",
             "width": 1440
+          },
+          {
+            "bytes": 94818,
+            "src": "/work/dentaflow/01-dashboard-1900.avif",
+            "width": 1900
           }
         ],
         "blur": "data:image/webp;base64,UklGRjwAAABXRUJQVlA4IDAAAACwAQCdASoQAAwAA4BaJQBdgCHhSxYAAP72aZiL5BEDH7poGDgrqtZQ2sGhar8gcAA=",
         "hash": "20e9836c353d8990",
         "height": 1435,
         "kind": "image",
-        "pipeline": "61f5d21594f4",
+        "pipeline": "47a8130249c5",
         "webp": [
           {
             "bytes": 17162,
@@ -122,6 +127,11 @@
             "bytes": 62878,
             "src": "/work/dentaflow/01-dashboard-1440.webp",
             "width": 1440
+          },
+          {
+            "bytes": 94336,
+            "src": "/work/dentaflow/01-dashboard-1900.webp",
+            "width": 1900
           }
         ],
         "width": 1900
@@ -142,13 +152,18 @@
             "bytes": 48711,
             "src": "/work/dentaflow/02-calendar-1440.avif",
             "width": 1440
+          },
+          {
+            "bytes": 62245,
+            "src": "/work/dentaflow/02-calendar-1900.avif",
+            "width": 1900
           }
         ],
         "blur": "data:image/webp;base64,UklGRiwAAABXRUJQVlA4ICAAAAAwAQCdASoQAAwAA4BaJaQAA3AA/vQEd66AG421WPzAAA==",
         "hash": "c34d4efa493ccda1",
         "height": 1425,
         "kind": "image",
-        "pipeline": "61f5d21594f4",
+        "pipeline": "47a8130249c5",
         "webp": [
           {
             "bytes": 13728,
@@ -164,6 +179,11 @@
             "bytes": 48060,
             "src": "/work/dentaflow/02-calendar-1440.webp",
             "width": 1440
+          },
+          {
+            "bytes": 69064,
+            "src": "/work/dentaflow/02-calendar-1900.webp",
+            "width": 1900
           }
         ],
         "width": 1900
@@ -184,13 +204,18 @@
             "bytes": 68477,
             "src": "/work/dentaflow/03-patients-1440.avif",
             "width": 1440
+          },
+          {
+            "bytes": 92547,
+            "src": "/work/dentaflow/03-patients-1900.avif",
+            "width": 1900
           }
         ],
         "blur": "data:image/webp;base64,UklGRioAAABXRUJQVlA4IB4AAAAwAQCdASoQAAsAA4BaJaQAA3AA/vQJO16AFxoAAAA=",
         "hash": "aa2791f24873d21c",
         "height": 1320,
         "kind": "image",
-        "pipeline": "61f5d21594f4",
+        "pipeline": "47a8130249c5",
         "webp": [
           {
             "bytes": 15310,
@@ -206,6 +231,11 @@
             "bytes": 57148,
             "src": "/work/dentaflow/03-patients-1440.webp",
             "width": 1440
+          },
+          {
+            "bytes": 84516,
+            "src": "/work/dentaflow/03-patients-1900.webp",
+            "width": 1900
           }
         ],
         "width": 1900
@@ -226,13 +256,18 @@
             "bytes": 73522,
             "src": "/work/dentaflow/04-odontogram-1440.avif",
             "width": 1440
+          },
+          {
+            "bytes": 97874,
+            "src": "/work/dentaflow/04-odontogram-1900.avif",
+            "width": 1900
           }
         ],
         "blur": "data:image/webp;base64,UklGRiwAAABXRUJQVlA4ICAAAAAwAQCdASoQABAAA4BaJaQAA3AA/vRB7/O+S6YZaAAAAA==",
         "hash": "1141014d7741e752",
         "height": 1900,
         "kind": "image",
-        "pipeline": "61f5d21594f4",
+        "pipeline": "47a8130249c5",
         "webp": [
           {
             "bytes": 22438,
@@ -248,6 +283,11 @@
             "bytes": 77346,
             "src": "/work/dentaflow/04-odontogram-1440.webp",
             "width": 1440
+          },
+          {
+            "bytes": 113152,
+            "src": "/work/dentaflow/04-odontogram-1900.webp",
+            "width": 1900
           }
         ],
         "width": 1900
@@ -273,13 +313,18 @@
             "bytes": 116728,
             "src": "/work/dentaflow/05-statistics-1920.avif",
             "width": 1920
+          },
+          {
+            "bytes": 167357,
+            "src": "/work/dentaflow/05-statistics-2400.avif",
+            "width": 2400
           }
         ],
         "blur": "data:image/webp;base64,UklGRjgAAABXRUJQVlA4ICwAAABwAQCdASoQABAAA4BaJaWR5AGIAAD+9DqJ2Q8ETNeaXNU1CLCAIIci/RJAAA==",
         "hash": "88d13d456d769e69",
         "height": 2800,
         "kind": "image",
-        "pipeline": "61f5d21594f4",
+        "pipeline": "47a8130249c5",
         "webp": [
           {
             "bytes": 24890,
@@ -300,6 +345,11 @@
             "bytes": 126204,
             "src": "/work/dentaflow/05-statistics-1920.webp",
             "width": 1920
+          },
+          {
+            "bytes": 168904,
+            "src": "/work/dentaflow/05-statistics-2400.webp",
+            "width": 2400
           }
         ],
         "width": 2800
@@ -320,13 +370,18 @@
             "bytes": 39601,
             "src": "/work/dentaflow/06-patient-file-1440.avif",
             "width": 1440
+          },
+          {
+            "bytes": 52518,
+            "src": "/work/dentaflow/06-patient-file-1900.avif",
+            "width": 1900
           }
         ],
         "blur": "data:image/webp;base64,UklGRj4AAABXRUJQVlA4IDIAAACwAQCdASoQAAoAA4BaJaQAAudQUqOAAP737cpA4j8M4wfAeGPnTVK3jOtWKY8buHQAAA==",
         "hash": "1265be5425f8f2bb",
         "height": 1225,
         "kind": "image",
-        "pipeline": "61f5d21594f4",
+        "pipeline": "47a8130249c5",
         "webp": [
           {
             "bytes": 13008,
@@ -342,6 +397,11 @@
             "bytes": 42582,
             "src": "/work/dentaflow/06-patient-file-1440.webp",
             "width": 1440
+          },
+          {
+            "bytes": 62578,
+            "src": "/work/dentaflow/06-patient-file-1900.webp",
+            "width": 1900
           }
         ],
         "width": 1900
@@ -362,13 +422,18 @@
             "bytes": 67141,
             "src": "/work/dentaflow/08-documents-1440.avif",
             "width": 1440
+          },
+          {
+            "bytes": 90929,
+            "src": "/work/dentaflow/08-documents-1900.avif",
+            "width": 1900
           }
         ],
         "blur": "data:image/webp;base64,UklGRiYAAABXRUJQVlA4IBoAAAAwAQCdASoQAAwAA4BaJaQAA3AA/vQ9O6AAAA==",
         "hash": "e1cb88fc09ebbf03",
         "height": 1435,
         "kind": "image",
-        "pipeline": "61f5d21594f4",
+        "pipeline": "47a8130249c5",
         "webp": [
           {
             "bytes": 15466,
@@ -384,6 +449,11 @@
             "bytes": 56352,
             "src": "/work/dentaflow/08-documents-1440.webp",
             "width": 1440
+          },
+          {
+            "bytes": 84620,
+            "src": "/work/dentaflow/08-documents-1900.webp",
+            "width": 1900
           }
         ],
         "width": 1900
@@ -404,13 +474,18 @@
             "bytes": 88943,
             "src": "/work/dentaflow/09-settings-acts-1440.avif",
             "width": 1440
+          },
+          {
+            "bytes": 120252,
+            "src": "/work/dentaflow/09-settings-acts-1900.avif",
+            "width": 1900
           }
         ],
         "blur": "data:image/webp;base64,UklGRi4AAABXRUJQVlA4ICIAAAAwAQCdASoQAA8AA4BaJaQAA3AA/vQ9vxW+0BnIXvapqAAA",
         "hash": "be358b05c24c6597",
         "height": 1779,
         "kind": "image",
-        "pipeline": "61f5d21594f4",
+        "pipeline": "47a8130249c5",
         "webp": [
           {
             "bytes": 20246,
@@ -426,6 +501,11 @@
             "bytes": 78112,
             "src": "/work/dentaflow/09-settings-acts-1440.webp",
             "width": 1440
+          },
+          {
+            "bytes": 116030,
+            "src": "/work/dentaflow/09-settings-acts-1900.webp",
+            "width": 1900
           }
         ],
         "width": 1900
@@ -459,7 +539,7 @@
         "hash": "f37b73ff1fb2b21c",
         "height": 911,
         "kind": "image",
-        "pipeline": "61f5d21594f4",
+        "pipeline": "47a8130249c5",
         "webp": [
           {
             "bytes": 9222,
@@ -511,7 +591,7 @@
         "hash": "af28fd41b3a6706e",
         "height": 911,
         "kind": "image",
-        "pipeline": "61f5d21594f4",
+        "pipeline": "47a8130249c5",
         "webp": [
           {
             "bytes": 6720,
@@ -563,7 +643,7 @@
         "hash": "3eb5ea9c6dae3163",
         "height": 911,
         "kind": "image",
-        "pipeline": "61f5d21594f4",
+        "pipeline": "47a8130249c5",
         "webp": [
           {
             "bytes": 2392,
@@ -615,7 +695,7 @@
         "hash": "a9e93e502ba4ef25",
         "height": 911,
         "kind": "image",
-        "pipeline": "61f5d21594f4",
+        "pipeline": "47a8130249c5",
         "webp": [
           {
             "bytes": 4364,
@@ -658,13 +738,18 @@
             "bytes": 77180,
             "src": "/work/meetai/01-meeting-summary-1440.avif",
             "width": 1440
+          },
+          {
+            "bytes": 109597,
+            "src": "/work/meetai/01-meeting-summary-1900.avif",
+            "width": 1900
           }
         ],
         "blur": "data:image/webp;base64,UklGRjgAAABXRUJQVlA4ICwAAACQAQCdASoQAAwAA4BaJZwAAudJcMAA/q38Dr5yI6ugZaOR6Dx0D+U3cIAAAA==",
         "hash": "2a117f690593cbf6",
         "height": 1419,
         "kind": "image",
-        "pipeline": "61f5d21594f4",
+        "pipeline": "47a8130249c5",
         "webp": [
           {
             "bytes": 17618,
@@ -680,6 +765,11 @@
             "bytes": 70896,
             "src": "/work/meetai/01-meeting-summary-1440.webp",
             "width": 1440
+          },
+          {
+            "bytes": 109808,
+            "src": "/work/meetai/01-meeting-summary-1900.webp",
+            "width": 1900
           }
         ],
         "width": 1900
@@ -711,7 +801,7 @@
         "hash": "60896949a12d118c",
         "height": 911,
         "kind": "image",
-        "pipeline": "61f5d21594f4",
+        "pipeline": "47a8130249c5",
         "webp": [
           {
             "bytes": 3208,
@@ -763,7 +853,7 @@
         "hash": "cf04ece05d07e9bb",
         "height": 911,
         "kind": "image",
-        "pipeline": "61f5d21594f4",
+        "pipeline": "47a8130249c5",
         "webp": [
           {
             "bytes": 3640,
@@ -806,13 +896,18 @@
             "bytes": 45997,
             "src": "/work/yoga-booking/01-homepage-1440.avif",
             "width": 1440
+          },
+          {
+            "bytes": 60130,
+            "src": "/work/yoga-booking/01-homepage-1900.avif",
+            "width": 1900
           }
         ],
         "blur": "data:image/webp;base64,UklGRkAAAABXRUJQVlA4IDQAAADwAQCdASoQABAAA4BaJZQAAsaVT2eTkkAA/vRUWBTL8n67Xs1qRSIFT0/iiBuV/hirpZgA",
         "hash": "066e5968283a1496",
         "height": 1900,
         "kind": "image",
-        "pipeline": "61f5d21594f4",
+        "pipeline": "47a8130249c5",
         "webp": [
           {
             "bytes": 19262,
@@ -828,6 +923,11 @@
             "bytes": 57300,
             "src": "/work/yoga-booking/01-homepage-1440.webp",
             "width": 1440
+          },
+          {
+            "bytes": 80750,
+            "src": "/work/yoga-booking/01-homepage-1900.webp",
+            "width": 1900
           }
         ],
         "width": 1900
@@ -853,13 +953,18 @@
             "bytes": 90062,
             "src": "/work/yoga-booking/04-dashboard-1920.avif",
             "width": 1920
+          },
+          {
+            "bytes": 124666,
+            "src": "/work/yoga-booking/04-dashboard-2400.avif",
+            "width": 2400
           }
         ],
         "blur": "data:image/webp;base64,UklGRjQAAABXRUJQVlA4ICgAAABwAQCdASoQABAAA4BaJZwCw7F1AAD+8WXZun8yM5bUoxa6T8TmdAAA",
         "hash": "d4538a40b7df76df",
         "height": 2800,
         "kind": "image",
-        "pipeline": "61f5d21594f4",
+        "pipeline": "47a8130249c5",
         "webp": [
           {
             "bytes": 15118,
@@ -880,6 +985,11 @@
             "bytes": 84836,
             "src": "/work/yoga-booking/04-dashboard-1920.webp",
             "width": 1920
+          },
+          {
+            "bytes": 115390,
+            "src": "/work/yoga-booking/04-dashboard-2400.webp",
+            "width": 2400
           }
         ],
         "width": 2800
@@ -911,7 +1021,7 @@
         "hash": "8a066e8440e0e242",
         "height": 911,
         "kind": "image",
-        "pipeline": "61f5d21594f4",
+        "pipeline": "47a8130249c5",
         "webp": [
           {
             "bytes": 7012,
@@ -952,13 +1062,18 @@
             "bytes": 33134,
             "src": "/work/yoga-booking/06-schedule-1440.avif",
             "width": 1440
+          },
+          {
+            "bytes": 42136,
+            "src": "/work/yoga-booking/06-schedule-1900.avif",
+            "width": 1900
           }
         ],
         "blur": "data:image/webp;base64,UklGRi4AAABXRUJQVlA4ICIAAAAwAQCdASoQAAwAA4BaJZwAA3AA/vGsCJIXS6skWGQ6BAAA",
         "hash": "feb38c4b04bcc016",
         "height": 1443,
         "kind": "image",
-        "pipeline": "61f5d21594f4",
+        "pipeline": "47a8130249c5",
         "webp": [
           {
             "bytes": 9394,
@@ -974,6 +1089,11 @@
             "bytes": 32816,
             "src": "/work/yoga-booking/06-schedule-1440.webp",
             "width": 1440
+          },
+          {
+            "bytes": 47818,
+            "src": "/work/yoga-booking/06-schedule-1900.webp",
+            "width": 1900
           }
         ],
         "width": 1900

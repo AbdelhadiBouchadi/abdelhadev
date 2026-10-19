@@ -4,7 +4,16 @@ export function kindOf(
   fileName: string,
   extensions: { images: readonly string[]; videos: readonly string[] },
 ): "image" | "video" | null;
-export function imageWidths(sourceWidth: number, steps: readonly number[]): number[];
+export function imageWidths(
+  sourceWidth: number,
+  steps: readonly number[],
+  retina?: { above: number; max: number },
+): number[];
+export function wantsRetina(
+  entries: readonly { file: string; role: string }[],
+  file: string,
+  roles: "all" | readonly string[],
+): boolean;
 export function croppedHeight(width: number, height: number, maxRatio: number): number;
 export function qualitySteps(range: { start: number; min: number; step: number }): number[];
 export function budgetWidth(widths: readonly number[], targetWidth: number): number;

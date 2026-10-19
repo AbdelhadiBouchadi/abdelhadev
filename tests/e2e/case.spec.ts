@@ -12,7 +12,7 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { expect, test, type Locator, type Page } from "@playwright/test";
 import { getCaseStudy } from "@/lib/content/case-studies";
 import { nextProject } from "@/lib/content/projects";
-import { mediaCopy, tourMedia } from "@/lib/media";
+import { heroMedia, mediaCopy, tourMedia } from "@/lib/media";
 import { beyond, bring, collectErrors, liveScrollTriggers } from "./page-helpers";
 import { LEGAL_NAME } from "./routes";
 import { shellIdle, transitionsSettled, visited } from "./shell-helpers";
@@ -38,6 +38,8 @@ if (!study) throw new Error("the DentaFlow case study is missing");
 const KEYS = study.tour.map((s) => s.key);
 /** The real tour screens by step, from 1 (lib/content/media.map.json through the manifest). */
 const TOUR = tourMedia("dentaflow");
+/** The case hero screen (role hero, place case, 08c). */
+const HERO = heroMedia("dentaflow", "case")[0];
 const NEXT = nextProject("dentaflow")?.slug ?? "";
 /** CASE.tour.dimOpacity (src/lib/motion.ts). */
 const DIM = 0.88;
@@ -261,7 +263,17 @@ test.describe("with motion", () => {
     const others: string[] = [];
     const run = async (at: string) => {
       await transitionsSettled(page);
-      const { violations } = await new AxeBuilder({ page }).withTags(tags).analyze();
+      // Decision D10: unlit words wait at 0.14 by design and are scrolled to full opacity before
+      // they are read, so only they are left out of the contrast check (as in a11y.spec).
+      const rules = await new AxeBuilder({ page })
+        .withTags(tags)
+        .disableRules(["color-contrast"])
+        .analyze();
+      const contrastRun = await new AxeBuilder({ page })
+        .withRules(["color-contrast"])
+        .exclude("[data-words-light]")
+        .analyze();
+      const violations = [...rules.violations, ...contrastRun.violations];
       for (const v of violations) {
         if (v.impact !== "serious" && v.impact !== "critical") continue;
         for (const node of v.nodes) {
@@ -386,12 +398,32 @@ test.describe("reduced motion", () => {
   });
 });
 
-// ---------- the real tour screens (08b) ----------
+// ---------- the real tour screens (08b) and the hero screen (08c) ----------
 
 test.describe("tour screens without JavaScript", () => {
   test.use({ javaScriptEnabled: false });
 
   for (const locale of LOCALES) {
+    test(`${locale}: the hero shows its real screen in the server HTML, eager`, async ({
+      page,
+      request,
+    }) => {
+      const raw = await (await request.get(PATHS[locale])).text();
+      await page.goto(PATHS[locale]);
+      const shot = page.locator(".case-shot");
+      if (!HERO || HERO.asset.kind !== "image") {
+        await expect(shot.locator('[data-placeholder="screen"]')).toHaveCount(1);
+        return;
+      }
+      await expect(shot.locator('[data-placeholder="screen"]')).toHaveCount(0);
+      const img = shot.locator("img");
+      await expect(img).toHaveAttribute("alt", mediaCopy(MESSAGES[locale], HERO.key).alt);
+      await expect(img).toHaveAttribute("width", String(HERO.asset.width));
+      await expect(img).toHaveAttribute("height", String(HERO.asset.height));
+      await expect(img).toHaveAttribute("loading", "eager");
+      expect(raw).toContain(HERO.asset.avif[0]?.src ?? "");
+    });
+
     test(`${locale}: each mapped step shows its screen in the server HTML, the others a skeleton`, async ({
       page,
       request,

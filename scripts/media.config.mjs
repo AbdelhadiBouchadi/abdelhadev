@@ -17,6 +17,9 @@ export const VIDEO_EXTENSIONS = [".mp4", ".mov", ".webm"];
 export const IMAGE = {
   /** Output widths, kept only up to the source width (never upscaled). */
   widths: [640, 960, 1440, 1920],
+  /** A source wider than `above` also gets a variant at its own width, capped at `max`, for
+      dense screens (08c). `roles`: "all", or the map roles that get it. */
+  retina: { above: 1440, max: 2400, roles: "all" },
   /** A capture taller than its width times this is cut from the top: every frame on the site is
       landscape and shows the top of the screen (object-position: top), so the rest of a
       10 000 px page would only cost bytes, and could publish what nobody reviewed on screen. */

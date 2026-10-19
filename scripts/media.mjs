@@ -6,7 +6,8 @@
 // - Which files are published comes from src/lib/content/media.map.json (role work or tour). A
 //   spare entry, or a file the map does not name, is reported and never written to public/.
 // - Images: metadata stripped, never upscaled, a tall capture cut from the top, AVIF and WebP at
-//   640/960/1440/1920 px, a 16 px blur placeholder, intrinsic size.
+//   640/960/1440/1920 px plus the source width (capped at 2400 px) when it is wider than 1440 px,
+//   a 16 px blur placeholder, intrinsic size.
 // - Videos: no audio, at most 1280 px and 30 fps, H.264 MP4 (yuv420p, faststart) and VP9 WebM,
 //   each under 1.5 MB (the CRF rises until it fits), a poster frame at about 1 s.
 // - Cache: a file is redone only when its content or the settings change (hashes in the
@@ -41,6 +42,7 @@ import {
   qualitySteps,
   slugifyStem,
   stableStringify,
+  wantsRetina,
 } from "./lib/media-rules.mjs";
 import {
   FOLDERS,
@@ -111,12 +113,12 @@ const probe = async (file) => (await ffmpeg(["-i", file], { allowFail: true })).
 
 // ---------- images ----------
 
-async function processImage(source, slug, stem, outDir) {
+async function processImage(source, slug, stem, outDir, retina) {
   const meta = await sharp(source).metadata();
   const width = meta.width;
   const height = croppedHeight(width, meta.height, IMAGE.maxHeightRatio);
   const base = () => sharp(source).extract({ left: 0, top: 0, width, height });
-  const widths = imageWidths(width, IMAGE.widths);
+  const widths = imageWidths(width, IMAGE.widths, retina ? IMAGE.retina : undefined);
 
   // The AVIF quality: the highest that keeps the budget width under its byte target.
   const probeWidth = budgetWidth(widths, IMAGE.avif.targetWidth);
@@ -355,7 +357,13 @@ async function processProject(slug, folder, entries, previous, report) {
       const kind = kindOf(file, EXT);
       const done =
         kind === "image"
-          ? await processImage(source, slug, stem, outDir)
+          ? await processImage(
+              source,
+              slug,
+              stem,
+              outDir,
+              wantsRetina(entries, file, IMAGE.retina.roles),
+            )
           : await processVideo(source, slug, stem, outDir, label);
       entry = { ...done.entry, hash, pipeline: PIPELINE };
       report.warnings.push(...(done.warnings ?? []));

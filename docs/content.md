@@ -29,26 +29,66 @@ First person singular. Plain, specific, calm. Say what was built, for whom, with
 
 ## Projects
 
-| Slug | Name | Kind | Status | What is known |
-|---|---|---|---|---|
-| `dentaflow` | DentaFlow | Dental clinic management | Ready for clinics | Agenda, patients, treatments, billing (owner confirms the list); adapted per clinic with its own name, database and deployment; Next.js, TypeScript, tRPC, Drizzle, PostgreSQL (Neon), Better Auth. WhatsApp reminders are not live. |
-| `hms` | Ophtachusm | Hospital management system | `[TODO]` | A management system for a hospital ophthalmology service: patient data, appointments, eye images and medical records; only the medical staff have access. Built for friends who are residents there. Date: January 2025 (08a). The display name replaced "HMS" in 08a; the slug `hms` and the `#hms` anchor stay. Never name the hospital or the resident, never claim it is in use. Status and stack `[TODO]`. |
-| `meetai` | MeetAI | AI web app | `[TODO]` | Everything else `[TODO]` |
-| `cote-royale` | Côte Royale | Website | `[TODO]` | Client permission to name `[TODO]` |
+Work page order (`WORK_ORDER` in `src/lib/content/projects.ts`): DentaFlow, MeetAI, Ophtachusm, Yoga booking, Côte Royale. All five are `permission: "confirmed"` (decisions P7, P17). The e-commerce project left the site in 08b; building online shops stays a service (about, services, contact topics). Never mention the internship project or its client.
 
-Work page order (08b): DentaFlow, MeetAI, Ophtachusm, the yoga booking platform (from 08c), Côte Royale (`WORK_ORDER` in `src/lib/content/projects.ts`). The e-commerce project left the site in 08b; building online shops stays a service (about, services, contact topics).
+Every fact below comes from the owner or from a code audit (08c). Nothing is strengthened: no "in production", "secure", "fast", users, clients or results.
 
-Never mention the internship project or its client.
+### Where each fact lives
 
-DentaFlow's date is October 2026 (08a). Project dates (month and year) may be published once the owner supplies them; years of experience may not (decision P6).
+The sheet has six slots (name, kind, status chip, « L'enjeu » / "The challenge", « Ce que j'ai réalisé » / "What I built", stack). Since 08c the summary is in `projects.<slug>.challenge` and the points in `projects.<slug>.built`, as one paragraph; the stack is in `projects.ts`. Date, role, numbers and the architecture diagram have **no slot** on the sheet and live only here until the owner decides where they go (open question, 08c). Statuses stay `[TODO]`: the owner has not said live, ready or in progress for any project but DentaFlow.
 
-### Pending projects (not on the work page yet)
+| Slug | Name (FR / EN) | Kind (FR / EN) | Date | Role | Status |
+|---|---|---|---|---|---|
+| `dentaflow` | DentaFlow | Gestion de cabinet dentaire / Dental clinic management | Octobre 2026 / October 2026 | | `ready` |
+| `meetai` | MeetAI | Application web avec agents IA / AI web app | Juin 2025 / June 2025 | Développement et déploiement / Development and deployment | `[TODO]` |
+| `hms` | Ophtachusm | Gestion d'un service d'ophtalmologie / Ophthalmology department management | 2024 à 2025 / 2024 to 2025 (P18) | Conception et développement / Design and development | `[TODO]` |
+| `yoga-booking` | Réservation de yoga / Yoga booking | Plateforme de réservation / Booking platform | 2025 à 2026 / 2025 to 2026 | Conception et développement / Design and development | `[TODO]` |
+| `cote-royale` | Côte Royale | Site vitrine (projet de démonstration) / Showcase site (concept project) | 2025 | Conception et développement / Design and development | `[TODO]` |
 
-Copy comes from the owner's briefing (08c). They are not in `src/lib/content/projects.ts` yet.
+### DentaFlow
 
-- **Yoga session booking platform** (name `[TODO]`): for a client, a friend of a family member. Users book sessions from the available slots; a fully custom admin panel with role-based access (admin, instructors and others) where sessions are created and edited. Stack: Next.js, shadcn/ui, server actions, a data access layer, Prisma, PostgreSQL on Neon, Better Auth. Name, year, client permission and screenshots `[TODO]`.
+Agenda, patients, treatments, billing (owner confirms the list); adapted per clinic with its own name, database and deployment; Next.js, TypeScript, tRPC, Drizzle, PostgreSQL (Neon), Better Auth. WhatsApp reminders are not live (P8). Its copy, tour and case study are the owner's to rework; 08c changed only its position, its case hero screen and the home tiles.
 
-A project is shown by name on a public page only after the owner confirms permission (Côte Royale first). Until then it is hidden from lists and the sitemap.
+### MeetAI
+
+- Described as built and deployed by the owner (P17). Create AI agents, schedule meetings with them, join them on a video call; the agent answers out loud; afterwards the recording, the transcript, a summary and a chat about the meeting.
+- Points: meeting lifecycle driven by signed webhooks (upcoming, active, processing, completed); summary as a background job in retryable steps (Inngest); every request scoped to the user on the server, free-plan limits checked before the write; subscription with Polar, in test mode.
+- Stack: Next.js 15, React 19, TypeScript, tRPC, Drizzle, Neon (PostgreSQL), Better Auth, Stream (video call and chat; the chip reads "Stream" because chips are not translated), OpenAI, Inngest, Polar, shadcn/ui, Tailwind 4.
+- Numbers (no slot): 8 pages, 16 tRPC procedures, 6 tables, 1 background job.
+- Diagram (no slot): Navigateur → Next.js et tRPC → Better Auth → Neon (Drizzle); Stream (vidéo, chat) → webhooks signés → Next.js → OpenAI (voix, résumé, chat); Inngest (résumé); Polar (abonnement, test).
+- Never write: "en production", users, real payments, the plan prices, the live URL.
+
+### Ophtachusm (`hms`)
+
+- Built for the ophthalmology department of a hospital in Agadir and used by its team for several months (owner, verbatim; P18). Nothing more about the hospital or its current use. The display name replaced "HMS" in 08a; the slug `hms` and the `#hms` anchor stay.
+- Patient files, medical records, eye imaging, appointments and statistics; new accounts wait for an administrator's approval before they see any data.
+- Points: an appointment calendar that follows how the department works (consultation, specialty, surgery and professor, validated by type); eye images uploaded and annotated by eye, type and description; statistics computed on the server (twelve months, month-over-month change); new accounts approved by an administrator (already said in the summary, so left out of the sheet's paragraph).
+- French: « imagerie oculaire » (glossary of `docs/french-style.md`), not « images de l'œil ».
+- Stack: Next.js 14, TypeScript, Prisma, MongoDB, Auth.js, UploadThing, Zod, shadcn/ui, Tailwind 3.
+- Numbers (no slot): 11 pages, 9 data models, 31 server actions, 1 language (French).
+- Diagram (no slot): Navigateur → Next.js (pages serveur et actions) → Auth.js → MongoDB via Prisma; UploadThing pour les images.
+- Never write: "sécurisé", "conforme", "données médicales chiffrées", "utilisé aujourd'hui", the hospital's, the professors' or the residents' names.
+
+### Yoga booking (`yoga-booking`)
+
+- For a yoga studio (a client), shown without the studio's name (P17). Participants (« élèves ») browse sessions, book a place or join the waiting list, and cancel before each session's deadline; the studio runs everything from a custom admin panel (sessions, categories, instructors, participants, bookings, a downloadable menu document).
+- Roles: the people who log in are the participants and the admin. Instructors are public profiles managed by the admin, not accounts.
+- Points: booking checked on the server in one transaction (published session, remaining places, then confirmation or waiting list); automatic waiting list, first in line confirmed when a place frees up, a database constraint prevents duplicates; admin rights checked against the database on every action; bilingual from the data model (FR and EN for every session, category and instructor).
+- Stack: Next.js 15, React 19, TypeScript, Tailwind 4, shadcn/ui, Prisma, PostgreSQL (Neon), Better Auth, next-intl, Resend, React Email, UploadThing, Arcjet.
+- Numbers (no slot): 11 data models, 2 languages, 23 pages (10 public, 13 admin), about 50 server functions.
+- Diagram (no slot): Navigateur (FR/EN) → Next.js (pages serveur et actions) → Better Auth (e-mail, Google, code) → PostgreSQL via Prisma; Resend (e-mails); UploadThing (images, PDF); Arcjet (limitation, bots).
+- On the about timeline (client work): « 2025 à 2026 », label « Client ».
+- Never write: payments, reminders, reviews, recurring sessions, instructor accounts, "en ligne", the live URL, the studio's name. In English, "student" is never used (it is banned for the owner and the unit test reads every project text), so the studio's « élèves » are "participants".
+
+### Côte Royale
+
+- A concept project for an imaginary perfume brand, with no client (P17). Built to push animation: smooth scrolling, letters that light up as you scroll, pages that blend into one another; fragrances and text managed from Prismic.
+- Points: scroll-driven animation (GSAP and ScrollTrigger, Lenis, native page transitions that keep the navigation still); reusable animation components with a simplified version under reduced motion; content driven by Prismic (a home page of six blocks, fragrance pages generated ahead of time and refreshed when an editor publishes); video loaded only when it nears the screen.
+- Stack: Next.js 15, React 19, TypeScript, Tailwind 4, GSAP (ScrollTrigger), Lenis, Prismic.
+- Numbers (no slot): 3 pages, 3 content types, 6 blocks, 6 animated components, 1 language (English).
+- Never write: shop, cart, payment, reviews, "en ligne", any claim of full reduced-motion support, any brand claim beyond "imaginary".
+
+Project dates may be published once the owner supplies them; years of experience may not (decision P6).
 
 ## About and experience
 
@@ -61,15 +101,16 @@ The only facts that may be published (supplied by the owner in 06). Everything e
 - **Stack:** every day Next.js, TypeScript, tRPC, Drizzle ORM, PostgreSQL (Neon), Better Auth, Arcjet, shadcn/ui. Per project AI SDK, OpenAI API, Shopify headless through its GraphQL API (online shops), WordPress as a CMS when a client insists, GSAP. Exploring Trigger.dev and Browserbase by building a browser-automation app (never presented as a product).
 - **Websites:** Next.js with PostgreSQL (Neon) and a custom admin panel so the client manages everything.
 - **Process:** he listens first; within 24 hours he turns the notes into a technical plan, models the data and splits the project into small tasks; the quote (devis) arrives 24 to 48 hours after the first conversation (decision P12); after the client accepts and signs, an advance invoice, then development; just before launch, the balance invoice and delivery of everything. The payment percentages are not published.
-- **Why clinics:** part of his circle are doctors. He built Ophtachusm for a hospital ophthalmology service, for friends who are residents there. DentaFlow was born from his brother's dental clinic, which showed him what dentists need. He wants healthcare staff to save time for what matters.
+- **Why clinics:** part of his circle are doctors. He built Ophtachusm for a hospital ophthalmology department in Agadir, for friends who are residents there; its team used it for several months (P18). DentaFlow was born from his brother's dental clinic, which showed him what dentists need. He wants healthcare staff to save time for what matters.
 - **Other client work:** the Dérive Casablancaise festival left the about timeline in 08b; its name remains only in the hidden `festival` testimonial entry.
-- **Never publish:** the names of the hospital, of the resident friend, of any client as a person, or of the clinic on the about page; the private inbox the public email forwards to; any claim that Ophtachusm is in use; any claim about income, savings or results for clinics; photos of the owner (decision P9).
+- **Never publish:** the names of the hospital, of the resident friend, of any client as a person, or of the clinic on the about page; the private inbox the public email forwards to; any claim that Ophtachusm is in use today; any claim about income, savings or results for clinics; photos of the owner (decision P9).
 - Earlier roles and the CV itself are `[TODO]` until the owner supplies them (the CV is a placeholder file, `src/lib/content/cv.ts`).
 
 ## Screenshots and loops (08b)
 
 - `pnpm media` (`scripts/media.mjs`) reads the owner's originals from `ASSETS_DIR` (environment variable, or the git-ignored `scripts/media.local.json`), writes AVIF and WebP (images) or MP4 and WebM under 1.5 MB with a poster (loops) to `public/work/<slug>/`, and describes them in `src/lib/content/media.manifest.json`. The originals never enter the repository.
-- `src/lib/content/media.map.json` is the only place the discovered file names are written: role `work` (the sheet, in order), `tour` (a case study step) or `spare` (never published, with the reason). The owner edits it by hand and runs `pnpm media` again. Alt texts and loop labels are messages at `work.<slug>.media.<n>`.
+- `src/lib/content/media.map.json` is the only place the discovered file names are written: role `work` (the sheet, in order), `tour` (a case study step), `hero` (08c: `place: "case"` opens the case study, `place: "home"` fills the home featured tiles in order) or `spare` (never published, with the reason). DentaFlow's case hero is the dashboard (the whole product at a glance, amounts masked); the home tiles are the calendar, a patient file, the odontogram and the documents.
+- A source wider than 1440 px also gets one variant at its own width, capped at 2400 px, for dense screens (08c). The owner edits it by hand and runs `pnpm media` again. Alt texts and loop labels are messages at `work.<slug>.media.<n>`.
 - Never published (`spare`): a price or a plan price of a product the owner sells (P5), the owner's photo (P9), anyone else's face except in Côte Royale's own campaign, real email addresses, phone numbers or names of staff and patients (the owner's own email only as truncated in an app sidebar). What the owner allowed in 08b is in `docs/decisions.md` (P15).
 - A capture taller than it is wide is cut to a square from the top: only that part is published and reviewed.
 

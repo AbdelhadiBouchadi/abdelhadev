@@ -11,6 +11,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { expect, test, type Locator, type Page } from "@playwright/test";
 import { publicTestimonials } from "@/lib/content/testimonials";
+import { heroMedia, mediaCopy } from "@/lib/media";
 import { beyond, collectErrors, docTop, liveScrollTriggers } from "./page-helpers";
 import { LEGAL_NAME } from "./routes";
 import { scrollToY, shellIdle, transitionsSettled, visited } from "./shell-helpers";
@@ -596,6 +597,37 @@ test.describe("without JavaScript", () => {
           }).length,
       );
       expect(hidden).toBe(0);
+    });
+  }
+});
+
+// ---------- the featured tiles show DentaFlow's real screens (08c) ----------
+
+test.describe("featured screens without JavaScript", () => {
+  test.use({ javaScriptEnabled: false });
+  const HOME = { fr: "/fr", en: "/en" } as const;
+  const TILES = heroMedia("dentaflow", "home");
+
+  for (const locale of LOCALES) {
+    test(`${locale}: each mapped tile shows its screen in the server HTML, the others a skeleton`, async ({
+      page,
+    }) => {
+      await page.goto(HOME[locale]);
+      const tiles = page.locator("[data-tile]");
+      await expect(tiles).toHaveCount(4);
+      for (let i = 0; i < 4; i++) {
+        const tile = tiles.nth(i);
+        const item = TILES[i];
+        if (!item || item.asset.kind !== "image") {
+          await expect(tile.locator('[data-placeholder="screen"]')).toHaveCount(1);
+          continue;
+        }
+        await expect(tile.locator('[data-placeholder="screen"]')).toHaveCount(0);
+        const img = tile.locator("img");
+        await expect(img).toHaveAttribute("alt", mediaCopy(MESSAGES[locale], item.key).alt);
+        await expect(img).toHaveAttribute("width", String(item.asset.width));
+        await expect(img).toHaveAttribute("height", String(item.asset.height));
+      }
     });
   }
 });
