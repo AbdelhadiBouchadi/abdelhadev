@@ -37,6 +37,7 @@ jobs:
       - run: pnpm format:check
       - run: pnpm check:tokens
       - run: pnpm check:i18n
+      - run: pnpm check:fr
       - run: pnpm test
       - name: wordmark-paths.ts is fresh
         run: pnpm brand:paths && git diff --exit-code src/components/brand/wordmark-paths.ts

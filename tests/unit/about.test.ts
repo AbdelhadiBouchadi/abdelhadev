@@ -103,19 +103,20 @@ describe("placeholder PDF", () => {
 
 describe("copy", () => {
   // Decision P3: no university, no graduation year, never "engineer", "student" or "étudiant".
+  // A B.Eng is neither a French "licence" nor a "diplôme d'ingénieur" (docs/french-style.md).
   const BANNED = [
     /karabuk/i,
     /third[- ]year/i,
     /troisième année/i,
-    /bachelor/i,
     /étudiant/i,
     /\bstudent/i,
     /ingénieur/i,
     /\bengineers?\b/i,
+    /\blicence\b/i,
   ];
 
-  // The degree (08a): stated only in the education entry of the timeline.
-  const DEGREE = [/B\.Eng/, /\blicence\b/i];
+  // The degree (08a, 08a2): stated only in the education entry of the timeline.
+  const DEGREE = [/B\.Eng/, /bachelor/i];
   const EDUCATION = "about.experience.items.education.";
 
   it("never names the university, a year of study or a degree title", () => {
@@ -132,7 +133,11 @@ describe("copy", () => {
   });
 
   it("states the degree in the education entry only, as the owner wrote it", () => {
-    expect(fr.about.experience.items.education.when).toBe("Dernière année de licence");
+    expect(fr.about.experience.items.education.title).toBe("Génie informatique");
+    expect(fr.about.experience.items.education.when).toBe(
+      "Dernière année de Bachelor of Engineering (B.Eng)",
+    );
+    expect(fr.about.experience.items.education.where).toBe("Formation");
     expect(en.about.experience.items.education.when).toBe("Final year of a B.Eng");
   });
 

@@ -10,6 +10,7 @@
 | `pnpm format:check` | Prettier |
 | `pnpm check:tokens` | no colour literals outside `src/styles/`; no easing or duration literals outside `src/lib/motion.ts` and the CSS tokens; no `rounded-*` value outside the token scale |
 | `pnpm check:i18n` | `fr.json` and `en.json` have identical keys and no empty values; no price words or currency symbols; `[TODO` allowed in development only |
+| `pnpm check:fr` | `fr.json` never uses a phrase `docs/french-style.md` bans (fails, naming the key and the phrase); a regular space before `:` `;` `?` `!` is a warning |
 | `pnpm test` | Vitest |
 | `pnpm build` | production build; lists every `[TODO` in content and `site.ts`, and fails on them when `REQUIRE_CONTENT=1` |
 | `pnpm test:e2e` | Playwright, the CI suite below (390 and 1440, no motion evidence) |

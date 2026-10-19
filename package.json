@@ -17,6 +17,7 @@
     "format:check": "prettier --check .",
     "check:tokens": "node scripts/check-tokens.mjs",
     "check:i18n": "node scripts/check-i18n.mjs",
+    "check:fr": "node scripts/check-fr.mjs",
     "test": "vitest run",
     "test:e2e": "playwright test",
     "test:e2e:full": "playwright test --config playwright.full.config.ts",
