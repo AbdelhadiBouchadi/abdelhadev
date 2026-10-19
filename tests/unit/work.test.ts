@@ -99,7 +99,7 @@ describe("the work page copy (08c)", () => {
       expect(t("title")).toBe(title);
       expect(t("lead")).not.toMatch(/\d/);
       expect(t("lead")).not.toMatch(shop);
-      expect(t("meta.description")).not.toMatch(shop);
+      expect(messages.seo.pages.work.description).not.toMatch(shop);
       expect(t("github")).toMatch(/GitHub/);
     });
   }

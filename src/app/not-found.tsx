@@ -1,11 +1,19 @@
+import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
+import { ArrowLink } from "@/components/ui/ArrowLink";
 import { PagePlaceholder } from "@/components/ui/PagePlaceholder";
 import { routing } from "@/i18n/routing";
 import { fontVariables } from "@/lib/fonts";
+import { localizedPath } from "@/lib/paths";
+import { notFoundMetadata } from "@/lib/seo";
 import "@/styles/globals.css";
 
 // Requests outside any locale that the proxy does not redirect (paths with a file extension).
-// There is no locale to read, so it renders in the default locale.
+// There is no locale to read, so it renders in the default locale. Never indexed.
+export function generateMetadata(): Promise<Metadata> {
+  return notFoundMetadata(routing.defaultLocale);
+}
+
 export default async function GlobalNotFound() {
   const locale = routing.defaultLocale;
   const t = await getTranslations({ locale, namespace: "pages.notFound" });
@@ -14,11 +22,17 @@ export default async function GlobalNotFound() {
       <body>
         <main id="main">
           <PagePlaceholder title={t("title")} lead={t("lead")}>
-            <p className="m-0">
-              {/* A plain link: this page sits outside the localised layout and its providers. */}
-              <a href={`/${locale}`} className="font-semibold underline underline-offset-4">
+            {/* Plain links: this page sits outside the localised layout and its providers. */}
+            <p className="m-0 flex flex-wrap items-center gap-x-6 gap-y-3">
+              <a
+                href={localizedPath(locale, "/")}
+                className="inline-flex min-h-11 items-center font-semibold underline underline-offset-4"
+              >
                 {t("back")}
               </a>
+              <ArrowLink as="a" href={localizedPath(locale, "/work")}>
+                {t("work")}
+              </ArrowLink>
             </p>
           </PagePlaceholder>
         </main>

@@ -86,6 +86,11 @@ readFileSync(join(root, "src/lib/content/cv.ts"), "utf8")
     }
   });
 
+if (found.some((line) => line.includes("cv.") && line.includes("placeholder"))) {
+  // Same wording as CV_ACTION in src/lib/content/cv.ts.
+  found.push("cv: place the two CV PDFs in public/cv/ and set their status to final");
+}
+
 const strict = process.env.REQUIRE_CONTENT === "1";
 if (found.length === 0) {
   console.log("Content placeholders: none");

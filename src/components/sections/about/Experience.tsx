@@ -1,6 +1,7 @@
 /* Experience (prototype .timeline), day: four rows, when / what / where, fading up one
    ABOUT.stagger.timeline apart when the list enters (Reveal). The section head carries the CV
-   download for the page's locale (src/lib/content/cv.ts). A date the owner has not supplied shows
+   download for the page's locale (src/lib/content/cv.ts): its language and its size, measured
+   from the file at build time, are in the label, and it saves under a clean file name. A date the owner has not supplied shows
    as a visible placeholder chip, never an invented year (decision P6); the education row names
    no university and no year (decision P3). */
 import { getTranslations } from "next-intl/server";
@@ -9,6 +10,7 @@ import { Chip } from "@/components/ui/Chip";
 import type { Locale } from "@/i18n/routing";
 import { EXPERIENCE } from "@/lib/content/about";
 import { CV } from "@/lib/content/cv";
+import { cvBytes, formatFileSize } from "@/lib/content/cv-file";
 import { ABOUT } from "@/lib/motion";
 import { isTodo } from "@/lib/todo";
 import { Reveal } from "@/primitives/Reveal";
@@ -33,8 +35,15 @@ export async function Experience({ locale }: ExperienceProps) {
           <h2 id="experience-title" className="display h-md">
             {t("title")}
           </h2>
-          <ArrowLink as="a" href={cv.href} download variant="download" type="application/pdf">
-            {t("cv")}
+          <ArrowLink
+            as="a"
+            href={cv.href}
+            download={cv.filename}
+            hrefLang={locale}
+            variant="download"
+            type="application/pdf"
+          >
+            {t("cv", { size: formatFileSize(cvBytes(locale), locale) })}
           </ArrowLink>
         </div>
         <Reveal as="ol" when="enter" stagger={ABOUT.stagger.timeline} className="timeline">

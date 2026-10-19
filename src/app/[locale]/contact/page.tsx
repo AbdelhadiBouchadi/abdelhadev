@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
 import { ContactChannels } from "@/components/sections/contact/ContactChannels";
 import { ContactFormCard } from "@/components/sections/contact/ContactFormCard";
 import { ContactHero } from "@/components/sections/contact/ContactHero";
@@ -12,8 +11,7 @@ export async function generateMetadata({
   params,
 }: PageProps<"/[locale]/contact">): Promise<Metadata> {
   const locale = await resolveLocale(params);
-  const t = await getTranslations({ locale, namespace: "contact.meta" });
-  return pageMetadata("/contact", locale, { title: t("title"), description: t("description") });
+  return pageMetadata(locale, "contact");
 }
 
 // The contact page (prototype contact.html), day with a night WhatsApp card: the hero, then the

@@ -10,7 +10,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { expect, test, type Locator, type Page } from "@playwright/test";
-import { publicProjects, sheetMedia, WORK_ORDER } from "@/lib/content/projects";
+import { publicProjects, sheetMedia, statusKey, WORK_ORDER } from "@/lib/content/projects";
 import { mediaCopy } from "@/lib/media";
 import { SITE } from "@/lib/site";
 import { beyond, bring, collectErrors, liveScrollTriggers } from "./page-helpers";
@@ -26,6 +26,7 @@ interface WorkMessages {
     cursor: { caseStudy: string };
     video: { play: string; pause: string };
     github: string;
+    status: Record<string, string>;
   };
   footer: { newTab: string };
   projects: Record<string, { name: string }>;
@@ -413,6 +414,26 @@ test("the sheets follow the work order, nothing overflows and the removed projec
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
     );
     expect(overflow, at).toBeLessThanOrEqual(0);
+  }
+});
+
+// 09: every project has a confirmed status, shown as a warm chip in the sheet head, never as a
+// fact to confirm.
+test("each sheet shows its project's status in the page's language", async ({ request }, info) => {
+  test.skip(info.project.name !== "1440", "server HTML: one width is enough");
+  for (const locale of LOCALES) {
+    const html = await (await request.get(PATHS[locale])).text();
+    expect(html, locale).not.toContain(MESSAGES[locale].work.status.todo ?? "todo");
+    for (const project of publicProjects()) {
+      const label = MESSAGES[locale].work.status[statusKey(project)] ?? "";
+      const sheet = html.slice(html.indexOf(`id="${project.slug}"`));
+      // The title block: the name, the kind and the status chip, before the actions.
+      const head = sheet.slice(0, sheet.indexOf("project-actions"));
+      expect(label.length, project.slug).toBeGreaterThan(0);
+      expect(head, `${locale} ${project.slug}`).toContain(
+        `data-variant="warm">${label.replaceAll("'", "&#x27;")}</span>`,
+      );
+    }
   }
 });
 

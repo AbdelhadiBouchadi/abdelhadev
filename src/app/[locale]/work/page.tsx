@@ -4,14 +4,14 @@ import { MoreOnGitHub } from "@/components/sections/work/MoreOnGitHub";
 import { ProjectList } from "@/components/sections/work/ProjectList";
 import { ProjectRail } from "@/components/sections/work/ProjectRail";
 import { WorkHero } from "@/components/sections/work/WorkHero";
+import { JsonLd } from "@/components/ui/JsonLd";
 import { resolveLocale } from "@/i18n/locale";
-import { pageMetadata } from "@/lib/seo";
+import { pageMetadata, workBreadcrumb } from "@/lib/seo";
 import { ToneSection } from "@/primitives/ToneSection";
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/work">): Promise<Metadata> {
   const locale = await resolveLocale(params);
-  const t = await getTranslations({ locale, namespace: "work.meta" });
-  return pageMetadata("/work", locale, { title: t("title"), description: t("description") });
+  return pageMetadata(locale, "work");
 }
 
 export default async function WorkPage({ params }: PageProps<"/[locale]/work">) {
@@ -19,6 +19,7 @@ export default async function WorkPage({ params }: PageProps<"/[locale]/work">) 
   const t = await getTranslations({ locale, namespace: "work" });
   return (
     <>
+      <JsonLd data={await workBreadcrumb(locale)} />
       <WorkHero />
       <ToneSection tone="day" aria-label={t("projects")}>
         <div className="work-layout wrap">

@@ -302,9 +302,15 @@ for (const locale of LOCALES) {
       expect((await link.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(44);
     }
 
-    const cv = page.getByRole("link", { name: m.about.experience.cv });
+    // 09: the label names the language and the file's size ("… (PDF, 1 ko)"), measured at build.
+    const [before = "", after = ""] = m.about.experience.cv.split("{size}");
+    const escape = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const cv = page.getByRole("link", {
+      name: new RegExp(`^${escape(before)}\\d+(?:[.,]\\d)?\\s?(?:ko|kB|Mo|MB)${escape(after)}$`),
+    });
     await expect(cv).toHaveAttribute("href", CV[locale].href);
-    await expect(cv).toHaveAttribute("download", "");
+    await expect(cv).toHaveAttribute("download", CV[locale].filename);
+    await expect(cv).toHaveAttribute("hreflang", locale);
     expect((await cv.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(44);
     const file = await request.get(CV[locale].href);
     expect(file.status()).toBe(200);

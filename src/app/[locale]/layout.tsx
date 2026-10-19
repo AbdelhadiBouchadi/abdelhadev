@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { NextIntlClientProvider } from "next-intl";
-import { getMessages, getTranslations } from "next-intl/server";
+import { getMessages } from "next-intl/server";
 import { Cursor } from "@/components/layout/Cursor";
 import { Header } from "@/components/layout/Header";
 import { Loader } from "@/components/layout/Loader";
@@ -11,7 +11,7 @@ import { resolveLocale } from "@/i18n/locale";
 import { routing } from "@/i18n/routing";
 import { BOOT_SCRIPT } from "@/lib/boot";
 import { fontVariables } from "@/lib/fonts";
-import { baseMetadata } from "@/lib/seo";
+import { baseMetadata, seoMessages } from "@/lib/seo";
 import { SHELL_CONTENT_ATTR } from "@/lib/shell";
 import { cssToken } from "@/lib/tokens";
 import { SmoothScroll } from "@/primitives/SmoothScroll";
@@ -20,14 +20,18 @@ import "@/styles/globals.css";
 
 const shellContent = { [SHELL_CONTENT_ATTR]: "" };
 
+// Only the two locales exist: any other first segment (such as /file.txt) is the root 404 and
+// never renders this tree, whose 404 metadata reads the request locale.
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
 export async function generateMetadata({ params }: LayoutProps<"/[locale]">): Promise<Metadata> {
   const locale = await resolveLocale(params);
-  const t = await getTranslations({ locale, namespace: "meta" });
-  return baseMetadata(locale, t("description"));
+  const { pages } = await seoMessages(locale);
+  return baseMetadata(locale, pages.home.description);
 }
 
 export const viewport: Viewport = {

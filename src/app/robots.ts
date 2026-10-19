@@ -1,11 +1,8 @@
 import type { MetadataRoute } from "next";
-import { absoluteUrl } from "@/lib/seo";
+import { robotsFile } from "@/lib/seo";
 
-// Crawling stays allowed so crawlers can read the noindex robots meta while INDEXABLE is false;
-// a Disallow here would hide that tag from them.
+// Production allows everything and names the sitemap; previews and local builds disallow
+// everything (lib/seo.ts, robotsFile).
 export default function robots(): MetadataRoute.Robots {
-  return {
-    rules: { userAgent: "*", allow: "/" },
-    sitemap: absoluteUrl("/sitemap.xml"),
-  };
+  return robotsFile();
 }

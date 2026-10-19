@@ -49,7 +49,7 @@ Set by the owner after the foundation measures a baseline (decision lesson: neve
 | TBT | at most 200 ms |
 | JavaScript, initial route without the 3D chunk | measured in 00, then baseline + 15 % |
 | 3D chunk (home only, lazy) | measured in 00 and reported separately |
-| Lighthouse | Accessibility 100, Best Practices at least 95, SEO audits individually (not the category) while `INDEXABLE` is false |
+| Lighthouse | Accessibility 100, Best Practices at least 95, SEO audits individually (not the category) outside production (`VERCEL_ENV` is not `production`) |
 
 ## Security
 

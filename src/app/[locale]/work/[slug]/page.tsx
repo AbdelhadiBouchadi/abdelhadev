@@ -7,11 +7,12 @@ import { CaseProblem } from "@/components/sections/case/CaseProblem";
 import { caseCopy } from "@/components/sections/case/case-copy";
 import { NextProject } from "@/components/sections/case/NextProject";
 import { ProductTour } from "@/components/sections/case/ProductTour";
+import { JsonLd } from "@/components/ui/JsonLd";
 import { resolveLocale } from "@/i18n/locale";
 import type { Locale } from "@/i18n/routing";
 import { getCaseStudy } from "@/lib/content/case-studies";
 import { caseStudyProjects } from "@/lib/content/projects";
-import { pageMetadata } from "@/lib/seo";
+import { caseMetadata, workBreadcrumb } from "@/lib/seo";
 
 // Only the public projects with a case study have a page (decision P7, caseStudyProjects); any
 // other slug, a project without a case study or with a pending permission, is a 404.
@@ -33,11 +34,8 @@ export async function generateMetadata({
 }: PageProps<"/[locale]/work/[slug]">): Promise<Metadata> {
   const locale = await resolveLocale(params);
   const { slug } = await params;
-  const { copy } = await load(locale, slug);
-  return pageMetadata({ pathname: "/work/[slug]", params: { slug } }, locale, {
-    title: copy.name,
-    description: copy.case.meta.description,
-  });
+  await load(locale, slug);
+  return caseMetadata(locale, slug);
 }
 
 // Tones: hero night, problem, tour and adaptation day, architecture night, next project day,
@@ -48,6 +46,7 @@ export default async function CaseStudyPage({ params }: PageProps<"/[locale]/wor
   const { project, study, copy } = await load(locale, slug);
   return (
     <>
+      <JsonLd data={await workBreadcrumb(locale, { slug, name: copy.name })} />
       <CaseHero project={project} study={study} copy={copy} />
       <CaseProblem copy={copy} />
       <ProductTour slug={slug} study={study} copy={copy} />

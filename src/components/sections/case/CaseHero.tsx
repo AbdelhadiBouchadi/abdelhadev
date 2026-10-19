@@ -10,6 +10,7 @@ import { getMessages, getTranslations } from "next-intl/server";
 import type { CaseStudyCopy } from "@/components/sections/case/case-copy";
 import { ArrowLink } from "@/components/ui/ArrowLink";
 import { Screen } from "@/components/ui/Screen";
+import { statusKey } from "@/lib/content/projects";
 import type { CaseStudy, Project } from "@/lib/content/schema";
 import { heroMedia, mediaCopy } from "@/lib/media";
 import { CASE, STAGGER } from "@/lib/motion";
@@ -32,8 +33,8 @@ export async function CaseHero({ project, study, copy }: CaseHeroProps) {
   const messages = await getMessages();
   const shot = heroMedia(project.slug, "case")[0];
   const shotCopy = shot ? mediaCopy(messages, shot.key) : null;
-  // Only "ready" has a label so far; anything else shows as a fact to confirm (as on the sheet).
-  const status = project.status === "ready" ? work("status.ready") : work("status.todo");
+  // The same label as the project's chip on the work page (statusKey).
+  const status = work(`status.${statusKey(project)}`);
   const stack = typeof project.stack === "string" ? project.stack : project.stack.join(", ");
   const facts = [
     { term: t("facts.role"), value: t("facts.roleValue") },

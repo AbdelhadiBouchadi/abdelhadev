@@ -31,7 +31,11 @@ const nextConfig: NextConfig = {
     },
   },
   async headers() {
-    return [{ source: "/:path*", headers: securityHeaders }];
+    return [
+      { source: "/:path*", headers: securityHeaders },
+      // The CV files are downloadable from the about page but never indexed on their own (09).
+      { source: "/cv/:path*", headers: [{ key: "X-Robots-Tag", value: "noindex" }] },
+    ];
   },
 };
 
