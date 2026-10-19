@@ -1,5 +1,5 @@
 // The case study's data (prompts/05-case-study.md, "Tests"): caseStudyProjects(), the screen count
-// derived from the tour, the case study schema, the next project, the copy every data key needs,
+// derived from the media manifest (08b), the case study schema, the next project, the copy every data key needs,
 // and the sitemap (the DentaFlow case study listed, the projects without one left out).
 import { describe, expect, it } from "vitest";
 import en from "@messages/en.json";
@@ -8,10 +8,11 @@ import sitemap from "@/app/sitemap";
 import { CASE_STUDIES, getCaseStudy } from "@/lib/content/case-studies";
 import {
   caseStudyProjects,
+  getProject,
   hasMoreScreens,
   nextProject,
-  PROJECTS,
   screenCount,
+  sheetMedia,
 } from "@/lib/content/projects";
 import {
   ADAPT_STEPS,
@@ -21,7 +22,10 @@ import {
   type Project,
 } from "@/lib/content/schema";
 
-const [dentaflow, hms] = PROJECTS;
+import { tourMedia } from "@/lib/media";
+
+const dentaflow = getProject("dentaflow");
+const hms = getProject("hms");
 if (!dentaflow || !hms) throw new Error("the projects are missing");
 const study = getCaseStudy("dentaflow");
 if (!study) throw new Error("the DentaFlow case study is missing");
@@ -43,14 +47,16 @@ describe("caseStudyProjects", () => {
 });
 
 describe("the screen count", () => {
-  it("comes from the tour, so DentaFlow's sheet links to all seven screens", () => {
+  it("counts the tour's real screens, so DentaFlow's sheet links to the case study", () => {
     expect(study.tour).toHaveLength(7);
-    expect(screenCount(dentaflow)).toBe(7);
+    expect(screenCount(dentaflow)).toBe(tourMedia("dentaflow").size);
+    expect(screenCount(dentaflow)).toBeGreaterThan(sheetMedia(dentaflow).length);
     expect(hasMoreScreens(dentaflow)).toBe(true);
   });
 
-  it("is the sheet's media without a case study, and then there is nothing more to see", () => {
-    expect(screenCount(hms)).toBe(hms.media.length);
+  it("is the sheet's real screens without a case study, and then there is nothing more", () => {
+    expect(screenCount(hms)).toBe(sheetMedia(hms).length);
+    expect(sheetMedia(hms).length).toBeLessThanOrEqual(hms.media.length);
     expect(hasMoreScreens(hms)).toBe(false);
   });
 });
@@ -93,7 +99,9 @@ describe("the case study schema", () => {
 
 describe("nextProject", () => {
   it("is the next public project on the work page, or null after the last one", () => {
-    expect(nextProject("dentaflow")?.slug).toBe("hms");
+    // The work order (08b): DentaFlow, MeetAI, Ophtachusm, then Côte Royale.
+    expect(nextProject("dentaflow")?.slug).toBe("meetai");
+    expect(nextProject("meetai")?.slug).toBe("hms");
     expect(nextProject("cote-royale")).toBeNull();
     expect(nextProject("nope")).toBeNull();
     const pending: Project = { ...hms, permission: "pending" };
@@ -106,13 +114,14 @@ describe("the case study copy", () => {
     ["fr", fr],
     ["en", en],
   ] as const) {
-    it(`${locale}: has a text for every tour step, screen, card and list item`, () => {
+    it(`${locale}: has a text for every tour step, card and list item, and the hero screen`, () => {
       const copy = messages.projects.dentaflow.case;
       const has = (group: object, key: string) => Object.hasOwn(group, key);
       for (const { key } of study.tour) {
         expect(has(copy.tour, key), key).toBe(true);
-        expect(has(copy.screens, key), key).toBe(true);
       }
+      // The tour screens' alt texts come from the media map's keys (tests/unit/media.test.ts).
+      expect(has(copy.screens, "hero")).toBe(true);
       for (const key of study.adapt) expect(has(copy.adapt, key), key).toBe(true);
       for (const key of study.arch.listKeys) expect(has(copy.arch, key), key).toBe(true);
     });

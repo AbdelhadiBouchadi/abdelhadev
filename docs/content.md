@@ -34,8 +34,9 @@ First person singular. Plain, specific, calm. Say what was built, for whom, with
 | `dentaflow` | DentaFlow | Dental clinic management | Ready for clinics | Agenda, patients, treatments, billing (owner confirms the list); adapted per clinic with its own name, database and deployment; Next.js, TypeScript, tRPC, Drizzle, PostgreSQL (Neon), Better Auth. WhatsApp reminders are not live. |
 | `hms` | Ophtachusm | Hospital management system | `[TODO]` | A management system for a hospital ophthalmology service: patient data, appointments, eye images and medical records; only the medical staff have access. Built for friends who are residents there. Date: January 2025 (08a). The display name replaced "HMS" in 08a; the slug `hms` and the `#hms` anchor stay. Never name the hospital or the resident, never claim it is in use. Status and stack `[TODO]`. |
 | `meetai` | MeetAI | AI web app | `[TODO]` | Everything else `[TODO]` |
-| `flowshop` | FlowShop | E-commerce | `[TODO]` | Everything else `[TODO]` |
 | `cote-royale` | Côte Royale | Website | `[TODO]` | Client permission to name `[TODO]` |
+
+Work page order (08b): DentaFlow, MeetAI, Ophtachusm, the yoga booking platform (from 08c), Côte Royale (`WORK_ORDER` in `src/lib/content/projects.ts`). The e-commerce project left the site in 08b; building online shops stays a service (about, services, contact topics).
 
 Never mention the internship project or its client.
 
@@ -45,7 +46,6 @@ DentaFlow's date is October 2026 (08a). Project dates (month and year) may be pu
 
 Copy comes from the owner's briefing (08c). They are not in `src/lib/content/projects.ts` yet.
 
-- **Dérive Casablancaise:** a website and a fully custom admin panel for a festival in Morocco, to manage all the content. Live at `https://derive-casablancaise.com`; the name and the link may be published (the about timeline links to it since 08a). Year `[TODO]`. The client's personal name is never put in the repository.
 - **Yoga session booking platform** (name `[TODO]`): for a client, a friend of a family member. Users book sessions from the available slots; a fully custom admin panel with role-based access (admin, instructors and others) where sessions are created and edited. Stack: Next.js, shadcn/ui, server actions, a data access layer, Prisma, PostgreSQL on Neon, Better Auth. Name, year, client permission and screenshots `[TODO]`.
 
 A project is shown by name on a public page only after the owner confirms permission (Côte Royale first). Until then it is hidden from lists and the sitemap.
@@ -62,9 +62,16 @@ The only facts that may be published (supplied by the owner in 06). Everything e
 - **Websites:** Next.js with PostgreSQL (Neon) and a custom admin panel so the client manages everything.
 - **Process:** he listens first; within 24 hours he turns the notes into a technical plan, models the data and splits the project into small tasks; the quote (devis) arrives 24 to 48 hours after the first conversation (decision P12); after the client accepts and signs, an advance invoice, then development; just before launch, the balance invoice and delivery of everything. The payment percentages are not published.
 - **Why clinics:** part of his circle are doctors. He built Ophtachusm for a hospital ophthalmology service, for friends who are residents there. DentaFlow was born from his brother's dental clinic, which showed him what dentists need. He wants healthcare staff to save time for what matters.
-- **Other client work:** Dérive Casablancaise, a website with a fully custom admin panel for a festival in Morocco (`https://derive-casablancaise.com`, linked from the timeline). Its year is `[TODO]`.
+- **Other client work:** the Dérive Casablancaise festival left the about timeline in 08b; its name remains only in the hidden `festival` testimonial entry.
 - **Never publish:** the names of the hospital, of the resident friend, of any client as a person, or of the clinic on the about page; the private inbox the public email forwards to; any claim that Ophtachusm is in use; any claim about income, savings or results for clinics; photos of the owner (decision P9).
-- The festival site's year, earlier roles and the CV itself are `[TODO]` until the owner supplies them (the CV is a placeholder file, `src/lib/content/cv.ts`).
+- Earlier roles and the CV itself are `[TODO]` until the owner supplies them (the CV is a placeholder file, `src/lib/content/cv.ts`).
+
+## Screenshots and loops (08b)
+
+- `pnpm media` (`scripts/media.mjs`) reads the owner's originals from `ASSETS_DIR` (environment variable, or the git-ignored `scripts/media.local.json`), writes AVIF and WebP (images) or MP4 and WebM under 1.5 MB with a poster (loops) to `public/work/<slug>/`, and describes them in `src/lib/content/media.manifest.json`. The originals never enter the repository.
+- `src/lib/content/media.map.json` is the only place the discovered file names are written: role `work` (the sheet, in order), `tour` (a case study step) or `spare` (never published, with the reason). The owner edits it by hand and runs `pnpm media` again. Alt texts and loop labels are messages at `work.<slug>.media.<n>`.
+- Never published (`spare`): a price or a plan price of a product the owner sells (P5), the owner's photo (P9), anyone else's face except in Côte Royale's own campaign, real email addresses, phone numbers or names of staff and patients (the owner's own email only as truncated in an app sidebar). What the owner allowed in 08b is in `docs/decisions.md` (P15).
+- A capture taller than it is wide is cut to a square from the top: only that part is published and reviewed.
 
 ## Testimonials
 

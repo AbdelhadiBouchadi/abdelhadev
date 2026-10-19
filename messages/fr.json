@@ -244,13 +244,6 @@
           "text": "Un système de gestion pour un service hospitalier d'ophtalmologie, réservé au personnel médical.",
           "where": "Santé"
         },
-        "festival": {
-          "when": "[TODO: year]",
-          "title": "Dérive Casablancaise",
-          "text": "Un site web et son espace d'administration sur mesure pour un festival au Maroc, qui permet de gérer tout le contenu.",
-          "where": "Client",
-          "link": "Voir le site"
-        },
         "education": {
           "when": "Dernière année de Bachelor of Engineering (B.Eng)",
           "title": "Génie informatique",
@@ -360,7 +353,7 @@
   "work": {
     "meta": {
       "title": "Projets",
-      "description": "Les logiciels que j'ai développés de bout en bout\u00a0: DentaFlow pour les cabinets dentaires, un système hospitalier, une application IA, une boutique en ligne et un site web."
+      "description": "Les logiciels que j'ai développés de bout en bout\u00a0: DentaFlow pour les cabinets dentaires, un système hospitalier, une application IA et un site web."
     },
     "title": "Des logiciels sur lesquels on s'appuie au quotidien",
     "lead": "{count, plural, one {# projet} other {# projets}}, des logiciels pour cabinets et hôpitaux aux outils d'IA et aux boutiques en ligne. Chacun développé de bout en bout, du modèle de données au dernier écran.",
@@ -382,6 +375,99 @@
     "allScreens": "Voir les {count} écrans",
     "cursor": {
       "caseStudy": "Lire l'étude de cas"
+    },
+    "dentaflow": {
+      "media": {
+        "1": {
+          "alt": "Tableau de bord de DentaFlow\u00a0: rendez-vous du jour, salle d'attente et soldes à recouvrer, les montants masqués"
+        },
+        "2": {
+          "alt": "Calendrier mensuel de DentaFlow\u00a0: les rendez-vous d'octobre, colorés par type de soin, pour un praticien"
+        },
+        "3": {
+          "alt": "Liste des patients de DentaFlow\u00a0: étiquettes, prochain rendez-vous et reste à payer, avec filtres par assurance"
+        },
+        "4": {
+          "alt": "Odontogramme d'un patient dans DentaFlow\u00a0: le schéma dentaire complet et les commandes pour noter l'état de chaque dent"
+        },
+        "5": {
+          "alt": "Statistiques de DentaFlow\u00a0: encaissements, rendez-vous honorés et taux d'absence du mois, avec leurs graphiques"
+        },
+        "6": {
+          "alt": "Dossier patient dans DentaFlow\u00a0: coordonnées, prochains rendez-vous et une radiographie panoramique dans l'imagerie"
+        },
+        "8": {
+          "alt": "Documents de DentaFlow\u00a0: ordonnances, devis, factures et certificats numérotés, avec le patient et la date"
+        },
+        "9": {
+          "alt": "Catalogue des actes dans les paramètres de DentaFlow\u00a0: codes, catégories, durées et import de la nomenclature NGAP"
+        }
+      }
+    },
+    "meetai": {
+      "media": {
+        "1": {
+          "alt": "Compte rendu d'une réunion dans MeetAI\u00a0: synthèse et notes rédigées par l'IA, avec la transcription et l'enregistrement"
+        },
+        "4": {
+          "alt": "Avant l'appel dans MeetAI\u00a0: réglage du micro et de la caméra, puis le bouton pour rejoindre l'appel"
+        },
+        "5": {
+          "alt": "Une nouvelle réunion dans MeetAI, pas encore commencée, avec le bouton pour la lancer"
+        }
+      }
+    },
+    "hms": {
+      "media": {
+        "1": {
+          "alt": "Accueil d'Ophtachusm\u00a0: nombre de patients et de rendez-vous, sous les logos du service et de ses partenaires"
+        },
+        "2": {
+          "alt": "Agenda des rendez-vous d'Ophtachusm\u00a0: chaque jour de la semaine réservé à une consultation (glaucome, rétine…)"
+        },
+        "4": {
+          "alt": "Compte en attente dans Ophtachusm\u00a0: l'accès s'ouvre une fois le compte approuvé par un administrateur"
+        },
+        "6": {
+          "alt": "Page de connexion d'Ophtachusm, par adresse e-mail et mot de passe, réservée au personnel du service"
+        }
+      }
+    },
+    "yoga-booking": {
+      "media": {
+        "1": {
+          "alt": "Page d'accueil de la plateforme de réservation de yoga\u00a0: titre de bienvenue, menu et bouton de connexion"
+        },
+        "4": {
+          "alt": "Tableau de bord d'administration\u00a0: séances, réservations du mois, courbe d'activité et liste des séances publiées"
+        },
+        "5": {
+          "alt": "Gestion des réservations\u00a0: réservations confirmées, annulées et terminées, séances à venir ou passées"
+        },
+        "6": {
+          "alt": "Planning mensuel des cours dans l'espace d'administration, chaque séance sur son créneau"
+        }
+      }
+    },
+    "cote-royale": {
+      "media": {
+        "1": {
+          "alt": "Ouverture du site Côte Royale\u00a0: une photo de campagne en noir et blanc et le titre «\u00a0Effortless Elegance\u00a0»",
+          "label": "Vidéo en boucle de l'ouverture du site Côte Royale"
+        },
+        "2": {
+          "alt": "L'accueil de Côte Royale parcouru\u00a0: le texte s'éclaire peu à peu, puis les trois parfums apparaissent un par un",
+          "label": "Vidéo en boucle du défilement de l'accueil de Côte Royale"
+        },
+        "3": {
+          "alt": "Navigation sur Côte Royale\u00a0: du menu à la fiche d'un parfum, puis d'un parfum à l'autre, avec les transitions",
+          "label": "Vidéo en boucle des transitions entre les pages de Côte Royale"
+        }
+      }
+    },
+    "video": {
+      "play": "Lire la vidéo",
+      "pause": "Mettre la vidéo en pause"
     }
   },
   "case": {
@@ -418,13 +504,6 @@
       "kind": "Gestion de cabinet dentaire",
       "challenge": "Gérer toute la journée d'un cabinet dentaire depuis un seul outil\u00a0: rendez-vous, patients, soins et facturation.",
       "built": "Un système de gestion adapté à chaque cabinet avant sa mise en service\u00a0: sa propre base de données, son propre déploiement et le nom du cabinet dans l'application.",
-      "media": {
-        "s1": "[TODO: décrire l'écran 1 de DentaFlow]",
-        "s2": "[TODO: décrire l'écran 2 de DentaFlow]",
-        "s3": "[TODO: décrire l'écran 3 de DentaFlow]",
-        "s4": "[TODO: décrire l'écran 4 de DentaFlow]",
-        "s5": "[TODO: décrire l'écran 5 de DentaFlow]"
-      },
       "case": {
         "meta": {
           "description": "Un système de gestion pour cabinets dentaires\u00a0: agenda, patients, soins et facturation. Adapté à chaque cabinet avant la mise en service, avec sa propre base de données et son propre déploiement."
@@ -432,14 +511,7 @@
         "lead": "Un système de gestion pour cabinets dentaires\u00a0: agenda, patients, soins et facturation. Adapté à chaque cabinet avant la mise en service, avec sa propre base de données et son propre déploiement.",
         "footer": "DentaFlow dans votre cabinet\u00a0?",
         "screens": {
-          "hero": "[TODO: décrire l'écran d'ouverture de DentaFlow]",
-          "agenda": "[TODO: décrire l'écran agenda de DentaFlow]",
-          "patients": "[TODO: décrire l'écran patients de DentaFlow]",
-          "record": "[TODO: décrire l'écran dossier patient de DentaFlow]",
-          "odontogram": "[TODO: décrire l'écran schéma dentaire de DentaFlow]",
-          "acts": "[TODO: décrire l'écran catalogue des actes de DentaFlow]",
-          "documents": "[TODO: décrire l'écran documents de DentaFlow]",
-          "statistics": "[TODO: décrire l'écran statistiques de DentaFlow]"
+          "hero": "[TODO: décrire l'écran d'ouverture de DentaFlow]"
         },
         "tour": {
           "agenda": {
@@ -519,47 +591,19 @@
       "name": "Ophtachusm",
       "kind": "Système de gestion hospitalière",
       "challenge": "Doter un service d'ophtalmologie d'un outil pour suivre ses patients, ses rendez-vous et l'imagerie oculaire.",
-      "built": "Un système de gestion réservé au personnel médical du service\u00a0: données des patients, rendez-vous, imagerie oculaire et dossiers médicaux.",
-      "media": {
-        "s1": "[TODO: décrire l'écran 1 d'Ophtachusm]",
-        "s2": "[TODO: décrire l'écran 2 d'Ophtachusm]",
-        "s3": "[TODO: décrire l'écran 3 d'Ophtachusm]",
-        "s4": "[TODO: décrire l'écran 4 d'Ophtachusm]"
-      }
+      "built": "Un système de gestion réservé au personnel médical du service\u00a0: données des patients, rendez-vous, imagerie oculaire et dossiers médicaux."
     },
     "meetai": {
       "name": "MeetAI",
       "kind": "Application web IA",
       "challenge": "[TODO: le problème que MeetAI résout, en une phrase]",
-      "built": "[TODO: ce que j'ai construit, et ce que la partie IA apporte]",
-      "media": {
-        "s1": "[TODO: décrire l'écran 1 de MeetAI]",
-        "s2": "[TODO: décrire l'écran 2 de MeetAI]",
-        "s3": "[TODO: décrire l'écran 3 de MeetAI]"
-      }
-    },
-    "flowshop": {
-      "name": "FlowShop",
-      "kind": "E-commerce",
-      "challenge": "[TODO: l'objectif de la boutique et pour qui]",
-      "built": "[TODO: ce que j'ai construit : catalogue, paiement, administration]",
-      "media": {
-        "s1": "[TODO: décrire l'écran 1 de FlowShop]",
-        "s2": "[TODO: décrire l'écran 2 de FlowShop]",
-        "s3": "[TODO: décrire l'écran 3 de FlowShop]",
-        "s4": "[TODO: décrire l'écran 4 de FlowShop]"
-      }
+      "built": "[TODO: ce que j'ai construit, et ce que la partie IA apporte]"
     },
     "cote-royale": {
       "name": "Côte Royale",
       "kind": "Site web",
       "challenge": "[TODO: l'objectif du client pour le site]",
-      "built": "Une expérience pilotée par l'interface, animée avec GSAP et TypeScript, pour un design et une UX soignés. (brouillon, à confirmer en 08)",
-      "media": {
-        "s1": "[TODO: décrire l'écran 1 de Côte Royale]",
-        "s2": "[TODO: décrire l'écran 2 de Côte Royale]",
-        "s3": "[TODO: décrire l'écran 3 de Côte Royale]"
-      }
+      "built": "Une expérience pilotée par l'interface, animée avec GSAP et TypeScript, pour un design et une UX soignés. (brouillon, à confirmer en 08)"
     }
   },
   "testimonials": {

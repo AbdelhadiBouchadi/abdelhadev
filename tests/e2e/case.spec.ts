@@ -2,21 +2,24 @@
 // and /en/work/dentaflow: the hero name and first screen reach their end state after the loader;
 // the tour (desktop: the step crossing 55 % is active and its stage screen alone is shown; mobile:
 // no stage, one inline screen per step); the diagram fully drawn (LineDraw, moved here from the
-// lab bench); the next-project link lands on the Ophtachusm sheet through the curtain, with the shell
-// footer back; projects without a case study are 404s; complete without JavaScript and under
-// reduced motion; ScrollTriggers back to their baseline; axe at the top and at the architecture.
+// lab bench); the next-project link lands on the next sheet of the work order through the curtain,
+// with the shell footer back; projects without a case study are 404s; complete without JavaScript
+// and under reduced motion; ScrollTriggers back to their baseline; axe at the top and at the
+// architecture. 08b: each tour step shows the screen the media map gives it (in the server HTML,
+// with its alt and size), the others keep their skeleton; no horizontal overflow.
 import AxeBuilder from "@axe-core/playwright";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { expect, test, type Locator, type Page } from "@playwright/test";
 import { getCaseStudy } from "@/lib/content/case-studies";
+import { nextProject } from "@/lib/content/projects";
+import { mediaCopy, tourMedia } from "@/lib/media";
 import { beyond, bring, collectErrors, liveScrollTriggers } from "./page-helpers";
 import { LEGAL_NAME } from "./routes";
 import { shellIdle, transitionsSettled, visited } from "./shell-helpers";
 
 interface CaseMessages {
   footer: { cta: string };
-  projects: {
-    hms: { name: string };
+  projects: Record<string, { name: string }> & {
     dentaflow: {
       name: string;
       case: { footer: string; tour: Record<string, { title: string; text: string }> };
@@ -33,6 +36,9 @@ const LOCALES = ["fr", "en"] as const;
 const study = getCaseStudy("dentaflow");
 if (!study) throw new Error("the DentaFlow case study is missing");
 const KEYS = study.tour.map((s) => s.key);
+/** The real tour screens by step, from 1 (lib/content/media.map.json through the manifest). */
+const TOUR = tourMedia("dentaflow");
+const NEXT = nextProject("dentaflow")?.slug ?? "";
 /** CASE.tour.dimOpacity (src/lib/motion.ts). */
 const DIM = 0.88;
 
@@ -199,20 +205,20 @@ test.describe("with motion", () => {
   });
 
   for (const locale of LOCALES) {
-    test(`${locale}: the next project link lands on the Ophtachusm sheet through the curtain`, async ({
+    test(`${locale}: the next project link lands on the next sheet through the curtain`, async ({
       page,
     }) => {
       const m = MESSAGES[locale];
       await page.goto(PATHS[locale]);
       await shellIdle(page);
       const link = page.locator("a.next-project");
-      await expect(link).toHaveAttribute("href", `${WORK[locale]}#hms`);
+      await expect(link).toHaveAttribute("href", `${WORK[locale]}#${NEXT}`);
       await bring(page, link, 0.5);
-      await expect(link.locator("h2")).toHaveAccessibleName(m.projects.hms.name);
+      await expect(link.locator("h2")).toHaveAccessibleName(m.projects[NEXT]?.name ?? NEXT);
       await link.click();
-      await expect(page).toHaveURL(new RegExp(`${WORK[locale]}#hms$`));
+      await expect(page).toHaveURL(new RegExp(`${WORK[locale]}#${NEXT}$`));
       await shellIdle(page);
-      const sheet = page.locator("#hms");
+      const sheet = page.locator(`#${NEXT}`);
       const margin = await scrollMargin(sheet);
       await expect.poll(() => topInView(sheet), { timeout: 5000 }).toBeCloseTo(margin, -1);
       // The footer is the shell's again after a client-side navigation (the @footer slot).
@@ -378,4 +384,50 @@ test.describe("reduced motion", () => {
     expect(await complete(page)).toEqual(COMPLETE);
     expect(await diagramDrawn(page.locator("[data-line-draw]"))).toBe(true);
   });
+});
+
+// ---------- the real tour screens (08b) ----------
+
+test.describe("tour screens without JavaScript", () => {
+  test.use({ javaScriptEnabled: false });
+
+  for (const locale of LOCALES) {
+    test(`${locale}: each mapped step shows its screen in the server HTML, the others a skeleton`, async ({
+      page,
+      request,
+    }) => {
+      const raw = await (await request.get(PATHS[locale])).text();
+      await page.goto(PATHS[locale]);
+      for (const [i, key] of KEYS.entries()) {
+        const shot = page.locator(`#tour-${key} .tour-shot`);
+        const item = TOUR.get(i + 1);
+        if (!item || item.asset.kind !== "image") {
+          await expect(shot.locator('[data-placeholder="screen"]'), key).toHaveCount(1);
+          continue;
+        }
+        const img = shot.locator("img");
+        await expect(img, key).toHaveAttribute("alt", mediaCopy(MESSAGES[locale], item.key).alt);
+        await expect(img).toHaveAttribute("width", String(item.asset.width));
+        await expect(img).toHaveAttribute("height", String(item.asset.height));
+        await expect(img).toHaveAttribute("loading", "lazy");
+        expect(raw, key).toContain(item.asset.avif[0]?.src ?? "");
+        // The stage copy is decorative (the stage is aria-hidden).
+        await expect(page.locator(`[data-tour-slot="${key}"] img`)).toHaveAttribute("alt", "");
+      }
+    });
+  }
+});
+
+test("no horizontal overflow, top to bottom", async ({ page }) => {
+  await visited(page);
+  await page.goto(PATHS.fr);
+  await shellIdle(page);
+  for (const at of ["top", "tour", "bottom"] as const) {
+    if (at === "tour") await bring(page, page.locator("[data-tour]"), 0.1);
+    if (at === "bottom") await beyond(page, page.locator("#architecture"));
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    );
+    expect(overflow, at).toBeLessThanOrEqual(0);
+  }
 });

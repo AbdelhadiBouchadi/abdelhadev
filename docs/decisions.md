@@ -21,6 +21,7 @@ Status: **Fixed**, **Provisional** (fixed unless the named spike fails), **Open*
 | P12 | The process may state that the quote arrives 24 to 48 hours after the first conversation: it is how he works, not a reply-time promise. The percentages of the advance and balance invoices are not published. | Fixed |
 | P13 | The public email is `contact@abdelhadev.me` (replaces "no public email yet", 08a), in `src/lib/site.ts`, shown in the footer and the legal notice. It forwards to a private inbox that never appears in the repository, the messages, the docs or the tests. | Fixed |
 | P14 | French copy is written natively under `docs/french-style.md`, never translated word for word from the English, and `pnpm check:fr` guards it (08a2). The degree is written in French as "Dernière année de Bachelor of Engineering (B.Eng)", never "licence". | Fixed |
+| P15 | Screenshots and loops (08b, owner). The e-commerce project is no longer shown; the work order is DentaFlow, MeetAI, Ophtachusm, the yoga platform, Côte Royale. The Dérive Casablancaise festival left the about timeline and remains only as the hidden `festival` testimonial. Côte Royale's loops may show its campaign models and product prices (the client's own site). Ophtachusm screenshots may show the service's and its partners' logos; the copy still never names the hospital. DentaFlow's seeded clinic fees and balances are not prices under P5, which is about the owner's own prices; plan prices (MeetAI) stay unpublished. | Fixed |
 
 ## Design
 
@@ -58,6 +59,7 @@ Status: **Fixed**, **Provisional** (fixed unless the named spike fails), **Open*
 | T15 | The contact form sends to a private inbox (`CONTACT_TO`, an environment variable) that is never published on the site, in the repo or in a client bundle. Until `abdelhadev.me` is verified in Resend, mail goes out from `Abdelhadev <onboarding@resend.dev>` (`CONTACT_FROM`). | Fixed |
 | T16 | The contact email (`src/emails/contact-form.tsx`, sent with a plain-text twin) is for the owner only, so it is always in French, whatever the page language. Its values are copied from the tokens and inlined, because email clients ignore CSS variables. | Fixed |
 | T17 | The contact toast (Sonner, mounted only in the contact form) is additive: it repeats the inline confirmation or error line, which stay the accessible, no-JavaScript source of truth. A toast is never the only feedback. | Fixed |
+| T18 | Real media (08b): `pnpm media` (`scripts/media.mjs`, dev dependencies `sharp` and `ffmpeg-static`) is the only way files reach `public/work/`; the manifest is validated with zod in `src/lib/media.ts`, and the work page and case study render it with `ProjectMedia` (a `<picture>` or a muted loop with a play/pause button), not `next/image`. File names live only in `src/lib/content/media.map.json`. | Fixed |
 
 ## Lessons from the first attempt (kept so we do not repeat them)
 

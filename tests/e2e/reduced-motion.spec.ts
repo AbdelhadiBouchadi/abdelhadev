@@ -17,7 +17,8 @@ for (const route of ROUTES.filter((r) => r.locale === "fr")) {
     const hidden = await page.locator("main *, footer *").evaluateAll(
       (elements) =>
         elements.filter((el) => {
-          if (el.closest("[hidden]")) return false;
+          // A video's <source> children are never rendered (Chromium computes them hidden).
+          if (el.closest("[hidden]") || el.matches("video > source")) return false;
           const style = getComputedStyle(el);
           return style.visibility === "hidden" || Number(style.opacity) === 0;
         }).length,

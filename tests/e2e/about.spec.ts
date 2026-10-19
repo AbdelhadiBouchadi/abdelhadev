@@ -2,9 +2,9 @@
 // arcs and the title reach their end state after the loader; each chapter's statement lights up
 // as it is scrolled through; services, process, experience, stack and "Right now" reach their end
 // state; the footer's LinkedIn and GitHub links and the CV link are right for the locale and the
-// CV is served as a PDF; the timeline's dates, the festival link and the public email in the
-// footer and the legal notice (08a); the raw HTML has every section title and the five services in order;
-// complete and still under reduced motion; ScrollTriggers back to their baseline; axe at the top
+// CV is served as a PDF; the timeline's dates and the public email in the footer and the legal
+// notice (08a); the festival is no longer on the timeline (08b); the raw HTML has every section
+// title and the five services in order; complete and still under reduced motion; ScrollTriggers back to their baseline; axe at the top
 // and at "Right now" (night).
 import AxeBuilder from "@axe-core/playwright";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -30,7 +30,7 @@ interface AboutMessages {
     experience: {
       title: string;
       cv: string;
-      items: Record<string, { when: string; title: string; link?: string }>;
+      items: Record<string, { when: string; title: string }>;
     };
     stack: { title: string };
     now: { title: string };
@@ -323,14 +323,12 @@ for (const locale of LOCALES) {
   });
 }
 
-// ---------- final copy (08a): dates, the festival link, the public email ----------
+// ---------- final copy (08a): dates and the public email; no festival row (08b) ----------
 
 const LEGAL = { fr: "/fr/mentions-legales", en: "/en/legal-notice" } as const;
 
 for (const locale of LOCALES) {
-  test(`${locale}: the timeline dates, the festival link and the public email`, async ({
-    page,
-  }) => {
+  test(`${locale}: the timeline dates, no festival row and the public email`, async ({ page }) => {
     const m = MESSAGES[locale];
     const items = m.about.experience.items;
     await page.goto(PATHS[locale]);
@@ -343,13 +341,9 @@ for (const locale of LOCALES) {
     await expect(timeline).toContainText("Ophtachusm");
     await expect(page.locator("body")).not.toContainText(/\bHMS\b/);
 
-    const festival = timeline.getByRole("link", {
-      name: `${items.festival?.link ?? "link"} (${m.footer.newTab})`,
-    });
-    await expect(festival).toHaveAttribute("href", "https://derive-casablancaise.com");
-    await expect(festival).toHaveAttribute("target", "_blank");
-    await expect(festival).toHaveAttribute("rel", "noopener noreferrer");
-    expect((await festival.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(44);
+    // The festival left the timeline (08b): it remains only as a hidden testimonial entry.
+    await expect(timeline).not.toContainText("Dérive Casablancaise");
+    await expect(timeline.locator('a[target="_blank"]')).toHaveCount(0);
 
     const email = page.locator("footer").getByRole("link", { name: SITE.email });
     await expect(email).toHaveAttribute("href", `mailto:${SITE.email}`);

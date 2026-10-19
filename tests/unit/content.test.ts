@@ -8,8 +8,8 @@ import { SITE, todoReport } from "@/lib/site";
 import { isTodo } from "@/lib/todo";
 
 describe("projects", () => {
-  it("lists the five projects of docs/content.md", () => {
-    expect(PROJECT_SLUGS).toEqual(["dentaflow", "hms", "meetai", "flowshop", "cote-royale"]);
+  it("lists the projects of docs/content.md in the work order (08b)", () => {
+    expect(PROJECT_SLUGS).toEqual(["dentaflow", "meetai", "hms", "cote-royale"]);
   });
 
   it("has localised copy for every project in both locales", () => {

@@ -50,7 +50,7 @@ export default async function CaseStudyPage({ params }: PageProps<"/[locale]/wor
     <>
       <CaseHero project={project} study={study} copy={copy} />
       <CaseProblem copy={copy} />
-      <ProductTour study={study} copy={copy} />
+      <ProductTour slug={slug} study={study} copy={copy} />
       <Adaptation study={study} copy={copy} />
       <Architecture study={study} copy={copy} />
       <NextProject slug={slug} />
