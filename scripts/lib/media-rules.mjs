@@ -29,10 +29,21 @@ export function kindOf(fileName, { images, videos }) {
 }
 
 /** The output widths for a source: the configured steps up to the source width; a source
-    narrower than the smallest step is written at its own width. Never upscaled. */
-export function imageWidths(sourceWidth, steps) {
+    narrower than the smallest step is written at its own width. Never upscaled. With `retina`
+    ({ above, max }), a source wider than `above` also gets one variant at its own width capped at
+    `max`, for dense screens (08c). */
+export function imageWidths(sourceWidth, steps, retina) {
   const kept = steps.filter((w) => w <= sourceWidth);
-  return kept.length > 0 ? kept : [sourceWidth];
+  if (kept.length === 0) return [sourceWidth];
+  if (retina && sourceWidth > retina.above) kept.push(Math.min(sourceWidth, retina.max));
+  return [...new Set(kept)].sort((a, b) => a - b);
+}
+
+/** Whether a published file gets the retina variant: `roles` "all", or the roles listed, of
+    any of the file's map entries. */
+export function wantsRetina(entries, file, roles) {
+  if (roles === "all") return true;
+  return entries.some((e) => e.file === file && roles.includes(e.role));
 }
 
 /** The height kept after cutting a tall capture from the top (height <= width * ratio). */

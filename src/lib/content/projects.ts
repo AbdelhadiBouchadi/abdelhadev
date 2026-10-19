@@ -45,7 +45,21 @@ const INPUT: ProjectInput[] = [
     status: "[TODO: MeetAI status (live, ready or in-progress)]",
     permission: "confirmed",
     caseStudy: false,
-    stack: "[TODO: MeetAI stack]",
+    stack: [
+      "Next.js 15",
+      "React 19",
+      "TypeScript",
+      "tRPC",
+      "Drizzle",
+      "Neon (PostgreSQL)",
+      "Better Auth",
+      "Stream",
+      "OpenAI",
+      "Inngest",
+      "Polar",
+      "shadcn/ui",
+      "Tailwind 4",
+    ],
     media: media(
       { span: 5, tone: "blue", skeleton: "chat" },
       { span: 7, tone: "plain", skeleton: "chart" },
@@ -59,7 +73,17 @@ const INPUT: ProjectInput[] = [
     status: "[TODO: Ophtachusm status (live, ready or in-progress)]",
     permission: "confirmed",
     caseStudy: false,
-    stack: "[TODO: Ophtachusm stack]",
+    stack: [
+      "Next.js 14",
+      "TypeScript",
+      "Prisma",
+      "MongoDB",
+      "Auth.js",
+      "UploadThing",
+      "Zod",
+      "shadcn/ui",
+      "Tailwind 3",
+    ],
     media: media(
       { span: 8, tone: "dark", skeleton: "chart" },
       { span: 4, tone: "warm", skeleton: "record" },
@@ -69,13 +93,51 @@ const INPUT: ProjectInput[] = [
     copyKey: "projects.hms",
   },
   {
+    slug: "yoga-booking",
+    featured: false,
+    status: "[TODO: Yoga booking status (live, ready or in-progress)]",
+    // Shown without the studio's name (docs/decisions.md, P17).
+    permission: "confirmed",
+    caseStudy: false,
+    stack: [
+      "Next.js 15",
+      "React 19",
+      "TypeScript",
+      "Tailwind 4",
+      "shadcn/ui",
+      "Prisma",
+      "PostgreSQL (Neon)",
+      "Better Auth",
+      "next-intl",
+      "Resend",
+      "React Email",
+      "UploadThing",
+      "Arcjet",
+    ],
+    media: media(
+      { span: 7, tone: "warm", skeleton: "site" },
+      { span: 5, tone: "plain", skeleton: "chart" },
+      { span: 6, tone: "blue", skeleton: "list" },
+      { span: 6, tone: "plain", skeleton: "agenda" },
+    ),
+    copyKey: "projects.yoga-booking",
+  },
+  {
     slug: "cote-royale",
     featured: false,
     status: "[TODO: Côte Royale status (live, ready or in-progress)]",
-    // The owner cleared naming Côte Royale (docs/decisions.md, P7, update in 04).
+    // A concept project with no client (docs/decisions.md, P17): shown by the owner's decision.
     permission: "confirmed",
     caseStudy: false,
-    stack: ["GSAP", "TypeScript", "[TODO: the rest of the Côte Royale stack]"],
+    stack: [
+      "Next.js 15",
+      "React 19",
+      "TypeScript",
+      "Tailwind 4",
+      "GSAP (ScrollTrigger)",
+      "Lenis",
+      "Prismic",
+    ],
     media: media(
       { span: 12, tone: "warm", skeleton: "site", layout: "wide" },
       { span: 6, tone: "plain", skeleton: "site" },
@@ -85,8 +147,8 @@ const INPUT: ProjectInput[] = [
   },
 ];
 
-/** The work page order (08b). It may name a project that is not in INPUT yet (yoga-booking
-    arrives in 08c): an absent slug is skipped. A project missing from this list fails the build. */
+/** The work page order (08b, complete since 08c). A slug missing from INPUT is skipped; a
+    project missing from this list fails the build. */
 export const WORK_ORDER = ["dentaflow", "meetai", "hms", "yoga-booking", "cote-royale"] as const;
 
 const rank = (slug: string) => (WORK_ORDER as readonly string[]).indexOf(slug);

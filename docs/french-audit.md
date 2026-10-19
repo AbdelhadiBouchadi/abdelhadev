@@ -93,7 +93,7 @@ Every French string changed in the French pass, judged against `docs/french-styl
 
 - `home.hero.kinds.ai` and `projects.meetai.kind` ("Applications web IA", "Application web IA"): short labels in the hero and on the sheets; "avec IA" would read better but lengthens a label set in display type.
 - `footer.elsewhere` ("Ailleurs"): heads the social links; natural enough in French.
-- `about.experience.items.*.when` ("Octobre 2026", "Janvier 2025"): a month that opens a label keeps its capital.
-- `projects.cote-royale.built`: marked as a draft for 08c; project copy is out of scope.
+- `about.experience.items.*.when` ("Octobre 2026"): a month that opens a label keeps its capital. (Ophtachusm's date reads "2024 à 2025" since 08c, decision P18.)
+- `projects.cote-royale.built`: was a draft for 08c; written in 08c from the code audit.
 - Every `[TODO …]` placeholder, testimonial placeholders and proper nouns ("SOS Dental Clinic, Agadir", "Dérive Casablancaise").
 - `src/app/[locale]/opengraph-image.alt.txt` is a single English file shared by both locales; a French alt text needs a per-locale image route (09-seo-og-cv).

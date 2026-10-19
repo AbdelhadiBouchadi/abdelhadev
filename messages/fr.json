@@ -65,8 +65,8 @@
       "captions": {
         "agenda": "Agenda",
         "record": "Dossier patient",
-        "plan": "Plan de traitement",
-        "invoice": "Facture"
+        "odontogram": "Schéma dentaire",
+        "documents": "Documents"
       },
       "placeholder": "Capture à venir"
     },
@@ -238,8 +238,14 @@
           "text": "Un logiciel de gestion pour cabinets dentaires, prêt à être adapté à chaque nouveau cabinet.",
           "where": "Produit"
         },
+        "yoga": {
+          "when": "2025 à 2026",
+          "title": "Réservation de yoga",
+          "text": "Une plateforme de réservation et son espace d'administration pour un studio de yoga.",
+          "where": "Client"
+        },
         "hms": {
-          "when": "Janvier 2025",
+          "when": "2024 à 2025",
           "title": "Ophtachusm",
           "text": "Un système de gestion pour un service hospitalier d'ophtalmologie, réservé au personnel médical.",
           "where": "Santé"
@@ -353,10 +359,10 @@
   "work": {
     "meta": {
       "title": "Projets",
-      "description": "Les logiciels que j'ai développés de bout en bout\u00a0: DentaFlow pour les cabinets dentaires, un système hospitalier, une application IA et un site web."
+      "description": "Quelques projets que j'ai développés de bout en bout\u00a0: systèmes de gestion, applications IA, plateformes de réservation et sites vitrines."
     },
-    "title": "Des logiciels sur lesquels on s'appuie au quotidien",
-    "lead": "{count, plural, one {# projet} other {# projets}}, des logiciels pour cabinets et hôpitaux aux outils d'IA et aux boutiques en ligne. Chacun développé de bout en bout, du modèle de données au dernier écran.",
+    "title": "Quelques projets que j'ai développés",
+    "lead": "Des systèmes de gestion, des applications IA, des plateformes de réservation et des sites qui racontent une marque.",
     "start": "Commencer par DentaFlow",
     "projects": "Projets",
     "rail": "Projets sur cette page",
@@ -373,6 +379,7 @@
     "screenshot": "Capture à venir",
     "screens": "Écrans de {name}",
     "allScreens": "Voir les {count} écrans",
+    "github": "Plus de projets sur GitHub",
     "cursor": {
       "caseStudy": "Lire l'étude de cas"
     },
@@ -587,23 +594,29 @@
         }
       }
     },
-    "hms": {
-      "name": "Ophtachusm",
-      "kind": "Système de gestion hospitalière",
-      "challenge": "Doter un service d'ophtalmologie d'un outil pour suivre ses patients, ses rendez-vous et l'imagerie oculaire.",
-      "built": "Un système de gestion réservé au personnel médical du service\u00a0: données des patients, rendez-vous, imagerie oculaire et dossiers médicaux."
-    },
     "meetai": {
       "name": "MeetAI",
-      "kind": "Application web IA",
-      "challenge": "[TODO: le problème que MeetAI résout, en une phrase]",
-      "built": "[TODO: ce que j'ai construit, et ce que la partie IA apporte]"
+      "kind": "Application web avec agents IA",
+      "challenge": "Une application où l'on crée des agents IA, planifie des réunions avec eux et les rejoint en appel vidéo. L'agent répond à voix haute\u00a0; à la fin, l'application produit l'enregistrement, la transcription, un résumé et un chat pour interroger la réunion.",
+      "built": "Un cycle de réunion piloté par des webhooks signés\u00a0: à venir, en cours, en traitement, terminée. Résumé généré en tâche de fond, en étapes qui peuvent être rejouées (Inngest). Chaque requête filtrée par utilisateur côté serveur, limites du plan gratuit vérifiées avant l'écriture. Abonnement géré avec Polar, en mode test."
+    },
+    "hms": {
+      "name": "Ophtachusm",
+      "kind": "Gestion d'un service d'ophtalmologie",
+      "challenge": "Une application pour gérer le quotidien d'un service d'ophtalmologie\u00a0: dossiers patients, comptes rendus, imagerie oculaire, rendez-vous et statistiques. Les nouveaux comptes attendent la validation d'un administrateur avant d'accéder aux données.",
+      "built": "Conçu pour le service d'ophtalmologie d'un hôpital d'Agadir, utilisé par l'équipe pendant plusieurs mois. Un calendrier de rendez-vous qui suit le fonctionnement du service\u00a0: consultation, spécialité, chirurgie et professeur, validés selon le type. Imagerie oculaire téléversée et annotée par œil, type et description. Statistiques calculées côté serveur\u00a0: douze mois et variation d'un mois à l'autre."
+    },
+    "yoga-booking": {
+      "name": "Réservation de yoga",
+      "kind": "Plateforme de réservation",
+      "challenge": "Une plateforme de réservation pour un studio de yoga. Les élèves consultent les séances, réservent une place ou rejoignent la liste d'attente, et annulent avant l'échéance fixée par séance. Le studio gère tout depuis un espace d'administration sur mesure\u00a0: séances, catégories, intervenants, élèves, réservations et document de menu à télécharger.",
+      "built": "Une réservation vérifiée côté serveur en une seule transaction\u00a0: séance publiée, places restantes, puis confirmation ou liste d'attente. Liste d'attente automatique\u00a0: quand une place se libère, la première personne en file est confirmée, et une contrainte en base empêche les doublons. Droits d'administration vérifiés en base de données à chaque action, pas seulement dans l'interface. Bilingue dès le modèle de données\u00a0: chaque séance, catégorie et intervenant existe en français et en anglais."
     },
     "cote-royale": {
       "name": "Côte Royale",
-      "kind": "Site web",
-      "challenge": "[TODO: l'objectif du client pour le site]",
-      "built": "Une expérience pilotée par l'interface, animée avec GSAP et TypeScript, pour un design et une UX soignés. (brouillon, à confirmer en 08)"
+      "kind": "Site vitrine (projet de démonstration)",
+      "challenge": "Un site vitrine pour une marque de parfum imaginaire, pensé pour pousser l'animation. Le défilement est fluide, les lettres s'allument au fil du scroll et les pages se fondent l'une dans l'autre. Les parfums et les textes se gèrent depuis Prismic, sans toucher au code.",
+      "built": "Animation pilotée par le défilement\u00a0: GSAP et ScrollTrigger, défilement fluide avec Lenis, et transitions de page natives qui laissent la navigation immobile. Des composants d'animation réutilisables, avec une version simplifiée pour les personnes qui réduisent les animations. Contenu piloté par Prismic\u00a0: une page d'accueil composée de six blocs, des pages parfum générées à l'avance et mises à jour dès qu'un éditeur publie. Vidéo chargée seulement à l'approche de l'écran, pour garder un premier affichage léger."
     }
   },
   "testimonials": {

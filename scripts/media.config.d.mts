@@ -3,6 +3,7 @@ export const IMAGE_EXTENSIONS: readonly string[];
 export const VIDEO_EXTENSIONS: readonly string[];
 export const IMAGE: {
   widths: readonly number[];
+  retina: { above: number; max: number; roles: "all" | readonly string[] };
   maxHeightRatio: number;
   avif: {
     start: number;

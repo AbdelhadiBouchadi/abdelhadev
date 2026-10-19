@@ -17,6 +17,7 @@ export const CHAPTERS = ["who", "how", "why"] as const;
 export const EXPERIENCE = [
   { key: "freelance", detail: true },
   { key: "dentaflow", detail: true },
+  { key: "yoga", detail: true },
   { key: "hms", detail: true },
   { key: "education", detail: false },
 ] as const;

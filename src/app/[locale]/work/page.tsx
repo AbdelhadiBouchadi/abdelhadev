@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
+import { MoreOnGitHub } from "@/components/sections/work/MoreOnGitHub";
 import { ProjectList } from "@/components/sections/work/ProjectList";
 import { ProjectRail } from "@/components/sections/work/ProjectRail";
 import { WorkHero } from "@/components/sections/work/WorkHero";
@@ -22,7 +23,10 @@ export default async function WorkPage({ params }: PageProps<"/[locale]/work">) 
       <ToneSection tone="day" aria-label={t("projects")}>
         <div className="work-layout wrap">
           <ProjectRail />
-          <ProjectList />
+          <div className="work-main">
+            <ProjectList />
+            <MoreOnGitHub />
+          </div>
         </div>
       </ToneSection>
     </>

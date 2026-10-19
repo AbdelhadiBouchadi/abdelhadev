@@ -1,13 +1,16 @@
 /* The home featured work (prototype #build): DentaFlow, night, a 300 vh sticky stage on desktop
    and normal flow on mobile. The copy fades up, then four framed screens open one after another
-   (FeaturedMotion). The screens are the placeholders from 02 until 08 brings real screenshots.
+   (FeaturedMotion). Since 08c the tiles take the project's home screens (role hero, place home,
+   in map order, lib/content/media.map.json); a tile without one keeps its placeholder from 02.
    The feature list comes from lib/content/projects.ts (unconfirmed by the owner: its placeholder
    is listed by the build). The button opens the case study through the route curtain. */
-import { getTranslations } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { buttonClass, SunDot } from "@/components/ui/Button";
 import { Screen, type ScreenLayout } from "@/components/ui/Screen";
 import { FeaturedMotion } from "@/components/sections/home/FeaturedMotion";
 import { getProject } from "@/lib/content/projects";
+import { heroMedia, mediaCopy } from "@/lib/media";
+import { ProjectMedia } from "@/primitives/ProjectMedia";
 import { StickyStage } from "@/primitives/StickyStage";
 import { TransitionLink } from "@/primitives/TransitionLink";
 
@@ -15,9 +18,12 @@ const SLUG = "dentaflow";
 const SCREENS = [
   { layout: "agenda", caption: "agenda" },
   { layout: "record", caption: "record" },
-  { layout: "plan", caption: "plan" },
-  { layout: "invoice", caption: "invoice" },
+  { layout: "plan", caption: "odontogram" },
+  { layout: "invoice", caption: "documents" },
 ] as const satisfies readonly { layout: ScreenLayout; caption: string }[];
+
+/** A tile is a quarter of the page from 901 px (two columns beside the copy), half below. */
+const TILE_SIZES = "(min-width: 901px) 25vw, 50vw";
 
 const FEATURE_KEYS = ["agenda", "records", "plans", "invoices"] as const;
 type FeatureKey = (typeof FEATURE_KEYS)[number];
@@ -28,6 +34,10 @@ function isFeatureKey(value: string): value is FeatureKey {
 
 export async function Featured() {
   const t = await getTranslations("home.featured");
+  const work = await getTranslations("work");
+  const messages = await getMessages();
+  const real = heroMedia(SLUG, "home");
+  const controls = { play: work("video.play"), pause: work("video.pause") };
   const features = (getProject(SLUG)?.features?.items ?? []).filter(isFeatureKey);
 
   return (
@@ -66,20 +76,44 @@ export async function Featured() {
           </div>
         </div>
         <div className="tiles" role="group" aria-label={t("screens")}>
-          {SCREENS.map(({ layout, caption }) => (
-            <div key={layout} className="tile" data-tile="" data-cursor={t("placeholder")}>
-              <Screen
-                layout={layout}
-                label={t("placeholder")}
-                caption={
-                  <>
-                    <span>{t(`captions.${caption}`)}</span>
-                    <span>{t("placeholder")}</span>
-                  </>
-                }
-              />
-            </div>
-          ))}
+          {SCREENS.map(({ layout, caption }, i) => {
+            const screen = real[i];
+            const text = screen ? mediaCopy(messages, screen.key) : null;
+            return (
+              <div
+                key={layout}
+                className="tile"
+                data-tile=""
+                data-cursor={screen ? undefined : t("placeholder")}
+              >
+                {screen && text ? (
+                  <Screen
+                    caption={<span>{t(`captions.${caption}`)}</span>}
+                    media={
+                      <ProjectMedia
+                        item={screen}
+                        alt={text.alt}
+                        label={text.label}
+                        sizes={TILE_SIZES}
+                        controls={controls}
+                      />
+                    }
+                  />
+                ) : (
+                  <Screen
+                    layout={layout}
+                    label={t("placeholder")}
+                    caption={
+                      <>
+                        <span>{t(`captions.${caption}`)}</span>
+                        <span>{t("placeholder")}</span>
+                      </>
+                    }
+                  />
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
       <FeaturedMotion />

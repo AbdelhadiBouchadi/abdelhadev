@@ -63,6 +63,16 @@ export const mapEntry = z.discriminatedUnion("role", [
       key: messageKey,
     })
     .strict(),
+  z
+    .object({
+      file: fileName,
+      role: z.literal("hero"),
+      /** Where the screen opens a page (08c): the case study hero, or the home featured tiles
+          (in map order, one per tile). */
+      place: z.enum(["case", "home"]),
+      key: messageKey,
+    })
+    .strict(),
   z.object({ file: fileName, role: z.literal("spare"), note: z.string().optional() }).strict(),
 ]);
 
@@ -76,6 +86,7 @@ export type MediaAsset = z.infer<typeof mediaAsset>;
 export type MediaManifest = z.infer<typeof mediaManifest>;
 export type MediaMap = z.infer<typeof mediaMap>;
 export type MapEntry = z.infer<typeof mapEntry>;
+export type HeroPlace = Extract<MapEntry, { role: "hero" }>["place"];
 
 export const MANIFEST: MediaManifest = mediaManifest.parse(manifestJson);
 export const MEDIA_MAP: MediaMap = mediaMap.parse(mapJson);
@@ -125,6 +136,22 @@ export function tourMedia(
     if (item) steps.set(entry.step, item);
   }
   return steps;
+}
+
+/** The opening screens of a project at one place (role hero), in map order: the case study hero
+    takes the first, the home featured tiles one each. A file the manifest does not have yet is
+    skipped, so its frame keeps the skeleton. */
+export function heroMedia(
+  slug: string,
+  place: HeroPlace,
+  map: MediaMap = MEDIA_MAP,
+  manifest: MediaManifest = MANIFEST,
+): ProjectMediaItem[] {
+  return entriesOf(slug, map).flatMap((entry) => {
+    if (entry.role !== "hero" || entry.place !== place) return [];
+    const item = resolve(slug, entry, manifest);
+    return item ? [item] : [];
+  });
 }
 
 /** The alt text and, for a video, the label of a screen, from the page's messages (the same

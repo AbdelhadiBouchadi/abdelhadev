@@ -41,6 +41,7 @@ import {
   qualitySteps,
   slugifyStem,
   stableStringify,
+  wantsRetina,
 } from "@scripts/lib/media-rules.mjs";
 
 const ROOT = fileURLToPath(new URL("../../", import.meta.url));
@@ -232,6 +233,16 @@ describe("workMedia and tourMedia", () => {
       }).success,
     ).toBe(false);
   });
+
+  it("takes a hero entry only with its place and key (08c)", () => {
+    const hero = (entry: object) =>
+      mediaMap.safeParse({ readme: "", projects: { x: [{ file: "a", role: "hero", ...entry }] } })
+        .success;
+    expect(hero({ place: "case", key: "work.x.media.1" })).toBe(true);
+    expect(hero({ place: "home", key: "work.x.media.1" })).toBe(true);
+    expect(hero({ key: "work.x.media.1" })).toBe(false);
+    expect(hero({ place: "footer", key: "work.x.media.1" })).toBe(false);
+  });
 });
 
 describe("pnpm media rules", () => {
@@ -253,6 +264,19 @@ describe("pnpm media rules", () => {
     expect(imageWidths(2800, IMAGE.widths)).toEqual([640, 960, 1440, 1920]);
     expect(imageWidths(1900, IMAGE.widths)).toEqual([640, 960, 1440]);
     expect(imageWidths(500, IMAGE.widths)).toEqual([500]);
+    // 08c: a source wider than 1440 px also gets its own width, capped at 2400 px.
+    expect(imageWidths(1900, IMAGE.widths, IMAGE.retina)).toEqual([640, 960, 1440, 1900]);
+    expect(imageWidths(2800, IMAGE.widths, IMAGE.retina)).toEqual([640, 960, 1440, 1920, 2400]);
+    expect(imageWidths(1920, IMAGE.widths, IMAGE.retina)).toEqual([640, 960, 1440, 1920]);
+    expect(imageWidths(1440, IMAGE.widths, IMAGE.retina)).toEqual([640, 960, 1440]);
+    const entries = [
+      { file: "a.png", role: "work" },
+      { file: "b.png", role: "work" },
+      { file: "b.png", role: "hero" },
+    ];
+    expect(wantsRetina(entries, "a.png", "all")).toBe(true);
+    expect(wantsRetina(entries, "a.png", ["hero"])).toBe(false);
+    expect(wantsRetina(entries, "b.png", ["hero"])).toBe(true);
     expect(croppedHeight(1900, 10330, 1)).toBe(1900);
     expect(croppedHeight(1920, 911, 1)).toBe(911);
   });

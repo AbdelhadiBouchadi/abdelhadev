@@ -12,6 +12,7 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { expect, test, type Locator, type Page } from "@playwright/test";
 import { publicProjects, sheetMedia, WORK_ORDER } from "@/lib/content/projects";
 import { mediaCopy } from "@/lib/media";
+import { SITE } from "@/lib/site";
 import { beyond, bring, collectErrors, liveScrollTriggers } from "./page-helpers";
 import { LEGAL_NAME } from "./routes";
 import { scrollToY, shellIdle, transitionsSettled, visited } from "./shell-helpers";
@@ -24,7 +25,9 @@ interface WorkMessages {
     caseStudy: string;
     cursor: { caseStudy: string };
     video: { play: string; pause: string };
+    github: string;
   };
+  footer: { newTab: string };
   projects: Record<string, { name: string }>;
 }
 const MESSAGES: Record<"fr" | "en", WorkMessages> = {
@@ -124,6 +127,35 @@ test.describe("with motion", () => {
       await expect(caseStudy).toHaveAttribute("href", `${PATHS[locale]}/dentaflow`);
       await expect(caseStudy).toHaveAttribute("data-cursor", m.work.cursor.caseStudy);
       expect(errors).toEqual([]);
+    });
+
+    test(`${locale}: under the list, the GitHub link opens the owner's profile in a new tab`, async ({
+      page,
+      request,
+    }) => {
+      // Server-rendered: in the HTML before any JavaScript runs.
+      const html = await (await request.get(PATHS[locale])).text();
+      expect(html).toContain(`href="${SITE.github}"`);
+
+      const m = MESSAGES[locale];
+      await page.goto(PATHS[locale]);
+      await shellIdle(page);
+      const link = page.getByRole("link", { name: `${m.work.github} (${m.footer.newTab})` });
+      await expect(link).toHaveCount(1);
+      await expect(link).toHaveAttribute("href", SITE.github);
+      await expect(link).toHaveAttribute("target", "_blank");
+      await expect(link).toHaveAttribute("rel", "noopener noreferrer");
+      // After the last sheet, and a 44 px target at least.
+      const after = await link.evaluate((a) => {
+        const list = document.querySelector("[data-projects]");
+        return list
+          ? Boolean(list.compareDocumentPosition(a) & Node.DOCUMENT_POSITION_FOLLOWING)
+          : false;
+      });
+      expect(after).toBe(true);
+      await link.scrollIntoViewIfNeeded();
+      const box = await link.boundingBox();
+      expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);
     });
   }
 
@@ -371,9 +403,9 @@ test("the sheets follow the work order, nothing overflows and the removed projec
   await page.goto(PATHS.fr);
   await shellIdle(page);
   const ids = await page.locator("article.project").evaluateAll((els) => els.map((el) => el.id));
-  expect(ids).toEqual(ORDER.filter((slug) => ids.includes(slug)));
-  expect(ids).toEqual([...WORK_ORDER].filter((slug) => SLUGS.includes(slug)));
-  expect(ids).toHaveLength(SLUGS.length);
+  // 08c: the five projects, all of them, in the work order.
+  expect(ids).toEqual(ORDER);
+  expect(ids).toEqual([...WORK_ORDER]);
   await expect(page.locator("body")).not.toContainText(REMOVED);
   for (const at of ["top", "bottom"] as const) {
     if (at === "bottom") await beyond(page, page.locator("[data-projects]"));

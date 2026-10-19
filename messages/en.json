@@ -65,8 +65,8 @@
       "captions": {
         "agenda": "Agenda",
         "record": "Patient record",
-        "plan": "Treatment plan",
-        "invoice": "Invoice"
+        "odontogram": "Dental chart",
+        "documents": "Documents"
       },
       "placeholder": "Screenshot to come"
     },
@@ -238,8 +238,14 @@
           "text": "Dental clinic management software, ready to be adapted to new clinics.",
           "where": "Product"
         },
+        "yoga": {
+          "when": "2025 to 2026",
+          "title": "Yoga booking",
+          "text": "A booking platform and its admin panel for a yoga studio.",
+          "where": "Client"
+        },
         "hms": {
-          "when": "January 2025",
+          "when": "2024 to 2025",
           "title": "Ophtachusm",
           "text": "A management system for a hospital ophthalmology service, for the medical staff only.",
           "where": "Healthcare"
@@ -353,10 +359,10 @@
   "work": {
     "meta": {
       "title": "Work",
-      "description": "The software I have built end to end: DentaFlow for dental clinics, a hospital system, an AI app and a website."
+      "description": "Some projects I've built end to end: management systems, AI apps, booking platforms and showcase sites."
     },
-    "title": "Software people rely on every day",
-    "lead": "{count, plural, one {# project} other {# projects}}, from clinic and hospital software to AI tools and online shops. Each one built end to end, from the data model to the last screen.",
+    "title": "Some projects I've built",
+    "lead": "Management systems, AI apps, booking platforms and sites that tell a brand's story.",
     "start": "Start with DentaFlow",
     "projects": "Projects",
     "rail": "Projects on this page",
@@ -373,6 +379,7 @@
     "screenshot": "Screenshot to come",
     "screens": "{name} screens",
     "allScreens": "See all {count} screens",
+    "github": "More projects on GitHub",
     "cursor": {
       "caseStudy": "Read the case study"
     },
@@ -587,23 +594,29 @@
         }
       }
     },
-    "hms": {
-      "name": "Ophtachusm",
-      "kind": "Hospital management system",
-      "challenge": "Give an ophthalmology service a tool to follow its patients, appointments and eye images.",
-      "built": "A management system for the service's medical staff only: patient data, appointments, eye imaging and medical records."
-    },
     "meetai": {
       "name": "MeetAI",
       "kind": "AI web app",
-      "challenge": "[TODO: the problem MeetAI solves, in one sentence]",
-      "built": "[TODO: what I built, and how the AI part helps the user]"
+      "challenge": "An app where you create AI agents, schedule meetings with them and join them on a video call. The agent answers out loud; afterwards the app produces the recording, the transcript, a summary and a chat to ask questions about the meeting.",
+      "built": "A meeting lifecycle driven by signed webhooks: upcoming, active, processing, completed. Summary generated as a background job, in retryable steps (Inngest). Every request scoped to the user on the server, free-plan limits checked before the write. Subscription handled with Polar, in test mode."
+    },
+    "hms": {
+      "name": "Ophtachusm",
+      "kind": "Ophthalmology department management",
+      "challenge": "An app to run the daily work of an ophthalmology department: patient files, medical records, eye images, appointments and statistics. New accounts wait for an administrator's approval before they can see any data.",
+      "built": "Built for the ophthalmology department of a hospital in Agadir and used by its team for several months. An appointment calendar that follows how the department works: consultation, specialty, surgery and professor, validated by type. Eye images uploaded and annotated by eye, type and description. Statistics computed on the server: twelve months and month-over-month change."
+    },
+    "yoga-booking": {
+      "name": "Yoga booking",
+      "kind": "Booking platform",
+      "challenge": "A booking platform for a yoga studio. Participants browse sessions, book a place or join the waiting list, and cancel before each session's deadline. The studio runs everything from a custom admin panel: sessions, categories, instructors, participants, bookings and a downloadable menu document.",
+      "built": "A booking checked on the server in a single transaction: published session, remaining places, then confirmation or waiting list. Automatic waiting list: when a place frees up, the first person in line is confirmed, and a database constraint prevents duplicates. Admin rights checked against the database on every action, not only in the interface. Bilingual from the data model: every session, category and instructor exists in French and English."
     },
     "cote-royale": {
       "name": "Côte Royale",
-      "kind": "Website",
-      "challenge": "[TODO: the client's goal for the website]",
-      "built": "An interface-driven experience animated with GSAP and TypeScript, for a polished design and UX. (draft, confirm in 08)"
+      "kind": "Showcase site (concept project)",
+      "challenge": "A showcase site for an imaginary perfume brand, built to push animation. Scrolling is smooth, letters light up as you scroll and pages blend into one another. Fragrances and text are managed from Prismic, with no code changes.",
+      "built": "Scroll-driven animation: GSAP and ScrollTrigger, smooth scrolling with Lenis, and native page transitions that keep the navigation still. Reusable animation components, with a simplified version for people who reduce motion. Content driven by Prismic: a home page built from six blocks, fragrance pages generated ahead of time and refreshed when an editor publishes. Video loaded only when it nears the screen, to keep the first load light."
     }
   },
   "testimonials": {

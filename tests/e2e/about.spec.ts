@@ -323,7 +323,8 @@ for (const locale of LOCALES) {
   });
 }
 
-// ---------- final copy (08a): dates and the public email; no festival row (08b) ----------
+// ---------- final copy (08a): dates and the public email; no festival row (08b); the yoga
+// platform between DentaFlow and Ophtachusm, Ophtachusm dated 2024 to 2025 (08c) ----------
 
 const LEGAL = { fr: "/fr/mentions-legales", en: "/en/legal-notice" } as const;
 
@@ -334,10 +335,16 @@ for (const locale of LOCALES) {
     await page.goto(PATHS[locale]);
 
     const timeline = page.locator(".timeline");
-    for (const key of ["dentaflow", "hms"]) {
+    const keys = ["dentaflow", "yoga", "hms"];
+    for (const key of keys) {
       const row = timeline.locator("li", { hasText: items[key]?.title ?? key });
       await expect(row.locator(".when")).toHaveText(items[key]?.when ?? key);
     }
+    // Newest first: DentaFlow, the yoga platform, then Ophtachusm.
+    const titles = await timeline.locator("li").allInnerTexts();
+    const at = (key: string) => titles.findIndex((t) => t.includes(items[key]?.title ?? key));
+    expect(keys.map(at)).toEqual([...keys.map(at)].sort((a, b) => a - b));
+    expect(at("yoga")).toBeGreaterThan(-1);
     await expect(timeline).toContainText("Ophtachusm");
     await expect(page.locator("body")).not.toContainText(/\bHMS\b/);
 
