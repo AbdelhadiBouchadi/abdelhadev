@@ -1,8 +1,4 @@
-/* Right now (prototype .now), night, its top corners curving over the day above (--r-section):
-   three cards with the sunset mark as their glyph, fading up one ABOUT.stagger.now apart when
-   they enter (Reveal).
-   DentaFlow links to its case study, the open card to Contact; the exploring card has no link
-   (the automation app is never presented as a product). */
+/* The exploring card has no link: the automation app is never presented as a product. */
 import { getTranslations } from "next-intl/server";
 import { Mark } from "@/components/brand/Mark";
 import { ArrowLink } from "@/components/ui/ArrowLink";

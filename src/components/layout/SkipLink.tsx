@@ -3,8 +3,6 @@ import { SHELL_CONTENT_ATTR } from "@/lib/shell";
 
 const content = { [SHELL_CONTENT_ATTR]: "" };
 
-/* Prototype .skip: off screen until focused, first focusable element of every page. Inert with
-   the rest of the content while the loader covers the page. */
 export async function SkipLink() {
   const t = await getTranslations("common");
   return (

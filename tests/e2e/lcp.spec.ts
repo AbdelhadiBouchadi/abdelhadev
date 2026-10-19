@@ -1,10 +1,7 @@
-// LCP probe (spike S3 method, decision T7): a PerformanceObserver records every
-// largest-contentful-paint entry on the mobile profile (390 px, 150 ms RTT, 1.6 Mbps, CPU 4x).
-// It writes the numbers to test-results/shell/lcp.json and asserts only that a value exists and
-// stays under the loader ceiling plus 1 s: budgets are the owner's (docs/baseline.md). It records
-// when the overlay is gone on this profile (loaderOffMs); it does not gate on it, because on a
-// 4x-throttled CPU that time follows the end of hydration, which follows the host machine
-// (docs/spikes/tbt.md). The 5 s rule is asserted unthrottled in loader.spec.ts.
+// Records every largest-contentful-paint entry on the mobile profile (390 px, 150 ms RTT,
+// 1.6 Mbps, CPU 4x) to test-results/shell/lcp.json. It only asserts that a value exists and stays
+// under the loader ceiling plus 1 s: the budgets live in docs/baseline.md. The overlay's end is
+// recorded, not gated: on a 4x-throttled CPU it follows hydration, which follows the host machine.
 import { mkdirSync, writeFileSync } from "node:fs";
 import { expect, test, type BrowserContext, type Page } from "@playwright/test";
 import { LOADER } from "@/lib/motion";

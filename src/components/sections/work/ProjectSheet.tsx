@@ -1,13 +1,4 @@
-/* One project sheet (prototype .project), with soft corners: the head (title, kind, status chip,
-   actions, then the challenge, what was built and the stack) and a 12-column grid of screens.
-   - The head's items fade up on entry (Reveal enter, WORK.head, STAGGER.projectHead).
-   - Each screen opens as it scrolls in (MediaReveal scrub): the declared span, frame tone and
-     aspect come from lib/content/projects.ts. The slots take the project's real screens in the
-     order of lib/content/media.map.json (sheetMedia); a slot without one keeps its skeleton.
-   - Actions: the case study button only when the project has one (DentaFlow, with "Ask for a
-     demo"); otherwise a link to the contact page.
-   The sheet is an article named by its title, with the slug as its id: the rail and the hero link
-   point at it, and a #slug URL lands on it after the loader. Copy comes from messages.projects. */
+/* The slug is the sheet's id: the rail and the hero link point at it. */
 import { getMessages, getTranslations } from "next-intl/server";
 import { ArrowLink } from "@/components/ui/ArrowLink";
 import { buttonClass, buttonSize, SunDot } from "@/components/ui/Button";
@@ -25,11 +16,10 @@ import { TransitionLink } from "@/primitives/TransitionLink";
 
 export interface ProjectSheetProps {
   project: Project;
-  /** The first sheet of the page: its first screen loads eagerly. */
   first?: boolean;
 }
 
-/** The image sizes of a frame: its share of the 12 columns from 761 px, full width below. */
+/** Its share of the 12 columns from 761 px, full width below. */
 const sizesFor = (span: number) =>
   `(min-width: 761px) ${String(Math.round((span / 12) * 100))}vw, 100vw`;
 

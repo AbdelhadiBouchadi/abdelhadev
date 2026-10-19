@@ -1,9 +1,6 @@
 "use client";
 
-/* Writes one value of the 3D scene's progress (lib/scene-state.ts) from a scroll range, as the
-   prototype's `st.p1` (hero) and `st.p2` (manifesto) triggers. Raw progress, not scrubbed: the
-   smooth scroll already eases it. Only while motion runs; the still scene reads nothing. The
-   value goes back to 0 when the leaf unmounts. */
+/* Raw progress, not scrubbed: the smooth scroll already eases it. */
 import { useRef } from "react";
 import { useMotion } from "@/hooks/useMotion";
 import { ScrollTrigger } from "@/lib/gsap";
@@ -12,7 +9,6 @@ import { sceneState, type SceneKey } from "@/lib/scene-state";
 
 export interface SceneProgressProps {
   value: Exclude<SceneKey, "p3">;
-  /** Selector of the section whose range drives the value. */
   trigger: string;
   start: string;
   end: string;

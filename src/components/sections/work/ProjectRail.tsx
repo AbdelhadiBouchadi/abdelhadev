@@ -1,6 +1,3 @@
-/* The sticky project rail (prototype .rail), from 901 px; hidden below, as in the prototype. One
-   link per public project (RailLinks, the only client part), and a thin progress line that fills
-   while the projects cross the spy line (Scrub scaleY 0 → 1 over the [data-projects] list). */
 import { getMessages, getTranslations } from "next-intl/server";
 import { RailLinks } from "@/components/sections/work/RailLinks";
 import { publicProjects } from "@/lib/content/projects";

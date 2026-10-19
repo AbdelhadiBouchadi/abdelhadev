@@ -1,13 +1,7 @@
 "use client";
 
-/* The dawn's arcs rising (prototype Pages.about intro): at the loader's ready signal the four arcs
-   rise from ABOUT.dawn.arcsFrom, grow to full size and fade in over DURATION.intro (2.2 s), one
-   STAGGER.arcs (0.14 s) apart, `from: "end"` as in the prototype: the last arc in the markup is
-   the innermost (the sun's core), so the dawn opens from the core outwards (docs/choreography.md
-   says "from the outside"; the prototype's value is ported, AGENTS.md). The scroll part (the arcs
-   expanding and fading) is the Scrub around them. The start state is CSS under html.motion
-   (src/styles/about.css); the reduced branch pins the arcs at rest if reduced motion is switched
-   on mid-visit. Sits inside the .arcs element, after the arcs. */
+/* `from: "end"`: the last arc in the markup is the innermost, so the dawn opens from the core
+   outwards. */
 import { useRef } from "react";
 import { useMotion } from "@/hooks/useMotion";
 import { useReadyGate } from "@/hooks/useReadyGate";

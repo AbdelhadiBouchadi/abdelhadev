@@ -1,11 +1,6 @@
-// The about page (prompts/06-about.md, "Tests"), at 1440 and 390, /fr/a-propos and /en/about: the
-// arcs and the title reach their end state after the loader; each chapter's statement lights up
-// as it is scrolled through; services, process, experience, stack and "Right now" reach their end
-// state; the footer's LinkedIn and GitHub links and the CV link are right for the locale and the
-// CV is served as a PDF; the timeline's dates and the public email in the footer and the legal
-// notice (08a); the festival is no longer on the timeline (08b); the raw HTML has every section
-// title and the five services in order; complete and still under reduced motion; ScrollTriggers back to their baseline; axe at the top
-// and at "Right now" (night).
+// The about page at 1440 and 390, in both locales: end states after the loader and on scroll,
+// the footer and CV links, the timeline and the public email, the server HTML, reduced motion,
+// the ScrollTrigger baseline and axe.
 import AxeBuilder from "@axe-core/playwright";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { expect, test, type Locator, type Page } from "@playwright/test";
@@ -42,12 +37,8 @@ const MESSAGES: Record<"fr" | "en", AboutMessages> = {
 };
 const PATHS = { fr: "/fr/a-propos", en: "/en/about" } as const;
 const LOCALES = ["fr", "en"] as const;
-/** The groups that fade up when they enter (Reveal), in page order. */
 const GROUPS = [".services", "#process .steps", ".timeline", ".stack-groups", ".now-list"];
 
-// ---------- end states (read in the page) ----------
-
-/** Each arc is fully opaque, at scale 1 and not offset. */
 const arcsAtRest = (page: Page) =>
   page.locator(".arc").evaluateAll((els) =>
     els.every((el) => {
@@ -59,7 +50,6 @@ const arcsAtRest = (page: Page) =>
     }),
   );
 
-/** Every split piece of the heading has risen back to rest. */
 const linesAtRest = (locator: Locator) =>
   locator.evaluate((el) =>
     [...el.querySelectorAll<HTMLElement>("*")].every((c) => {
@@ -68,7 +58,6 @@ const linesAtRest = (locator: Locator) =>
     }),
   );
 
-/** The element's children are visible and in place. */
 const atRest = (locator: Locator) =>
   locator.evaluate((el) =>
     [...el.children].every((c) => {
@@ -80,7 +69,6 @@ const atRest = (locator: Locator) =>
     }),
   );
 
-/** The element itself is visible and in place. */
 const selfAtRest = (locator: Locator) =>
   locator.evaluate((el) => {
     const s = getComputedStyle(el);
@@ -89,7 +77,7 @@ const selfAtRest = (locator: Locator) =>
     );
   });
 
-/** The opacity of the faintest word of a statement (1 when it is not split). */
+/** 1 when the statement is not split. */
 const faintestWord = (locator: Locator) =>
   locator.evaluate((el) => {
     const words = [...el.querySelectorAll<HTMLElement>("*")];
@@ -117,10 +105,7 @@ async function complete(page: Page) {
 }
 const COMPLETE = { hidden: 0, sticky: 0, moved: 0 };
 
-/** React escapes the apostrophe in text. */
 const html = (text: string) => text.replaceAll("'", "&#x27;");
-
-// ---------- with JavaScript and motion ----------
 
 test.describe("with motion", () => {
   test.beforeEach(async ({ page }) => {
@@ -188,7 +173,7 @@ test.describe("with motion", () => {
       await bring(page, group, 0.5);
       await expect.poll(() => atRest(group), { message: selector, timeout: 5000 }).toBe(true);
     }
-    // The services are the owner's five, in his order.
+    // My five services, in my order.
     await expect(page.locator("[data-service]")).toHaveCount(SERVICES.length);
     expect(
       await page
@@ -234,8 +219,8 @@ test.describe("with motion", () => {
     const others: string[] = [];
     const run = async (at: string) => {
       await transitionsSettled(page);
-      // Decision D10: unlit words wait at 0.14 by design and are scrolled to full opacity before
-      // they are read, so only they are left out of the contrast check (as in a11y.spec).
+      // Unlit words wait at 0.14 by design and are scrolled to full opacity before they are read, so
+      // only they are left out of the contrast check (as in a11y.spec).
       const rules = await new AxeBuilder({ page })
         .withTags(tags)
         .disableRules(["color-contrast"])
@@ -280,8 +265,6 @@ test.describe("with motion", () => {
   });
 });
 
-// ---------- links and files ----------
-
 for (const locale of LOCALES) {
   test(`${locale}: the footer channels and the CV link are right, the CV is a PDF`, async ({
     page,
@@ -302,7 +285,7 @@ for (const locale of LOCALES) {
       expect((await link.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(44);
     }
 
-    // 09: the label names the language and the file's size ("… (PDF, 1 ko)"), measured at build.
+    // The label names the language and the file's size ("… (PDF, 1 ko)"), measured at build.
     const [before = "", after = ""] = m.about.experience.cv.split("{size}");
     const escape = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const cv = page.getByRole("link", {
@@ -329,9 +312,6 @@ for (const locale of LOCALES) {
   });
 }
 
-// ---------- final copy (08a): dates and the public email; no festival row (08b); the yoga
-// platform between DentaFlow and Ophtachusm, Ophtachusm dated 2024 to 2025 (08c) ----------
-
 const LEGAL = { fr: "/fr/mentions-legales", en: "/en/legal-notice" } as const;
 
 for (const locale of LOCALES) {
@@ -354,7 +334,7 @@ for (const locale of LOCALES) {
     await expect(timeline).toContainText("Ophtachusm");
     await expect(page.locator("body")).not.toContainText(/\bHMS\b/);
 
-    // The festival left the timeline (08b): it remains only as a hidden testimonial entry.
+    // The festival is only a hidden testimonial entry now.
     await expect(timeline).not.toContainText("Dérive Casablancaise");
     await expect(timeline.locator('a[target="_blank"]')).toHaveCount(0);
 
@@ -369,8 +349,6 @@ for (const locale of LOCALES) {
     );
   });
 }
-
-// ---------- without JavaScript, and under reduced motion ----------
 
 test.describe("without JavaScript", () => {
   test.use({ javaScriptEnabled: false });

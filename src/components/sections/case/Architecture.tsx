@@ -1,9 +1,5 @@
-/* How it's built (prototype .arch), night: the title, lead and a short list fading up when it
-   enters (Reveal, STAGGER.archList), beside the architecture diagram. While the section scrolls
-   from "top 70%" to "bottom 60%", the diagram's nodes arrive in order and its wires draw, on one
-   timeline scrubbed at SCRUB (LineDraw, triggered by the .arch grid as in the prototype). Below
-   520 px the diagram keeps its width and scrolls inside its box, which is focusable so the scroll
-   works from the keyboard too. Fully drawn without JavaScript and under reduced motion. */
+/* Below 520 px the diagram keeps its width and scrolls inside its box, which is focusable so the
+   scroll works from the keyboard. */
 import { getTranslations } from "next-intl/server";
 import { pick, type CaseStudyCopy } from "@/components/sections/case/case-copy";
 import {
@@ -56,8 +52,7 @@ export async function Architecture({ study, copy }: ArchitectureProps) {
             })}
           </Reveal>
         </div>
-        {/* A scrollable region must be reachable from the keyboard (axe scrollable-region-focusable). */}
-        {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */}
+        {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- a scrollable region must be reachable from the keyboard */}
         <div className="diagram-box" role="region" aria-label={t("diagramBox")} tabIndex={0}>
           <LineDraw trigger=".arch">
             <ArchDiagram label={d.label} nodes={nodes} />

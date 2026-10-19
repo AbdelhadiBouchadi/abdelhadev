@@ -1,22 +1,22 @@
 # AGENTS.md — abdelhadev.me
 
-Rules for every agent run in this repository. Read this file first, every run. Facts and specs live in `docs/`; this file holds the rules.
+My rules for every agent run in this repository. Read this file first, every run. Facts and specs live in `docs/`; this file holds the rules.
 
 ## The project
 
-The portfolio of Abdelhadi Bouchadi, a full-stack developer based in Agadir, Morocco (brand: **Abdelhadev**). It has two jobs: win freelance clients and serve as a professional profile for LinkedIn, job portals and recruiters. It must feel like an award-level, scroll-driven experience that is warm and reassuring, and it must prove senior engineering: fast, accessible, secure, cleanly built.
+This is my portfolio. I am Abdelhadi Bouchadi, a full-stack developer based in Agadir, Morocco (brand: **Abdelhadev**). The site has two jobs: win freelance clients and serve as a professional profile for LinkedIn, job portals and recruiters. It must feel like an award-level, scroll-driven experience that is warm and reassuring, and it must prove senior engineering: fast, accessible, secure, cleanly built.
 
 French is the default language, English the second. Arabic comes later.
 
 ## How work runs
 
-- One prompt per build in `prompts/NN-name.md`, one branch per prompt (`feat/NN-name`). The owner reviews, runs CodeRabbit and merges. You never merge and never push to `main`.
+- One prompt per build in `prompts/NN-name.md`, one branch per prompt (`feat/NN-name`). I review, run CodeRabbit and merge. You never merge and never push to `main`.
 - Read the prompt's read-first list before writing code.
 - Decisions in `docs/decisions.md` or in a prompt are made. Do not re-decide them. If the repo or a prompt contradicts a decision, stop and report it.
 - Do not expand scope. List anything you notice outside the scope in your reply.
 - Before replying, run the lean check list under "Quality gates". Never report a gate as passing that you did not run.
 - Say plainly what you did not verify.
-- You never run git add, commit or push; the owner commits. Propose a commit split in your reply.
+- You never run git add, commit or push; I review the diff and commit by hand. Propose a commit split in your reply.
 
 ## Where the design comes from
 
@@ -37,7 +37,7 @@ Look up current APIs through Context7 before using Next.js 16, next-intl, Tailwi
 
 Next.js 16 (App Router), React 19, TypeScript strict, Tailwind CSS 4, next-intl, GSAP with `@gsap/react` (ScrollTrigger, SplitText, CustomEase, DrawSVGPlugin), Lenis, three.js (plain `three`, no React Three Fiber or drei; one home scene, always lazy-loaded), lucide-react (UI icons), zod, Resend, pnpm, Vitest, Playwright with axe, Lighthouse CI, ESLint flat config with Prettier. Hosting on Vercel. No database, no CMS.
 
-Not allowed: framer-motion or `motion`, Locomotive, Spline runtime, Lottie, a second animation, icon or UI kit, CSS-in-JS, jQuery, `any`. Adding any other runtime dependency needs the owner's approval in the prompt.
+Not allowed: framer-motion or `motion`, Locomotive, Spline runtime, Lottie, a second animation, icon or UI kit, CSS-in-JS, jQuery, `any`. Adding any other runtime dependency needs my approval in the prompt.
 
 ## Architecture (details in `docs/architecture.md`)
 
@@ -70,6 +70,16 @@ Imports go one way: `app` → `components/sections` → `components/layout`, `co
 - Server Components by default. `"use client"` only on the smallest leaf that needs state, effects, GSAP, Lenis or WebGL.
 - Named exports; default exports only where Next requires them. No barrel files. Exported props are named interfaces.
 - Validate every external input with zod (env, form data, route params).
+
+## Comments
+
+- Write a comment only when the code cannot say it: why a workaround exists, a non-obvious constraint, a unit or format, a link to a spec or issue. Most files need none.
+- Never restate the code or narrate history (prompts, branches, build numbers, decision ids, who asked for what). No banners, no emoji, no JSDoc that repeats the types.
+- Short, plain and direct, usually one line. First person singular only where it is natural; never "we".
+- No em dashes, no exclamation marks, no filler (ensures, robust, seamless, leverage, comprehensive, crucial, in order to).
+- Every `eslint-disable` and `@ts-` directive carries a short reason after `--`.
+
+Run `pnpm check:comments`.
 
 ## Design tokens
 
@@ -109,9 +119,9 @@ Imports go one way: `app` → `components/sections` → `components/layout`, `co
 
 ## Quality gates (details in `docs/quality.md`)
 
-A branch is ready only when the CI commands pass and the reply shows them: typecheck, lint, format, `check:tokens`, `check:i18n`, unit tests, build, Playwright (responsive at 360, 390 and 430 px with no horizontal scroll, axe with no serious or critical issue, no-JavaScript, reduced motion, legal name) and Lighthouse budgets. If a budget fails, report the measurement and cause; never loosen a budget yourself.
+A branch is ready only when the CI commands pass and the reply shows them: typecheck, lint, format, `check:tokens`, `check:i18n`, `check:fr`, `check:comments`, unit tests, build, Playwright (responsive at 360, 390 and 430 px with no horizontal scroll, axe with no serious or critical issue, no-JavaScript, reduced motion, legal name) and Lighthouse budgets. If a budget fails, report the measurement and cause; never loosen a budget yourself.
 
-Every UI branch also saves screenshots and short Playwright videos of its motion to `test-results/` and lists them, so the owner can compare them with the prototype.
+Every UI branch also saves screenshots and short Playwright videos of its motion to `test-results/` and lists them, so I can compare them with the prototype.
 
 ## Reply format
 

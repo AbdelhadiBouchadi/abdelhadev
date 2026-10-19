@@ -1,8 +1,3 @@
-/* The dawn (prototype .dawn), day. Four concentric arcs of light behind the copy rise and settle at
-   the loader's ready signal (DawnArcsMotion); as the dawn scrolls away they expand and fade
-   (Scrub, SETTLE.arcs). The title lines rise ABOUT.dawn.titleDelay after ready (SplitReveal), the
-   lead and the facts row fade up after them (Reveal). Everything is painted under the loader
-   overlay, and complete without JavaScript and under reduced motion. The arcs are decorative. */
 import { getTranslations } from "next-intl/server";
 import { DawnArcsMotion } from "@/components/sections/about/DawnArcsMotion";
 import { ABOUT, SETTLE } from "@/lib/motion";

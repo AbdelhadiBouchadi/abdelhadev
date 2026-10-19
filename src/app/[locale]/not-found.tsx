@@ -7,8 +7,7 @@ import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { notFoundMetadata } from "@/lib/seo";
 
-// Every unknown path inside a locale ([...rest]/page.tsx) and every unknown case study: status
-// 404, in the visitor's language, never indexed. Plain links: they work without JavaScript.
+// Plain links, so they work without JavaScript.
 export async function generateMetadata(): Promise<Metadata> {
   const requested = await getLocale();
   const locale = routing.locales.find((l) => l === requested) ?? routing.defaultLocale;

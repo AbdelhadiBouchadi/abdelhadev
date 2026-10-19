@@ -1,12 +1,5 @@
-/* The home page's sky (prototype #sky and #sun), mounted by the home hero only. While motion runs
-   it is a fixed layer behind the whole page: the sky's colour turns from paper to sunset to night
-   with the dusk (the dusk's stage timeline tweens it), and the sun glow rises with the hero intro
-   and sinks and fades from the hero to the dusk's centre (SkyMotion). The sections become
-   transparent over it (`html.sky`, styles/home.css).
-
-   Without JavaScript, and under reduced motion, there is no fixed sky: every section keeps its own
-   tone background, and the sun is a still glow inside the hero. Decorative, hidden from assistive
-   technology. Colours come from the tokens (--paper, --sun-*). */
+/* Without JavaScript and under reduced motion there is no fixed sky: every section keeps its own
+   background and the sun is a still glow inside the hero. */
 import { SkyMotion } from "@/components/layout/SkyMotion";
 
 export function Sky() {

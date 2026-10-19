@@ -1,8 +1,7 @@
 "use client";
 
-/* An error inside a page: the shell (header, footer) stays, the page area offers to try again or
-   to go home. Focus moves to the heading so a screen reader announces what happened. The page is
-   not indexed (React hoists the robots meta into the head). */
+/* Focus moves to the heading so a screen reader announces what happened. React hoists the robots
+   meta into the head. */
 import type { ErrorInfo } from "next/error";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";

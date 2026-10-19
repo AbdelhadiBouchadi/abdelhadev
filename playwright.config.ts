@@ -3,18 +3,12 @@ import { defineConfig, devices, type PlaywrightTestConfig } from "@playwright/te
 const PORT = Number(process.env.PORT ?? 3000);
 
 const PHONE = { ...devices["Pixel 7"], browserName: "chromium" as const };
-/** The per-route width suites: every route at every width (docs/quality.md). */
 const EVERY_WIDTH = /(responsive|a11y)\.spec\.ts/;
-/** Motion evidence (videos and end-state screenshots in test-results/motion/), not assertions:
-    motion.spec, home-motion.spec, work-motion.spec, case-motion.spec, about-motion.spec and
-    contact-motion.spec; not reduced-motion.spec (behaviour). */
+/** Videos and stills, not assertions. reduced-motion.spec is behaviour, so it is not here. */
 const MOTION = /(?:^|[\\/])(?:home-|work-|case-|about-|contact-)?motion\.spec\.ts$/;
 
-/** Which suite a config runs (docs/quality.md, "Playwright suites"):
-    - `ci` (`pnpm test:e2e`, CI): every behaviour spec at 390 and 1440; no motion evidence.
-    - `full` (`pnpm test:e2e:full`, local): the same, plus responsive and a11y at 360 and 430.
-    - `motion` (`pnpm test:motion`, local): the motion evidence only, at 1440 (each clip opens its
-      own context at the size it films). */
+/** `ci`: every behaviour spec at 390 and 1440. `full`: the same plus responsive and a11y at 360
+    and 430. `motion`: the motion evidence only, at 1440 (docs/quality.md). */
 export type Suite = "ci" | "full" | "motion";
 
 const desktop = {
@@ -50,10 +44,10 @@ export function e2eConfig(suite: Suite): PlaywrightTestConfig {
     testDir: "tests/e2e",
     outputDir: "test-results/artifacts",
     fullyParallel: true,
-    // Every page now runs the GSAP ticker (Lenis) and the loader. At the default 50 % of a
-    // 12-thread machine, frame starvation pushed about 1 % of loads past their timeouts; at 33 %
-    // the suite is green in the same wall time. CI keeps Playwright's default. The motion
-    // evidence records videos with software WebGL, which only holds up one at a time.
+    // Every page runs the GSAP ticker and the loader. At the default 50 % of a 12-thread machine, frame
+    // starvation pushed about 1 % of loads past their timeouts; at 33 % the suite is green in the
+    // same wall time. CI keeps Playwright's default. The motion evidence records with software WebGL,
+    // which only holds up one at a time.
     workers: suite === "motion" ? 1 : process.env.CI ? undefined : "33%",
     forbidOnly: Boolean(process.env.CI),
     retries: process.env.CI ? 1 : 0,
@@ -68,8 +62,7 @@ export function e2eConfig(suite: Suite): PlaywrightTestConfig {
       url: `http://localhost:${String(PORT)}/fr`,
       reuseExistingServer: !process.env.CI,
       timeout: 120_000,
-      // The contact form validates and reports success without calling Resend or Arcjet
-      // (src/lib/env.ts): tests never send mail. Merged over the inherited environment.
+      // Tests never send mail (src/lib/env.ts). Merged over the inherited environment.
       env: { CONTACT_DRY_RUN: "1" },
     },
   });

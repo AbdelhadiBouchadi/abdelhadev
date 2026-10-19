@@ -1,8 +1,5 @@
-/* The case studies, keyed by project slug (docs/architecture.md, "Data shapes"): DentaFlow only.
-   Parsed at module load, so an invalid entry fails the build; lib/content/projects.ts checks that
-   every project with `caseStudy: true` has one here and nothing else does. The screens are the
-   prototype's placeholder skeletons (docs/prototype/dentaflow.html) until 08 brings the real
-   screenshots. The copy of each step lives at messages.projects.<slug>.case.<group>.<key>. */
+/* Parsed at module load, so an invalid entry fails the build. The copy of each step lives at
+   messages.projects.<slug>.case.<group>.<key>. */
 import { caseStudies, type CaseStudy } from "@/lib/content/schema";
 
 export const CASE_STUDIES: Readonly<Record<string, CaseStudy>> = caseStudies.parse({

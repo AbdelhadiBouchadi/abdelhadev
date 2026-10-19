@@ -1,9 +1,7 @@
 "use client";
 
-/* The client leaf of WordsLight. Words are split as inline spans with `aria: "none"`: the text
-   stays in the accessibility tree word by word, in order, so the statement can stay a paragraph
-   (SplitText's "auto" would put an aria-label on it, which ARIA prohibits on a <p>). The tween is
-   rebuilt in onSplit (`autoSplit`), as every SplitText use in this repository. */
+/* `aria: "none"` keeps the words in the accessibility tree in order, so the statement can stay a
+   paragraph: SplitText's "auto" would put an aria-label on it, which ARIA prohibits on a <p>. */
 import { useRef } from "react";
 import { useMotion } from "@/hooks/useMotion";
 import { gsap, loadSplitText } from "@/lib/gsap";
@@ -11,13 +9,9 @@ import { EASE, MEDIA, REVEAL, SCRUB, STAGGER } from "@/lib/motion";
 import { resolveTrigger } from "@/lib/scroll";
 
 export interface WordsLightMotionProps {
-  /** Selector of the element whose range drives the lighting: the nearest matching ancestor (the
-      home manifesto's whole sticky section: "[data-stage]"), else the first match on the page.
-      Default: the statement itself. */
+  /** The nearest matching ancestor, else the first match on the page. */
   trigger?: string;
-  /** Default REVEAL.wordsStart ("top 75%"). */
   start?: string;
-  /** Default REVEAL.wordsEnd ("bottom 40%"). */
   end?: string;
 }
 

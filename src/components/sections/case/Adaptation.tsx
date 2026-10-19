@@ -1,6 +1,3 @@
-/* What changes for each clinic (prototype .steps), day: four cards in order, numbered by a CSS
-   counter, fading up one STAGGER.adapt apart when the list enters (Reveal). The cards come from
-   the case study data (adapt keys) and their copy from messages. */
 import { getTranslations } from "next-intl/server";
 import { pick, type CaseStudyCopy } from "@/components/sections/case/case-copy";
 import type { CaseStudy } from "@/lib/content/schema";

@@ -1,17 +1,7 @@
 // pnpm media [--only <slug>] [--force]
-// Optimises the owner's screenshots and screen recordings into public/work/<slug>/ and writes
-// src/lib/content/media.manifest.json (sorted, stable, committed). The originals stay in
-// ASSETS_DIR, outside the repository; nothing is ever copied from there as is.
-//
-// - Which files are published comes from src/lib/content/media.map.json (role work or tour). A
-//   spare entry, or a file the map does not name, is reported and never written to public/.
-// - Images: metadata stripped, never upscaled, a tall capture cut from the top, AVIF and WebP at
-//   640/960/1440/1920 px plus the source width (capped at 2400 px) when it is wider than 1440 px,
-//   a 16 px blur placeholder, intrinsic size.
-// - Videos: no audio, at most 1280 px and 30 fps, H.264 MP4 (yuv420p, faststart) and VP9 WebM,
-//   each under 1.5 MB (the CRF rises until it fits), a poster frame at about 1 s.
-// - Cache: a file is redone only when its content or the settings change (hashes in the
-//   manifest) or an output is missing. Outputs nobody maps any more are deleted.
+// The originals stay in ASSETS_DIR, outside the repository; nothing is copied from there as is.
+// Only files the map publishes (role work or tour) are written. A file is redone only when its
+// content or the settings change, and outputs nobody maps any more are deleted.
 // Paths go through node:path only, so it runs the same in PowerShell and on Linux.
 import { spawn } from "node:child_process";
 import { createHash } from "node:crypto";
@@ -60,8 +50,6 @@ const { values: args } = parseArgs({
   options: { only: { type: "string" }, force: { type: "boolean", default: false } },
 });
 
-// ---------- inputs ----------
-
 function assetsDir() {
   let dir = process.env.ASSETS_DIR;
   const local = join(root, PATHS.local);
@@ -83,16 +71,13 @@ function fail(message) {
 
 const sha = (data) => createHash("sha256").update(data).digest("hex");
 
-/** Changes when any setting changes, so every file is redone. */
+/** Changes with any setting, so every file is redone. */
 const PIPELINE = sha(JSON.stringify({ IMAGE, VIDEO, v: 1 })).slice(0, 12);
 
 const readJson = (path, fallback) =>
   existsSync(path) ? JSON.parse(readFileSync(path, "utf8")) : fallback;
 
-// ---------- ffmpeg ----------
-
-/** Runs ffmpeg; resolves with stdout (a Buffer) and stderr (text). Rejects on a non-zero exit
-    unless `allowFail` (`ffmpeg -i file` alone exits 1 after printing the stream info). */
+/** `ffmpeg -i file` alone exits 1 after printing the stream info, hence `allowFail`. */
 function ffmpeg(argv, { allowFail = false } = {}) {
   return new Promise((done, reject) => {
     const child = spawn(ffmpegPath, ["-hide_banner", ...argv], { windowsHide: true });
@@ -110,8 +95,6 @@ function ffmpeg(argv, { allowFail = false } = {}) {
 }
 
 const probe = async (file) => (await ffmpeg(["-i", file], { allowFail: true })).stderr;
-
-// ---------- images ----------
 
 async function processImage(source, slug, stem, outDir, retina) {
   const meta = await sharp(source).metadata();
@@ -162,9 +145,6 @@ async function processImage(source, slug, stem, outDir, retina) {
   };
 }
 
-// ---------- videos ----------
-
-/** Encodes with the first CRF that keeps the file under VIDEO.maxBytes. */
 async function encodeUnderBudget(label, out, crfs, argvFor) {
   for (const crf of crfs) {
     await ffmpeg(argvFor(crf));
@@ -292,9 +272,6 @@ async function processVideo(source, slug, stem, outDir, label) {
   };
 }
 
-// ---------- one project ----------
-
-/** Every output path of a manifest entry, relative to its project folder. */
 function entryOutputs(stem, entry) {
   return entry.kind === "image"
     ? outputNames(
@@ -388,8 +365,6 @@ async function processProject(slug, folder, entries, previous, report) {
   if (readdirSync(outDir).length === 0) rmSync(outDir, { recursive: true, force: true });
   return result;
 }
-
-// ---------- run ----------
 
 async function main() {
   if (!ffmpegPath || !existsSync(ffmpegPath))

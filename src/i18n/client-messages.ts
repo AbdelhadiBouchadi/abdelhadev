@@ -1,10 +1,8 @@
-/* The messages the browser receives. Server Components translate on the server with the whole
-   catalogue; NextIntlClientProvider passes only the namespaces Client Components use, so the rest
-   stays out of every page's payload (docs/spikes/tbt.md). tests/unit/client-messages.test.ts fails
-   when a Client Component translates with a namespace missing here. */
+/* Only the namespaces Client Components use, so the rest stays out of every page's payload.
+   tests/unit/client-messages.test.ts fails when one is missing here. */
 import type { AbstractIntlMessages } from "next-intl";
 
-/** Loader: loader. LocaleSwitch: common. The error page ([locale]/error.tsx): errors. */
+/** Loader: loader. LocaleSwitch: common. [locale]/error.tsx: errors. */
 export const CLIENT_NAMESPACES = ["loader", "common", "errors"] as const;
 
 export function pickClientMessages(messages: AbstractIntlMessages): AbstractIntlMessages {

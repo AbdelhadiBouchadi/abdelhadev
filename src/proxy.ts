@@ -1,5 +1,5 @@
-/* Next 16 request interceptor (decision T4). `/` and unprefixed paths redirect to a locale:
-   the NEXT_LOCALE cookie first, then Accept-Language, then `fr` (next-intl locale detection). */
+/* `/` and unprefixed paths redirect to a locale: the NEXT_LOCALE cookie, then Accept-Language,
+   then `fr`. */
 import createMiddleware from "next-intl/middleware";
 import { routing } from "@/i18n/routing";
 

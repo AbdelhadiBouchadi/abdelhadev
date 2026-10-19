@@ -2,12 +2,9 @@ import type { RefObject } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { afterCommit } from "@/lib/schedule";
 
-/** The setup every primitive shares (docs/primitives.md): useGSAP with a scope, a gsap.matchMedia
-    for the motion and reduced-motion branches, and cleanup on unmount, with the setup itself run
-    in one shared task after React's commit instead of inside it (lib/schedule.ts,
-    docs/spikes/tbt.md). Everything the setup creates belongs to the useGSAP context (through
-    contextSafe), so it is reverted with the component, including under StrictMode's simulated
-    unmount, and a setup that has not run yet is cancelled. `dependencies` re-run the setup. */
+/** The setup runs in one shared task after React's commit, not inside it (lib/schedule.ts).
+    Everything it creates goes through contextSafe, so it is reverted with the component, also
+    under StrictMode's simulated unmount, and a setup that has not run yet is cancelled. */
 export function useMotion(
   scope: RefObject<Element | null> | undefined,
   setup: (mm: gsap.MatchMedia) => void,

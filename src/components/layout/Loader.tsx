@@ -1,17 +1,7 @@
 "use client";
 
-/* The dawn loader and route curtain, ported from `Loader` in docs/prototype/assets/site.js, every
-   number from docs/choreography.md ("Loader") through lib/motion.ts.
-
-   - Rendered on the server, shown by CSS under html.js at first paint, absent without JavaScript.
-   - The page is painted under it (spike S3: the hero counts as LCP), and the content under it is
-     inert while it is up (lib/shell.ts `shellBusy`).
-   - Progress is real: the visit's registry (lib/shell.ts) with fonts, window load and every
-     img[data-critical]; pages add their own tasks with useLoaderTask.
-   - One panel, three uses, as in the prototype: the first-visit sequence, the curtain when leaving
-     a page (`cover`), and the short loader when arriving (`run`). The TransitionProvider reaches
-     them through the overlay port in lib/shell.ts.
-   - Reduced motion: no drawing and no rise; a 250 ms fade when ready. */
+/* The content under the overlay is inert while it is up (lib/shell.ts). One panel serves the
+   first visit, the curtain on leave (`cover`) and the short loader on arrival (`run`). */
 import { useLocale, useTranslations } from "next-intl";
 import { useRef } from "react";
 import { AnimatedMark } from "@/components/brand/AnimatedMark";
@@ -42,17 +32,14 @@ import {
 import { placeName } from "@/lib/site";
 import { useSmoothScroll } from "@/primitives/SmoothScroll";
 
-/** The page-load cycle starts once per page load. Its tasks are tracked once (StrictMode runs the
-    effect twice in development). */
+/** StrictMode runs the effect twice in development, so the tasks are tracked once. */
 let booted = false;
 let tasksTracked = false;
 
 interface ActiveRun {
-  /** The page-load cycle, as opposed to a route arrival. */
   boot: boolean;
-  /** Stops listening without settling (the cycle is restarted by the next mount). */
+  /** Stops listening without settling: the next mount restarts the cycle. */
   cancel: () => void;
-  /** Hides the overlay and settles the run (a route arrival cut short). */
   settle: () => void;
 }
 
@@ -186,7 +173,6 @@ export function Loader() {
           ScrollTrigger.refresh();
         };
 
-        /** The night panel over the whole viewport, the sun down, ready for a loader cycle. */
         const setCovered = (sunY: number) => {
           gsap.set(panel, {
             yPercent: 0,

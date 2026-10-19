@@ -1,7 +1,3 @@
-/* The loader's sunset mark (brand/logo-mark-animated.svg, prototype `.loader-mark`): the sun disc
-   clipped at the horizon so it can rise and set, the horizon line and its reflection. GSAP finds
-   the parts by their data attributes. The disc starts set (19 mark units down), as on the
-   prototype's first paint. Colours from tokens; on night the reflection is Majorelle soft. */
 import { useId } from "react";
 import { cn } from "@/lib/utils";
 

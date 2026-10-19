@@ -1,5 +1,5 @@
-// Runs before `next build`: lists every [TODO: …] placeholder in the content sources and fails
-// when REQUIRE_CONTENT=1 (the production deployment from the launch branch).
+// Runs before next build: lists every [TODO: …] placeholder in the content sources and fails when
+// REQUIRE_CONTENT=1.
 import { readdirSync, readFileSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
 
@@ -17,9 +17,8 @@ function* files(path) {
   }
 }
 
-// A testimonial that is not confirmed is never rendered (src/lib/content/testimonials.ts), so the
-// placeholders under its messages (testimonials.<id>) never ship and are not listed. Its entries
-// are written `entry("<id>", <confirmed>)`, one per line.
+// An unconfirmed testimonial is never rendered, so its placeholders never ship and are not
+// listed. Its entries are written `entry("<id>", <confirmed>)`, one per line.
 const hidden = new Set(
   [
     ...readFileSync(join(root, "src/lib/content/testimonials.ts"), "utf8").matchAll(
@@ -28,7 +27,7 @@ const hidden = new Set(
   ].map((m) => m[1]),
 );
 
-/** The key path of each line of a pretty-printed JSON file (one key or bracket per line). */
+/** One key or bracket per line, as pretty-printed JSON has it. */
 function keyPaths(lines) {
   const stack = [];
   return lines.map((line) => {
@@ -68,7 +67,7 @@ const site = readFileSync(join(root, "src/lib/site.ts"), "utf8");
 site.split("\n").forEach((line, i) => {
   if (/^\s*legalReview:\s*"pending"/.test(line)) {
     found.push(
-      `src/lib/site.ts:${i + 1}  legalReview: "pending" (the owner confirms the legal notice)`,
+      `src/lib/site.ts:${i + 1}  legalReview: "pending" (the legal notice is not confirmed yet)`,
     );
   }
 });
@@ -81,7 +80,7 @@ readFileSync(join(root, "src/lib/content/cv.ts"), "utf8")
     cvLocale = /^\s*(\w+): \{/.exec(line)?.[1] ?? cvLocale;
     if (/^\s*status:\s*"placeholder"/.test(line)) {
       found.push(
-        `src/lib/content/cv.ts:${i + 1}  cv.${cvLocale}: placeholder (the owner supplies the CV)`,
+        `src/lib/content/cv.ts:${i + 1}  cv.${cvLocale}: placeholder (the real CV is still to come)`,
       );
     }
   });
@@ -96,7 +95,7 @@ if (found.length === 0) {
   console.log("Content placeholders: none");
 } else {
   const log = strict ? console.error : console.warn;
-  log(`Content placeholders (${found.length}), to be supplied by the owner:`);
+  log(`Content placeholders (${found.length}), still to supply:`);
   for (const f of found) log(`  ${f}`);
   if (strict) {
     console.error("\nREQUIRE_CONTENT=1: the build fails until every placeholder is replaced.");

@@ -1,4 +1,3 @@
-// Pure helpers behind the shell: link and click rules, the clock, tones, localised paths.
 import { describe, expect, it } from "vitest";
 import { CLOCK_PLACEHOLDER, formatClock } from "@/lib/clock";
 import {

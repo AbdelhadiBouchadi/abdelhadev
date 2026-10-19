@@ -1,13 +1,7 @@
 "use client";
 
-/* Lenis on gsap.ticker (lib/lenis.ts), as in the prototype's Lenis block:
-   - created only when motion is allowed (gsap.matchMedia reverts it if the preference changes);
-   - stopped while the loader or a curtain is on screen (lib/shell.ts `shellBusy`), started after;
-   - `history.scrollRestoration = "manual"`: the curtain decides where an arriving page starts.
-   `useSmoothScroll().scrollTo` goes through Lenis with the prototype's 1.6 s ease-out-quart, and
-   falls back to native scrolling when Lenis is not running. An element target lands on the
-   element's live position: the destination is measured from the page (not from Lenis's own scroll
-   value), and re-aimed if the layout above it changes during the scroll. */
+/* history.scrollRestoration is "manual": the curtain decides where an arriving page starts.
+   scrollTo falls back to native scrolling when Lenis is not running. */
 import type Lenis from "lenis";
 import { createContext, use, useMemo, useRef, type ReactNode } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
@@ -21,8 +15,8 @@ export interface SmoothScrollApi {
   scrollTo: (target: ScrollTarget, options?: { immediate?: boolean }) => void;
 }
 
-/** Where the page scrolls to for a target: an element's live top, less its scroll-margin-top, as
-    the browser's own fragment navigation does (the work sheets clear the header that way). */
+/** Less scroll-margin-top, as the browser's own fragment navigation does (the work sheets clear
+    the header that way). */
 function destinationOf(target: ScrollTarget): number {
   if (typeof target === "number") return target;
   const margin = parseFloat(getComputedStyle(target).scrollMarginTop) || 0;
@@ -51,7 +45,6 @@ export interface SmoothScrollProps {
 
 export function SmoothScroll({ children }: SmoothScrollProps) {
   const lenisRef = useRef<Lenis | null>(null);
-  /** Disconnects the layout observer of the scroll in progress, if any. */
   const stopFollowing = useRef<(() => void) | null>(null);
 
   useGSAP(() => {

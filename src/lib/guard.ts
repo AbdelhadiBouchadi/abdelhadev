@@ -1,11 +1,9 @@
-/* Arcjet in front of the contact form: a rate limit per IP address and bot detection. The contact
-   handler depends on the `Guard` interface, so its tests pass a fake. Arcjet failing (network,
-   quota, a bad key) never blocks a visitor: the guard fails open and says so in a log line that
-   holds no personal data. */
+/* Arcjet failing (network, quota, a bad key) never blocks a visitor: the guard fails open and logs
+   it without personal data. */
 import "server-only";
 import arcjet, { detectBot, request, slidingWindow } from "@arcjet/next";
 
-/** Messages one IP address may send per window (prompt 07: about five an hour). */
+/** About five messages an hour per IP address. */
 export const CONTACT_RATE = { max: 5, interval: "1h" } as const;
 
 export type GuardVerdict = "allow" | "rateLimit" | "bot";
@@ -21,7 +19,7 @@ export function createArcjetGuard(key: string, log: (line: string) => void): Gua
     rules: [
       slidingWindow({ mode: "LIVE", interval: CONTACT_RATE.interval, max: CONTACT_RATE.max }),
       // Browsers only: every automated client would be refused. Search engines never post this form.
-      // Flip to "LIVE" in 10-launch after reviewing the Arcjet dashboard.
+      // DRY_RUN until I have read the Arcjet dashboard for a while.
       detectBot({ mode: "DRY_RUN", allow: [] }),
     ],
   });

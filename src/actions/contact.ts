@@ -1,8 +1,6 @@
 "use server";
 
-/* The contact form's server action (useActionState). It wires the environment to the handler
-   (src/lib/contact-handler.ts), which holds the logic and its tests. Posted without JavaScript,
-   the same action runs and the page renders the state it returns. */
+/* The logic and its tests live in src/lib/contact-handler.ts; this wires in the environment. */
 import { getTranslations } from "next-intl/server";
 import { handleContact } from "@/lib/contact-handler";
 import type { ContactState } from "@/lib/contact-schema";
@@ -25,7 +23,7 @@ export async function sendContact(_previous: ContactState, data: FormData): Prom
     guard,
     from: env.CONTACT_FROM,
     to: env.CONTACT_TO ?? null,
-    // The email is for the owner only, so its topic label is always French (docs/decisions.md).
+    // The email is only for me, so its topic label is always French (docs/decisions.md).
     topicLabel: async ({ topic }) => {
       const t = await getTranslations({ locale: "fr", namespace: "contact.form.topics" });
       return t(topic);

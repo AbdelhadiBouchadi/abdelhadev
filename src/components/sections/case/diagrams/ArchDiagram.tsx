@@ -1,10 +1,4 @@
-/* The architecture diagram of the case study (prototype .diagram, viewBox 720 × 420): six nodes
-   and six wires at the prototype's coordinates. Nodes are data-node groups (data-hot for the app
-   and the database, glow-tinted), wires are single-segment data-wire paths (data-soft for the two
-   dashed Majorelle links), as LineDraw expects: nodes arrive in document order, wires draw in
-   document order. Colours come from tokens in src/styles/case.css. Technology names are proper
-   nouns and stay as they are; the browser's name and every subtitle come from messages. The
-   whole diagram is one image named by `label`. */
+/* LineDraw expects data-node groups and single-segment data-wire paths, both in document order. */
 
 export type ArchNodeKey = "browser" | "app" | "api" | "orm" | "database" | "auth";
 
@@ -14,7 +8,6 @@ export interface ArchNode {
 }
 
 export interface ArchDiagramProps {
-  /** Describes the whole flow for assistive technology. */
   label: string;
   nodes: Readonly<Record<ArchNodeKey, ArchNode>>;
 }
@@ -25,7 +18,6 @@ const NODES: readonly {
   y: number;
   w: number;
   h: number;
-  /** Baselines of the name and the subtitle. */
   name: number;
   sub: number;
   hot?: boolean;
@@ -48,7 +40,6 @@ const WIRES: readonly { d: string; soft?: boolean }[] = [
   { d: "M360 280 V330", soft: true },
 ];
 
-/** The text inset from a node's left edge. */
 const PAD = 20;
 
 export function ArchDiagram({ label, nodes }: ArchDiagramProps) {

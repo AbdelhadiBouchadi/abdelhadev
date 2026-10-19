@@ -1,11 +1,7 @@
 "use client";
 
-/* The cursor (prototype `initCursor`): a Majorelle dot that follows the pointer with a lerp of
-   0.16 per 60 fps frame, made frame-rate independent with gsap.ticker.deltaRatio(). Over an
-   element with `data-cursor` it grows into a label with that text. Delegated from the document,
-   so elements mounted later (after a route change) work too. Fine pointers only, off under
-   reduced motion, hidden when the pointer leaves the window. It follows the section tone
-   (data-shell) and is invisible to assistive technology. */
+/* Delegated from the document, so elements mounted after a route change work too. The lerp is
+   made frame-rate independent with gsap.ticker.deltaRatio(). */
 import { useRef } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { CURSOR, MEDIA } from "@/lib/motion";

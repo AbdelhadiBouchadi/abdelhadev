@@ -1,9 +1,3 @@
-/* The home featured work (prototype #build): DentaFlow, night, a 300 vh sticky stage on desktop
-   and normal flow on mobile. The copy fades up, then four framed screens open one after another
-   (FeaturedMotion). Since 08c the tiles take the project's home screens (role hero, place home,
-   in map order, lib/content/media.map.json); a tile without one keeps its placeholder from 02.
-   The feature list comes from lib/content/projects.ts (unconfirmed by the owner: its placeholder
-   is listed by the build). The button opens the case study through the route curtain. */
 import { getMessages, getTranslations } from "next-intl/server";
 import { buttonClass, SunDot } from "@/components/ui/Button";
 import { Screen, type ScreenLayout } from "@/components/ui/Screen";
@@ -22,7 +16,7 @@ const SCREENS = [
   { layout: "invoice", caption: "documents" },
 ] as const satisfies readonly { layout: ScreenLayout; caption: string }[];
 
-/** A tile is a quarter of the page from 901 px (two columns beside the copy), half below. */
+/** A quarter of the page from 901 px, half below. */
 const TILE_SIZES = "(min-width: 901px) 25vw, 50vw";
 
 const FEATURE_KEYS = ["agenda", "records", "plans", "invoices"] as const;

@@ -2,9 +2,7 @@ import { expect, test } from "@playwright/test";
 import { ROUTES, slugOf } from "./routes";
 import { scrollToY, shellIdle, visited } from "./shell-helpers";
 
-// Layout, not motion: reduced motion keeps these many runs fast and the screenshots still (the
-// footer wordmark at rest, no scrub in progress). The motion states are covered by the shell,
-// loader and transition specs and filmed by motion.spec.ts.
+// Layout, not motion: reduced motion keeps these runs fast and the screenshots still.
 test.use({ reducedMotion: "reduce" });
 
 test.beforeEach(async ({ page }) => {

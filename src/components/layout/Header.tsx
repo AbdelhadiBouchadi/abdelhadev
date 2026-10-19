@@ -1,8 +1,3 @@
-/* The site header (decision D8, prototype .site-header): the brand left, the pill nav in the
-   centre, the Agadir clock, the locale switch and the Contact button right. Under 761 px only the
-   brand and Contact stay; the rest of the navigation moves to the floating pill (MobileNav).
-   Server-rendered; the client leaves are the links (current page), the clock, the locale switch
-   and the hide-on-scroll behaviour. It follows the tone of the section under it (data-shell). */
 import { getTranslations } from "next-intl/server";
 import { Mark } from "@/components/brand/Mark";
 import { Clock } from "@/components/layout/Clock";

@@ -1,6 +1,5 @@
-// Motion evidence for the contact page (prompts/07-contact.md, "Evidence"), in test-results/motion/,
-// to compare with docs/prototype/contact.html: two clips at 1440 (the intro after the loader, then
-// validation errors followed by a sent message) and full-page stills at 1440 and 390.
+// Videos and stills of the contact page in test-results/motion/, to compare with
+// docs/prototype/contact.html.
 import { mkdirSync, rmSync } from "node:fs";
 import { test } from "@playwright/test";
 import { DESKTOP, MOTION_OUT, PHONE, record } from "./motion-helpers";

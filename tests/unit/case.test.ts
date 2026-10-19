@@ -1,6 +1,5 @@
-// The case study's data (prompts/05-case-study.md, "Tests"): caseStudyProjects(), the screen count
-// derived from the media manifest (08b), the case study schema, the next project, the copy every data key needs,
-// and the sitemap (the DentaFlow case study listed, the projects without one left out).
+// The case study's data: caseStudyProjects(), the screen count from the media manifest, the
+// schema, the next project, the copy every data key needs, and the sitemap.
 import { describe, expect, it } from "vitest";
 import en from "@messages/en.json";
 import fr from "@messages/fr.json";
@@ -99,7 +98,7 @@ describe("the case study schema", () => {
 
 describe("nextProject", () => {
   it("is the next public project on the work page, or null after the last one", () => {
-    // The work order (08b): DentaFlow, MeetAI, Ophtachusm, then Côte Royale.
+    // The work order: DentaFlow, MeetAI, Ophtachusm, then Côte Royale.
     expect(nextProject("dentaflow")?.slug).toBe("meetai");
     expect(nextProject("meetai")?.slug).toBe("hms");
     expect(nextProject("cote-royale")).toBeNull();
@@ -129,7 +128,7 @@ describe("the case study copy", () => {
 });
 
 describe("sitemap", () => {
-  // 09: the legal notice is noindex, so it is not listed.
+  // The legal notice is noindex, so it is not listed.
   it("lists every indexable page and only the case studies that exist, in both locales", () => {
     const urls = sitemap().map((entry) => entry.url.replace("https://abdelhadev.me", ""));
     expect(urls.toSorted()).toEqual(

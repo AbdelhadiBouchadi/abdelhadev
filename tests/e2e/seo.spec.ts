@@ -1,8 +1,5 @@
-// SEO in the served HTML (prompts/09-seo-og-cv.md): no browser, Playwright's request fixture
-// only, on one project. Every route in both locales: one canonical, the reciprocal hreflang set
-// with x-default, Open Graph and Twitter images that are served as PNG, JSON-LD that parses with
-// the expected types, robots; the 404, robots.txt, the sitemap, the manifest and the CV header.
-// The test server is not a production deployment, so every page is noindex here.
+// SEO in the served HTML, with Playwright's request fixture only. The test server is not a
+// production deployment, so every page is noindex here.
 import { expect, test, type APIRequestContext } from "@playwright/test";
 import { localizedPath } from "@/lib/paths";
 import { caseHref, PAGES } from "@/lib/routes";
@@ -14,7 +11,6 @@ test.beforeEach(({}, info) => {
   test.skip(info.project.name !== "1440", "HTML only: one project is enough.");
 });
 
-/** The attributes of every tag of a kind in a document, as plain objects. */
 function tags(html: string, name: string): Record<string, string>[] {
   return [...html.matchAll(new RegExp(`<${name}\\b([^>]*)>`, "gi"))].map(([, attrs = ""]) =>
     Object.fromEntries(
@@ -99,9 +95,9 @@ test("the legal notice is never indexable, and is not in the sitemap", async ({ 
   }
 });
 
-// The 404's body reaches the page through the RSC payload (the server HTML is Next's error shell,
-// an open issue reported in 09), so this checks the head and the payload; the visible heading is
-// checked in a browser by foundation.spec.ts.
+// The 404's body reaches the page through the RSC payload (the server HTML is Next's error
+// shell), so this checks the head and the payload; foundation.spec.ts checks the heading in a
+// browser.
 test("an unknown path is a localised 404 that is not indexed", async ({ request }) => {
   const LINKS = {
     fr: ["Retour à l'accueil", "Voir les projets"],

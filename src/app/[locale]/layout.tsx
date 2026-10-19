@@ -20,8 +20,8 @@ import "@/styles/globals.css";
 
 const shellContent = { [SHELL_CONTENT_ATTR]: "" };
 
-// Only the two locales exist: any other first segment (such as /file.txt) is the root 404 and
-// never renders this tree, whose 404 metadata reads the request locale.
+// Any other first segment (such as /file.txt) is the root 404 and never renders this tree, whose
+// 404 metadata reads the request locale.
 export const dynamicParams = false;
 
 export function generateStaticParams() {
@@ -41,8 +41,6 @@ export const viewport: Viewport = {
   themeColor: cssToken("paper"),
 };
 
-// The footer comes from the @footer slot: the shell footer on every route, with the case study's
-// own call to action on its pages (src/app/[locale]/@footer/work/[slug]/page.tsx).
 export default async function LocaleLayout({ children, footer, params }: LayoutProps<"/[locale]">) {
   const locale = await resolveLocale(params);
   const clientMessages = pickClientMessages(await getMessages());
@@ -50,12 +48,11 @@ export default async function LocaleLayout({ children, footer, params }: LayoutP
     // The boot script adds classes to <html> before hydration, hence suppressHydrationWarning.
     <html lang={locale} className={fontVariables} suppressHydrationWarning>
       <head>
-        {/* Blocking on purpose: sets js, motion and arriving before first paint (docs/architecture.md). */}
+        {/* Blocking on purpose: sets js, motion and arriving before first paint. */}
         <script dangerouslySetInnerHTML={{ __html: BOOT_SCRIPT }} />
       </head>
       <body>
         <NextIntlClientProvider messages={clientMessages}>
-          {/* Client providers wrap server-rendered children; the layout stays a Server Component. */}
           <SmoothScroll>
             <TransitionProvider>
               <Loader />

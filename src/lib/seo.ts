@@ -1,10 +1,5 @@
-/* Metadata for every page, built from its message keys (messages: seo.*): title, description,
-   canonical, hreflang alternates, Open Graph and Twitter, and robots. Pages call pageMetadata or
-   caseMetadata in generateMetadata and never write metadata by hand. Also the robots file and the
-   sitemap entries, from the same route table (lib/routes.ts).
-
-   Indexing: only the production deployment (VERCEL_ENV=production) is indexable. Previews and
-   local builds send `noindex, nofollow` on every page and disallow everything in robots.txt. */
+/* Pages never write metadata by hand. Only the production deployment (VERCEL_ENV=production) is
+   indexable: previews and local builds send noindex on every page and disallow everything. */
 import type { Metadata, MetadataRoute } from "next";
 import { getMessages } from "next-intl/server";
 import { routing, type Locale } from "@/i18n/routing";
@@ -17,14 +12,12 @@ import { SITE } from "@/lib/site";
 import { isKeyOf } from "@/lib/utils";
 import type fr from "@messages/fr.json";
 
-/** Whether search engines may index a deployment: production only. */
 export function isIndexable(vercelEnv: string | undefined): boolean {
   return vercelEnv === "production";
 }
 
 export const INDEXABLE = isIndexable(env.VERCEL_ENV);
 
-/** Every title but the home page's (which is complete on its own). */
 export const TITLE_TEMPLATE = `%s | ${SITE.brand}`;
 export const TITLE_MAX = 60;
 export const DESCRIPTION_RANGE = { min: 110, max: 160 } as const;
@@ -33,15 +26,13 @@ export function fullTitle(title: string): string {
   return TITLE_TEMPLATE.replace("%s", title);
 }
 
-/** Open Graph locales: each page names its own and the other one as an alternate. */
 export const OG_LOCALE: Readonly<Record<Locale, string>> = { fr: "fr_FR", en: "en_US" };
 
 export function absoluteUrl(path: string): string {
   return new URL(path, SITE.url).toString();
 }
 
-/** Canonical URL for `locale`, and hreflang alternates for every locale plus x-default (French).
-    The paths come from the routing table (lib/paths.ts), so every pair is reciprocal. */
+/** x-default is French. The paths come from the routing table, so every pair is reciprocal. */
 export function alternates(
   href: RouteHref,
   locale: Locale,
@@ -56,8 +47,7 @@ function languages(href: RouteHref): Record<string, string> {
   return map;
 }
 
-/** Robots for a page: nothing is indexed outside production; a page that is never indexed (the
-    legal notice, the 404) keeps its links followed in production. */
+/** A page that is never indexed (legal notice, 404) still has its links followed. */
 export function robotsFor(
   page: { indexable: boolean },
   siteIndexable: boolean = INDEXABLE,
@@ -70,16 +60,14 @@ interface PageInput {
   locale: Locale;
   title: string;
   description: string;
-  /** The page's href; absent for the 404, which has no canonical URL. */
+  /** Absent for the 404, which has no canonical URL. */
   href?: RouteHref;
-  /** The title is complete without the template (the home page). */
   absoluteTitle?: boolean;
   indexable: boolean;
-  /** The page's Open Graph card (lib/og.ts), also the Twitter image. */
+  /** Also the Twitter image. */
   image?: { url: string; alt: string; width: number; height: number; type: string };
 }
 
-/** The metadata of one page. Pure, so tests can call it with any input. */
 export function buildMetadata(
   { locale, title, description, href, absoluteTitle = false, indexable, image }: PageInput,
   siteIndexable: boolean = INDEXABLE,
@@ -119,7 +107,6 @@ function openGraphBase(locale: Locale) {
   } as const;
 }
 
-/** The layout's defaults, under every page's own metadata. */
 export function baseMetadata(locale: Locale, description: string): Metadata {
   return {
     metadataBase: new URL(SITE.url),
@@ -139,7 +126,6 @@ export async function seoMessages(locale: Locale): Promise<SeoMessages> {
   return (await getMessages({ locale })).seo;
 }
 
-/** Metadata for one of the pages in lib/routes.ts. */
 export async function pageMetadata(locale: Locale, key: PageKey): Promise<Metadata> {
   const copy = (await seoMessages(locale)).pages[key];
   const page = PAGES[key];
@@ -155,7 +141,6 @@ export async function pageMetadata(locale: Locale, key: PageKey): Promise<Metada
   });
 }
 
-/** Metadata for a case study (messages: seo.cases.<slug>). */
 export async function caseMetadata(locale: Locale, slug: string): Promise<Metadata> {
   const { cases } = await seoMessages(locale);
   if (!isKeyOf(cases, slug)) throw new Error(`messages: seo.cases.${slug} is missing`);
@@ -170,7 +155,6 @@ export async function caseMetadata(locale: Locale, slug: string): Promise<Metada
   });
 }
 
-/** The 404: no canonical URL, never indexed. */
 export async function notFoundMetadata(locale: Locale): Promise<Metadata> {
   const copy = (await seoMessages(locale)).pages.notFound;
   return buildMetadata({
@@ -182,8 +166,7 @@ export async function notFoundMetadata(locale: Locale): Promise<Metadata> {
   });
 }
 
-/** robots.txt: production allows everything and names the sitemap; any other deployment
-    disallows everything. Private paths are never listed. */
+/** Private paths are never listed. */
 export function robotsFile(siteIndexable: boolean = INDEXABLE): MetadataRoute.Robots {
   if (!siteIndexable) return { rules: { userAgent: "*", disallow: "/" } };
   return {
@@ -192,8 +175,7 @@ export function robotsFile(siteIndexable: boolean = INDEXABLE): MetadataRoute.Ro
   };
 }
 
-/** The sitemap: each href in every locale, each entry with all its alternates. No lastModified:
-    the site has no truthful date per page. */
+/** No lastModified: the site has no truthful date per page. */
 export function sitemapEntries(hrefs: readonly RouteHref[]): MetadataRoute.Sitemap {
   return hrefs.flatMap((href) => {
     const alternatesForHref = { languages: languages(href) };
@@ -204,13 +186,11 @@ export function sitemapEntries(hrefs: readonly RouteHref[]): MetadataRoute.Sitem
   });
 }
 
-/** The home page's structured data: the person and the website. */
 export async function homeStructuredData(locale: Locale): Promise<JsonLdObject> {
   const { jobTitle } = await seoMessages(locale);
   return homeJsonLd({ locale, homeUrl: absoluteUrl(localizedPath(locale, "/")), jobTitle });
 }
 
-/** The breadcrumb of the work page, or of a case study when `project` is given. */
 export async function workBreadcrumb(
   locale: Locale,
   project?: { slug: string; name: string },

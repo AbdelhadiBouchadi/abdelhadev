@@ -1,11 +1,3 @@
-/* The case study hero (prototype .case-hero), night. After the loader's ready signal: the product
-   name rises letter by letter through masks (SplitReveal chars, CHARS_PACE.case), the back link,
-   then the lead and the facts fade up one STAGGER.caseLater apart (Reveal), and the first screen
-   opens from inset(30% 8% 0 8%) while it settles from 1.2 (MediaReveal intro). Everything is
-   painted under the loader overlay and complete without JavaScript and under reduced motion.
-   Facts: role and delivery from messages, status as on the work page, stack from the data.
-   The screen is the project's case hero (role hero, place case, lib/content/media.map.json, 08c);
-   without one it keeps the placeholder skeleton. */
 import { getMessages, getTranslations } from "next-intl/server";
 import type { CaseStudyCopy } from "@/components/sections/case/case-copy";
 import { ArrowLink } from "@/components/ui/ArrowLink";

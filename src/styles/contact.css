@@ -1,9 +1,4 @@
-/* The contact page (docs/prototype/assets/site.css: .contact-hero, .contact-layout, .card, .form,
-   .form-row, .field, .hp, .form-foot, .form-done, .wa-card, .wa-preview, .next-steps). Colours are
-   tokens only; the prototype's one raw value, the focused field's #fff, maps to --sheet. New here:
-   .form-failed (the send error, in --danger like the field errors) and .next-title (the "What
-   happens next?" heading the prototype did not have). Every control is at least 44 px tall.
-   In the components layer, so Tailwind utilities still win. */
+/* Every control is at least 44 px tall. In the components layer, so Tailwind utilities still win. */
 @layer components {
   .contact-hero {
     padding-top: calc(var(--header-h) + env(safe-area-inset-top, 0px) + clamp(64px, 12vh, 140px));
@@ -40,7 +35,7 @@
     margin: 0 0 6px;
   }
 
-  /* ---------- form ---------- */
+  /* form */
   .form {
     display: grid;
     gap: 18px;
@@ -109,7 +104,7 @@
   .field.has-error textarea {
     box-shadow: inset 0 0 0 2px var(--danger);
   }
-  /* The honeypot: off screen for everyone (aria-hidden and out of the tab order in the markup). */
+  /* The honeypot: off screen for everyone. */
   .hp {
     position: absolute;
     inset-inline-start: -9999px;
@@ -146,7 +141,7 @@
     scroll-margin-top: calc(var(--header-h) + 48px);
   }
 
-  /* ---------- WhatsApp (night card) ---------- */
+  /* WhatsApp (night card) */
   .wa-card {
     display: grid;
     gap: 18px;
@@ -205,13 +200,9 @@
   }
 }
 
-/* ---------- toast (Sonner, mounted by the contact form only) ----------
-   Sonner injects its own unlayered stylesheet at runtime (positioning, stacking, the slide), so
-   these rules sit outside the components layer and carry the toaster attribute for specificity.
-   Toasts are `unstyled`: every visual here is a token. The slide-fade is Sonner's (translateY from
-   its edge plus opacity) on the house ease and --dur-base; under prefers-reduced-motion Sonner
-   removes every transition, so the toast simply appears. Success is accented with --glow, errors
-   with --danger. The close button is a 44 px target. */
+/* toast: Sonner injects its own unlayered stylesheet at runtime, so these rules sit outside the
+   components layer and carry the toaster attribute for specificity. Under reduced motion Sonner
+   removes every transition. */
 [data-sonner-toaster] .contact-toast[data-sonner-toast] {
   display: flex;
   align-items: flex-start;

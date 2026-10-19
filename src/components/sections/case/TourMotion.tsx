@@ -1,14 +1,8 @@
 "use client";
 
-/* The client leaf of the product tour (prototype Pages.case, "the screen follows the step you are
-   reading"). useScrollSpy names the step crossing SPY.tour (55 %) of the viewport; the active step
-   gets data-on (its number turns Majorelle in CSS) and [data-tour] carries data-tour-active.
-   With motion, from 901 px, the active stage screen crossfades in (DURATION.crossfade, scale
-   CASE.tour.screenFrom → 1) while the others fade out, and the other steps dim to
-   CASE.tour.dimOpacity and CASE.tour.dimScale (DURATION.stepDim). Before the first step reaches
-   the line nothing is dimmed and the first screen shows (CSS). When that condition ends (reduced
-   motion switched on, a resize under 901 px) or the page is left, the tweens are killed and the
-   inline styles cleared, so the steps are at rest again. The spy itself runs everywhere. */
+/* When the condition ends (reduced motion, a resize under 901 px) or the page is left, the tweens
+   are killed and the inline styles cleared, so the steps are at rest again. The spy runs
+   everywhere. */
 import { useEffect, useRef } from "react";
 import { useMotion } from "@/hooks/useMotion";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
@@ -16,7 +10,6 @@ import { gsap } from "@/lib/gsap";
 import { CASE, DURATION, MEDIA, SPY } from "@/lib/motion";
 
 export interface TourMotionProps {
-  /** The ids of the tour steps, in order (one stage slot per step, same order). */
   ids: readonly string[];
 }
 
@@ -40,7 +33,7 @@ export function TourMotion({ ids }: TourMotionProps) {
   const ref = useRef<HTMLSpanElement>(null);
   const { activeIndex } = useScrollSpy(ids, { line: SPY.tour });
   const active = useRef(-1);
-  /** Shows step `i` on the stage; null while the stage is not in use. */
+  /** null while the stage is not in use. */
   const show = useRef<((i: number) => void) | null>(null);
 
   useMotion(ref, (mm) => {

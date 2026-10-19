@@ -1,6 +1,5 @@
-# The full browser suite and Lighthouse (docs/quality.md), moved out of the pull-request gates because
-# its timing-sensitive specs (curtain, loader, LCP, bfcache, scroll-driven motion) must not block a
-# pull request. Runs on main, weekly and on demand; never on pull requests.
+# The full browser suite and Lighthouse, on main, weekly and on demand. Its timing-sensitive specs
+# (curtain, loader, LCP, bfcache, scroll-driven motion) never block a pull request.
 name: e2e-full
 
 on:

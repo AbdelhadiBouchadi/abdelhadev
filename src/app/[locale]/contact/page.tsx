@@ -14,8 +14,6 @@ export async function generateMetadata({
   return pageMetadata(locale, "contact");
 }
 
-// The contact page (prototype contact.html), day with a night WhatsApp card: the hero, then the
-// email form (a server action that works without JavaScript) beside WhatsApp and the next steps.
 export default async function ContactPage({ params }: PageProps<"/[locale]/contact">) {
   const locale = await resolveLocale(params);
   return (

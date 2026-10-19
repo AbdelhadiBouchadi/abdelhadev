@@ -1,10 +1,6 @@
-// The contact page (prompts/07-contact.md, "Tests"), at 1440 and 390, /fr/contact and /en/contact,
-// against the Playwright web server's dry run (CONTACT_DRY_RUN=1: nothing is sent): an invalid
-// submit shows the errors, sets aria-invalid and focuses the first invalid field; typing updates
-// the WhatsApp preview and link in the page language; a valid submit shows the confirmation and
-// focuses its heading; "Write another message" brings the empty form back; without JavaScript the
-// raw HTML has the form and a native post returns the errors or the confirmation; complete under
-// reduced motion; no horizontal overflow; axe with the errors visible.
+// The contact page at 1440 and 390, in both locales, against the dry run (CONTACT_DRY_RUN=1:
+// nothing is sent): errors and focus, the WhatsApp preview, success, the native post without
+// JavaScript, reduced motion and axe.
 import AxeBuilder from "@axe-core/playwright";
 import { readFileSync } from "node:fs";
 import { expect, test, type Page } from "@playwright/test";

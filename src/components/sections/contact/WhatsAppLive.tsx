@@ -1,12 +1,7 @@
 "use client";
 
-/* The WhatsApp card's live part (prototype initForms → compose): the preview and the button.
-   It listens to the form (by id, delegated from the document, so it survives the form being
-   hidden, reset or re-rendered) and rebuilds the message and the wa.me link on every input, in the
-   page language (src/lib/whatsapp.ts). The preview is a polite live region.
-
-   Server-rendered with the greeting and the bare wa.me link, so without JavaScript the button
-   opens WhatsApp on the number with no text. */
+/* Delegated from the document by form id, so it survives the form being hidden, reset or
+   re-rendered. Without JavaScript the button opens the bare wa.me link. */
 import { useEffect, useState } from "react";
 import { buttonClass, SunDot } from "@/components/ui/Button";
 import { composeWhatsApp, whatsAppHref, type WhatsAppCopy } from "@/lib/whatsapp";
@@ -15,13 +10,10 @@ import { cn } from "@/lib/utils";
 export interface WhatsAppLiveProps {
   formId: string;
   copy: WhatsAppCopy;
-  /** The wa.me link to the number (src/lib/site.ts). */
   base: string;
-  /** The topic labels by key, as the form shows them. */
   topics: Record<string, string>;
   action: string;
   previewLabel: string;
-  /** "opens in a new tab", read after the button's text. */
   newTab: string;
   cursor: string;
 }

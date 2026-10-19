@@ -1,7 +1,5 @@
-/* The form card (prototype .card with #contact-form), day. Server markup for the heading and the
-   intro; the form itself is the client leaf (ContactForm), which receives its copy translated
-   here, so the contact messages never ship in the shared client catalogue
-   (src/i18n/client-messages.ts). */
+/* The form gets its copy translated here, so the contact messages never ship in the shared
+   client catalogue. */
 import { getTranslations } from "next-intl/server";
 import { ContactForm, type ContactFormCopy } from "@/components/sections/contact/ContactForm";
 import { getPathname } from "@/i18n/navigation";

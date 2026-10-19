@@ -1,14 +1,10 @@
-/* The real screenshots and loops (08b). `pnpm media` (scripts/media.mjs) writes the optimised
-   files to public/work/<slug>/ and describes them in lib/content/media.manifest.json; which file
-   goes where is the owner's hand-edited lib/content/media.map.json. Both are validated here once,
-   at module load, so a broken file fails the build. The rest of the app reads them only through
-   the helpers below and never names a file. */
+/* The manifest (written by pnpm media) and my hand-edited map are validated once at module load,
+   so a broken file fails the build. Nothing else in the app names a file. */
 import { z } from "zod";
 import manifestJson from "@/lib/content/media.manifest.json" with { type: "json" };
 import mapJson from "@/lib/content/media.map.json" with { type: "json" };
 
 const slug = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
-/** A served path under /work/<slug>/. */
 const src = z.string().regex(/^\/work\/[a-z0-9-]+\/[a-z0-9-]+\.(?:avif|webp|mp4|webm)$/);
 const blur = z.string().startsWith("data:image/webp;base64,");
 const bytes = z.number().int().positive();
@@ -43,12 +39,11 @@ export const videoAsset = z
 
 export const mediaAsset = z.discriminatedUnion("kind", [imageAsset, videoAsset]);
 
-/** Keyed by project slug, then by the source file name (as the map names it). */
+/** Slug, then source file name. */
 export const mediaManifest = z
   .object({ projects: z.record(slug, z.record(z.string().min(1), mediaAsset)) })
   .strict();
 
-/** messages: <key>.alt (and <key>.label for a video), in both locales. */
 const messageKey = z.string().regex(/^work\.[a-z0-9-]+\.media\.\d+$/);
 const fileName = z.string().min(1);
 
@@ -58,7 +53,6 @@ export const mapEntry = z.discriminatedUnion("role", [
     .object({
       file: fileName,
       role: z.literal("tour"),
-      /** The case study tour step, from 1. */
       step: z.number().int().min(1),
       key: messageKey,
     })
@@ -67,8 +61,6 @@ export const mapEntry = z.discriminatedUnion("role", [
     .object({
       file: fileName,
       role: z.literal("hero"),
-      /** Where the screen opens a page (08c): the case study hero, or the home featured tiles
-          (in map order, one per tile). */
       place: z.enum(["case", "home"]),
       key: messageKey,
     })
@@ -91,7 +83,6 @@ export type HeroPlace = Extract<MapEntry, { role: "hero" }>["place"];
 export const MANIFEST: MediaManifest = mediaManifest.parse(manifestJson);
 export const MEDIA_MAP: MediaMap = mediaMap.parse(mapJson);
 
-/** One published screen: its asset and the message key of its alt text (and label). */
 export interface ProjectMediaItem {
   key: string;
   asset: MediaAsset;
@@ -108,8 +99,7 @@ function resolve(
   return asset ? { key: entry.key, asset } : null;
 }
 
-/** The work page screens of a project, in map order. A mapped file the manifest does not have
-    yet (pnpm media not run) is skipped, so its slot keeps the skeleton. */
+/** A mapped file the manifest does not have yet is skipped, so its slot keeps the skeleton. */
 export function workMedia(
   slug: string,
   map: MediaMap = MEDIA_MAP,
@@ -122,8 +112,6 @@ export function workMedia(
   });
 }
 
-/** The case study tour screens of a project, by step (from 1). A step without one keeps its
-    skeleton. */
 export function tourMedia(
   slug: string,
   map: MediaMap = MEDIA_MAP,
@@ -138,9 +126,6 @@ export function tourMedia(
   return steps;
 }
 
-/** The opening screens of a project at one place (role hero), in map order: the case study hero
-    takes the first, the home featured tiles one each. A file the manifest does not have yet is
-    skipped, so its frame keeps the skeleton. */
 export function heroMedia(
   slug: string,
   place: HeroPlace,
@@ -154,8 +139,7 @@ export function heroMedia(
   });
 }
 
-/** The alt text and, for a video, the label of a screen, from the page's messages (the same
-    keys in both locales, pnpm check:i18n). Throws on a missing key: the unit tests check them. */
+/** Throws on a missing key; the unit tests check every one. */
 export function mediaCopy(messages: unknown, key: string): { alt: string; label?: string } {
   let node: unknown = messages;
   for (const part of key.split(".")) {
@@ -168,11 +152,9 @@ export function mediaCopy(messages: unknown, key: string): { alt: string; label?
   return typeof label === "string" ? { alt, label } : { alt };
 }
 
-/** The `srcset` of one format: "…-640.avif 640w, …". */
 export const srcSet = (variants: readonly { src: string; width: number }[]) =>
   variants.map((v) => `${v.src} ${String(v.width)}w`).join(", ");
 
-/** The largest variant: the `src` fallback of an <img>. */
 export function largest<T extends { width: number }>(variants: readonly T[]): T | undefined {
   return variants.reduce<T | undefined>((a, b) => (a && a.width >= b.width ? a : b), undefined);
 }

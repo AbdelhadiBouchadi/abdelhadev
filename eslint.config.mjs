@@ -1,5 +1,3 @@
-// ESLint flat config: Next (core web vitals), typescript-eslint strict, jsx-a11y strict, Prettier
-// compatibility, and the architecture rules from docs/architecture.md and AGENTS.md.
 import { defineConfig, globalIgnores } from "eslint/config";
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
@@ -7,9 +5,8 @@ import prettier from "eslint-config-prettier/flat";
 import jsxA11y from "eslint-plugin-jsx-a11y";
 import tseslint from "typescript-eslint";
 
-// ---------- banned libraries (AGENTS.md "Not allowed") ----------
 // Anchored regexes: gitignore-style groups would also match "@/lib/motion" or "@/lib/gsap".
-/** Bans the named packages (exact name or any subpath). Names are regex fragments. */
+/** Names are regex fragments; a subpath of the package is banned too. */
 const pkg = (names, message) => ({
   regex: `^(?:${names.join("|")})(?:/.*)?$`,
   message,
@@ -68,11 +65,10 @@ const PARENT_RELATIVE = {
   message: "Use the @/ alias for cross-folder imports.",
 };
 
-// ---------- import boundaries (docs/architecture.md) ----------
 const deny = (paths, message) => ({ group: paths, message });
 const SECTION_PAGES = ["home", "work", "case", "about", "contact"];
 
-/** Banned @/ imports per folder (each folder gets its own config block). */
+/** Each folder gets its own config block. */
 const BOUNDARIES = {
   "src/lib": [
     deny(
@@ -227,8 +223,7 @@ const INLINE_SVG = {
     "Inline <svg> lives in src/components/brand/ or src/components/sections/**/diagrams/. Icons come from lucide-react.",
 };
 
-// The same colour rule as `pnpm check:tokens`, surfaced in the editor: a string that is a hex
-// colour or contains a colour function. Colour values live in src/styles/tokens.css only.
+// The same colour rule as pnpm check:tokens, surfaced in the editor.
 const COLOUR_PATTERN = String.raw`/^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$|\b(?:rgba?|hsla?|hwb|oklch|oklab)\(/`;
 const COLOUR_LITERAL = [
   {
@@ -277,7 +272,6 @@ export default defineConfig([
     rules: { "no-restricted-imports": restrictedImports({ extra }) },
   })),
   {
-    // The single module allowed to import GSAP packages.
     files: ["src/lib/gsap.ts"],
     rules: {
       "no-restricted-imports": restrictedImports({
@@ -291,8 +285,7 @@ export default defineConfig([
     rules: { "no-restricted-syntax": ["error", ...COLOUR_LITERAL] },
   },
   {
-    // Email templates inline colour values copied from tokens.css: email clients ignore CSS
-    // variables (also on the check:tokens allow-list).
+    // Email clients ignore CSS variables, so the templates inline colour values from tokens.css.
     // A template is a whole email document, not a Next page, so it writes its own <head>.
     files: ["src/emails/**/*.tsx"],
     rules: {
@@ -306,7 +299,6 @@ export default defineConfig([
     rules: { "no-restricted-syntax": ["error", INLINE_SVG] },
   },
   {
-    // Node scripts and configs.
     files: ["scripts/**/*.mjs", "*.config.{mjs,ts}", "lighthouserc.cjs"],
     rules: { "no-restricted-imports": "off" },
   },

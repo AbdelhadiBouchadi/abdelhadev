@@ -1,6 +1,6 @@
-# The pull-request gates (docs/quality.md): static checks, unit tests, the build, the secret scan and a
-# small e2e smoke (foundation, no-JavaScript, a11y) at 1440. The timing-sensitive browser specs and
-# Lighthouse run in e2e-full.yml, on main, weekly and on demand, and never block a pull request.
+# Pull-request gates: static checks, unit tests, the build, the secret scan and an e2e smoke
+# (foundation, no-JavaScript, a11y) at 1440. The timing-sensitive specs and Lighthouse live in
+# e2e-full.yml, so they never block a pull request.
 name: CI
 
 on:
@@ -38,6 +38,7 @@ jobs:
       - run: pnpm check:tokens
       - run: pnpm check:i18n
       - run: pnpm check:fr
+      - run: pnpm check:comments
       - run: pnpm test
       - name: wordmark-paths.ts is fresh
         run: pnpm brand:paths && git diff --exit-code src/components/brand/wordmark-paths.ts

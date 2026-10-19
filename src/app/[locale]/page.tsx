@@ -19,7 +19,6 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
   const locale = await resolveLocale(params);
   const t = await getTranslations({ locale, namespace: "testimonials" });
   const home = await getTranslations({ locale, namespace: "home.testimonials" });
-  // Only confirmed testimonials (decision P10); with none, the section renders nothing.
   const testimonials = publicTestimonials().map(({ id }) => ({
     id,
     role: t(`${id}.role`),

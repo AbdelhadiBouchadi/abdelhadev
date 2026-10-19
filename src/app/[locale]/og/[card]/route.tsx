@@ -3,8 +3,7 @@ import { ogCard } from "@/components/brand/og-card";
 import { routing } from "@/i18n/routing";
 import { ogCardName, ogCopy, ogLocale, ogPageOf, ogPages } from "@/lib/og";
 
-// The Open Graph cards (lib/og.ts): /<locale>/og/<card>.png, one per page and locale, rendered
-// with next/og once at build. Any other name is a 404.
+// Rendered with next/og once at build. Any other name is a 404.
 export const dynamic = "force-static";
 export const dynamicParams = false;
 

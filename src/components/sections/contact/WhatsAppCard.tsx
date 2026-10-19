@@ -1,7 +1,4 @@
-/* The WhatsApp card (prototype .card.night.wa-card), night inside the day section: the heading,
-   the live preview and the button (WhatsAppLive), the number as text, and what happens next
-   (children: NextSteps). The tone is the card's own (data-tone, for its colours and the button);
-   it is not a section, so the shell keeps the section's day tone, as in the prototype. */
+/* Not a section: the shell keeps the section's day tone. */
 import { getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 import { WhatsAppLive } from "@/components/sections/contact/WhatsAppLive";

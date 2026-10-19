@@ -1,12 +1,8 @@
-/* The shell's state-driven rules (header, mobile pill, loader, cursor, footer wordmark), ported
-   from docs/prototype/assets/site.css. Tokens only: colours from tokens.css (translucent fills are
-   color-mix of a token), durations and the ease from the motion tokens. Logical properties
-   throughout, except the cursor, which follows physical pointer coordinates.
-
-   In the components layer, so these rules win over the tone backgrounds in the base layer (as the
-   later rules do in the prototype) and Tailwind utilities still win over them. */
+/* Logical properties throughout, except the cursor, which follows physical pointer coordinates.
+   In the components layer, so these rules win over the tone backgrounds in the base layer and
+   Tailwind utilities still win over them. */
 @layer components {
-  /* ---------- header ---------- */
+  /* header */
   .site-header {
     position: fixed;
     inset-block-start: 0;
@@ -47,8 +43,7 @@
       "opsz" 24;
   }
 
-  /* The pill keeps the prototype's 48 px height; links are 44 px tall (the tap target) inside a
-     2 px padding instead of 40 px inside 4 px. */
+  /* Links are 44 px tall (the tap target) inside a 2 px padding, so the pill stays 48 px. */
   .nav-pill {
     display: flex;
     gap: 4px;
@@ -104,7 +99,7 @@
     color: var(--moon-soft);
   }
 
-  /* Locale switch ("FR / EN"): not in the prototype. Header size matches the clock chip. */
+  /* Locale switch: the same size as the clock chip. */
   .header-locale {
     display: inline-flex;
     align-items: center;
@@ -125,7 +120,7 @@
     color: var(--moon);
   }
 
-  /* ---------- mobile pill nav ---------- */
+  /* mobile pill nav */
   .pill {
     position: fixed;
     z-index: 30;
@@ -192,7 +187,7 @@
     }
   }
 
-  /* ---------- loader (dawn) and route curtain ---------- */
+  /* loader and route curtain */
   .loader {
     display: none;
   }
@@ -216,7 +211,7 @@
     place-items: center;
     will-change: transform;
   }
-  /* The prototype's glow core is a deeper orange than --glow; it is approximated with --glow. */
+  /* The original glow core is a deeper orange; --glow is close enough. */
   .loader-glow {
     position: absolute;
     inset-inline-start: 50%;
@@ -288,7 +283,7 @@
     will-change: transform;
   }
 
-  /* ---------- cursor ---------- */
+  /* cursor */
   /* Physical left/top on purpose: GSAP places it at the pointer's clientX and clientY. */
   .cursor {
     position: fixed;
@@ -346,7 +341,7 @@
     }
   }
 
-  /* ---------- footer wordmark ---------- */
+  /* footer wordmark */
   .footer-word-wrap {
     line-height: 0;
   }
@@ -361,8 +356,8 @@
       "wdth" 100,
       "opsz" 96;
   }
-  /* Its resting offset (prototype translateY(14%)) when GSAP does not move it. Under motion GSAP
-     owns the transform from the start, so no CSS transform competes with it. */
+  /* The resting offset when GSAP does not move it. Under motion GSAP owns the transform from the
+     start, so no CSS transform competes with it. */
   html:not(.motion) .footer-word {
     translate: 0 14%;
   }

@@ -1,13 +1,5 @@
-/* One real screen from the media manifest (08b), server-rendered, to place inside a Screen frame
-   (its `media` slot). The files are already optimised by `pnpm media`, so they are not run
-   through next/image again.
-   - Image: <picture> with AVIF then WebP, srcset and sizes, the intrinsic width and height (no
-     layout shift), the blur placeholder as the image's background until it has loaded. Lazy
-     unless `priority` (the first screen of the first project in view).
-   - Video: <video muted loop playsinline preload="none"> with WebM then MP4 and the poster, named
-     by `label`; without JavaScript the poster shows. VideoLoopControl (the client leaf) plays it
-     while at least half of it is visible, pauses it otherwise, never autoplays under reduced
-     motion, and is the always-present play/pause button (WCAG 2.2.2). */
+/* `pnpm media` already optimised the files, so they skip next/image. A video always has a
+   play/pause button (WCAG 2.2.2); without JavaScript its poster shows. */
 import type { CSSProperties } from "react";
 import { largest, srcSet, type ProjectMediaItem } from "@/lib/media";
 import { VideoLoopControl } from "@/primitives/VideoLoopControl";
@@ -15,12 +7,10 @@ import { VideoLoopControl } from "@/primitives/VideoLoopControl";
 export interface ProjectMediaProps {
   item: ProjectMediaItem;
   alt: string;
-  /** The video's accessible name (messages <key>.label); required for a video. */
+  /** Required for a video. */
   label?: string;
-  /** The image's `sizes`, from the layout of the frame. */
   sizes: string;
   priority?: boolean;
-  /** The play/pause button's names (messages work.video). */
   controls: { play: string; pause: string };
 }
 

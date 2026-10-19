@@ -1,10 +1,6 @@
 "use client";
 
-/* The client leaf of Sky (prototype Pages.home): while motion runs it puts `sky` on <html> (the
-   sections turn transparent over the fixed sky), rises the sun glow at the loader's ready signal
-   (DURATION.intro), and sinks and fades the sun from the top of the hero to the centre of the dusk,
-   scrubbed. Everything is reverted on unmount: leaving the home page removes `sky`. Under reduced
-   motion nothing runs and the CSS shows the still sun inside the hero. */
+/* Leaving the home page reverts everything, `sky` on <html> included. */
 import { useRef } from "react";
 import { useMotion } from "@/hooks/useMotion";
 import { useReadyGate } from "@/hooks/useReadyGate";

@@ -1,21 +1,8 @@
 "use client";
 
-/* The home 3D layer (prototype #scene-wrap): server-rendered with its poster, so the page is
-   complete without JavaScript, and the lazy three.js chunk (HeroScene) loaded on the client only.
-
-   Its state is mirrored on data-scene:
-   - `loading`: the server render and the time until the first frame (nothing shown, the sky
-     behind; the poster stays hidden while JavaScript runs);
-   - `live`: the scene runs on the ticker;
-   - `still`: reduced motion with WebGL, one frame of the resting composition;
-   - `poster`: no WebGL, a failed context or a failed chunk; the pre-rendered poster shows.
-   Without JavaScript the poster shows (CSS: only `html.js` hides it).
-
-   Right after hydration it checks WebGL and starts the chunk download at once (spike S1: the
-   download dominates the first frame, so it must not wait for the hero to scroll into view). A
-   loader task of weight 3 (decision T7) settles with the first frame, or at once without WebGL;
-   the loader's ceiling still wins, and a late scene fades in when it is ready (a chunk that
-   arrives during the loader's exit waits for the overlay to be gone before it compiles). */
+/* Server-rendered with its poster, so the page is complete without JavaScript. The chunk download
+   starts right after hydration: it dominates the first frame, so it must not wait for the hero to
+   scroll into view. */
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { HeroSceneProps, SceneMode } from "@/components/three/HeroScene";
@@ -30,7 +17,7 @@ const importScene = () => import("@/components/three/HeroScene");
 
 const HeroScene = dynamic<HeroSceneProps>(importScene, { ssr: false });
 
-/** Whether this browser can create a WebGL context (the throwaway context is released at once). */
+/** The throwaway context is released at once. */
 function hasWebGL(): boolean {
   try {
     const probe = document.createElement("canvas");
@@ -61,7 +48,6 @@ function deferred(): Deferred {
   return { promise, resolve, reject };
 }
 
-/** The poster images (scripts/capture-scene-poster.mjs), desktop and mobile aspect ratios. */
 export const SCENE_POSTER = {
   desktop: { src: "/media/scene-poster-desktop.webp", width: 1440, height: 900 },
   mobile: { src: "/media/scene-poster-mobile.webp", width: 780, height: 1688 },
@@ -136,9 +122,8 @@ export function SceneLayer() {
           width={SCENE_POSTER.mobile.width}
           height={SCENE_POSTER.mobile.height}
         />
-        {/* A decorative still of the scene; plain <img> because <picture> art direction by
-            media query is not something next/image renders. Lazy, so it is never fetched while
-            CSS hides it (JavaScript and a working scene). */}
+        {/* Plain <img>: next/image does not render <picture> art direction. Lazy, so it is never
+            fetched while CSS hides it. */}
         <img
           className="scene-poster"
           src={SCENE_POSTER.desktop.src}

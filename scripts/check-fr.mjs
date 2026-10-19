@@ -1,5 +1,5 @@
-// pnpm check:fr: messages/fr.json never uses the phrases docs/french-style.md bans (fails), and
-// warns about a regular space before : ; ? ! (no-break space expected). Rules: scripts/lib/fr-rules.mjs.
+// Fails on the phrases docs/french-style.md bans and warns about a regular space before : ; ? !
+// (a no-break space is expected).
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { checkFrench } from "./lib/fr-rules.mjs";

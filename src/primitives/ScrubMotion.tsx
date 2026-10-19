@@ -1,13 +1,12 @@
 "use client";
 
-/* The client leaf of Scrub: one fromTo tween, linear (EASE.none), scrubbed (SCRUB). */
 import { useRef } from "react";
 import { useMotion } from "@/hooks/useMotion";
 import { gsap } from "@/lib/gsap";
 import { EASE, MEDIA, SCRUB } from "@/lib/motion";
 import { resolveTrigger } from "@/lib/scroll";
 
-/** The values a Scrub may move: transforms and opacity, never layout (AGENTS.md, Motion rules). */
+/** Transforms and opacity only, never layout. */
 export type ScrubVars = Partial<
   Record<
     "x" | "y" | "xPercent" | "yPercent" | "scale" | "scaleX" | "scaleY" | "rotation" | "opacity",
@@ -16,16 +15,12 @@ export type ScrubVars = Partial<
 >;
 
 export interface ScrubMotionProps {
-  /** Values at the start of the range. Default: none (the element's CSS state). */
+  /** Default: the element's CSS state. */
   from?: ScrubVars;
-  /** Values at the end of the range (from SETTLE or another lib/motion.ts constant). */
   to: ScrubVars;
-  /** Selector of the element whose range drives the scrub: the nearest matching ancestor, else the
-      first match on the page. Default: the Scrub element. */
+  /** The nearest matching ancestor, else the first match on the page. */
   trigger?: string;
-  /** Default "top bottom". */
   start?: string;
-  /** Default "bottom top". */
   end?: string;
 }
 

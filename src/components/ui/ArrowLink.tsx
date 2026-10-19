@@ -1,12 +1,5 @@
-/* The prototype's .link and .back-link as one component, with a lucide-react arrow.
-   - `forward` (.link): underlined secondary link, arrow after the label.
-   - `back` (.back-link): quiet link, arrow before the label (the case study's "All projects").
-   - `external`: .link with an up-right arrow, for links that leave the site.
-   - `download`: .link with a download arrow, for a file (the about page's CV).
-
-   ui may import lib only (docs/architecture.md, "Import boundaries"), so the link element is
-   passed in with `as`: TransitionLink for internal links (the route curtain and localised
-   pathnames through @/i18n/navigation), "a" for external ones. The arrow is decorative. */
+/* ui may import lib only, so the link element comes in through `as`: TransitionLink for internal
+   links, "a" for external ones. */
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import type { ComponentPropsWithoutRef, ElementType, ReactNode } from "react";
 import { cn } from "@/lib/utils";

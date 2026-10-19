@@ -1,9 +1,5 @@
-// The real screens (prompts/08b-media.md, "Tests"): the manifest passes its schema and agrees with
-// the map; every file it references exists under public/work/ and nothing else is there; no raw
-// png or jpeg is published; every video output is under 1.5 MB; every work and tour entry has its
-// alt text (and a video its label) in both locales; the discovered file names appear only in the
-// map and the manifest. The pipeline's own rules run on fixtures: the originals never leave the
-// owner's machine, so nothing here reads them, and no assertion names a screenshot file.
+// The committed manifest and outputs, then the pipeline's rules on fixtures: the originals never
+// leave my machine, so nothing here reads them, and no assertion names a screenshot file.
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -56,7 +52,6 @@ function files(dir: string): string[] {
   });
 }
 
-/** Every served path an asset references. */
 function srcs(asset: MediaAsset): string[] {
   if (asset.kind === "image") return [...asset.avif, ...asset.webp].map((v) => v.src);
   return [asset.mp4.src, asset.webm.src, asset.poster.avif.src, asset.poster.webp.src];
@@ -65,8 +60,6 @@ function srcs(asset: MediaAsset): string[] {
 const assets = Object.entries(MANIFEST.projects).flatMap(([slug, byFile]) =>
   Object.values(byFile).map((asset) => ({ slug, asset })),
 );
-
-// ---------- the committed manifest and outputs ----------
 
 describe("the media manifest", () => {
   it("passes its schema, and so does the map", () => {
@@ -177,8 +170,6 @@ describe("the media map", () => {
   });
 });
 
-// ---------- the helpers, on fixtures ----------
-
 const image = (src: string): MediaAsset => ({
   kind: "image",
   width: 1200,
@@ -264,7 +255,7 @@ describe("pnpm media rules", () => {
     expect(imageWidths(2800, IMAGE.widths)).toEqual([640, 960, 1440, 1920]);
     expect(imageWidths(1900, IMAGE.widths)).toEqual([640, 960, 1440]);
     expect(imageWidths(500, IMAGE.widths)).toEqual([500]);
-    // 08c: a source wider than 1440 px also gets its own width, capped at 2400 px.
+    // A source wider than 1440 px also gets its own width, capped at 2400 px.
     expect(imageWidths(1900, IMAGE.widths, IMAGE.retina)).toEqual([640, 960, 1440, 1900]);
     expect(imageWidths(2800, IMAGE.widths, IMAGE.retina)).toEqual([640, 960, 1440, 1920, 2400]);
     expect(imageWidths(1920, IMAGE.widths, IMAGE.retina)).toEqual([640, 960, 1440, 1920]);

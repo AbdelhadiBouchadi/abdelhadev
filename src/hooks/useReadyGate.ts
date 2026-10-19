@@ -2,9 +2,7 @@ import { useCallback, useRef } from "react";
 import { useLoaderReady } from "@/hooks/useLoaderReady";
 import type { gsap } from "@/lib/gsap";
 
-/** Holds a paused intro animation until the loader (or the route curtain) signals ready, then
-    plays it; an animation handed over after the signal plays at once. The latest one wins, so a
-    rebuilt intro (SplitText re-splitting under autoSplit) replaces the one it supersedes. */
+/** The latest animation wins, so a rebuilt intro (SplitText re-splitting) replaces the old one. */
 export function useReadyGate(): (animation: gsap.core.Animation) => void {
   const ready = useRef(false);
   const pending = useRef<gsap.core.Animation | null>(null);

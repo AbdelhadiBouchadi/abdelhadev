@@ -1,6 +1,3 @@
-/* The two ways to write (prototype .contact-layout), day: the form card and the night WhatsApp
-   card, side by side from 901 px (7 to 5), stacked below. The cards fade up one after the other
-   after the hero lead (Reveal, CONTACT.cards). */
 import { getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 import { CONTACT } from "@/lib/motion";

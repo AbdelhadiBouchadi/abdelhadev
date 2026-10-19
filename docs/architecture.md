@@ -48,10 +48,10 @@ abdelhadev/
 │   │   ├── three/      SceneLayer.tsx (wrapper, poster, state), HeroScene.tsx (lazy, next/dynamic,
 │   │   │               ssr: false), scene.ts (pure factory), slabs.ts, textures.ts, lights.ts, palette.ts
 │   │   └── ui/         Button.tsx, Chip.tsx, Screen.tsx (framed screen, placeholder skeletons),
-│   │                   ArrowLink.tsx, Field.tsx (07)
-│   ├── primitives/     shell (01): SmoothScroll, TransitionProvider, TransitionLink, ToneSection,
+│   │                   ArrowLink.tsx, Field.tsx
+│   ├── primitives/     shell: SmoothScroll, TransitionProvider, TransitionLink, ToneSection,
 │   │                   ToneTrigger, Magnetic, FitText
-│   │                   motion (02, docs/primitives.md): SplitReveal, WordsLight, Reveal,
+│   │                   motion (docs/primitives.md): SplitReveal, WordsLight, Reveal,
 │   │                   MediaReveal, StickyStage + useStageTimeline, Scrub, LineDraw; each with its
 │   │                   client leaf (…Motion.tsx)
 │   ├── hooks/          useMotion, useReadyGate, useScrollSpy, useLoaderReady, useLoaderTask,
@@ -122,7 +122,7 @@ Localised pathnames in `src/i18n/routing.ts`:
 | `favicons/apple-touch-icon.png` | `src/app/apple-icon.png` | Next convention for Apple touch icon |
 | `favicons/icon-192.png`, `icon-512.png`, `icon-maskable-512.png` | `public/brand/` | Referenced from `src/app/manifest.ts` |
 | `logo-*.svg`, `wordmark-*.svg` | `public/brand/` | Static use: emails, CV, downloads, press |
-| `og-image.png` | brand kit only; since 09 the cards are generated per page and locale by `src/app/[locale]/og/[card]/route.tsx` (`next/og`, prerendered at build) | `lib/og.ts` |
+| `og-image.png` | brand kit only; the cards are generated per page and locale by `src/app/[locale]/og/[card]/route.tsx` (`next/og`, prerendered at build) | `lib/og.ts` |
 | `logo-mark-animated.svg`, `wordmark-animated.svg` | `src/components/brand/` as React components, paths generated into `wordmark-paths.ts` by `scripts/build-brand-paths.mjs` | Inline SVG so GSAP can animate the sun and each letter; colours via tokens and `currentColor` |
 | `build_brand.py`, `README.md` and all originals | `brand/` at the repo root | Source of truth to regenerate the kit |
 
@@ -134,6 +134,6 @@ Localised pathnames in `src/i18n/routing.ts`:
 
 ## Data shapes
 
-- `lib/content/projects.ts`: `slug`, `featured`, `status` (`live`, `ready`, `in-progress`), `year` (optional, never invented), `stack[]`, `links` (demo, repo, live; optional), `permission` (`confirmed` or `pending`: only confirmed projects are public, through `publicProjects()`), `caseStudy` (boolean), `media[]` (at most 5 on the work page: `span` 4 to 12, frame `tone`, `layout` aspect, placeholder `skeleton`, `kind` image or video; since 08b the slots take the real screens of `src/lib/content/media.map.json` through the manifest, `src/lib/media.ts`), and a `copyKey` pointing at `messages.projects.<slug>` for the localised name, kind, challenge, built, role and alt texts. Validated with zod at build time. Derived, not stored (05): `caseStudyProjects()` (public projects with `caseStudy: true`: the case study's `generateStaticParams`, the sitemap and the test route list; any other slug is a 404), `screenCount()` (the real screens of the case study's tour, else of the sheet, from the media manifest since 08b; the sheet links to "See all N screens" when it is larger than the media shown) and `nextProject()` (the next public project, or `null` after the last).
-- `lib/content/case-studies.ts` (05): keyed by project slug, zod-validated at load (`caseStudies` in `schema.ts`), one entry exactly for each project with `caseStudy: true` (checked in `projects.ts`). Each entry: `hero: { tone, skeleton }` (the first screen), `tour: { key, tone, skeleton }[]` (3 to 8 steps, unique keys, in reading order), `adapt: string[]` (exactly 4 keys) and `arch: { listKeys: string[] }`. Every key points at `messages.projects.<slug>.case.<group>.<key>` (`tour` and `adapt` items have a `title` and a `text`, `screens` the alt texts), next to `lead`, `footer` (the footer's call to action), `meta.description` and `diagram` (the architecture diagram's label and subtitles). The page-level labels shared by every case study are in `messages.case`.
-- Placeholders: any value the owner has not supplied is the literal `[TODO: …]`; the build lists them and fails when `REQUIRE_CONTENT=1`.
+- `lib/content/projects.ts`: `slug`, `featured`, `status` (`live`, `ready`, `in-progress`), `year` (optional, never invented), `stack[]`, `links` (demo, repo, live; optional), `permission` (`confirmed` or `pending`: only confirmed projects are public, through `publicProjects()`), `caseStudy` (boolean), `media[]` (at most 5 on the work page: `span` 4 to 12, frame `tone`, `layout` aspect, placeholder `skeleton`, `kind` image or video; the slots take the real screens of `src/lib/content/media.map.json` through the manifest, `src/lib/media.ts`), and a `copyKey` pointing at `messages.projects.<slug>` for the localised name, kind, challenge, built, role and alt texts. Validated with zod at build time. Derived, not stored: `caseStudyProjects()` (public projects with `caseStudy: true`: the case study's `generateStaticParams`, the sitemap and the test route list; any other slug is a 404), `screenCount()` (the real screens of the case study's tour, else of the sheet, from the media manifest; the sheet links to "See all N screens" when it is larger than the media shown) and `nextProject()` (the next public project, or `null` after the last).
+- `lib/content/case-studies.ts`: keyed by project slug, zod-validated at load (`caseStudies` in `schema.ts`), one entry exactly for each project with `caseStudy: true` (checked in `projects.ts`). Each entry: `hero: { tone, skeleton }` (the first screen), `tour: { key, tone, skeleton }[]` (3 to 8 steps, unique keys, in reading order), `adapt: string[]` (exactly 4 keys) and `arch: { listKeys: string[] }`. Every key points at `messages.projects.<slug>.case.<group>.<key>` (`tour` and `adapt` items have a `title` and a `text`, `screens` the alt texts), next to `lead`, `footer` (the footer's call to action), `meta.description` and `diagram` (the architecture diagram's label and subtitles). The page-level labels shared by every case study are in `messages.case`.
+- Placeholders: any value I have not supplied is the literal `[TODO: …]`; the build lists them and fails when `REQUIRE_CONTENT=1`.

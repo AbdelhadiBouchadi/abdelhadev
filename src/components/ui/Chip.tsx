@@ -1,7 +1,5 @@
-/* Prototype .chip and .chips (src/styles/ui.css): a pill label for stacks and facts. `warm` is
-   the glow-tinted chip; `todo` marks a value the owner has not confirmed yet, drawn with the
-   Majorelle token (its soft tint on night). Chips marks every `[TODO: …]` label as todo by itself,
-   so an unconfirmed fact can never pass for a real one. */
+/* Chips marks every [TODO: …] label as todo by itself, so an unconfirmed fact never passes for a
+   real one. */
 import type { ComponentPropsWithoutRef } from "react";
 import { isTodo } from "@/lib/todo";
 import { cn } from "@/lib/utils";

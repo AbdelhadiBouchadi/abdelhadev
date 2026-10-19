@@ -1,12 +1,5 @@
-// The DentaFlow case study (prompts/05-case-study.md, "Tests"), at 1440 and 390, /fr/projets/dentaflow
-// and /en/work/dentaflow: the hero name and first screen reach their end state after the loader;
-// the tour (desktop: the step crossing 55 % is active and its stage screen alone is shown; mobile:
-// no stage, one inline screen per step); the diagram fully drawn (LineDraw, moved here from the
-// lab bench); the next-project link lands on the next sheet of the work order through the curtain,
-// with the shell footer back; projects without a case study are 404s; complete without JavaScript
-// and under reduced motion; ScrollTriggers back to their baseline; axe at the top and at the
-// architecture. 08b: each tour step shows the screen the media map gives it (in the server HTML,
-// with its alt and size), the others keep their skeleton; no horizontal overflow.
+// The DentaFlow case study at 1440 and 390, in both locales: the hero, the tour, the diagram, the
+// next-project link, the 404s, the real screens, reduced motion, no JavaScript and axe.
 import AxeBuilder from "@axe-core/playwright";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { expect, test, type Locator, type Page } from "@playwright/test";
@@ -36,20 +29,15 @@ const LOCALES = ["fr", "en"] as const;
 const study = getCaseStudy("dentaflow");
 if (!study) throw new Error("the DentaFlow case study is missing");
 const KEYS = study.tour.map((s) => s.key);
-/** The real tour screens by step, from 1 (lib/content/media.map.json through the manifest). */
+/** By step, from 1. */
 const TOUR = tourMedia("dentaflow");
-/** The case hero screen (role hero, place case, 08c). */
 const HERO = heroMedia("dentaflow", "case")[0];
 const NEXT = nextProject("dentaflow")?.slug ?? "";
-/** CASE.tour.dimOpacity (src/lib/motion.ts). */
 const DIM = 0.88;
 
 const steps = (page: Page) => page.locator(".tour-step");
 const slots = (page: Page) => page.locator("[data-tour-slot]");
 
-// ---------- end states (read in the page) ----------
-
-/** Every split piece of the heading has risen back to rest. */
 const lettersAtRest = (locator: Locator) =>
   locator.evaluate((el) =>
     [...el.querySelectorAll<HTMLElement>("*")].every((c) => {
@@ -58,7 +46,6 @@ const lettersAtRest = (locator: Locator) =>
     }),
   );
 
-/** The frame is fully open and its screen at scale 1. */
 const mediaOpen = (locator: Locator) =>
   locator.evaluate((el) => {
     const clip = getComputedStyle(el).clipPath;
@@ -68,7 +55,6 @@ const mediaOpen = (locator: Locator) =>
     return (clip === "none" || /^inset\(0(%|px)? /.test(`${clip} `)) && Math.abs(scale - 1) < 0.001;
   });
 
-/** The element and its children are visible and in place. */
 const atRest = (locator: Locator) =>
   locator.evaluate((el) =>
     [el, ...el.children].every((c) => {
@@ -80,21 +66,18 @@ const atRest = (locator: Locator) =>
     }),
   );
 
-/** The opacity of each stage slot, rounded. */
 const slotOpacities = (page: Page) =>
   slots(page).evaluateAll((els) =>
     els.map((el) => Math.round(Number(getComputedStyle(el).opacity) * 100) / 100),
   );
 
-/** The opacity of each step, rounded. */
 const stepOpacities = (page: Page) =>
   steps(page).evaluateAll((els) =>
     els.map((el) => Math.round(Number(getComputedStyle(el).opacity) * 100) / 100),
   );
 
-/** Every node is visible and every wire fully drawn: DrawSVG's dash covers the whole path, or the
-    wire was never collapsed (no dash, or the CSS dash pattern of the soft wires, whose gap is
-    shorter than the path, unlike any state DrawSVG writes). */
+/** DrawSVG's dash covers the whole path, or the wire was never collapsed: no dash, or the soft
+    wires' CSS dash, whose gap is shorter than the path, unlike any state DrawSVG writes. */
 const diagramDrawn = (locator: Locator) =>
   locator.evaluate((el) => {
     const nodes = [...el.querySelectorAll("[data-node]")];
@@ -119,8 +102,6 @@ const diagramDrawn = (locator: Locator) =>
 const topInView = (locator: Locator) => locator.evaluate((el) => el.getBoundingClientRect().top);
 const scrollMargin = (locator: Locator) =>
   locator.evaluate((el) => parseFloat(getComputedStyle(el).scrollMarginTop));
-
-// ---------- with JavaScript and motion ----------
 
 test.describe("with motion", () => {
   test.beforeEach(async ({ page }) => {
@@ -223,7 +204,7 @@ test.describe("with motion", () => {
       const sheet = page.locator(`#${NEXT}`);
       const margin = await scrollMargin(sheet);
       await expect.poll(() => topInView(sheet), { timeout: 5000 }).toBeCloseTo(margin, -1);
-      // The footer is the shell's again after a client-side navigation (the @footer slot).
+      // The footer is the shell's again after a client-side navigation.
       await expect(page.locator("footer h2").first()).toHaveAccessibleName(m.footer.cta);
     });
   }
@@ -263,8 +244,8 @@ test.describe("with motion", () => {
     const others: string[] = [];
     const run = async (at: string) => {
       await transitionsSettled(page);
-      // Decision D10: unlit words wait at 0.14 by design and are scrolled to full opacity before
-      // they are read, so only they are left out of the contrast check (as in a11y.spec).
+      // Unlit words wait at 0.14 by design and are scrolled to full opacity before they are read, so
+      // only they are left out of the contrast check (as in a11y.spec).
       const rules = await new AxeBuilder({ page })
         .withTags(tags)
         .disableRules(["color-contrast"])
@@ -320,9 +301,6 @@ test("projects without a case study are 404s and are not in the sitemap", async 
   expect(xml).not.toContain("/projets/hms");
 });
 
-// ---------- without JavaScript, and under reduced motion ----------
-
-/** Nothing in main is hidden or clipped, no screen is zoomed, no step is dimmed. */
 async function complete(page: Page) {
   return page.evaluate(() => {
     const hidden = [...document.querySelectorAll("main *")].filter((el) => {
@@ -354,7 +332,6 @@ async function complete(page: Page) {
 
 const COMPLETE = { hidden: 0, clipped: 0, zoomed: 0, dimmed: 0, stage: "none", shots: KEYS.length };
 
-/** React escapes the apostrophe in text. */
 const html = (text: string) => text.replaceAll("'", "&#x27;");
 
 test.describe("without JavaScript", () => {
@@ -397,8 +374,6 @@ test.describe("reduced motion", () => {
     expect(await diagramDrawn(page.locator("[data-line-draw]"))).toBe(true);
   });
 });
-
-// ---------- the real tour screens (08b) and the hero screen (08c) ----------
 
 test.describe("tour screens without JavaScript", () => {
   test.use({ javaScriptEnabled: false });

@@ -8,8 +8,8 @@ import { localizedPath } from "@/lib/paths";
 import { notFoundMetadata } from "@/lib/seo";
 import "@/styles/globals.css";
 
-// Requests outside any locale that the proxy does not redirect (paths with a file extension).
-// There is no locale to read, so it renders in the default locale. Never indexed.
+// Paths with a file extension skip the proxy, so there is no locale to read: default locale,
+// never indexed.
 export function generateMetadata(): Promise<Metadata> {
   return notFoundMetadata(routing.defaultLocale);
 }

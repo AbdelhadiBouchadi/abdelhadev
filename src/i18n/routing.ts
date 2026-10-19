@@ -1,5 +1,4 @@
-/* Locales and localised pathnames (docs/architecture.md, "Routing"). Keys are the internal paths,
-   which are also the folder names under src/app/[locale]. */
+/* Keys are the internal paths, which are also the folder names under src/app/[locale]. */
 import { defineRouting } from "next-intl/routing";
 
 export const routing = defineRouting({

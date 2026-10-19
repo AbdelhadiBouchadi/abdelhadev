@@ -1,5 +1,4 @@
-// Foundation acceptance: locale redirects, sitemap and robots, metadata files, 404s. The lab and
-// its tokens, type and brand screenshot were removed in 05; nothing here depended on it.
+// Locale redirects, sitemap and robots, metadata files, 404s.
 import { expect, test } from "@playwright/test";
 import { ROUTES } from "./routes";
 
@@ -101,7 +100,7 @@ test("unknown pages are a localised 404", async ({ page }) => {
     page.locator("main").getByRole("link", { name: "Voir les projets" }),
   ).toHaveAttribute("href", "/fr/projets");
   expect((await page.goto("/fr/projets/nope"))?.status()).toBe(404);
-  // Projects without a case study, and the removed lab.
+  // Projects without a case study, and an old route that no longer exists.
   expect((await page.goto("/fr/projets/hms"))?.status()).toBe(404);
   expect((await page.goto("/en/work/meetai"))?.status()).toBe(404);
   expect((await page.goto("/fr/lab"))?.status()).toBe(404);

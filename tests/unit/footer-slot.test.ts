@@ -1,6 +1,5 @@
-// The footer comes from the @footer slot of the locale layout (05). On a client-side navigation a
-// slot without a page for the new route keeps the previous route's footer, so every route needs
-// its own slot page; this fails when a route is added without one.
+// On a client-side navigation, a slot without a page for the new route keeps the previous
+// route's footer, so every route needs its own slot page.
 import { existsSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { routing } from "@/i18n/routing";

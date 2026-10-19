@@ -1,11 +1,8 @@
-/* The Agadir clock in the header and footer (prototype `tick`): 24-hour HH:MM in the site's time
-   zone, refreshed every 30 s. Formatted on the client after mount so the server HTML never
-   disagrees with the browser. */
+/* Formatted after mount, so the server HTML never disagrees with the browser. */
 import { SITE } from "@/lib/site";
 
 export const CLOCK_REFRESH_MS = 30_000;
 
-/** Placeholder shown before the first client tick (and without JavaScript), as in the prototype. */
 export const CLOCK_PLACEHOLDER = "--:--";
 
 export function formatClock(date: Date, timeZone: string = SITE.timeZone): string {

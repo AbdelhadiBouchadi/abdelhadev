@@ -1,6 +1,4 @@
-/* The colour tokens the home scene reads at runtime (src/lib/css-tokens.ts). Every colour of the
-   prototype's createScene maps to one of them; the `--scene-*` group was added to tokens.css for
-   the values that had no token. */
+/* The --scene-* tokens cover the scene colours that had no token. */
 export const SCENE_TOKENS = [
   "scene-light-ambient",
   "scene-light-sky",

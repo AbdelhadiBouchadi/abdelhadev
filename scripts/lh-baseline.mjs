@@ -1,6 +1,5 @@
-// Prints the medians of a Lighthouse CI run (`pnpm lhci` writes .lighthouseci/lhr-*.json) as a
-// Markdown table: LCP, TBT, CLS, JavaScript transfer and the category scores per route.
-// Used to write docs/baseline.md; not part of CI.
+// Prints the medians of a Lighthouse CI run as a Markdown table, for docs/baseline.md. Not part
+// of CI.
 import { readdirSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 

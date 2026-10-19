@@ -1,12 +1,11 @@
-// Recording helpers for the motion evidence specs (AGENTS.md, "Quality gates"): short videos and
-// end-state screenshots in test-results/motion/, to compare with docs/prototype.
+// Short videos and end-state screenshots in test-results/motion/, to compare with docs/prototype.
 import type { Browser, BrowserContextOptions, Page } from "@playwright/test";
 
 export const MOTION_OUT = "test-results/motion";
 export const DESKTOP = { width: 1440, height: 900 };
 export const PHONE = { width: 390, height: 844 };
 
-/** Records `run` in its own context at `size`, then saves `<name>.webm` and `<name>.png`. */
+/** Saves `<name>.webm` and `<name>.png`. */
 export async function record(
   browser: Browser,
   name: string,
@@ -20,9 +19,7 @@ export async function record(
   }: {
     visitedSession?: boolean;
     phone?: boolean;
-    /** More context options (reduced motion, …). */
     context?: BrowserContextOptions;
-    /** Runs before the first navigation (init scripts). */
     before?: (page: Page) => Promise<void>;
   } = {},
 ): Promise<void> {
@@ -42,7 +39,7 @@ export async function record(
   await page.video()?.saveAs(`${MOTION_OUT}/${name}.webm`);
 }
 
-/** Smooth wheel scroll through Lenis, in steps, so the video shows the motion. */
+/** Wheel scroll through Lenis, in steps, so the video shows the motion. */
 export async function wheel(page: Page, dy: number, steps = 12): Promise<void> {
   for (let i = 0; i < steps; i++) {
     await page.mouse.wheel(0, dy / steps);

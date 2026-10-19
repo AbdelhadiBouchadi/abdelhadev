@@ -1,11 +1,9 @@
-/* Localised paths from the routing table, without next-intl's navigation module: lib may import
-   @/i18n/routing and nothing else from the app (docs/architecture.md, "Import boundaries").
-   Same output as next-intl's getPathname for this project's config (localePrefix "always"). */
+/* lib may not import next-intl's navigation module (docs/architecture.md), so this gives the same
+   output as getPathname for localePrefix "always". */
 import { routing, type Locale, type Pathname } from "@/i18n/routing";
 
 type DynamicPathname = Extract<Pathname, `${string}[${string}]${string}`>;
 
-/** An internal pathname, with its params when it has dynamic segments. */
 export type RouteHref =
   | Exclude<Pathname, DynamicPathname>
   | { pathname: DynamicPathname; params: Record<string, string> };

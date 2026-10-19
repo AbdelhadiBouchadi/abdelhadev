@@ -1,20 +1,8 @@
 "use client";
 
-/* The hero wordmark's intro (prototype Pages.home): at the loader's ready signal the width axis
-   settles from 75 to 100 (DURATION.heroWidth) while the letters rise through their masks
-   (CHARS_PACE.hero). Page-specific, and not the SplitReveal primitive, because the width axis
-   reflows text: animated naively, every letter's layout box moves on every frame, which the
-   browser counts as layout shift (CLS 0.058 measured at 1440 px).
-
-   So the layout never moves. The word is painted at its final width under the loader (it is
-   fitted by FitText and is an LCP candidate, decision T7). Once the web fonts are in, it is split
-   into masked letters and each mask's width is frozen at its final value; the axis is set to 75
-   on the heading, so only the glyphs narrow inside their fixed boxes, and each mask is moved left
-   by a transform (x) to close the gaps, which paints the condensed word. The intro tweens the axis
-   back to 100 and the transforms back to 0 together. Transforms and glyph widths inside a fixed box
-   are not layout shifts. At the end the frozen widths are released (they equal the natural ones).
-
-   Reduced motion and no JavaScript: nothing is split, the word rests at its final width. */
+/* Not SplitReveal: the width axis reflows text, and animating it naively moves every letter's
+   layout box each frame, which counts as layout shift. So each mask is frozen at its final width,
+   the glyphs narrow inside it and a transform closes the gaps; the intro tweens both back. */
 import { useRef } from "react";
 import { useMotion } from "@/hooks/useMotion";
 import { useReadyGate } from "@/hooks/useReadyGate";
@@ -23,11 +11,8 @@ import { CHARS_PACE, DURATION, HOME, MEDIA, REVEAL } from "@/lib/motion";
 
 const AXIS = "--wdth";
 
-/** Freezes each mask at its current (final) width, narrows the glyphs, and returns the x offset,
-    in em, that puts each mask where it would sit in the condensed word. Widths and offsets are in
-    em so the word still scales linearly with its font size: FitText may refit it (the split word
-    is a little wider than the unsplit one, without kerning) and must converge. Reads, writes,
-    then one read. */
+/** Widths and offsets are in em, so the word still scales with its font size and FitText's refit
+    converges. Reads, writes, then one read. */
 export function lockLetters(
   heading: HTMLElement,
   masks: readonly HTMLElement[],
@@ -43,7 +28,6 @@ export function lockLetters(
   return condensedOffsets(finals, narrows);
 }
 
-/** x offset of each box: where it starts in the condensed run minus where it starts at rest. */
 export function condensedOffsets(finals: readonly number[], narrows: readonly number[]): number[] {
   let rest = 0;
   let condensed = 0;
@@ -66,7 +50,7 @@ export function HeroWordmark() {
 
     mm.add(MEDIA.motion, (context) => {
       let alive = true;
-      // The letters are measured with the web font, as the prototype waited for fonts.ready.
+      // Measured with the web font.
       void Promise.all([loadSplitText(), document.fonts.ready]).then(([SplitText]) => {
         if (!alive) return;
         context.add(() => {

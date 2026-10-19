@@ -1,12 +1,7 @@
-// The home page (prompts/03-home.md, "Testing and evidence"), at 1440 and 390, both locales:
-// the loader hands over to the hero intro; each beat reaches its end state when scrolled; the
-// header turns to night at the dusk's centre and nowhere earlier; the featured screens open; the
-// 3D layer reports its state (live, poster without WebGL, still under reduced motion); without
-// JavaScript the page is complete, with no testimonials markup while none is confirmed (08a); no console errors; ScrollTriggers return to their baseline; axe.
-//
-// It also carries the assertions that lived on the lab bench until 02 (the shell: header hide and
-// return, tone switching, the cursor label; the primitives: Reveal, SplitReveal, WordsLight,
-// StickyStage, Scrub; the ScrollTrigger leak check), now run on the real page that uses them.
+// The home page at 1440 and 390, in both locales: the loader hands over to the hero intro, each
+// beat reaches its end state, the header tone, the 3D layer's state, the shell (header hide,
+// tone, cursor label) and the primitives on the real page, no JavaScript, reduced motion, the
+// ScrollTrigger baseline and axe.
 import AxeBuilder from "@axe-core/playwright";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { expect, test, type Locator, type Page } from "@playwright/test";
@@ -35,9 +30,6 @@ const LOCALES = ["fr", "en"] as const;
 const header = (page: Page) => page.locator("header.site-header");
 const scene = (page: Page) => page.locator("[data-scene]");
 
-// ---------- end states, read in the page ----------
-
-/** The wordmark has finished its intro: split, every letter at rest, the width axis at 100. */
 const wordmarkAtRest = (page: Page) =>
   page.locator("[data-hero-word]").evaluate((h) => {
     const letters = [...h.querySelectorAll("[data-hero-letters] div")];
@@ -54,7 +46,6 @@ const wordmarkAtRest = (page: Page) =>
     );
   });
 
-/** Every child of a Reveal group is visible and in place. */
 const groupAtRest = (locator: Locator) =>
   locator.evaluate((el) =>
     [...el.children].every((c) => {
@@ -102,7 +93,6 @@ const matrix = (locator: Locator) =>
     return { scale: Math.round(m.a * 1000) / 1000, opacity: Number(s.opacity) };
   });
 
-/** The computed colour of a token, for comparing with computed styles. */
 const tokenColour = (page: Page, name: string) =>
   page.evaluate((token) => {
     const probe = document.createElement("span");
@@ -113,7 +103,6 @@ const tokenColour = (page: Page, name: string) =>
     return colour;
   }, name);
 
-/** Counts WebGL draw calls (drawElements and drawArrays) from the start of the page. */
 async function countDraws(page: Page) {
   await page.addInitScript(() => {
     const w = window as unknown as { __draws: number };
@@ -134,7 +123,6 @@ async function countDraws(page: Page) {
 const draws = (page: Page) =>
   page.evaluate(() => (window as unknown as { __draws: number }).__draws);
 
-/** Makes the browser report no WebGL: getContext returns null for webgl and webgl2. */
 async function blockWebGL(page: Page) {
   await page.addInitScript(() => {
     const original = HTMLCanvasElement.prototype.getContext;
@@ -146,8 +134,6 @@ async function blockWebGL(page: Page) {
     });
   });
 }
-
-// ---------- with JavaScript and motion ----------
 
 test.describe("with motion", () => {
   test.beforeEach(async ({ page }) => {
@@ -374,8 +360,7 @@ test.describe("with motion", () => {
   }) => {
     const errors = collectErrors(page);
     const settle = () => page.waitForTimeout(800);
-    // The contact page is still a placeholder (07; the about page has its own triggers since 06):
-    // a quiet baseline. The work page runs the same round trip from there (tests/e2e/work.spec.ts).
+    // A page with few triggers as the baseline. work.spec.ts runs the same round trip from there.
     await page.goto("/fr/contact");
     await shellIdle(page);
     await settle();
@@ -448,8 +433,8 @@ test.describe("with motion", () => {
       const others: string[] = [];
       const run = async (at: string) => {
         await transitionsSettled(page);
-        // Decision D10: unlit words wait at 0.14 by design and are scrolled to full opacity
-        // before they are read, so only they are left out of the contrast check (as in a11y.spec).
+        // Unlit words wait at 0.14 by design and are scrolled to full opacity before they are read, so
+        // only they are left out of the contrast check (as in a11y.spec).
         const rules = await new AxeBuilder({ page })
           .withTags(tags)
           .disableRules(["color-contrast"])
@@ -500,14 +485,11 @@ test.describe("with motion", () => {
         });
       }
       expect(others).toEqual([]);
-      // No contrast finding either since the unlit words start at 0.5 (REVEAL.wordsFrom) and the
-      // night sections keep their own background outside the dusk; the file above names any.
+      // No contrast finding either: the night sections keep their own background outside the dusk.
       expect(findings.map((f) => `${f.at} ${f.target} ${String(f.ratio)}:1`)).toEqual([]);
     });
   }
 });
-
-// ---------- reduced motion ----------
 
 test.describe("reduced motion", () => {
   test.use({ reducedMotion: "reduce" });
@@ -556,12 +538,10 @@ test.describe("reduced motion", () => {
   });
 });
 
-// ---------- without JavaScript ----------
-
 test.describe("without JavaScript", () => {
   test.use({ javaScriptEnabled: false });
 
-  // Testimonials render only once confirmed (src/lib/content/testimonials.ts, decision P10).
+  // Testimonials render only once confirmed (src/lib/content/testimonials.ts).
   test("no testimonials markup while none is confirmed", async ({ request }) => {
     test.skip(publicTestimonials().length > 0, "a testimonial is confirmed");
     for (const locale of LOCALES) {
@@ -600,8 +580,6 @@ test.describe("without JavaScript", () => {
     });
   }
 });
-
-// ---------- the featured tiles show DentaFlow's real screens (08c) ----------
 
 test.describe("featured screens without JavaScript", () => {
   test.use({ javaScriptEnabled: false });

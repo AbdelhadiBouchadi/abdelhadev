@@ -1,7 +1,5 @@
-// The contact form's logic (prompts/07-contact.md, "Tests"): the shared schema and its error keys
-// in both locales, the handler's branches with a fake mailer and guard (dry run, invalid,
-// honeypot, rate limit, bot, send failure, success) and that no log line holds personal data, the
-// WhatsApp composer, and the environment rules (a dry run can never run in production).
+// The schema and its error keys in both locales, the handler's branches with a fake mailer and
+// guard, no personal data in any log line, the WhatsApp composer and the environment rules.
 import { render } from "@react-email/render";
 import { createElement } from "react";
 import { describe, expect, it, vi } from "vitest";
@@ -41,8 +39,6 @@ const form = (input: Partial<ContactInput> = {}) => {
   for (const [key, value] of Object.entries({ ...VALID, ...input })) data.set(key, value);
   return data;
 };
-
-// ---------- schema ----------
 
 describe("contact schema", () => {
   it("accepts a complete message and trims it", () => {
@@ -108,8 +104,6 @@ describe("contact schema", () => {
   });
 });
 
-// ---------- handler ----------
-
 function setup(options: { dryRun?: boolean; verdict?: GuardVerdict; result?: MailResult } = {}) {
   const sent: Mail[] = [];
   const lines: string[] = [];
@@ -135,7 +129,6 @@ function setup(options: { dryRun?: boolean; verdict?: GuardVerdict; result?: Mai
   return { deps, sent, lines, mailer, guard };
 }
 
-/** No log line holds the name, the email or any part of the message. */
 const expectNoPersonalData = (lines: string[]) => {
   const all = lines.join("\n");
   for (const secret of [VALID.name, VALID.email, "Amina", "clinique-exemple", "rendez-vous"]) {
@@ -229,8 +222,6 @@ describe("contact handler", () => {
   });
 });
 
-// ---------- email template ----------
-
 describe("contact email", () => {
   const data = (() => {
     const result = validateContact({ ...VALID, topic: "other" });
@@ -273,8 +264,6 @@ describe("contact email", () => {
   });
 });
 
-// ---------- WhatsApp ----------
-
 const copyOf = (messages: typeof fr) => ({
   greeting: messages.contact.whatsapp.greeting,
   name: messages.contact.whatsapp.name,
@@ -308,8 +297,6 @@ describe("WhatsApp composer", () => {
     );
   });
 });
-
-// ---------- environment ----------
 
 describe("contact environment", () => {
   const production = {

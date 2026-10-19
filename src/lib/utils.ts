@@ -15,10 +15,8 @@ export function cn(...inputs: ClassValue[]): string {
   return twMerge(clsx(inputs));
 }
 
-/** Narrows `key` to a key of `object` (for lookups by a route param). */
 export function isKeyOf<T extends object>(object: T, key: PropertyKey): key is keyof T {
   return Object.hasOwn(object, key);
 }
 
-/** Inline styles that set CSS custom properties (`style={{ "--stage-h": "240vh" }}`). */
 export type CSSVars = CSSProperties & Partial<Record<`--${string}`, string>>;

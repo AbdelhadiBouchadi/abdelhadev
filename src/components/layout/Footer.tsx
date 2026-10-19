@@ -1,21 +1,5 @@
-/* The site footer (prototype .site-footer), night tone, on every page: the call to action, the
-   Contact button (magnetic) and the link to the work, four columns (pages, elsewhere, Agadir with
-   the live time, legal), and the giant wordmark fitted to the column.
-
-   Motion (prototype `footerWord`), composed from the primitives: the call-to-action heading rises
-   by lines when it reaches 80 % of the viewport (SplitReveal), and the wordmark rises from
-   yPercent 60 to 14 as the footer scrolls in (Scrub). Under reduced motion nothing moves: the
-   wordmark keeps its resting offset from CSS and the heading is never split.
-
-   The legal name is plain, server-rendered text here on every page (AGENTS.md, "Content, identity
-   and legal"). The public email (a mailto: link with the address as its text) and the LinkedIn
-   and GitHub links come from src/lib/site.ts; LinkedIn and GitHub open in a new tab, which their
-   accessible name says; each is a 44 px target. The copy makes no availability or client claims
-   (decision P6).
-
-   The call to action is "Have a project in mind?" unless the page passes its own (`cta`, the case
-   study's "DentaFlow in your clinic?"). The layout renders the footer through its @footer slot
-   (src/app/[locale]/@footer), so the heading follows client-side navigations too. */
+/* The legal name stays plain, server-rendered text here on every page. The layout renders the
+   footer through its @footer slot, so the heading follows client-side navigations. */
 import { getLocale, getTranslations } from "next-intl/server";
 import { Clock } from "@/components/layout/Clock";
 import { LocaleSwitch } from "@/components/layout/LocaleSwitch";
@@ -45,7 +29,6 @@ const CHANNELS = [
 ] as const;
 
 export interface FooterProps {
-  /** The call-to-action heading of this page. Default: messages footer.cta. */
   cta?: string;
 }
 

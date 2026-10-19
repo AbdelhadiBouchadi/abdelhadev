@@ -1,9 +1,5 @@
-/* The Open Graph card (1200 x 630 PNG, next/og), drawn from a title and a line in the page's
-   language (lib/og.ts resolves them from messages seo.*). "An Agadir day" at its evening: the
-   brand mark becomes the landscape, a large sun setting on the Majorelle horizon with its
-   reflection, under a night sky warmed by a sunset haze; the name and the title sit left. Colours
-   are the tokens (lib/tokens.ts). The fonts are static WOFF files kept in src/assets/og/ (next/og
-   cannot read WOFF2) and read from the repository, so the build makes no network call. */
+/* The fonts are static WOFF files in src/assets/og/ (next/og cannot read WOFF2), read from the
+   repository so the build makes no network call. */
 import "server-only";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
@@ -18,7 +14,7 @@ const fonts = Promise.all([
   readFile(join(FONTS_DIR, "InstrumentSans-Medium.woff")),
 ]);
 
-/** The sun's diameter and where the horizon sits (px on the 1200 x 630 card). */
+/** px on the 1200 x 630 card. */
 const SUN = 440;
 const HORIZON_Y = 452;
 const SUN_X = 742;
@@ -51,8 +47,8 @@ export async function ogCard({ title, line }: Pick<OgCopy, "title" | "line">): P
           color: c.moon,
         }}
       >
-        {/* The sunset haze around the sun: a full-canvas layer, so it has no edge (next/og draws
-            a gradient to transparent with a visible box). */}
+        {/* A full-canvas layer, so the haze has no edge: next/og draws a gradient to transparent
+            with a visible box. */}
         <div
           style={{
             position: "absolute",
@@ -62,7 +58,6 @@ export async function ogCard({ title, line }: Pick<OgCopy, "title" | "line">): P
             opacity: 0.32,
           }}
         />
-        {/* The sun, half set: a full disc clipped at the horizon. */}
         <div
           style={{
             position: "absolute",
@@ -83,7 +78,6 @@ export async function ogCard({ title, line }: Pick<OgCopy, "title" | "line">): P
             }}
           />
         </div>
-        {/* The horizon and its reflection (the mark's Majorelle bars). */}
         <div
           style={{
             position: "absolute",
@@ -120,7 +114,6 @@ export async function ogCard({ title, line }: Pick<OgCopy, "title" | "line">): P
           }}
         />
 
-        {/* The words, left. */}
         <div
           style={{
             position: "absolute",

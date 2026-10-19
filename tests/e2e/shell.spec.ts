@@ -1,6 +1,5 @@
-// The persistent shell: the active link, the locale switch and the clock (docs/choreography.md,
-// "Shell"). Header hide and return, tone switching and the cursor label are tested on the home
-// page since 03 (tests/e2e/home.spec.ts), where they run against real sections.
+// The active link, the locale switch and the clock. Header hide, tone switching and the cursor
+// label are tested on the home page, against real sections.
 import { expect, test, type Page } from "@playwright/test";
 import { shellIdle, visited } from "./shell-helpers";
 

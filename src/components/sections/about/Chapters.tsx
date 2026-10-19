@@ -1,9 +1,3 @@
-/* The three chapters (prototype .chapters), day: who I am, how I work, why clinics. Each is a
-   200 vh section with a sticky, viewport-tall stage (StickyStage): its label fades up when it
-   reaches 60 % of the viewport (Reveal), and its statement's words light up from the chapter's
-   "top 20%" to its "bottom bottom" (WordsLight, unlit words at REVEAL.wordsFrom). Without
-   JavaScript and under reduced motion each chapter is in normal flow, nothing sticky, every word
-   at full opacity. The label is the chapter's heading. */
 import { getTranslations } from "next-intl/server";
 import { CHAPTERS } from "@/lib/content/about";
 import { ABOUT } from "@/lib/motion";

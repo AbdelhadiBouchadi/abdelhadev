@@ -1,7 +1,5 @@
-// Reads brand/wordmark-animated.svg (one path per letter, #g0 to #g9) and writes
-// src/components/brand/wordmark-paths.ts with the viewBox and the path data rounded to 2 decimals.
-// The output is formatted with the repo's Prettier config so CI can check it is fresh:
-//   pnpm brand:paths && git diff --exit-code src/components/brand/wordmark-paths.ts
+// Writes src/components/brand/wordmark-paths.ts from brand/wordmark-animated.svg, formatted with
+// the repo's Prettier config so CI can check it is fresh with git diff --exit-code.
 import { readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -11,12 +9,12 @@ const root = resolve(import.meta.dirname, "..");
 const source = resolve(root, "brand/wordmark-animated.svg");
 const target = resolve(root, "src/components/brand/wordmark-paths.ts");
 
-/** Rounds every number in an SVG path to 2 decimals and drops trailing zeros. */
+/** Drops trailing zeros too. */
 export function roundPath(d) {
   return d.replace(/-?\d*\.?\d+(?:e-?\d+)?/gi, (n) => String(Number(Number(n).toFixed(2))));
 }
 
-/** Extracts the viewBox and the letter paths, in order of their gN id. */
+/** In order of their gN id. */
 export function parseWordmark(svg) {
   const viewBox = /viewBox="([^"]+)"/.exec(svg)?.[1];
   if (!viewBox) throw new Error("wordmark-animated.svg has no viewBox");

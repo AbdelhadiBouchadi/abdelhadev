@@ -1,6 +1,4 @@
-// The work page's data and copy (prompts/04-work.md, "Tests"): publicProjects() and the schema
-// rules, and the work page copy (08c). The derived screen count, the case study list and the
-// sitemap moved to tests/unit/case.test.ts in 05.
+// publicProjects(), the schema rules and the work page copy.
 import { createTranslator } from "next-intl";
 import { describe, expect, it } from "vitest";
 import en from "@messages/en.json";

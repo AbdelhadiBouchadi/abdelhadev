@@ -1,6 +1,5 @@
-// The about page's facts and gates (prompts/06-about.md, "Tests"): the channels in site.ts, the
-// CV placeholder gate (cv.ts and the build report), the words that must appear nowhere in the
-// copy, the placeholder PDFs, the data's order and the CSS start state of the arcs.
+// The about page's facts: the channels in site.ts, the CV placeholder gate, the banned words,
+// the placeholder PDFs, the data's order and the CSS start state of the arcs.
 import { spawnSync } from "node:child_process";
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -123,7 +122,7 @@ describe("placeholder PDF", () => {
 });
 
 describe("copy", () => {
-  // Decision P3: no university, no graduation year, never "engineer", "student" or "étudiant".
+  // No university, no graduation year, never "engineer", "student" or "étudiant".
   // A B.Eng is neither a French "licence" nor a "diplôme d'ingénieur" (docs/french-style.md).
   const BANNED = [
     /karabuk/i,
@@ -136,7 +135,7 @@ describe("copy", () => {
     /\blicence\b/i,
   ];
 
-  // The degree (08a, 08a2): stated only in the education entry of the timeline.
+  // The degree is stated only in the education entry of the timeline.
   const DEGREE = [/B\.Eng/, /bachelor/i];
   const EDUCATION = "about.experience.items.education.";
 
@@ -153,7 +152,7 @@ describe("copy", () => {
     }
   });
 
-  it("states the degree in the education entry only, as the owner wrote it", () => {
+  it("states the degree in the education entry only, as I wrote it", () => {
     expect(fr.about.experience.items.education.title).toBe("Génie informatique");
     expect(fr.about.experience.items.education.when).toBe(
       "Dernière année de Bachelor of Engineering (B.Eng)",
@@ -162,7 +161,7 @@ describe("copy", () => {
     expect(en.about.experience.items.education.when).toBe("Final year of a B.Eng");
   });
 
-  it("has a title and a line for each service, in the owner's order", () => {
+  it("has a title and a line for each service, in my order", () => {
     expect(SERVICES).toEqual(["clinics", "ai", "shops", "websites", "other"]);
     for (const messages of [fr, en]) {
       expect(Object.keys(messages.about.services.items)).toEqual([...SERVICES]);

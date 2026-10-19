@@ -1,13 +1,6 @@
-/* The product tour (prototype .tour), day: what the product does, one step per screen, in the
-   order of the case study data.
-   - Motion on, from 901 px: the steps scroll past a sticky framed stage holding every screen;
-     the step crossing 55 % of the viewport is active (TourMotion, useScrollSpy SPY.tour), its
-     screen crossfades in and the other steps dim (src/styles/case.css for the layout).
-   - Otherwise (no JavaScript, reduced motion, phones): no stage, each step shows its own screen.
-   The stage repeats the inline screens for sighted readers only (aria-hidden); the step text and
-   the inline screens carry the meaning. Each step shows the screen lib/content/media.map.json maps
-   to it (08b); a step without one keeps its skeleton. The stage copies load only where the stage
-   shows, the inline ones only where it does not (lazy images in a hidden box are not fetched). */
+/* The stage repeats the inline screens for sighted readers only (aria-hidden). Stage copies load
+   only where the stage shows and inline ones only where it does not: lazy images in a hidden box
+   are not fetched. */
 import { getMessages, getTranslations } from "next-intl/server";
 import { pick, type CaseStudyCopy } from "@/components/sections/case/case-copy";
 import { TourMotion } from "@/components/sections/case/TourMotion";
@@ -23,7 +16,7 @@ export interface ProductTourProps {
   copy: CaseStudyCopy;
 }
 
-/** The tour screen's width: 7 of 12 columns from 901 px (case.css), full width below. */
+/** 7 of 12 columns from 901 px (case.css), full width below. */
 const SIZES = "(min-width: 901px) 58vw, 100vw";
 
 export async function ProductTour({ slug, study, copy }: ProductTourProps) {
