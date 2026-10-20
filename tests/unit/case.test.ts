@@ -113,14 +113,14 @@ describe("the case study copy", () => {
     ["fr", fr],
     ["en", en],
   ] as const) {
-    it(`${locale}: has a text for every tour step, card and list item, and the hero screen`, () => {
+    it(`${locale}: has a text for every tour step, card and list item`, () => {
       const copy = messages.projects.dentaflow.case;
       const has = (group: object, key: string) => Object.hasOwn(group, key);
       for (const { key } of study.tour) {
         expect(has(copy.tour, key), key).toBe(true);
       }
-      // The tour screens' alt texts come from the media map's keys (tests/unit/media.test.ts).
-      expect(has(copy.screens, "hero")).toBe(true);
+      // The screens' alt texts come from the media map's keys (tests/unit/media.test.ts).
+      expect(has(copy, "screens")).toBe(false);
       for (const key of study.adapt) expect(has(copy.adapt, key), key).toBe(true);
       for (const key of study.arch.listKeys) expect(has(copy.arch, key), key).toBe(true);
     });

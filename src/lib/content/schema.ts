@@ -6,15 +6,7 @@ export const todo = z.custom<Todo>(isTodo, {
   message: "Expected a placeholder",
 });
 
-export const projectStatus = z.enum([
-  "live",
-  "ready",
-  "in-progress",
-  "test-mode",
-  "used",
-  "working",
-  "concept",
-]);
+export const projectStatus = z.enum(["ready", "test-mode", "used", "working", "concept"]);
 
 export type ProjectStatus = z.infer<typeof projectStatus>;
 
@@ -56,7 +48,7 @@ export const project = z
   .object({
     slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
     featured: z.boolean(),
-    status: z.union([projectStatus, todo]),
+    status: projectStatus,
     /** Only "confirmed" projects appear on the work page, its rail and the sitemap. */
     permission: z.enum(["confirmed", "pending"]),
     caseStudy: z.boolean(),
@@ -72,13 +64,9 @@ export const project = z
       .strict()
       .optional(),
     media: z.array(mediaItem).max(MAX_SHEET_MEDIA),
-    /** A placeholder until I confirm the list. */
     features: z
-      .object({
-        items: z.array(z.string().regex(/^[a-z]+$/)).min(1),
-        confirmed: z.union([z.literal(true), todo]),
-      })
-      .strict()
+      .array(z.string().regex(/^[a-z]+$/))
+      .min(1)
       .optional(),
     copyKey: z.string().regex(/^projects\.[a-z0-9-]+$/),
   })

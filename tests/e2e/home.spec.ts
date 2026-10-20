@@ -7,7 +7,7 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { expect, test, type Locator, type Page } from "@playwright/test";
 import { publicTestimonials } from "@/lib/content/testimonials";
 import { heroMedia, mediaCopy } from "@/lib/media";
-import { beyond, collectErrors, docTop, liveScrollTriggers } from "./page-helpers";
+import { beyond, bring, collectErrors, docTop, liveScrollTriggers } from "./page-helpers";
 import { LEGAL_NAME } from "./routes";
 import { scrollToY, shellIdle, transitionsSettled, visited } from "./shell-helpers";
 
@@ -16,9 +16,15 @@ interface HomeMessages {
     hero: { name: string; intro: string };
     manifesto: { statement: string };
     dusk: { title: string; sub: string };
-    featured: { title: string; cta: string; product: string };
+    featured: {
+      title: string;
+      cta: string;
+      product: string;
+      features: Record<"agenda" | "records" | "treatments" | "invoices", string>;
+    };
     testimonials: { title: string };
   };
+  testimonials: Record<string, { role: string; organisation: string; text: string }>;
   cursor: { write: string };
   nav: { home: string; work: string };
 }
@@ -538,20 +544,69 @@ test.describe("reduced motion", () => {
   });
 });
 
+// A still of the testimonials at each width, to compare with the prototype; a long quote must
+// stay inside its column.
+test("testimonials: revealed, inside the page width, one still per locale", async ({
+  page,
+}, info) => {
+  for (const locale of LOCALES) {
+    await page.goto(`/${locale}`);
+    await shellIdle(page);
+    const section = page.locator("#testimonials");
+    await bring(page, section, 0.2);
+    const last = section.locator("figure").last();
+    await last.scrollIntoViewIfNeeded();
+    await expect
+      .poll(() =>
+        section
+          .locator(".testimonial-list > *")
+          .evaluateAll((els) => els.every((el) => getComputedStyle(el).opacity === "1")),
+      )
+      .toBe(true);
+    const overflow = await section.evaluate((el) => {
+      const width = document.documentElement.clientWidth;
+      return [...el.querySelectorAll("figure, blockquote p")].filter((node) => {
+        const box = node.getBoundingClientRect();
+        return box.left < 0 || box.right > width + 0.5 || node.scrollWidth > node.clientWidth + 1;
+      }).length;
+    });
+    expect(overflow, locale).toBe(0);
+    mkdirSync("test-results/home", { recursive: true });
+    await section.screenshot({
+      path: `test-results/home/testimonials-${locale}-${info.project.name}.png`,
+    });
+  }
+});
+
 test.describe("without JavaScript", () => {
   test.use({ javaScriptEnabled: false });
 
-  // Testimonials render only once confirmed (src/lib/content/testimonials.ts).
-  test("no testimonials markup while none is confirmed", async ({ request }) => {
-    test.skip(publicTestimonials().length > 0, "a testimonial is confirmed");
-    for (const locale of LOCALES) {
-      const raw = await (await request.get(`/${locale}`)).text();
-      expect(raw).not.toContain('id="testimonials"');
-      expect(raw).not.toContain("data-testimonial");
-      expect(raw).not.toContain("<blockquote");
-      expect(raw).not.toContain(MESSAGES[locale].home.testimonials.title.replaceAll("'", "&#x27;"));
-    }
-  });
+  // The three confirmed testimonials, in order: the quote, then the role and the organisation,
+  // nothing else (no field exists for a person's name).
+  for (const locale of LOCALES) {
+    test(`${locale}: three testimonials in order with their role and organisation`, async ({
+      page,
+    }) => {
+      const quotes = MESSAGES[locale].testimonials;
+      const ids = publicTestimonials().map((t) => t.id);
+      expect(ids).toEqual(["festival", "ophtachusm", "sos-dental"]);
+      await page.goto(`/${locale}`);
+      const figures = page.locator("#testimonials figure");
+      await expect(figures).toHaveCount(3);
+      for (const [i, id] of ids.entries()) {
+        const figure = figures.nth(i);
+        const quote = quotes[id];
+        expect(quote, id).toBeDefined();
+        await expect(figure).toHaveAttribute("data-testimonial", id);
+        await expect(figure.locator("blockquote")).toHaveText(quote?.text ?? "");
+        await expect(figure.locator("figcaption > span")).toHaveText([
+          quote?.role ?? "",
+          quote?.organisation ?? "",
+        ]);
+      }
+      expect(await page.content()).not.toContain("[TODO");
+    });
+  }
 
   for (const locale of LOCALES) {
     test(`${locale}: the page is complete and the poster is visible`, async ({ page }) => {
@@ -565,6 +620,13 @@ test.describe("without JavaScript", () => {
       await expect(page.locator("#featured")).toContainText(m.featured.product);
       await expect(page.getByRole("heading", { level: 2, name: m.featured.title })).toBeVisible();
       await expect(page.locator("[data-tile]")).toHaveCount(4);
+      const f = m.featured.features;
+      await expect(page.locator("#featured .features li")).toHaveText([
+        f.agenda,
+        f.records,
+        f.treatments,
+        f.invoices,
+      ]);
       await expect(page.locator("footer")).toContainText(LEGAL_NAME);
       await expect(page.locator(".scene-poster")).toBeVisible();
       await expect(scene(page)).toHaveAttribute("data-scene", "loading");

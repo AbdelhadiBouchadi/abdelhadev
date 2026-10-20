@@ -138,6 +138,8 @@ describe("copy", () => {
   // The degree is stated only in the education entry of the timeline.
   const DEGREE = [/B\.Eng/, /bachelor/i];
   const EDUCATION = "about.experience.items.education.";
+  // There "licence" is the avatars' CC BY 4.0 licence, not a degree.
+  const CREDITS = "pages.legal.credits.";
 
   it("never names the university, a year of study or a degree title", () => {
     for (const [locale, messages] of [
@@ -145,7 +147,10 @@ describe("copy", () => {
       ["en", en],
     ] as const) {
       for (const [key, value] of flatten(messages)) {
-        for (const word of BANNED) expect(value, `${locale}: ${key}`).not.toMatch(word);
+        for (const word of BANNED) {
+          if (key.startsWith(CREDITS) && word.source.includes("licence")) continue;
+          expect(value, `${locale}: ${key}`).not.toMatch(word);
+        }
         if (key.startsWith(EDUCATION)) continue;
         for (const word of DEGREE) expect(value, `${locale}: ${key}`).not.toMatch(word);
       }

@@ -402,7 +402,7 @@ test("each sheet shows its project's status in the page's language", async ({ re
   test.skip(info.project.name !== "1440", "server HTML: one width is enough");
   for (const locale of LOCALES) {
     const html = await (await request.get(PATHS[locale])).text();
-    expect(html, locale).not.toContain(MESSAGES[locale].work.status.todo ?? "todo");
+    expect(html, locale).not.toContain('data-variant="todo"');
     for (const project of publicProjects()) {
       const label = MESSAGES[locale].work.status[statusKey(project)] ?? "";
       const sheet = html.slice(html.indexOf(`id="${project.slug}"`));

@@ -44,12 +44,13 @@ describe("testimonials data", () => {
     }
   });
 
-  it("ships both entries unconfirmed, so none is public", () => {
+  it("ships the three supplied testimonials in order, all confirmed", () => {
     expect(TESTIMONIALS.map((t) => [t.id, t.confirmed])).toEqual([
-      ["sos-dental", false],
-      ["festival", false],
+      ["festival", true],
+      ["ophtachusm", true],
+      ["sos-dental", true],
     ]);
-    expect(publicTestimonials()).toEqual([]);
+    expect(publicTestimonials().map((t) => t.id)).toEqual(["festival", "ophtachusm", "sos-dental"]);
   });
 
   it("returns only the confirmed entries", () => {
@@ -59,31 +60,32 @@ describe("testimonials data", () => {
 });
 
 describe("testimonials placeholders", () => {
-  it("ignores unconfirmed testimonials and lists a placeholder inside a confirmed one", () => {
+  it("lists nothing for the shipped testimonials", () => {
     expect(todoReport({ fr, en })).toEqual([]);
-    const report = todoReport({ fr, en }, [
+  });
+
+  it("ignores unconfirmed testimonials and lists a placeholder inside a confirmed one", () => {
+    const todo = {
+      testimonials: {
+        "sos-dental": { role: "[TODO: role]", organisation: "O", text: "[TODO: text]" },
+        festival: { role: "[TODO: role]", organisation: "O", text: "[TODO: text]" },
+      },
+    };
+    const report = todoReport({ en: todo }, [
       fixture("sos-dental", true),
       fixture("festival", false),
     ]);
-    expect(report).toContain("testimonials.sos-dental.role (fr): [TODO: role]");
-    expect(report).toContain("testimonials.sos-dental.text (en): [TODO: testimonial text]");
-    expect(report.some((line) => line.startsWith("testimonials.festival."))).toBe(false);
-    // The organisation is real text: not listed.
-    expect(report.some((line) => line.includes(".organisation"))).toBe(false);
+    expect(report).toEqual([
+      "testimonials.sos-dental.role (en): [TODO: role]",
+      "testimonials.sos-dental.text (en): [TODO: text]",
+    ]);
   });
 
-  it("is quiet once a confirmed testimonial has real text", () => {
-    const real = {
-      testimonials: { "sos-dental": { role: "R", organisation: "O", text: "Real words." } },
-    };
-    expect(todoReport({ fr: real }, [fixture("sos-dental", true)])).toEqual([]);
-  });
-
-  it("keeps the build report free of unconfirmed testimonials", () => {
+  it("keeps the build report free of testimonials", () => {
     const run = spawnSync(process.execPath, ["scripts/report-todos.mjs"], { encoding: "utf8" });
     expect(run.status).toBe(0);
     expect(run.stderr).toContain("Content placeholders");
-    expect(run.stderr).not.toMatch(/testimonial text|texte du témoignage|\[TODO: role\]/);
+    expect(run.stderr).not.toContain("testimonials");
   });
 });
 

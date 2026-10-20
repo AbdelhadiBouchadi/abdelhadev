@@ -276,11 +276,12 @@ describe("project statuses (09)", () => {
     for (const p of PROJECTS) {
       expect(isTodo(p.status), p.slug).toBe(false);
       const key = statusKey(p);
-      expect(key, p.slug).not.toBe("todo");
       expect(fr.work.status[key].length).toBeGreaterThan(0);
       expect(en.work.status[key].length).toBeGreaterThan(0);
     }
     expect(LABELLED_STATUSES).toContain("ready");
+    expect(Object.hasOwn(fr.work.status, "todo")).toBe(false);
+    expect(Object.hasOwn(en.work.status, "todo")).toBe(false);
   });
 
   it("use my wording", () => {

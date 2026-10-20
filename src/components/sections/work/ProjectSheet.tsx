@@ -34,12 +34,7 @@ export async function ProjectSheet({ project, first = false }: ProjectSheetProps
   const controls = { play: t("video.play"), pause: t("video.pause") };
   const titleId = `${slug}-title`;
 
-  // A status without a label (a placeholder) shows as a fact to confirm.
-  const key = statusKey(project);
-  const status: ChipItem =
-    key === "todo"
-      ? { label: t("status.todo"), variant: "todo" }
-      : { label: t(`status.${key}`), variant: "warm" };
+  const status: ChipItem = { label: t(`status.${statusKey(project)}`), variant: "warm" };
   const stack = typeof project.stack === "string" ? [project.stack] : project.stack;
   const caseStudy = { pathname: "/work/[slug]", params: { slug } } as const;
 

@@ -93,12 +93,7 @@ export async function CaseHero({ project, study, copy }: CaseHeroProps) {
               }
             />
           ) : (
-            <Screen
-              layout={study.hero.skeleton}
-              label={work("screenshot")}
-              caption={copy.case.screens.hero}
-              captionHidden
-            />
+            <Screen layout={study.hero.skeleton} label={work("screenshot")} />
           )}
         </MediaReveal>
       </div>

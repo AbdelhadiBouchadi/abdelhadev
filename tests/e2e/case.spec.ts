@@ -15,7 +15,12 @@ interface CaseMessages {
   projects: Record<string, { name: string }> & {
     dentaflow: {
       name: string;
-      case: { footer: string; tour: Record<string, { title: string; text: string }> };
+      case: {
+        footer: string;
+        tour: Record<string, { title: string; text: string }>;
+        adapt: { fourth: { title: string; text: string } };
+        arch: { access: { title: string; text: string } };
+      };
     };
   };
 }
@@ -352,6 +357,22 @@ test.describe("without JavaScript", () => {
       await page.goto(PATHS[locale]);
       await expect(page.locator("h1")).toHaveText(m.name);
       expect(await complete(page)).toEqual(COMPLETE);
+    });
+
+    test(`${locale}: the setup card and the roles item carry their real text, no placeholder`, async ({
+      request,
+    }) => {
+      const { adapt, arch } = MESSAGES[locale].projects.dentaflow.case;
+      const raw = await (await request.get(PATHS[locale])).text();
+      for (const text of [
+        adapt.fourth.title,
+        adapt.fourth.text,
+        arch.access.title,
+        arch.access.text,
+      ]) {
+        expect(raw).toContain(html(text));
+      }
+      expect(raw).not.toContain("[TODO");
     });
   }
 });

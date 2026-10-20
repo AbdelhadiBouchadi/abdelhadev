@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import en from "@messages/en.json";
 import fr from "@messages/fr.json";
+import { readFileSync } from "node:fs";
 import { PROJECTS, PROJECT_SLUGS } from "@/lib/content/projects";
 import { project } from "@/lib/content/schema";
 import { DEFAULT_CONTACT_FROM, parseEnv } from "@/lib/env";
@@ -46,6 +47,45 @@ describe("placeholders", () => {
       "github: [TODO: GitHub]",
       "legalReview: pending",
     ]);
+  });
+});
+
+describe("final content", () => {
+  const LOCALES = { fr, en };
+
+  it("leaves no placeholder in either messages file", () => {
+    for (const locale of ["fr", "en"]) {
+      expect(readFileSync(`messages/${locale}.json`, "utf8"), locale).not.toContain("[TODO");
+    }
+  });
+
+  it("states how long contact messages are kept, in both languages", () => {
+    expect(fr.pages.legal.data.retentionValue).toBe(
+      "Les messages sont conservés douze mois au plus, puis supprimés.",
+    );
+    expect(en.pages.legal.data.retentionValue).toBe(
+      "Messages are kept for up to 12 months, then deleted.",
+    );
+  });
+
+  it("never claims treatment plans for DentaFlow", () => {
+    const plan = /treatment plans?|plans? de traitement/i;
+    for (const [locale, messages] of Object.entries(LOCALES)) {
+      const dentaflow = JSON.stringify([
+        messages.home.featured,
+        messages.projects.dentaflow,
+        messages.testimonials["sos-dental"],
+      ]);
+      expect(dentaflow, locale).not.toMatch(plan);
+    }
+    expect(PROJECTS.find((p) => p.slug === "dentaflow")?.features).toEqual([
+      "agenda",
+      "records",
+      "treatments",
+      "invoices",
+    ]);
+    expect(fr.home.featured.features.treatments).toBe("Actes et odontogramme");
+    expect(en.home.featured.features.treatments).toBe("Treatments and dental chart");
   });
 });
 
