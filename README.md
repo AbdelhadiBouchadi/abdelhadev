@@ -90,6 +90,21 @@ On every pull request (`.github/workflows/ci.yml`): the secret scan, `typecheck`
 
 On `main`, every Monday and on demand (`.github/workflows/e2e-full.yml`): the whole Playwright suite at 390 and 1440, and Lighthouse CI. These specs depend on timing, so they never block a pull request.
 
+## Deploying
+
+I host the site on Vercel. The environment variables:
+
+- Production: `RESEND_API_KEY`, `CONTACT_TO`, `CONTACT_FROM` and `ARCJET_KEY`. The server refuses to start without `RESEND_API_KEY`, `CONTACT_TO` or `ARCJET_KEY`.
+- Preview: the same four, plus `CONTACT_DRY_RUN=1`, so a preview never sends a real email.
+
+`CONTACT_DRY_RUN` must never be set in Production: the form would report success and send nothing, so the server refuses to start with it.
+
+Vercel sets `VERCEL_ENV`. The site is indexable only when it is `production`; every other deployment is `noindex`, and Arcjet only blocks bots in production.
+
+I set `REQUIRE_CONTENT=1` on the Production build. The build then fails while any `[TODO: …]` placeholder or CV file is missing.
+
+The domain is attached in the Vercel project settings, with DNS-only records at the registrar (no proxy in front of Vercel).
+
 ## Notes
 
 The decisions behind the site are in `docs/decisions.md`. The ones that surprise people:

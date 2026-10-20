@@ -20,7 +20,7 @@ import {
   readContactForm,
   type ContactInput,
 } from "@/lib/contact-schema";
-import { DEFAULT_CONTACT_FROM, parseEnv } from "@/lib/env";
+import { arcjetMode, DEFAULT_CONTACT_FROM, parseEnv } from "@/lib/env";
 import type { Guard, GuardVerdict } from "@/lib/guard";
 import type { Mail, Mailer, MailResult } from "@/lib/mailer";
 import { composeWhatsApp, whatsAppHref } from "@/lib/whatsapp";
@@ -328,6 +328,13 @@ describe("contact environment", () => {
   it("allows missing keys and a dry run outside production", () => {
     expect(parseEnv({ VERCEL_ENV: "preview", CONTACT_DRY_RUN: "1" }).CONTACT_DRY_RUN).toBe("1");
     expect(parseEnv({}).RESEND_API_KEY).toBeUndefined();
+  });
+
+  it("runs Arcjet bot detection live in production only", () => {
+    expect(arcjetMode(parseEnv(production).VERCEL_ENV)).toBe("LIVE");
+    expect(arcjetMode(parseEnv({ VERCEL_ENV: "preview" }).VERCEL_ENV)).toBe("DRY_RUN");
+    expect(arcjetMode(parseEnv({ VERCEL_ENV: "development" }).VERCEL_ENV)).toBe("DRY_RUN");
+    expect(arcjetMode(parseEnv({}).VERCEL_ENV)).toBe("DRY_RUN");
   });
 
   it("never echoes a value in its error", () => {
