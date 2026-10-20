@@ -2,6 +2,7 @@
    it without personal data. */
 import "server-only";
 import arcjet, { detectBot, request, slidingWindow } from "@arcjet/next";
+import type { ArcjetMode } from "@/lib/env";
 
 /** About five messages an hour per IP address. */
 export const CONTACT_RATE = { max: 5, interval: "1h" } as const;
@@ -12,15 +13,18 @@ export interface Guard {
   check(): Promise<GuardVerdict>;
 }
 
-export function createArcjetGuard(key: string, log: (line: string) => void): Guard {
+export function createArcjetGuard(
+  key: string,
+  botMode: ArcjetMode,
+  log: (line: string) => void,
+): Guard {
   const aj = arcjet({
     key,
     // Tracked by IP address (Arcjet's default characteristic); the address is never stored here.
     rules: [
       slidingWindow({ mode: "LIVE", interval: CONTACT_RATE.interval, max: CONTACT_RATE.max }),
-      // Browsers only: every automated client would be refused. Search engines never post this form.
-      // DRY_RUN until I have read the Arcjet dashboard for a while.
-      detectBot({ mode: "DRY_RUN", allow: [] }),
+      // Browsers only: every automated client is refused. Search engines never post this form.
+      detectBot({ mode: botMode, allow: [] }),
     ],
   });
   return {

@@ -4,7 +4,7 @@
 import { getTranslations } from "next-intl/server";
 import { handleContact } from "@/lib/contact-handler";
 import type { ContactState } from "@/lib/contact-schema";
-import { env } from "@/lib/env";
+import { arcjetMode, env } from "@/lib/env";
 import { createArcjetGuard } from "@/lib/guard";
 import { createResendMailer } from "@/lib/mailer";
 
@@ -14,7 +14,9 @@ const log = (line: string) => {
 
 // One client each per server instance, created on first use.
 const mailer = env.RESEND_API_KEY ? createResendMailer(env.RESEND_API_KEY) : null;
-const guard = env.ARCJET_KEY ? createArcjetGuard(env.ARCJET_KEY, log) : null;
+const guard = env.ARCJET_KEY
+  ? createArcjetGuard(env.ARCJET_KEY, arcjetMode(env.VERCEL_ENV), log)
+  : null;
 
 export async function sendContact(_previous: ContactState, data: FormData): Promise<ContactState> {
   return handleContact(data, {

@@ -44,6 +44,12 @@ const schema = z
 
 export type Env = z.infer<typeof schema>;
 
+export type ArcjetMode = "LIVE" | "DRY_RUN";
+
+/** Arcjet blocks only on the production deployment; previews and local runs just log. */
+export const arcjetMode = (vercelEnv: Env["VERCEL_ENV"]): ArcjetMode =>
+  vercelEnv === "production" ? "LIVE" : "DRY_RUN";
+
 export function parseEnv(source: Record<string, string | undefined>): Env {
   // Empty strings (an unset name in .env files) mean "not set".
   const cleaned = Object.fromEntries(Object.entries(source).filter(([, value]) => value !== ""));
