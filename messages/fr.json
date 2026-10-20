@@ -49,7 +49,7 @@
       "features": {
         "agenda": "Agenda et rendez-vous",
         "records": "Dossiers patients",
-        "plans": "Plans de traitement",
+        "treatments": "Actes et odontogramme",
         "invoices": "Factures et paiements"
       },
       "adapt": "Le nom de votre cabinet, <strong>vos données</strong>, votre propre serveur.",
@@ -109,7 +109,7 @@
         "stored": "Ce site ne conserve rien\u00a0: il n'utilise pas de base de données et ne garde aucune copie des messages.",
         "whatsapp": "Si vous choisissez WhatsApp, votre message transite par ce service et reste soumis à ses propres conditions d'utilisation.",
         "retention": "Durée de conservation des messages\u00a0: {retention}",
-        "retentionValue": "[TODO: durée de conservation des messages reçus par le formulaire]",
+        "retentionValue": "Les messages sont conservés douze mois au plus, puis supprimés.",
         "rights": "Vous pouvez demander l'accès à vos données, leur rectification ou leur suppression en m'écrivant à l'adresse indiquée plus haut."
       },
       "storage": {
@@ -121,6 +121,12 @@
       "links": {
         "title": "Liens externes",
         "body": "Les liens vers d'autres sites, comme LinkedIn, GitHub, WhatsApp ou celui de l'hébergeur, vous font quitter ce site. Je n'ai aucun contrôle sur leur contenu."
+      },
+      "credits": {
+        "title": "Crédits",
+        "body": "Les avatars générés visibles sur certaines captures viennent de DiceBear. Le style Personas est de Draftbit, sous licence CC BY 4.0.",
+        "dicebear": "DiceBear",
+        "licence": "Licence CC BY 4.0"
       }
     },
     "notFound": {
@@ -359,8 +365,7 @@
       "test-mode": "Déployé, abonnement en mode test",
       "used": "Utilisé par le service pendant plusieurs mois",
       "working": "Fonctionnel, sans paiement en ligne",
-      "concept": "Projet de démonstration",
-      "todo": "Détails à confirmer"
+      "concept": "Projet de démonstration"
     },
     "screenshot": "Capture à venir",
     "screens": "Écrans de {name}",
@@ -500,9 +505,6 @@
       "case": {
         "lead": "Un système de gestion pour cabinets dentaires\u00a0: agenda, patients, soins et facturation. Adapté à chaque cabinet avant la mise en service, avec sa propre base de données et son propre déploiement.",
         "footer": "DentaFlow dans votre cabinet\u00a0?",
-        "screens": {
-          "hero": "[TODO: décrire l'écran d'ouverture de DentaFlow]"
-        },
         "tour": {
           "agenda": {
             "title": "L'agenda du cabinet",
@@ -547,8 +549,8 @@
             "text": "Un déploiement propre à chaque cabinet."
           },
           "fourth": {
-            "title": "[TODO: fourth step title]",
-            "text": "[TODO: fourth step text]"
+            "title": "Son paramétrage",
+            "text": "Logo, papier à en-tête, comptes de l'équipe, catalogue d'actes et horaires des praticiens, réglés avant la mise en service."
           }
         },
         "arch": {
@@ -561,8 +563,8 @@
             "text": "tRPC partage les mêmes types entre le serveur et l'interface."
           },
           "access": {
-            "title": "[TODO: access and roles, owner to confirm]",
-            "text": "[TODO: access and roles text, owner to confirm]"
+            "title": "Quatre rôles, vérifiés côté serveur",
+            "text": "Administrateur, dentiste, assistant et secrétaire. Les statistiques et les dépenses sont réservées à l'administrateur ; les ordonnances et les certificats, au dentiste et à l'administrateur."
           }
         },
         "diagram": {
@@ -603,15 +605,20 @@
     }
   },
   "testimonials": {
-    "sos-dental": {
-      "role": "[TODO: role]",
-      "organisation": "SOS Dental Clinic, Agadir",
-      "text": "[TODO: texte du témoignage]"
-    },
     "festival": {
-      "role": "[TODO: role]",
+      "role": "Responsable du projet",
       "organisation": "Dérive Casablancaise",
-      "text": "[TODO: texte du témoignage]"
+      "text": "Travailler avec Abdelhadi sur le site de notre festival de musique a été une aventure formidable. Il a construit la plateforme et l'espace d'administration de A à Z, ce qui nous permet de tout gérer nous-mêmes, en toute simplicité. Plus qu'un développeur, il a été un ami fiable, et je lui suis sincèrement reconnaissant pour son talent et son engagement."
+    },
+    "ophtachusm": {
+      "role": "Ophtalmologue",
+      "organisation": "Service d'ophtalmologie, Agadir",
+      "text": "Abdelhadi a développé un système complet de gestion hospitalière, sur mesure pour mon activité en ophtalmologie. Sa capacité à comprendre des circuits de travail complexes et à en faire une expérience fluide et intuitive m'a vraiment impressionné. Son accompagnement et son implication tout au long du projet ont tout rendu facile. Je suis sincèrement reconnaissant de l'avoir eu à mes côtés."
+    },
+    "sos-dental": {
+      "role": "Chirurgien-dentiste",
+      "organisation": "SOS Dental Clinic, Agadir",
+      "text": "DentaFlow, adapté à mon cabinet dentaire, m'a donné entière satisfaction. Il propose plus de fonctionnalités que ce que j'imaginais et rend la gestion des patients et de leurs données médicales beaucoup plus simple. J'ai ainsi plus de temps à consacrer à l'essentiel."
     }
   },
   "seo": {

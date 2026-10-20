@@ -7,7 +7,7 @@ import { hasTodo } from "@/lib/todo";
 const FIELDS = ["role", "organisation", "text"] as const;
 type Field = (typeof FIELDS)[number];
 
-export const TESTIMONIAL_IDS = ["sos-dental", "festival"] as const;
+export const TESTIMONIAL_IDS = ["festival", "ophtachusm", "sos-dental"] as const;
 export type TestimonialId = (typeof TESTIMONIAL_IDS)[number];
 
 const id = z.enum(TESTIMONIAL_IDS);
@@ -53,8 +53,9 @@ const entry = (key: TestimonialId, confirmed: boolean) => ({
 });
 
 export const TESTIMONIALS: readonly Testimonial[] = testimonials.parse([
-  entry("sos-dental", false),
-  entry("festival", false),
+  entry("festival", true),
+  entry("ophtachusm", true),
+  entry("sos-dental", true),
 ]);
 
 export function publicTestimonials(list: readonly Testimonial[] = TESTIMONIALS): Testimonial[] {

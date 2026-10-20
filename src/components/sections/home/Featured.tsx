@@ -19,7 +19,7 @@ const SCREENS = [
 /** A quarter of the page from 901 px, half below. */
 const TILE_SIZES = "(min-width: 901px) 25vw, 50vw";
 
-const FEATURE_KEYS = ["agenda", "records", "plans", "invoices"] as const;
+const FEATURE_KEYS = ["agenda", "records", "treatments", "invoices"] as const;
 type FeatureKey = (typeof FEATURE_KEYS)[number];
 
 function isFeatureKey(value: string): value is FeatureKey {
@@ -32,7 +32,7 @@ export async function Featured() {
   const messages = await getMessages();
   const real = heroMedia(SLUG, "home");
   const controls = { play: work("video.play"), pause: work("video.pause") };
-  const features = (getProject(SLUG)?.features?.items ?? []).filter(isFeatureKey);
+  const features = (getProject(SLUG)?.features ?? []).filter(isFeatureKey);
 
   return (
     <StickyStage

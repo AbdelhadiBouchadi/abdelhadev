@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
+import { ArrowLink } from "@/components/ui/ArrowLink";
 import { resolveLocale } from "@/i18n/locale";
 import { pageMetadata } from "@/lib/seo";
 import { placeName, SITE } from "@/lib/site";
@@ -31,6 +32,7 @@ function Part({ id, title, children }: { id: string; title: string; children: Re
 export default async function LegalPage({ params }: PageProps<"/[locale]/legal">) {
   const locale = await resolveLocale(params);
   const t = await getTranslations({ locale, namespace: "pages.legal" });
+  const footer = await getTranslations({ locale, namespace: "footer" });
   const name = SITE.legalName;
   const updated = new Intl.DateTimeFormat(locale, {
     dateStyle: "long",
@@ -97,6 +99,27 @@ export default async function LegalPage({ params }: PageProps<"/[locale]/legal">
 
         <Part id="legal-links" title={t("links.title")}>
           <p>{t("links.body")}</p>
+        </Part>
+
+        <Part id="legal-credits" title={t("credits.title")}>
+          <p>{t("credits.body")}</p>
+          <ul className="flex flex-wrap gap-x-8">
+            {(["dicebear", "licence"] as const).map((key) => (
+              <li key={key}>
+                <ArrowLink
+                  as="a"
+                  variant="external"
+                  href={SITE.credits[key]}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-credit={key}
+                >
+                  {t(`credits.${key}`)}
+                  <span className="sr"> ({footer("newTab")})</span>
+                </ArrowLink>
+              </li>
+            ))}
+          </ul>
         </Part>
       </div>
     </ToneSection>

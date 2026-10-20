@@ -25,6 +25,10 @@ Status: **Fixed**, **Provisional** (fixed unless the named spike fails), **Open*
 | P16 | Work page heading: « Quelques projets que j'ai développés » / "Some projects I've built", with a quiet « Plus de projets sur GitHub » / "More projects on GitHub" link under the list to `SITE.github` (new tab, `rel="noopener noreferrer"`, server-rendered). | Fixed |
 | P17 | The yoga booking platform is shown as « Réservation de yoga » / "Yoga booking", never with the studio's name; Côte Royale is a concept project for an imaginary brand, with no client; MeetAI is described as an app I built and deployed, never "in production", with no users, real payments, plan prices or live URL. All three are `confirmed`. | Fixed |
 | P18 | Ophtachusm's date is « 2024 à 2025 » / "2024 to 2025", replacing "January 2025" everywhere; it was used by the department's team for several months, and nothing more is said about its current use. | Fixed |
+| P19 | Messages received through the contact form are kept for up to 12 months, then deleted; the legal notice says so. | Fixed |
+| P20 | Testimonials show role and organisation only. I supplied the three texts, all `confirmed: true`, shown in this order: `festival` (Dérive Casablancaise), `ophtachusm` (ophthalmology department, Agadir), `sos-dental` (SOS Dental Clinic, Agadir). The English of the first two is the speakers' own words and their French is a translation; the third was written in French from the dentist's own summary, with his agreement. The relationship (DentaFlow came from a family member's clinic) is already stated on the about page. | Fixed |
+| P21 | "Treatment plans" is no longer claimed for DentaFlow: it has treatments (« actes »), an odontogram, quotes and invoices, but no treatment-plan module. The home feature list reads « Actes et odontogramme » / "Treatments and dental chart". | Fixed |
+| P22 | The generated avatars in some screenshots come from DiceBear; the legal notice ends with a Credits section that names the Personas style (Draftbit, CC BY 4.0) and links to DiceBear and to the licence. | Fixed |
 
 ## Design
 

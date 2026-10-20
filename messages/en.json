@@ -49,7 +49,7 @@
       "features": {
         "agenda": "Agenda and appointments",
         "records": "Patient records",
-        "plans": "Treatment plans",
+        "treatments": "Treatments and dental chart",
         "invoices": "Invoices and payments"
       },
       "adapt": "Your clinic's name, <strong>your data</strong>, your own server.",
@@ -109,7 +109,7 @@
         "stored": "Nothing is stored on this site: it has no database and keeps no copy of the messages.",
         "whatsapp": "If you choose WhatsApp, your message goes through that service and falls under its own terms.",
         "retention": "How long messages are kept: {retention}",
-        "retentionValue": "[TODO: how long messages received through the form are kept]",
+        "retentionValue": "Messages are kept for up to 12 months, then deleted.",
         "rights": "You can ask to see, correct or delete your data by writing to the address above."
       },
       "storage": {
@@ -121,6 +121,12 @@
       "links": {
         "title": "External links",
         "body": "Links to other sites, such as LinkedIn, GitHub, WhatsApp or the host, leave this site. I do not control what they publish."
+      },
+      "credits": {
+        "title": "Credits",
+        "body": "The generated avatars visible in some screenshots come from DiceBear. The Personas style is by Draftbit, licensed under CC BY 4.0.",
+        "dicebear": "DiceBear",
+        "licence": "CC BY 4.0 licence"
       }
     },
     "notFound": {
@@ -359,8 +365,7 @@
       "test-mode": "Deployed, subscription in test mode",
       "used": "Used by the department for several months",
       "working": "Working, without online payments",
-      "concept": "Concept project",
-      "todo": "Details to confirm"
+      "concept": "Concept project"
     },
     "screenshot": "Screenshot to come",
     "screens": "{name} screens",
@@ -500,9 +505,6 @@
       "case": {
         "lead": "A management system for dental clinics: agenda, patients, treatments and billing. Adapted to each clinic before launch, with its own database and its own deployment.",
         "footer": "DentaFlow in your clinic?",
-        "screens": {
-          "hero": "[TODO: describe the screen, DentaFlow opening]"
-        },
         "tour": {
           "agenda": {
             "title": "The clinic agenda",
@@ -547,8 +549,8 @@
             "text": "A deployment of its own for each clinic."
           },
           "fourth": {
-            "title": "[TODO: fourth step title]",
-            "text": "[TODO: fourth step text]"
+            "title": "Its own setup",
+            "text": "Logo, letterhead, staff accounts, acts catalogue and practitioner schedules, set before launch."
           }
         },
         "arch": {
@@ -561,8 +563,8 @@
             "text": "tRPC shares the same types between the server and the interface."
           },
           "access": {
-            "title": "[TODO: access and roles, owner to confirm]",
-            "text": "[TODO: access and roles text, owner to confirm]"
+            "title": "Four roles, checked on the server",
+            "text": "Administrator, dentist, assistant and secretary. Statistics and expenses are for the administrator; prescriptions and certificates for the dentist and the administrator."
           }
         },
         "diagram": {
@@ -603,15 +605,20 @@
     }
   },
   "testimonials": {
-    "sos-dental": {
-      "role": "[TODO: role]",
-      "organisation": "SOS Dental Clinic, Agadir",
-      "text": "[TODO: testimonial text]"
-    },
     "festival": {
-      "role": "[TODO: role]",
+      "role": "Project manager",
       "organisation": "Dérive Casablancaise",
-      "text": "[TODO: testimonial text]"
+      "text": "Working with Abdelhadi on our music festival's website was an incredible journey. He built the platform and the back office from scratch, allowing us to manage everything ourselves with ease. More than a developer, he's been a reliable friend, and I'm genuinely thankful for his talent and commitment."
+    },
+    "ophtachusm": {
+      "role": "Ophthalmologist",
+      "organisation": "Ophthalmology department, Agadir",
+      "text": "Abdelhadi developed a complete Hospital Management System tailored for my ophthalmology practice. His ability to understand complex workflows and transform them into a smooth, intuitive experience was beyond impressive. His support and dedication throughout the process made everything feel effortless. Truly grateful to have had him on board."
+    },
+    "sos-dental": {
+      "role": "Dentist",
+      "organisation": "SOS Dental Clinic, Agadir",
+      "text": "Using DentaFlow, adapted to my own dental clinic, has been more than satisfying. It has more features than I had in mind, and it makes managing patients and their medical data much easier. That gives me more time to focus on what matters most."
     }
   },
   "seo": {

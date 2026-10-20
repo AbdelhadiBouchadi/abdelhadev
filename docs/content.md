@@ -47,7 +47,11 @@ The sheet has six slots (name, kind, status chip, « L'enjeu » / "The challenge
 
 ### DentaFlow
 
-Agenda, patients, treatments, billing (list to confirm); adapted per clinic with its own name, database and deployment; Next.js, TypeScript, tRPC, Drizzle, PostgreSQL (Neon), Better Auth. WhatsApp reminders are not live (P8). Its copy, tour and case study are still mine to rework.
+Agenda, patients and their records, treatments (« actes ») and the dental chart (an odontogram with an initial and a current layer), quotes and invoices, payments, statistics. There is no treatment-plan module, so "treatment plans" is never claimed (P21). The home feature list (`home.featured.features`): agenda, records, treatments, invoices.
+
+- Adapted per clinic before launch: its own name, database and deployment, and its own setup (logo, letterhead, staff accounts, acts catalogue, practitioner schedules) in `projects.dentaflow.case.adapt.fourth`.
+- Access (`projects.dentaflow.case.arch.access`): four roles checked on the server (administrator, dentist, assistant, secretary); statistics and expenses for the administrator, prescriptions and certificates for the dentist and the administrator.
+- Next.js, TypeScript, tRPC, Drizzle, PostgreSQL (Neon), Better Auth. WhatsApp reminders are not live (P8).
 
 ### MeetAI
 
@@ -102,7 +106,7 @@ The only facts that may be published. Everything else stays a visible `[TODO: �
 - **Websites:** Next.js with PostgreSQL (Neon) and a custom admin panel so the client manages everything.
 - **Process:** I listen first; within 24 hours I turn the notes into a technical plan, models the data and splits the project into small tasks; the quote (devis) arrives 24 to 48 hours after the first conversation (decision P12); after the client accepts and signs, an advance invoice, then development; just before launch, the balance invoice and delivery of everything. The payment percentages are not published.
 - **Why clinics:** part of my circle are doctors. I built Ophtachusm for a hospital ophthalmology department in Agadir, for friends who are residents there; its team used it for several months (P18). DentaFlow was born from my brother's dental clinic, which showed me what dentists need. I want healthcare staff to save time for what matters.
-- **Other client work:** the Dérive Casablancaise festival is no longer on the about timeline; its name remains only in the hidden `festival` testimonial entry.
+- **Other client work:** the Dérive Casablancaise festival is no longer on the about timeline; its name appears only in the `festival` testimonial.
 - **Never publish:** the names of the hospital, of the resident friend, of any client as a person, or of the clinic on the about page; the private inbox the public email forwards to; any claim that Ophtachusm is in use today; any claim about income, savings or results for clinics; photos of me (decision P9).
 - Earlier roles and the CV itself are `[TODO]` until I supply them (the CV is a placeholder file, `src/lib/content/cv.ts`).
 
@@ -118,8 +122,8 @@ The only facts that may be published. Everything else stays a visible `[TODO: �
 
 `src/lib/content/testimonials.ts`: `{ id, role, organisation, text, confirmed }`, every text through `messages testimonials.<id>.*`, validated with zod. There is no field for a person's name (decision P10): a testimonial shows role and organisation only, and no client's personal name is ever put in the repository.
 
-- Two entries, both `confirmed: false`: `sos-dental` (SOS Dental Clinic, Agadir) and `festival` (Dérive Casablancaise). Role and text are placeholders until I paste the real, approved wording. Praise is never written on a client's behalf.
-- Confirmed-only rendering: `publicTestimonials()` returns the confirmed entries, and the home section (between the featured work and the footer call to action) renders nothing at all while there are none. The build report ignores the placeholders of unconfirmed entries (they never ship) and lists any placeholder left in a confirmed one.
+- Three entries, all `confirmed: true`, in this order (P20): `festival` (Responsable du projet / Project manager, Dérive Casablancaise), `ophtachusm` (Ophtalmologue / Ophthalmologist, Service d'ophtalmologie, Agadir / Ophthalmology department, Agadir), `sos-dental` (Chirurgien-dentiste / Dentist, SOS Dental Clinic, Agadir). I supplied the texts; the English of the first two is the speakers' own words and the French a translation, the third was written in French from the dentist's own summary. Praise is never written on a client's behalf, and no review or rating structured data is published.
+- Confirmed-only rendering: `publicTestimonials()` returns the confirmed entries, and the home section (between the featured work and the footer call to action) stacks them vertically, with no carousel; it renders nothing at all when there are none. The build report ignores the placeholders of unconfirmed entries (they never ship) and lists any placeholder left in a confirmed one.
 
 ## Contact
 
@@ -132,8 +136,9 @@ The only facts that may be published. Everything else stays a visible `[TODO: �
 ## Legal
 
 - Footer on every page: `© {year} Abdelhadi Bouchadi`, auto-entrepreneur, and a link to the legal notice. Server-rendered text.
-- Legal notice (fr `/mentions-legales`, en `/legal-notice`): publisher (legal name, status, contact email), publication director, host (Vercel, details copied from Vercel's published legal page), intellectual property, personal data for the contact form, cookies and local storage, external links, last updated. No ID, registration or ICE numbers, no street address. `legalReview: "pending"` until I confirm.
+- Legal notice (fr `/mentions-legales`, en `/legal-notice`): publisher (legal name, status, contact email), publication director, host (Vercel, details copied from Vercel's published legal page), intellectual property, personal data for the contact form (messages kept for up to 12 months, then deleted: `pages.legal.data.retentionValue`, P19), cookies and local storage, external links, credits, last updated. No ID, registration or ICE numbers, no street address. `legalReview: "pending"` until I confirm.
+- Credits (`pages.legal.credits`, P22): the generated avatars in some screenshots come from DiceBear; the Personas style is by Draftbit, under CC BY 4.0. Links to DiceBear and to the licence (`SITE.credits`), each in a new tab.
 
 ## Not supplied yet
 
-Project details and years listed as `[TODO]`, the final CV, real screenshots with seeded data, testimonial wording. Already supplied: LinkedIn, GitHub and WhatsApp (`src/lib/site.ts`).
+The final CV (two placeholder PDFs, `src/lib/content/cv.ts`) and the legal review. Already supplied: LinkedIn, GitHub and WhatsApp (`src/lib/site.ts`).

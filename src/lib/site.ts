@@ -34,6 +34,11 @@ export const SITE = {
     address: "440 N Barranca Avenue \u00234133, Covina, CA 91723, United States",
     url: "https://vercel.com",
   },
+  /** Generated avatars in some DentaFlow screenshots (DiceBear Personas by Draftbit). */
+  credits: {
+    dicebear: "https://www.dicebear.com",
+    licence: "https://creativecommons.org/licenses/by/4.0/",
+  },
 } as const;
 
 export function todoReport(site: Readonly<Record<string, unknown>> = SITE): string[] {

@@ -3,10 +3,12 @@
 import { CASE_STUDIES } from "@/lib/content/case-studies";
 import { tourMedia, workMedia, type ProjectMediaItem } from "@/lib/media";
 import {
+  projectStatus,
   projects as projectsSchema,
   type MediaItem,
   type Project,
   type ProjectInput,
+  type ProjectStatus,
 } from "@/lib/content/schema";
 
 type Media = Omit<MediaItem, "kind" | "layout"> & Partial<Pick<MediaItem, "kind" | "layout">>;
@@ -28,11 +30,7 @@ const INPUT: ProjectInput[] = [
       { span: 4, tone: "blue", skeleton: "invoice" },
       { span: 4, tone: "plain", skeleton: "chart" },
     ),
-    features: {
-      items: ["agenda", "records", "plans", "invoices"],
-      confirmed:
-        "[TODO: confirm the DentaFlow feature list (agenda, patient records, treatment plans, invoices)]",
-    },
+    features: ["agenda", "records", "treatments", "invoices"],
     copyKey: "projects.dentaflow",
   },
   {
@@ -199,17 +197,13 @@ export function hasMoreScreens(p: Project): boolean {
   return p.caseStudy && screenCount(p) > sheetMedia(p).length;
 }
 
-/** A status without a label shows as a fact to confirm (work.status.todo). */
-export const LABELLED_STATUSES = ["ready", "test-mode", "used", "working", "concept"] as const;
+/** Each one has its label at work.status.<status>. */
+export const LABELLED_STATUSES = projectStatus.options;
 
-export type LabelledStatus = (typeof LABELLED_STATUSES)[number];
+export type LabelledStatus = ProjectStatus;
 
-function isLabelled(status: string): status is LabelledStatus {
-  return LABELLED_STATUSES.some((s) => s === status);
-}
-
-export function statusKey(p: Project): LabelledStatus | "todo" {
-  return isLabelled(p.status) ? p.status : "todo";
+export function statusKey(p: Project): LabelledStatus {
+  return p.status;
 }
 
 /** null for the last one: the case study's next link then goes to the work page. */
