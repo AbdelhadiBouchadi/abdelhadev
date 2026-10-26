@@ -7,6 +7,7 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { expect, test, type Locator, type Page } from "@playwright/test";
 import { CHAPTERS, SERVICES } from "@/lib/content/about";
 import { CV } from "@/lib/content/cv";
+import { ABOUT } from "@/lib/motion";
 import { SITE } from "@/lib/site";
 import { beyond, bring, collectErrors, liveScrollTriggers } from "./page-helpers";
 import { LEGAL_NAME } from "./routes";
@@ -204,6 +205,179 @@ async function zoneAt(page: Page, share: number): Promise<void> {
   await scrubTo(page, y);
 }
 
+interface ThreadProbe {
+  /** performance.now() of each rebuild: each one writes a new route into the ghost's `d`. */
+  rebuilds: number[];
+  /** performance.now() of each ScrollTrigger.refresh of the whole page. */
+  refreshes: number[];
+  /** performance.now() of each scroll event. */
+  scrolls: number[];
+  frames: { y: number; drawn: number; sun: number }[];
+  stop: boolean;
+}
+type Probed = Window & { __thread?: ThreadProbe };
+
+/** Counts rebuilds and refreshes and records every frame, from outside: the app ships no test
+    hook. Refreshes are heard through a live ScrollTrigger's own class (Runtime.queryObjects). */
+async function probeThread(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    const probe: ThreadProbe = {
+      rebuilds: [],
+      refreshes: [],
+      scrolls: [],
+      frames: [],
+      stop: false,
+    };
+    (window as Probed).__thread = probe;
+    const ghost = document.querySelector(".thread-ghost");
+    const path = document.querySelector<SVGPathElement>(".thread-path");
+    const sun = document.querySelector(".thread-sun");
+    if (!ghost || !path || !sun) return;
+    new MutationObserver((records) => {
+      probe.rebuilds.push(...records.map(() => performance.now()));
+    }).observe(ghost, { attributeFilter: ["d"] });
+    addEventListener("scroll", () => probe.scrolls.push(performance.now()), { passive: true });
+    const tick = () => {
+      const s = getComputedStyle(path);
+      const drawn =
+        s.visibility === "hidden"
+          ? 0
+          : s.strokeDasharray === "none"
+            ? 1
+            : Number.parseFloat(s.strokeDasharray) / path.getTotalLength();
+      const r = sun.getBoundingClientRect();
+      probe.frames.push({ y: scrollY, drawn, sun: r.top + r.height / 2 + scrollY });
+      if (!probe.stop) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  });
+  const cdp = await page.context().newCDPSession(page);
+  try {
+    const { result: proto } = await cdp.send("Runtime.evaluate", {
+      expression: "Object.prototype",
+    });
+    if (!proto.objectId) throw new Error("no Object.prototype handle");
+    const { objects } = await cdp.send("Runtime.queryObjects", {
+      prototypeObjectId: proto.objectId,
+    });
+    if (!objects.objectId) throw new Error("queryObjects returned no array");
+    const { result } = await cdp.send("Runtime.callFunctionOn", {
+      objectId: objects.objectId,
+      returnByValue: true,
+      functionDeclaration: `function () {
+        const st = this.find((o) => {
+          try { return o && typeof o.getVelocity === "function" && typeof o.refresh === "function"; }
+          catch { return false; }
+        });
+        if (!st) return false;
+        st.constructor.addEventListener("refresh", () => {
+          window.__thread.refreshes.push(performance.now());
+        });
+        return true;
+      }`,
+    });
+    if (result.value !== true) throw new Error("no live ScrollTrigger to listen to");
+  } finally {
+    await cdp.detach();
+  }
+}
+
+/** The largest step back of the scroll, the drawn share and the sun's page position. */
+async function threadRecord(page: Page) {
+  return page.evaluate(() => {
+    const probe = (window as Probed).__thread;
+    if (!probe) throw new Error("no probe");
+    probe.stop = true;
+    const back = (values: number[]) =>
+      Math.max(0, ...values.slice(1).map((v, i) => (values[i] ?? v) - v));
+    const { frames } = probe;
+    return {
+      travelled: (frames.at(-1)?.y ?? 0) - (frames[0]?.y ?? 0),
+      scrollBack: back(frames.map((f) => f.y)),
+      drawnBack: back(frames.map((f) => f.drawn)),
+      sunBack: back(frames.map((f) => f.sun)),
+      rebuilds: probe.rebuilds,
+      refreshes: probe.refreshes,
+      scrolls: probe.scrolls,
+    };
+  });
+}
+
+/** Scrolls through the zone's height in steps: wheel notches, which Lenis
+    smooths, or touch swipes, which scroll natively. `midway` runs once at each of its fractions. */
+async function scrollThroughZone(
+  page: Page,
+  touch: boolean,
+  midway: [number, () => Promise<void>][] = [],
+): Promise<void> {
+  const height = await page.evaluate(
+    () => document.querySelector<HTMLElement>(".thread-zone")?.offsetHeight ?? 0,
+  );
+  const pending = [...midway];
+  const at = async (done: number) => {
+    while (pending[0] && done >= pending[0][0] * height) await pending.shift()?.[1]();
+  };
+  if (!touch) {
+    await page.mouse.move(200, 300);
+    for (let done = 0; done < height; done += 120) {
+      await page.mouse.wheel(0, 120);
+      await page.waitForTimeout(40);
+      await at(done);
+    }
+    return;
+  }
+  const cdp = await page.context().newCDPSession(page);
+  try {
+    const swipe = 400;
+    const step = 20;
+    let done = 0;
+    while (done < height) {
+      let y = 650;
+      await cdp.send("Input.dispatchTouchEvent", {
+        type: "touchStart",
+        touchPoints: [{ x: 200, y }],
+      });
+      for (let moved = 0; moved < swipe; moved += step) {
+        y -= step;
+        await cdp.send("Input.dispatchTouchEvent", {
+          type: "touchMove",
+          touchPoints: [{ x: 200, y }],
+        });
+        await page.waitForTimeout(16);
+      }
+      // Held still before lifting: no fling, the page moves by the finger only.
+      await page.waitForTimeout(120);
+      await cdp.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
+      done += swipe;
+      await at(done);
+    }
+  } finally {
+    await cdp.detach();
+  }
+}
+
+/** px between the sun's centre and the tip of the drawn line. */
+const sunOffTip = (page: Page) =>
+  page.evaluate(() => {
+    const path = document.querySelector<SVGPathElement>(".thread-path");
+    const disc = document.querySelector(".thread-sun-disc");
+    const matrix = path?.getScreenCTM();
+    if (!path || !disc || !matrix) return Number.NaN;
+    const tip = path.getPointAtLength(Number.parseFloat(getComputedStyle(path).strokeDasharray));
+    const at = new DOMPoint(tip.x, tip.y).matrixTransform(matrix);
+    const r = disc.getBoundingClientRect();
+    return Math.hypot(r.left + r.width / 2 - at.x, r.top + r.height / 2 - at.y);
+  });
+
+/** Just above the zone, at rest. */
+async function aboveZone(page: Page): Promise<void> {
+  const y = await page.evaluate(() => {
+    const zone = document.querySelector<HTMLElement>(".thread-zone");
+    return (zone?.getBoundingClientRect().top ?? 0) + scrollY - innerHeight;
+  });
+  await scrubTo(page, y);
+}
+
 test.describe("with motion", () => {
   test.beforeEach(async ({ page }) => {
     test.setTimeout(90_000);
@@ -376,6 +550,93 @@ test.describe("with motion", () => {
         expect(sun.opacity).toBe(1);
       }
     }
+    expect(await routeInside(page)).toEqual(INSIDE);
+    expect(errors).toEqual([]);
+  });
+
+  test("the thread follows a stepped scroll: no step back, no rebuild, no refresh", async ({
+    page,
+    isMobile,
+  }) => {
+    const errors = collectErrors(page);
+    await page.goto(PATHS.fr);
+    await shellIdle(page);
+    await aboveZone(page);
+    await probeThread(page);
+    await scrollThroughZone(page, isMobile);
+    await page.waitForTimeout(1000);
+    const record = await threadRecord(page);
+    expect(record.travelled).toBeGreaterThan(1000);
+    expect(record.scrollBack).toBeLessThanOrEqual(0.5);
+    expect(record.drawnBack).toBeLessThanOrEqual(1e-4);
+    expect(record.sunBack).toBeLessThanOrEqual(0.5);
+    expect(record.rebuilds).toEqual([]);
+    expect(record.refreshes).toEqual([]);
+    expect(errors).toEqual([]);
+  });
+
+  test("a phone's address bar showing and hiding during the scroll rebuilds nothing", async ({
+    page,
+    isMobile,
+  }) => {
+    const errors = collectErrors(page);
+    await page.goto(PATHS.fr);
+    await shellIdle(page);
+    await aboveZone(page);
+    await probeThread(page);
+    const size = page.viewportSize() ?? { width: 1440, height: 900 };
+    await scrollThroughZone(page, isMobile, [
+      [0.3, () => page.setViewportSize({ width: size.width, height: size.height - 56 })],
+      [0.6, () => page.setViewportSize(size)],
+    ]);
+    await page.waitForTimeout(1000);
+    const record = await threadRecord(page);
+    expect(record.scrollBack).toBeLessThanOrEqual(0.5);
+    expect(record.rebuilds).toEqual([]);
+    // A desktop window really changed size: ScrollTrigger may refresh once, after 200 ms with no
+    // scroll (its scrollEnd). The refresh itself may then restore the position.
+    if (isMobile) expect(record.refreshes).toEqual([]);
+    expect(record.refreshes.length).toBeLessThanOrEqual(1);
+    for (const at of record.refreshes) {
+      expect(record.scrolls.filter((s) => s < at && s > at - 150)).toEqual([]);
+    }
+    expect(errors).toEqual([]);
+  });
+
+  test("a width change rebuilds once, after the page is still, and the line still completes", async ({
+    page,
+    isMobile,
+  }) => {
+    const errors = collectErrors(page);
+    await page.goto(PATHS.fr);
+    await shellIdle(page);
+    await aboveZone(page);
+    await probeThread(page);
+    const size = page.viewportSize() ?? { width: 1440, height: 900 };
+    await scrollThroughZone(page, isMobile, [
+      [0.2, () => page.setViewportSize({ width: size.width - 30, height: size.height })],
+    ]);
+    await page.waitForTimeout(1500);
+    const record = await threadRecord(page);
+    expect(record.rebuilds).toHaveLength(1);
+    // The page had been still for quietMs before it (a few ms of timer slack).
+    const rebuilt = record.rebuilds[0] ?? 0;
+    const before = record.scrolls.filter(
+      (at) => at < rebuilt && at > rebuilt - ABOUT.thread.quietMs + 5,
+    );
+    expect(before).toEqual([]);
+
+    // Back to the first width at rest: the rebuild refits the timeline and adds no trigger. (The
+    // scroll above fires reveals that run once, so the count is taken after it.)
+    const baseline = await liveScrollTriggers(page);
+    await page.setViewportSize(size);
+    await page.waitForTimeout(1500);
+    expect(await liveScrollTriggers(page)).toBe(baseline);
+
+    await zoneAt(page, 0.5);
+    expect(await sunOffTip(page)).toBeLessThan(4);
+    await zoneAt(page, 1);
+    expect(await drawnShare(page)).toBeCloseTo(1, 2);
     expect(await routeInside(page)).toEqual(INSIDE);
     expect(errors).toEqual([]);
   });

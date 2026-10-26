@@ -5,6 +5,29 @@ export interface Point {
   y: number;
 }
 
+/** px. `view` is the window's size. */
+export interface ZoneSize {
+  width: number;
+  height: number;
+  viewWidth: number;
+  viewHeight: number;
+}
+
+/** What a new size of the zone calls for. On a touch device, a window that changes height only is
+    the address bar showing or hiding: the route stays, and the new size becomes the reference. */
+export function resizeKind(
+  built: ZoneSize,
+  now: ZoneSize,
+  touch: boolean,
+): "same" | "viewport" | "rebuild" {
+  const { width, height } = ABOUT.thread.minChange;
+  const widthChanged = Math.abs(now.width - built.width) >= width;
+  if (!widthChanged && Math.abs(now.height - built.height) < height) return "same";
+  const barOnly = now.viewWidth === built.viewWidth && now.viewHeight !== built.viewHeight;
+  if (touch && !widthChanged && barOnly) return "viewport";
+  return "rebuild";
+}
+
 /** Cubic segments with vertical handles at half the height between points: soft S-curves. */
 export function threadPath(points: readonly Point[]): string {
   const [first, ...rest] = points;

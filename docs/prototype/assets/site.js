@@ -776,9 +776,18 @@
           .to(sun, { opacity: 0, duration: 0.04 }, 0.96);
         built = true;
       }
-      build();
-      var rt; window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(function () { build(); ScrollTrigger.refresh(); }, 260); });
-      window.addEventListener("load", function () { setTimeout(function () { build(); ScrollTrigger.refresh(); }, 300); });
+      var lastW = 0, lastH = 0, busy = false, quiet = true, qt;
+      /* a rebuild never happens while the page is moving, and never for a height-only change of the window */
+      function rebuild(force) {
+        var W = zone.clientWidth, H = zone.clientHeight;
+        if (!force && Math.abs(W - lastW) < 2 && Math.abs(H - lastH) < 4) return;
+        if (!quiet) { clearTimeout(qt); qt = setTimeout(function () { quiet = true; rebuild(force); }, 180); return; }
+        lastW = W; lastH = H; build(); ScrollTrigger.refresh();
+      }
+      window.addEventListener("scroll", function () { quiet = false; clearTimeout(qt); qt = setTimeout(function () { quiet = true; }, 180); }, { passive: true });
+      build(); lastW = zone.clientWidth; lastH = zone.clientHeight;
+      var rt; window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(function () { rebuild(false); }, 260); });
+      window.addEventListener("load", function () { setTimeout(function () { rebuild(false); }, 300); });
     })();
 
     return function intro() {
