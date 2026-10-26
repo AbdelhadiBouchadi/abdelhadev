@@ -240,91 +240,16 @@
     }
   }
 
-  /* thread zone: the day sections from the chapters to the stack. It carries their paper, so the
-     line drawn behind the text shows through, and it slides over the sunrise's last screen like a
-     sheet of paper. */
-  .thread-zone {
-    position: relative;
-    background: var(--paper);
-    /* Clip, not hidden: no scroll container, so the chapters' stages still stick. */
-    overflow-x: clip;
-  }
-  html.motion .dawn + .thread-zone {
+  /* chapters (day): they slide over the sunrise's last screen like a sheet of paper. */
+  html.motion .dawn + .chapters {
     margin-block-start: -100vh;
     margin-block-start: -100svh;
     z-index: 1;
+    background: var(--paper);
     border-radius: var(--r-section) var(--r-section) 0 0;
     box-shadow: 0 -30px 80px color-mix(in srgb, var(--ink) 10%, transparent);
+    /* Clip, not hidden: no scroll container, so the chapters' stages still stick. */
     overflow: clip;
-  }
-  .thread-zone [data-tone="day"] {
-    background: transparent;
-  }
-  .thread-zone > .chapters,
-  .thread-zone > section {
-    position: relative;
-    z-index: 1;
-  }
-  .thread {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-    pointer-events: none;
-    overflow: visible;
-  }
-  .thread-ghost,
-  .thread-path {
-    fill: none;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-  /* Solid: dashes along a path thousands of px long are all drawn again on every frame the line
-     moves. */
-  .thread-ghost {
-    stroke: var(--line);
-    stroke-width: 1;
-  }
-  .thread-path {
-    stroke-width: 2.5;
-  }
-  .thread-stop-glow {
-    stop-color: var(--glow);
-  }
-  .thread-stop-majorelle {
-    stop-color: var(--majorelle);
-  }
-  .thread-stop-rose {
-    stop-color: var(--rose);
-  }
-  .thread-sun-halo {
-    fill: var(--glow);
-    opacity: 0.28;
-  }
-  .thread-sun-disc {
-    fill: var(--glow);
-  }
-  .thread-sun-ring {
-    fill: none;
-    stroke: var(--majorelle);
-    stroke-width: 2;
-  }
-  /* Motion start states: the line waits for DrawSVG, the sun for the scrub. Without motion the
-     line is drawn and still, and there is no sun. */
-  html.motion .thread-path {
-    visibility: hidden;
-  }
-  html.motion .thread-sun {
-    opacity: 0;
-  }
-  html:not(.motion) .thread-sun {
-    display: none;
-  }
-  @media print {
-    .thread {
-      display: none;
-    }
   }
   .chapters {
     position: relative;
@@ -401,10 +326,183 @@
     }
   }
 
-  /* process (day) */
-  @media (min-width: 1081px) {
-    .steps[data-count="5"] {
-      grid-template-columns: repeat(5, minmax(0, 1fr));
+  /* process (day): five sheets that walk through one day, from the lightest tone to night. They
+     stack with position: sticky, which runs on the browser's own scroll thread. The depth effect is
+     a CSS scroll-driven animation where supported. No JavaScript runs on scroll. */
+  .deck {
+    display: grid;
+    gap: 18px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .deck > .card {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: end;
+    gap: clamp(16px, 3vw, 48px);
+    min-height: min(58svh, 460px);
+    padding: clamp(22px, 3.4vw, 44px);
+    border-radius: var(--r-sheet);
+    background: var(--card-bg, var(--sheet));
+    color: var(--card-ink, var(--ink));
+    /* Small on purpose: a large blurred shadow repainted at every scale step dropped frames. */
+    box-shadow:
+      0 1px 0 color-mix(in srgb, var(--sheet) 50%, transparent) inset,
+      0 12px 24px -16px color-mix(in srgb, var(--ink) 30%, transparent);
+    transform-origin: 50% 0;
+  }
+  .deck > .card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--night);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .deck .card-no {
+    align-self: start;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: clamp(88px, 16vw, 220px);
+    line-height: 0.8;
+    letter-spacing: -0.04em;
+    font-variation-settings:
+      "wdth" 80,
+      "opsz" 96;
+    color: var(--card-accent, var(--glow));
+  }
+  .deck .card h3 {
+    margin: 0 0 12px;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: clamp(30px, 4vw, 56px);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    font-variation-settings:
+      "wdth" 88,
+      "opsz" 72;
+  }
+  .deck .card p {
+    margin: 0;
+    max-width: 34ch;
+    font-size: clamp(16px, 1.3vw, 19px);
+    line-height: 1.5;
+    color: var(--card-soft, var(--ink-soft));
+  }
+  .deck .card-time {
+    align-self: start;
+    justify-self: end;
+    padding: 8px 14px;
+    border-radius: var(--r-pill);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    background: color-mix(in srgb, currentColor 9%, transparent);
+  }
+  /* Lowest contrast measured: the text on sand, 5.24:1. */
+  .deck > .card[data-step="scope"] {
+    --card-bg: var(--sand);
+    --card-accent: var(--rose);
+  }
+  .deck > .card[data-step="quote"] {
+    --card-bg: var(--sunset);
+    --card-accent: var(--sheet);
+    --card-soft: color-mix(in srgb, var(--ink) 78%, var(--sunset));
+  }
+  .deck > .card[data-step="build"] {
+    --card-bg: var(--rose);
+    --card-accent: var(--sheet);
+    --card-soft: color-mix(in srgb, var(--ink) 80%, var(--rose));
+  }
+  .deck > .card[data-step="deliver"] {
+    --card-bg: var(--night-2);
+    --card-ink: var(--moon);
+    --card-soft: var(--moon-soft);
+    --card-accent: var(--glow);
+  }
+  @media (max-width: 760px) {
+    .deck > .card {
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-areas:
+        "no time"
+        "copy copy";
+      align-items: start;
+      min-height: min(52svh, 380px);
+      border-radius: var(--r-card);
+    }
+    .deck .card-no {
+      grid-area: no;
+      font-size: 96px;
+    }
+    .deck .card-time {
+      grid-area: time;
+    }
+    .deck .card-copy {
+      grid-area: copy;
+      align-self: end;
+    }
+  }
+  /* The cards are siblings in one list, so each sticks until the list's end. Without motion (and
+     before hydration) the list stays plain and static. */
+  html.motion .deck {
+    gap: 0;
+    padding-block-end: 6svh;
+  }
+  html.motion .deck > .card {
+    position: sticky;
+    inset-block-start: calc(var(--header-h) + 14px + var(--i) * 16px);
+    margin-block-end: clamp(18px, 4svh, 36px);
+  }
+  @media (max-width: 760px) {
+    html.motion .deck > .card {
+      inset-block-start: calc(var(--header-h) + 8px + var(--i) * 12px);
+    }
+  }
+  /* Each card but the last recedes on the next card's view timeline while that card slides over. */
+  @supports (animation-timeline: view()) and (timeline-scope: --a) {
+    @media (prefers-reduced-motion: no-preference) {
+      html.motion .deck {
+        timeline-scope: --c1, --c2, --c3, --c4;
+      }
+      html.motion .deck > .card:nth-child(2) {
+        view-timeline: --c1 block;
+      }
+      html.motion .deck > .card:nth-child(3) {
+        view-timeline: --c2 block;
+      }
+      html.motion .deck > .card:nth-child(4) {
+        view-timeline: --c3 block;
+      }
+      html.motion .deck > .card:nth-child(5) {
+        view-timeline: --c4 block;
+      }
+      html.motion .deck > .card:not(:last-child) {
+        animation: card-recede linear both;
+        animation-range: cover 18% cover 58%;
+      }
+      html.motion .deck > .card:not(:last-child)::after {
+        animation: card-dim linear both;
+        animation-range: cover 18% cover 58%;
+      }
+      html.motion .deck > .card:nth-child(1),
+      html.motion .deck > .card:nth-child(1)::after {
+        animation-timeline: --c1;
+      }
+      html.motion .deck > .card:nth-child(2),
+      html.motion .deck > .card:nth-child(2)::after {
+        animation-timeline: --c2;
+      }
+      html.motion .deck > .card:nth-child(3),
+      html.motion .deck > .card:nth-child(3)::after {
+        animation-timeline: --c3;
+      }
+      html.motion .deck > .card:nth-child(4),
+      html.motion .deck > .card:nth-child(4)::after {
+        animation-timeline: --c4;
+      }
     }
   }
 
@@ -524,5 +622,16 @@
     .now-list {
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
+  }
+}
+
+@keyframes card-recede {
+  to {
+    transform: scale(0.94);
+  }
+}
+@keyframes card-dim {
+  to {
+    opacity: 0.16;
   }
 }

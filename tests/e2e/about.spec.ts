@@ -1,13 +1,12 @@
 // The about page at 1440 and 390, in both locales: end states after the loader and on scroll,
-// the dawn's scrub on its sticky stage and the chapters' hand-off, the thread drawn through the
-// day sections, the footer and CV links, the timeline and the public email, the server HTML,
-// reduced motion, the ScrollTrigger baseline and axe.
+// the dawn's scrub on its sticky stage and the chapters' hand-off, the process cards stacking,
+// the footer and CV links, the timeline and the public email, the server HTML, reduced motion,
+// the ScrollTrigger baseline and axe.
 import AxeBuilder from "@axe-core/playwright";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { expect, test, type Locator, type Page } from "@playwright/test";
-import { CHAPTERS, SERVICES } from "@/lib/content/about";
+import { CHAPTERS, PROCESS, SERVICES } from "@/lib/content/about";
 import { CV } from "@/lib/content/cv";
-import { ABOUT } from "@/lib/motion";
 import { SITE } from "@/lib/site";
 import { beyond, bring, collectErrors, liveScrollTriggers } from "./page-helpers";
 import { LEGAL_NAME } from "./routes";
@@ -23,7 +22,7 @@ interface AboutMessages {
     title: string;
     chapters: Record<string, { label: string; text: string }>;
     services: { title: string; items: Record<string, Item> };
-    process: { title: string };
+    process: { title: string; steps: Record<string, Item & { time: string }> };
     experience: {
       title: string;
       cv: string;
@@ -39,7 +38,7 @@ const MESSAGES: Record<"fr" | "en", AboutMessages> = {
 };
 const PATHS = { fr: "/fr/a-propos", en: "/en/about" } as const;
 const LOCALES = ["fr", "en"] as const;
-const GROUPS = [".services", "#process .steps", ".timeline", ".stack-groups", ".now-list"];
+const GROUPS = [".services", ".timeline", ".stack-groups", ".now-list"];
 
 const opacityOf = (locator: Locator) =>
   locator.evaluate((el) => Number(getComputedStyle(el).opacity));
@@ -160,169 +159,67 @@ const STILL = { oneScreen: true, moved: [], sunBelowCopy: true, sunInside: true,
 
 const html = (text: string) => text.replaceAll("'", "&#x27;");
 
-/** The drawn share of the thread: 0 while CSS still hides it, 1 with no dash (no motion). */
-const drawnShare = (page: Page) =>
-  page.locator(".thread-path").evaluate((el) => {
-    if (!(el instanceof SVGPathElement)) return Number.NaN;
-    const s = getComputedStyle(el);
-    if (s.visibility === "hidden") return 0;
-    if (s.strokeDasharray === "none") return 1;
-    return Number.parseFloat(s.strokeDasharray) / el.getTotalLength();
-  });
-
-const sunState = (page: Page) =>
-  page.locator(".thread-sun").evaluate((el) => {
-    const s = getComputedStyle(el);
-    return { transform: s.transform, opacity: Number(s.opacity), shown: s.display !== "none" };
-  });
-
-/** Every x of the route lies inside the page, and the page has no side scroll. */
-const routeInside = (page: Page) =>
-  page.evaluate(() => {
-    const svg = document.querySelector<SVGSVGElement>(".thread");
-    const path = svg?.querySelector(".thread-path");
-    const numbers = (path?.getAttribute("d")?.match(/-?\d+(?:\.\d+)?/g) ?? []).map(Number);
-    const [, , boxWidth = Number.NaN] = (svg?.getAttribute("viewBox") ?? "").split(" ").map(Number);
-    const scale = (svg?.clientWidth ?? Number.NaN) / boxWidth;
-    const xs = numbers.filter((_, i) => i % 2 === 0).map((x) => x * scale);
-    const width = document.documentElement.clientWidth;
-    return {
-      points: xs.length > 2,
-      outside: xs.filter((x) => x < 0 || x > width),
-      sideScroll: (document.scrollingElement?.scrollWidth ?? 0) - window.innerWidth,
-    };
-  });
-const INSIDE = { points: true, outside: [], sideScroll: 0 };
-
-/** Puts `share` of the thread zone at the trigger's end line (75 % of the viewport). */
-async function zoneAt(page: Page, share: number): Promise<void> {
-  const y = await page.evaluate((f) => {
-    const zone = document.querySelector<HTMLElement>(".thread-zone");
-    if (!zone) return 0;
-    const top = zone.getBoundingClientRect().top + window.scrollY;
-    return top + zone.offsetHeight * f - window.innerHeight * 0.75;
-  }, share);
-  await scrubTo(page, y);
-}
-
-interface ThreadProbe {
-  /** performance.now() of each rebuild: each one writes a new route into the ghost's `d`. */
-  rebuilds: number[];
-  /** performance.now() of each ScrollTrigger.refresh of the whole page. */
-  refreshes: number[];
-  /** performance.now() of each scroll event. */
-  scrolls: number[];
-  frames: { y: number; drawn: number; sun: number }[];
-  stop: boolean;
-}
-type Probed = Window & { __thread?: ThreadProbe };
-
-/** Counts rebuilds and refreshes and records every frame, from outside: the app ships no test
-    hook. Refreshes are heard through a live ScrollTrigger's own class (Runtime.queryObjects). */
-async function probeThread(page: Page): Promise<void> {
-  await page.evaluate(() => {
-    const probe: ThreadProbe = {
-      rebuilds: [],
-      refreshes: [],
-      scrolls: [],
-      frames: [],
-      stop: false,
-    };
-    (window as Probed).__thread = probe;
-    const ghost = document.querySelector(".thread-ghost");
-    const path = document.querySelector<SVGPathElement>(".thread-path");
-    const sun = document.querySelector(".thread-sun");
-    if (!ghost || !path || !sun) return;
-    new MutationObserver((records) => {
-      probe.rebuilds.push(...records.map(() => performance.now()));
-    }).observe(ghost, { attributeFilter: ["d"] });
-    addEventListener("scroll", () => probe.scrolls.push(performance.now()), { passive: true });
-    const tick = () => {
-      const s = getComputedStyle(path);
-      const drawn =
-        s.visibility === "hidden"
-          ? 0
-          : s.strokeDasharray === "none"
-            ? 1
-            : Number.parseFloat(s.strokeDasharray) / path.getTotalLength();
-      const r = sun.getBoundingClientRect();
-      probe.frames.push({ y: scrollY, drawn, sun: r.top + r.height / 2 + scrollY });
-      if (!probe.stop) requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-  });
-  const cdp = await page.context().newCDPSession(page);
-  try {
-    const { result: proto } = await cdp.send("Runtime.evaluate", {
-      expression: "Object.prototype",
-    });
-    if (!proto.objectId) throw new Error("no Object.prototype handle");
-    const { objects } = await cdp.send("Runtime.queryObjects", {
-      prototypeObjectId: proto.objectId,
-    });
-    if (!objects.objectId) throw new Error("queryObjects returned no array");
-    const { result } = await cdp.send("Runtime.callFunctionOn", {
-      objectId: objects.objectId,
-      returnByValue: true,
-      functionDeclaration: `function () {
-        const st = this.find((o) => {
-          try { return o && typeof o.getVelocity === "function" && typeof o.refresh === "function"; }
-          catch { return false; }
-        });
-        if (!st) return false;
-        st.constructor.addEventListener("refresh", () => {
-          window.__thread.refreshes.push(performance.now());
-        });
-        return true;
-      }`,
-    });
-    if (result.value !== true) throw new Error("no live ScrollTrigger to listen to");
-  } finally {
-    await cdp.detach();
-  }
-}
-
-/** The largest step back of the scroll, the drawn share and the sun's page position. */
-async function threadRecord(page: Page) {
-  return page.evaluate(() => {
-    const probe = (window as Probed).__thread;
-    if (!probe) throw new Error("no probe");
-    probe.stop = true;
-    const back = (values: number[]) =>
-      Math.max(0, ...values.slice(1).map((v, i) => (values[i] ?? v) - v));
-    const { frames } = probe;
-    return {
-      travelled: (frames.at(-1)?.y ?? 0) - (frames[0]?.y ?? 0),
-      scrollBack: back(frames.map((f) => f.y)),
-      drawnBack: back(frames.map((f) => f.drawn)),
-      sunBack: back(frames.map((f) => f.sun)),
-      rebuilds: probe.rebuilds,
-      refreshes: probe.refreshes,
-      scrolls: probe.scrolls,
-    };
-  });
-}
-
-/** Scrolls through the zone's height in steps: wheel notches, which Lenis
-    smooths, or touch swipes, which scroll natively. `midway` runs once at each of its fractions. */
-async function scrollThroughZone(
-  page: Page,
-  touch: boolean,
-  midway: [number, () => Promise<void>][] = [],
-): Promise<void> {
-  const height = await page.evaluate(
-    () => document.querySelector<HTMLElement>(".thread-zone")?.offsetHeight ?? 0,
+/** The process cards, in order, as laid out now. A card scales from its top edge, so its top is
+    the same scaled or not. */
+const cards = (page: Page) =>
+  page.locator(".deck > li").evaluateAll((els) =>
+    els.map((el) => {
+      const r = el.getBoundingClientRect();
+      const s = getComputedStyle(el);
+      return {
+        top: r.top,
+        bottom: r.bottom,
+        stickyTop: Number.parseFloat(s.top),
+        position: s.position,
+        transform: s.transform,
+        opacity: Number(s.opacity),
+        title: el.querySelector("h3")?.textContent ?? "",
+        text: el.querySelector("p")?.textContent ?? "",
+        time: el.querySelector(".card-time")?.textContent ?? "",
+      };
+    }),
   );
-  const pending = [...midway];
-  const at = async (done: number) => {
-    while (pending[0] && done >= pending[0][0] * height) await pending.shift()?.[1]();
+
+/** The scroll at which the last card reaches its sticky top: every card is stuck there. The last
+    card is the list's end, so it never moves from its flow position, and past this point the list
+    pushes the others up. Measured from the cards' flow, which sticking does not change. */
+const allStuckAt = (page: Page) =>
+  page.locator(".deck").evaluate((deck) => {
+    const items = [...deck.children].filter((el) => el instanceof HTMLElement);
+    const last = items.at(-1);
+    if (!last) return Number.NaN;
+    let y = deck.getBoundingClientRect().top + window.scrollY;
+    for (const el of items.slice(0, -1)) {
+      y += el.offsetHeight + Number.parseFloat(getComputedStyle(el).marginBottom);
+    }
+    return y - Number.parseFloat(getComputedStyle(last).top);
+  });
+
+/** Cards that are sticky, that overlap the one before them, or that are not at rest. */
+const flatDeck = async (page: Page) => {
+  const list = await cards(page);
+  return {
+    count: list.length,
+    sticky: list.filter((c) => c.position === "sticky").length,
+    overlapping: list
+      .slice(1)
+      .filter((c, i) => c.top < (list[i]?.bottom ?? Number.POSITIVE_INFINITY)).length,
+    moved: list.filter((c) => c.opacity < 1 || c.transform !== "none").length,
   };
+};
+const FLAT = { count: PROCESS.length, sticky: 0, overlapping: 0, moved: 0 };
+
+const sideScroll = (page: Page) =>
+  page.evaluate(() => (document.scrollingElement?.scrollWidth ?? 0) - window.innerWidth);
+
+/** Scrolls `distance` px in steps: wheel notches, which Lenis smooths, or touch swipes, which
+    scroll natively. */
+async function scrollInSteps(page: Page, distance: number, touch: boolean): Promise<void> {
   if (!touch) {
     await page.mouse.move(200, 300);
-    for (let done = 0; done < height; done += 120) {
+    for (let done = 0; done < distance; done += 120) {
       await page.mouse.wheel(0, 120);
       await page.waitForTimeout(40);
-      await at(done);
     }
     return;
   }
@@ -330,8 +227,7 @@ async function scrollThroughZone(
   try {
     const swipe = 400;
     const step = 20;
-    let done = 0;
-    while (done < height) {
+    for (let done = 0; done < distance; done += swipe) {
       let y = 650;
       await cdp.send("Input.dispatchTouchEvent", {
         type: "touchStart",
@@ -348,34 +244,10 @@ async function scrollThroughZone(
       // Held still before lifting: no fling, the page moves by the finger only.
       await page.waitForTimeout(120);
       await cdp.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
-      done += swipe;
-      await at(done);
     }
   } finally {
     await cdp.detach();
   }
-}
-
-/** px between the sun's centre and the tip of the drawn line. */
-const sunOffTip = (page: Page) =>
-  page.evaluate(() => {
-    const path = document.querySelector<SVGPathElement>(".thread-path");
-    const disc = document.querySelector(".thread-sun-disc");
-    const matrix = path?.getScreenCTM();
-    if (!path || !disc || !matrix) return Number.NaN;
-    const tip = path.getPointAtLength(Number.parseFloat(getComputedStyle(path).strokeDasharray));
-    const at = new DOMPoint(tip.x, tip.y).matrixTransform(matrix);
-    const r = disc.getBoundingClientRect();
-    return Math.hypot(r.left + r.width / 2 - at.x, r.top + r.height / 2 - at.y);
-  });
-
-/** Just above the zone, at rest. */
-async function aboveZone(page: Page): Promise<void> {
-  const y = await page.evaluate(() => {
-    const zone = document.querySelector<HTMLElement>(".thread-zone");
-    return (zone?.getBoundingClientRect().top ?? 0) + scrollY - innerHeight;
-  });
-  await scrubTo(page, y);
 }
 
 test.describe("with motion", () => {
@@ -487,9 +359,7 @@ test.describe("with motion", () => {
     expect(errors).toEqual([]);
   });
 
-  test("services, process, experience, stack and Right now reach their end state", async ({
-    page,
-  }) => {
+  test("services, experience, stack and Right now reach their end state", async ({ page }) => {
     const errors = collectErrors(page);
     await page.goto(PATHS.fr);
     await shellIdle(page);
@@ -509,153 +379,68 @@ test.describe("with motion", () => {
     expect(errors).toEqual([]);
   });
 
-  test("the thread is one hidden decoration in the zone, drawn by scroll with the sun on its tip", async ({
+  for (const locale of LOCALES) {
+    test(`${locale}: five process cards in order, each with its title, text and time label`, async ({
+      page,
+    }) => {
+      const steps = MESSAGES[locale].about.process.steps;
+      await page.goto(PATHS[locale]);
+      await shellIdle(page);
+      await expect(page.locator("ol.deck")).toHaveCount(1);
+      await expect(page.locator(".deck > li h3")).toHaveCount(PROCESS.length);
+      await expect(page.locator(".deck > li p")).toHaveCount(PROCESS.length);
+      await expect(page.locator(".deck .card-no[aria-hidden='true']")).toHaveCount(PROCESS.length);
+      const list = await cards(page);
+      expect(list.map(({ title, text, time }) => ({ title, text, time }))).toEqual(
+        PROCESS.map((key) => ({
+          title: steps[key]?.title,
+          text: steps[key]?.text,
+          time: steps[key]?.time,
+        })),
+      );
+      await expect(page.locator(".thread, .thread-zone, .thread-path, .thread-sun")).toHaveCount(0);
+    });
+  }
+
+  test("the process cards stack as they scroll, each with an edge above the next", async ({
     page,
+    isMobile,
   }) => {
     const errors = collectErrors(page);
     await page.goto(PATHS.fr);
     await shellIdle(page);
-    const thread = page.locator("svg.thread");
-    await expect(thread).toHaveCount(1);
-    await expect(thread).toHaveAttribute("aria-hidden", "true");
-    await expect(page.locator(".thread-zone > svg.thread")).toHaveCount(1);
-    await expect(page.locator(".thread-zone #now")).toHaveCount(0);
-    await expect(page.locator(".thread-zone + #now")).toHaveCount(1);
-    expect(await thread.evaluate((el) => getComputedStyle(el).pointerEvents)).toBe("none");
+    await bring(page, page.locator("#process"), 0);
+    await page.waitForTimeout(400);
+    const target = await allStuckAt(page);
+    const from = await page.evaluate(() => window.scrollY);
+    await scrollInSteps(page, target - from, isMobile);
+    // Lenis may still be easing the last notches, so the exact point is set until it holds.
+    const offLine = async () => {
+      await scrollToY(page, target);
+      await page.waitForTimeout(200);
+      return Math.max(...(await cards(page)).map((c) => Math.abs(c.top - c.stickyTop)));
+    };
+    await expect.poll(offLine, { timeout: 5000 }).toBeLessThan(1);
 
-    // The zone carries the paper; the day sections in it are transparent, Right now is not.
-    const backgrounds = await page.evaluate(() => ({
-      day: [...document.querySelectorAll(".thread-zone [data-tone='day']")].map(
-        (el) => getComputedStyle(el).backgroundColor,
-      ),
-      now: getComputedStyle(document.querySelector("#now") ?? document.body).backgroundColor,
-    }));
-    expect(new Set(backgrounds.day)).toEqual(new Set(["rgba(0, 0, 0, 0)"]));
-    expect(backgrounds.now).not.toBe("rgba(0, 0, 0, 0)");
-
-    let share = -1;
-    let transform = "";
-    for (const at of [0.25, 0.6, 1]) {
-      await zoneAt(page, at);
-      const drawn = await drawnShare(page);
-      const sun = await sunState(page);
-      expect(drawn, `drawn at ${String(at)}`).toBeGreaterThan(share);
-      expect(sun.transform, `sun at ${String(at)}`).not.toBe(transform);
-      share = drawn;
-      transform = sun.transform;
-      if (at === 1) {
-        expect(drawn).toBeCloseTo(1, 2);
-        expect(sun.opacity).toBe(0);
-      } else {
-        expect(sun.opacity).toBe(1);
-      }
+    const list = await cards(page);
+    expect(list).toHaveLength(PROCESS.length);
+    for (const [i, card] of list.entries()) {
+      expect(card.position, `card ${String(i)}`).toBe("sticky");
+      expect(Math.abs(card.top - card.stickyTop), `card ${String(i)} stuck`).toBeLessThan(1);
     }
-    expect(await routeInside(page)).toEqual(INSIDE);
-    expect(errors).toEqual([]);
-  });
-
-  test("the thread follows a stepped scroll: no step back, no rebuild, no refresh", async ({
-    page,
-    isMobile,
-  }) => {
-    const errors = collectErrors(page);
-    await page.goto(PATHS.fr);
-    await shellIdle(page);
-    await aboveZone(page);
-    await probeThread(page);
-    await scrollThroughZone(page, isMobile);
-    await page.waitForTimeout(1000);
-    const record = await threadRecord(page);
-    expect(record.travelled).toBeGreaterThan(1000);
-    expect(record.scrollBack).toBeLessThanOrEqual(0.5);
-    expect(record.drawnBack).toBeLessThanOrEqual(1e-4);
-    expect(record.sunBack).toBeLessThanOrEqual(0.5);
-    expect(record.rebuilds).toEqual([]);
-    expect(record.refreshes).toEqual([]);
-    expect(errors).toEqual([]);
-  });
-
-  test("a phone's address bar showing and hiding during the scroll rebuilds nothing", async ({
-    page,
-    isMobile,
-  }) => {
-    const errors = collectErrors(page);
-    await page.goto(PATHS.fr);
-    await shellIdle(page);
-    await aboveZone(page);
-    await probeThread(page);
-    const size = page.viewportSize() ?? { width: 1440, height: 900 };
-    await scrollThroughZone(page, isMobile, [
-      [0.3, () => page.setViewportSize({ width: size.width, height: size.height - 56 })],
-      [0.6, () => page.setViewportSize(size)],
-    ]);
-    await page.waitForTimeout(1000);
-    const record = await threadRecord(page);
-    expect(record.scrollBack).toBeLessThanOrEqual(0.5);
-    expect(record.rebuilds).toEqual([]);
-    // A desktop window really changed size: ScrollTrigger may refresh once, after 200 ms with no
-    // scroll (its scrollEnd). The refresh itself may then restore the position.
-    if (isMobile) expect(record.refreshes).toEqual([]);
-    expect(record.refreshes.length).toBeLessThanOrEqual(1);
-    for (const at of record.refreshes) {
-      expect(record.scrolls.filter((s) => s < at && s > at - 150)).toEqual([]);
+    for (const [i, card] of list.slice(1).entries()) {
+      const edge = card.top - (list[i]?.top ?? Number.NaN);
+      expect(edge, `edge above card ${String(i + 1)}`).toBeGreaterThanOrEqual(8);
+      expect(edge, `edge above card ${String(i + 1)}`).toBeLessThanOrEqual(20);
     }
-    expect(errors).toEqual([]);
-  });
+    // The depth effect is a CSS scroll-driven animation, so far in Chromium only.
+    if (await page.evaluate(() => CSS.supports("animation-timeline", "view()"))) {
+      expect(list[0]?.transform).not.toBe("none");
+    }
 
-  test("a width change rebuilds once, after the page is still, and the line still completes", async ({
-    page,
-    isMobile,
-  }) => {
-    const errors = collectErrors(page);
-    await page.goto(PATHS.fr);
-    await shellIdle(page);
-    await aboveZone(page);
-    await probeThread(page);
-    const size = page.viewportSize() ?? { width: 1440, height: 900 };
-    await scrollThroughZone(page, isMobile, [
-      [0.2, () => page.setViewportSize({ width: size.width - 30, height: size.height })],
-    ]);
-    await page.waitForTimeout(1500);
-    const record = await threadRecord(page);
-    expect(record.rebuilds).toHaveLength(1);
-    // The page had been still for quietMs before it (a few ms of timer slack).
-    const rebuilt = record.rebuilds[0] ?? 0;
-    const before = record.scrolls.filter(
-      (at) => at < rebuilt && at > rebuilt - ABOUT.thread.quietMs + 5,
-    );
-    expect(before).toEqual([]);
-
-    // Back to the first width at rest: the rebuild refits the timeline and adds no trigger. (The
-    // scroll above fires reveals that run once, so the count is taken after it.)
-    const baseline = await liveScrollTriggers(page);
-    await page.setViewportSize(size);
-    await page.waitForTimeout(1500);
-    expect(await liveScrollTriggers(page)).toBe(baseline);
-
-    await zoneAt(page, 0.5);
-    expect(await sunOffTip(page)).toBeLessThan(4);
-    await zoneAt(page, 1);
-    expect(await drawnShare(page)).toBeCloseTo(1, 2);
-    expect(await routeInside(page)).toEqual(INSIDE);
-    expect(errors).toEqual([]);
-  });
-
-  test("ScrollTriggers return to their baseline after a viewport resize", async ({ page }) => {
-    const errors = collectErrors(page);
-    const settle = () => page.waitForTimeout(800);
-    await page.goto(PATHS.fr);
-    await shellIdle(page);
-    await settle();
-    const baseline = await liveScrollTriggers(page);
-    const size = page.viewportSize() ?? { width: 1440, height: 900 };
-    await page.setViewportSize({ width: Math.round(size.width * 0.8), height: size.height });
-    await settle();
-    expect(await routeInside(page)).toEqual(INSIDE);
-    await page.setViewportSize(size);
-    await settle();
-    expect(await liveScrollTriggers(page)).toBe(baseline);
-    expect(await routeInside(page)).toEqual(INSIDE);
+    await bring(page, page.locator("#experience"), 0.3);
+    await expect(page.locator("#experience h2")).toBeInViewport();
+    expect(await sideScroll(page)).toBeLessThanOrEqual(0);
     expect(errors).toEqual([]);
   });
 
@@ -681,11 +466,12 @@ test.describe("with motion", () => {
     await shellIdle(page);
     await settle();
     expect(await liveScrollTriggers(page)).toBe(baseline);
+    test.info().annotations.push({ type: "scrolltriggers", description: String(baseline) });
     expect(await page.locator(".pin-spacer").count()).toBe(0);
     expect(errors).toEqual([]);
   });
 
-  test("axe at the top, at the end of the sunrise and at Right now: no serious or critical issue", async ({
+  test("axe at the top, at the end of the sunrise, in the deck and at Right now: no serious or critical issue", async ({
     page,
   }, info) => {
     await page.goto(PATHS.fr);
@@ -729,10 +515,11 @@ test.describe("with motion", () => {
     await run("top");
     await scrubTo(page, await sceneRange(page));
     await run("dawn-end");
-    await zoneAt(page, 0);
-    await run("thread-top");
-    await zoneAt(page, 1);
-    await run("thread-end");
+    await bring(page, page.locator(".deck"), 0.3);
+    await run("deck");
+    await scrollToY(page, await allStuckAt(page));
+    await page.waitForTimeout(600);
+    await run("deck-end");
     await bring(page, page.locator("#now"), 0.1);
     await page.waitForTimeout(1500);
     await run("now");
@@ -867,11 +654,12 @@ test.describe("without JavaScript", () => {
     });
   }
 
-  test("the thread is drawn and still, with no sun", async ({ page }) => {
+  test("the process cards are a plain list: none sticky, none overlapping, all visible", async ({
+    page,
+  }) => {
     await page.goto(PATHS.fr);
-    expect(await drawnShare(page)).toBe(1);
-    expect((await sunState(page)).shown).toBe(false);
-    expect(await routeInside(page)).toEqual(INSIDE);
+    expect(await flatDeck(page)).toEqual(FLAT);
+    for (const card of await page.locator(".deck > li").all()) await expect(card).toBeVisible();
   });
 });
 
@@ -895,15 +683,18 @@ test.describe("reduced motion", () => {
     expect(await complete(page)).toEqual(COMPLETE);
   });
 
-  test("the thread is drawn and still, with no sun, at every scroll position", async ({ page }) => {
+  test("the process cards are a plain list: none sticky, none overlapping, all visible", async ({
+    page,
+  }) => {
     await visited(page);
     await page.goto(PATHS.fr);
     await shellIdle(page);
-    for (const at of [0.25, 1]) {
-      await zoneAt(page, at);
-      expect(await drawnShare(page)).toBe(1);
-      expect((await sunState(page)).shown).toBe(false);
+    await bring(page, page.locator(".deck"), 0.2);
+    await page.waitForTimeout(400);
+    expect(await flatDeck(page)).toEqual(FLAT);
+    for (const card of await page.locator(".deck > li").all()) {
+      await card.scrollIntoViewIfNeeded();
+      await expect(card).toBeInViewport();
     }
-    expect(await routeInside(page)).toEqual(INSIDE);
   });
 });
