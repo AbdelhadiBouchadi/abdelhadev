@@ -240,16 +240,95 @@
     }
   }
 
-  /* chapters (day): they slide over the sunrise's last screen like a sheet of paper. */
-  html.motion .dawn + .chapters {
+  /* thread zone: the day sections from the chapters to the stack. It carries their paper, so the
+     line drawn behind the text shows through, and it slides over the sunrise's last screen like a
+     sheet of paper. */
+  .thread-zone {
+    position: relative;
+    background: var(--paper);
+    /* Clip, not hidden: no scroll container, so the chapters' stages still stick. */
+    overflow-x: clip;
+  }
+  html.motion .dawn + .thread-zone {
     margin-block-start: -100vh;
     margin-block-start: -100svh;
     z-index: 1;
-    background: var(--paper);
     border-radius: var(--r-section) var(--r-section) 0 0;
     box-shadow: 0 -30px 80px color-mix(in srgb, var(--ink) 10%, transparent);
-    /* Clip, not hidden: no scroll container, so the chapters' stages still stick. */
     overflow: clip;
+  }
+  .thread-zone [data-tone="day"] {
+    background: transparent;
+  }
+  .thread-zone > .chapters,
+  .thread-zone > section {
+    position: relative;
+    z-index: 1;
+  }
+  .thread {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    overflow: visible;
+  }
+  .thread-ghost,
+  .thread-path {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .thread-ghost {
+    stroke: var(--line);
+    stroke-width: 1.5;
+    stroke-dasharray: 1 10;
+  }
+  .thread-path {
+    stroke-width: 2.5;
+  }
+  .thread-stop-glow {
+    stop-color: var(--glow);
+  }
+  .thread-stop-majorelle {
+    stop-color: var(--majorelle);
+  }
+  .thread-stop-rose {
+    stop-color: var(--rose);
+  }
+  .thread-sun-halo {
+    fill: var(--glow);
+    opacity: 0.28;
+  }
+  .thread-sun-disc {
+    fill: var(--glow);
+  }
+  .thread-sun-ring {
+    fill: none;
+    stroke: var(--majorelle);
+    stroke-width: 2;
+  }
+  /* Motion start states: the line waits for DrawSVG, the sun for the scrub. Without motion the
+     line is drawn and still, and there is no sun. */
+  html.motion .thread-path {
+    visibility: hidden;
+  }
+  html.motion .thread-sun {
+    opacity: 0;
+  }
+  html:not(.motion) .thread-sun {
+    display: none;
+  }
+  @media (max-width: 760px) {
+    .thread-ghost {
+      stroke-width: 1;
+    }
+  }
+  @media print {
+    .thread {
+      display: none;
+    }
   }
   .chapters {
     position: relative;

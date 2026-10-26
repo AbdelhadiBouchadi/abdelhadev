@@ -1,9 +1,10 @@
-/* The only module that imports GSAP (ESLint enforces it). SplitText and DrawSVGPlugin are needed
-   by a few leaves only, so they load on demand (docs/spikes/tbt.md): each loader registers its
-   plugin once and returns the same promise after that. */
+/* The only module that imports GSAP (ESLint enforces it). SplitText, DrawSVGPlugin and
+   MotionPathPlugin are needed by a few leaves only, so they load on demand (docs/spikes/tbt.md):
+   each loader registers its plugin once and returns the same promise after that. */
 import { gsap } from "gsap";
 import { CustomEase } from "gsap/CustomEase";
 import type { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
+import type { MotionPathPlugin } from "gsap/MotionPathPlugin";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { SplitText } from "gsap/SplitText";
 import { useGSAP } from "@gsap/react";
@@ -18,6 +19,7 @@ if (typeof window !== "undefined") {
 
 let splitText: Promise<typeof SplitText> | null = null;
 let drawSVG: Promise<typeof DrawSVGPlugin> | null = null;
+let motionPath: Promise<typeof MotionPathPlugin> | null = null;
 
 export function loadSplitText(): Promise<typeof SplitText> {
   splitText ??= import("gsap/SplitText").then(({ SplitText: plugin }) => {
@@ -33,6 +35,16 @@ export function loadDrawSVG(): Promise<typeof DrawSVGPlugin> {
     return plugin;
   });
   return drawSVG;
+}
+
+/** The dist build carries its own path helpers. The module build shares gsap/utils/paths with
+    CustomEase, and using more of it there grew every page's first load by about 4 kB. */
+export function loadMotionPath(): Promise<typeof MotionPathPlugin> {
+  motionPath ??= import("gsap/dist/MotionPathPlugin").then(({ MotionPathPlugin: plugin }) => {
+    gsap.registerPlugin(plugin);
+    return plugin;
+  });
+  return motionPath;
 }
 
 export { gsap, CustomEase, ScrollTrigger, useGSAP };

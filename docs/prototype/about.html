@@ -69,6 +69,13 @@
     </div>
   </section>
 
+  <div class="thread-zone">
+    <svg class="thread" aria-hidden="true" focusable="false" preserveAspectRatio="none">
+      <defs><linearGradient id="thread-grad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFB48A"/><stop offset=".5" stop-color="#3D52D5"/><stop offset="1" stop-color="#F3A28F"/></linearGradient></defs>
+      <path class="thread-ghost" d=""/>
+      <path class="thread-path" d=""/>
+      <g class="thread-sun"><circle r="16" fill="#FFB48A" opacity=".28"/><circle r="8" fill="#FFB48A"/><circle r="8" fill="none" stroke="#3D52D5" stroke-width="2"/></g>
+    </svg>
   <div class="chapters">
     <section class="chapter" data-tone="day" aria-labelledby="ch1">
       <div class="stage wrap"><h2 id="ch1" class="chapter-label">Who I am</h2>
@@ -107,6 +114,8 @@
     </div>
   </section>
 
+  </div>
+
   <section class="pad now" data-tone="night" aria-labelledby="now-title">
     <div class="wrap">
       <div class="section-head"><h2 id="now-title" class="display h-md">Right now</h2></div>
@@ -138,6 +147,8 @@
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/CustomEase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/DrawSVGPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/MotionPathPlugin.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.20/dist/lenis.min.js"></script>
 <script src="assets/site.js"></script>
 </body>

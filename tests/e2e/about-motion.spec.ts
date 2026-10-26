@@ -79,6 +79,32 @@ test("about timeline into Right now", async ({ browser }) => {
   rmSync(`${MOTION_OUT}/about-timeline-now-1440.png`, { force: true });
 });
 
+for (const [name, size, phone] of [
+  ["about-thread-1440", DESKTOP, false],
+  ["about-thread-390", PHONE, true],
+] as const) {
+  test(`about thread: the line draws through the day sections (${name})`, async ({ browser }) => {
+    await record(
+      browser,
+      name,
+      size,
+      async (page) => {
+        await page.goto(ABOUT);
+        await shellIdle(page);
+        await at(page, ".thread-zone", size.height * 0.5);
+        const range = await page
+          .locator(".thread-zone")
+          .evaluate((el) => (el instanceof HTMLElement ? el.offsetHeight : 0));
+        const ratio = await page.evaluate(() => window.devicePixelRatio);
+        await wheel(page, range * ratio, 160);
+      },
+      { phone },
+    );
+    // Only the clips are kept.
+    rmSync(`${MOTION_OUT}/${name}.png`, { force: true });
+  });
+}
+
 test("about full page at 1440 and 390", async ({ browser }) => {
   for (const [name, size, phone] of [
     ["about-1440", DESKTOP, false],
