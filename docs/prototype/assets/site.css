@@ -483,17 +483,7 @@ html.motion .sun-reflection { transform: scaleX(0); }
   .dawn-sun { padding-bottom: 22vh; }
 }
 /* The chapters slide over the last screen of the sunrise, like a sheet of paper. */
-html.motion .dawn + .thread-zone { margin-top: -100vh; margin-top: -100svh; z-index: 1; border-radius: 32px 32px 0 0; box-shadow: 0 -30px 80px rgba(43, 29, 26, .10); }
-/* The thread: one line drawn through the day sections, behind the text. */
-.thread-zone { position: relative; background: var(--paper); }
-.thread-zone [data-tone="day"] { background: transparent; }
-.thread-zone > .chapters, .thread-zone > .pad { position: relative; z-index: 1; }
-.thread { position: absolute; left: 0; top: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; overflow: visible; }
-.thread-ghost, .thread-path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
-.thread-ghost { stroke: var(--line); stroke-width: 1; }
-.thread-path { stroke: url(#thread-grad); stroke-width: 2.5; }
-html.motion .thread-sun { opacity: 0; }
-@media (max-width: 760px) { .thread-path { stroke-width: 2.5; } .thread-ghost { stroke-width: 1; } }
+html.motion .dawn + .chapters { margin-top: -100vh; margin-top: -100svh; z-index: 1; background: var(--paper); border-radius: 32px 32px 0 0; box-shadow: 0 -30px 80px rgba(43, 29, 26, .10); }
 .chapters { position: relative; }
 .chapter { position: relative; }
 html.motion .chapter { height: 200vh; }
@@ -598,3 +588,49 @@ html.motion .chapter .stage { position: sticky; top: 0; min-height: 100vh; min-h
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition-duration: .01ms !important; }
 }
+
+/* ================= PROCESS DECK =================
+   Five sheets that stack as you scroll. The stacking is plain position: sticky, so it runs on the
+   browser's own scroll thread and cannot shake. The depth effect is an enhancement for browsers
+   that support scroll-driven animations. The five sheets walk through one day, from dawn to night. */
+.process .section-head { display: grid; gap: 14px; margin-bottom: clamp(32px, 6vh, 64px); }
+.deck { list-style: none; margin: 0; padding: 0; display: grid; gap: 18px; }
+.card { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: end; gap: clamp(16px, 3vw, 48px);
+  min-height: min(58svh, 460px); padding: clamp(22px, 3.4vw, 44px); border-radius: 28px; background: var(--card-bg, var(--sheet)); color: var(--card-ink, var(--ink));
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .5) inset, 0 12px 24px -16px rgba(43, 29, 26, .3); transform-origin: 50% 0; }
+.card::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: var(--night); opacity: 0; pointer-events: none; }
+.card-no { align-self: start; font-family: var(--display); font-weight: 600; font-size: clamp(88px, 16vw, 220px); line-height: .8; letter-spacing: -.04em; font-variation-settings: "wdth" 80, "opsz" 96; color: var(--card-accent, var(--glow)); }
+.card h3 { margin: 0 0 12px; font-family: var(--display); font-weight: 600; font-size: clamp(30px, 4vw, 56px); line-height: 1; letter-spacing: -.03em; font-variation-settings: "wdth" 88, "opsz" 72; }
+.card p { margin: 0; max-width: 34ch; font-size: clamp(16px, 1.3vw, 19px); line-height: 1.5; color: var(--card-soft, var(--ink-soft)); }
+.card-time { align-self: start; justify-self: end; padding: 8px 14px; border-radius: 99px; font-size: 13px; font-weight: 600; letter-spacing: .01em; background: color-mix(in srgb, currentColor 9%, transparent); }
+.card[data-step="listen"] { --card-bg: var(--sheet); }
+.card[data-step="scope"] { --card-bg: var(--sand); --card-accent: var(--rose); }
+.card[data-step="quote"] { --card-bg: var(--sunset); --card-accent: var(--sheet); --card-soft: color-mix(in srgb, var(--ink) 78%, var(--sunset)); }
+.card[data-step="build"] { --card-bg: var(--rose); --card-accent: var(--sheet); --card-soft: color-mix(in srgb, var(--ink) 80%, var(--rose)); }
+.card[data-step="deliver"] { --card-bg: var(--night-2); --card-ink: var(--moon); --card-soft: var(--moon-soft); --card-accent: var(--glow); }
+@media (max-width: 760px) {
+  .card { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "no time" "copy copy"; align-items: start; min-height: min(52svh, 380px); border-radius: 22px; }
+  .card-no { grid-area: no; font-size: 96px; }
+  .card-time { grid-area: time; }
+  .card-copy { grid-area: copy; align-self: end; }
+}
+html.motion .deck { gap: 0; padding-bottom: 6svh; }
+html.motion .card { position: sticky; top: calc(var(--header-h) + 14px + var(--i) * 16px); margin-bottom: clamp(18px, 4svh, 36px); }
+@media (max-width: 760px) { html.motion .card { top: calc(var(--header-h) + 8px + var(--i) * 12px); } }
+@supports (animation-timeline: view()) and (timeline-scope: --a) {
+  @media (prefers-reduced-motion: no-preference) {
+    .deck { timeline-scope: --c1, --c2, --c3, --c4; }
+    .deck > .card:nth-child(2) { view-timeline: --c1 block; }
+    .deck > .card:nth-child(3) { view-timeline: --c2 block; }
+    .deck > .card:nth-child(4) { view-timeline: --c3 block; }
+    .deck > .card:nth-child(5) { view-timeline: --c4 block; }
+    .deck > .card:nth-child(1), .deck > .card:nth-child(2), .deck > .card:nth-child(3), .deck > .card:nth-child(4) { animation: card-recede linear both; animation-range: cover 18% cover 58%; }
+    .deck > .card:nth-child(1)::after, .deck > .card:nth-child(2)::after, .deck > .card:nth-child(3)::after, .deck > .card:nth-child(4)::after { animation: card-dim linear both; animation-range: cover 18% cover 58%; }
+    .deck > .card:nth-child(1), .deck > .card:nth-child(1)::after { animation-timeline: --c1; }
+    .deck > .card:nth-child(2), .deck > .card:nth-child(2)::after { animation-timeline: --c2; }
+    .deck > .card:nth-child(3), .deck > .card:nth-child(3)::after { animation-timeline: --c3; }
+    .deck > .card:nth-child(4), .deck > .card:nth-child(4)::after { animation-timeline: --c4; }
+  }
+}
+@keyframes card-recede { to { transform: scale(.94); } }
+@keyframes card-dim { to { opacity: .16; } }
