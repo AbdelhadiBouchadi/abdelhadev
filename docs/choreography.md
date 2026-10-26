@@ -62,7 +62,15 @@ The 3D layer: positions are fractions of the visible half-width and half-height 
 
 ## About — `Pages.about`
 
-- Dawn hero: four concentric arcs rise and settle (2.2 s, stagger 0.14 from the outside); heading lines rise; lead fades. Scroll: the arcs expand and fade.
+- Dawn hero, one scene in three beats (`DawnMotion`, values in `ABOUT.dawn`):
+
+| Beat | Range | What happens |
+|---|---|---|
+| Arrival | time, after the loader | Four concentric arcs rise and settle (2.2 s, stagger 0.14 from the core outwards); heading lines rise (0.3 s); the lead, then the facts row, fade up (0.8 s, 0.88 s). It ends exactly where the rise starts: the scrub moves other layers (each arc's inner light, the arcs wrapper, the title and lead wrapper). |
+| Rise | 0 to 0.7 of the scrub | The arcs grow from the outside in (scale 1 → 1.32, 0.46 each, stagger 0.08), the sun climbs (`yPercent 0 → -14`), the colours mix 45 % of the chapters' `--paper` in from 0.1; the title and lead travel up 6 % of the viewport height and soften to 0.85. The facts row does not move. |
+| Hand-off | 0.7 to 1 | The arcs finish mixing into `--paper` and fade out, so the pin releases on plain paper and the chapters continue the same sky. |
+
+  From 768 px: the section is pinned (`start "top top"`, `end "+=200%"`, scrub 0.5 on top of Lenis, `invalidateOnRefresh`), and `will-change: transform` is on the four arc lights only while the pin is active. Under 768 px: no pin, the same beats scrubbed over the section's own height (`"top top"` to `"bottom top"`), lighter (scale 1.16, `yPercent -7`, title and lead up 3 % and to 0.92). Reduced motion and no JavaScript: the arcs at rest, everything visible, no pin.
 - Three chapters (200 vh each, sticky stage): the label fades in, the statement's words light up.
 - Experience, stack and "Right now" groups fade up on entry.
 

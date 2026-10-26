@@ -26,47 +26,63 @@
     margin-inline-start: -75vmax;
     z-index: -1;
     pointer-events: none;
+    /* How far the arcs have mixed into the chapters' paper; scrubbed by DawnMotion. */
+    --arc-day: 0%;
   }
-  .arc {
+  .arc,
+  .arc-light {
     position: absolute;
     inset: 0;
     border-radius: 50%;
   }
-  .arc:nth-child(1) {
-    background: radial-gradient(
-      circle,
-      transparent 60%,
-      color-mix(in srgb, var(--glow) 55%, transparent) 63%,
-      color-mix(in srgb, var(--rose) 35%, transparent) 66%,
-      transparent 70%
-    );
+  /* The arrival moves each .arc; the scrubbed rise scales the .arc-light inside it. */
+  .arc {
+    --arc-glow: color-mix(in srgb, var(--glow), var(--paper) var(--arc-day));
+    --arc-rose: color-mix(in srgb, var(--rose), var(--paper) var(--arc-day));
+    --arc-blue: color-mix(in srgb, var(--majorelle-soft), var(--paper) var(--arc-day));
+    --arc-core: color-mix(in srgb, var(--sun-core), var(--paper) var(--arc-day));
   }
   .arc:nth-child(2) {
     inset: 12%;
-    background: radial-gradient(
-      circle,
-      transparent 58%,
-      color-mix(in srgb, var(--majorelle-soft) 55%, transparent) 62%,
-      color-mix(in srgb, var(--majorelle-soft) 20%, transparent) 66%,
-      transparent 70%
-    );
   }
   .arc:nth-child(3) {
     inset: 25%;
-    background: radial-gradient(
-      circle,
-      transparent 54%,
-      color-mix(in srgb, var(--glow) 70%, transparent) 60%,
-      color-mix(in srgb, color-mix(in srgb, var(--glow) 77%, var(--sheet)) 35%, transparent) 66%,
-      transparent 71%
-    );
   }
   .arc:nth-child(4) {
     inset: 37%;
+  }
+  .arc:nth-child(1) > .arc-light {
     background: radial-gradient(
       circle,
-      var(--sun-core),
-      color-mix(in srgb, var(--glow) 50%, transparent) 50%,
+      transparent 60%,
+      color-mix(in srgb, var(--arc-glow) 55%, transparent) 63%,
+      color-mix(in srgb, var(--arc-rose) 35%, transparent) 66%,
+      transparent 70%
+    );
+  }
+  .arc:nth-child(2) > .arc-light {
+    background: radial-gradient(
+      circle,
+      transparent 58%,
+      color-mix(in srgb, var(--arc-blue) 55%, transparent) 62%,
+      color-mix(in srgb, var(--arc-blue) 20%, transparent) 66%,
+      transparent 70%
+    );
+  }
+  .arc:nth-child(3) > .arc-light {
+    background: radial-gradient(
+      circle,
+      transparent 54%,
+      color-mix(in srgb, var(--arc-glow) 70%, transparent) 60%,
+      color-mix(in srgb, color-mix(in srgb, var(--arc-glow) 77%, var(--sheet)) 35%, transparent) 66%,
+      transparent 71%
+    );
+  }
+  .arc:nth-child(4) > .arc-light {
+    background: radial-gradient(
+      circle,
+      var(--arc-core),
+      color-mix(in srgb, var(--arc-glow) 50%, transparent) 50%,
       var(--sun-edge) 71%
     );
   }
@@ -75,7 +91,8 @@
     opacity: 0;
     transform: translateY(18%) scale(0.86);
   }
-  .dawn-copy {
+  .dawn-copy,
+  .dawn-lift {
     display: grid;
     gap: 24px;
   }
@@ -94,9 +111,10 @@
     border-top: 1px solid var(--line);
     padding-top: 12px;
   }
+  /* --ink-soft measured 4.49:1 over the sun's glow at 13 px; --ink keeps AA under the arcs. */
   .about-facts dt {
     font-size: 13px;
-    color: var(--ink-soft);
+    color: var(--ink);
   }
   .about-facts dd {
     margin: 4px 0 0;

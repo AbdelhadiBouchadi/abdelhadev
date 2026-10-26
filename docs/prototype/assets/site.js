@@ -699,12 +699,35 @@
   };
 
   Pages.about = function () {
-    var arcs = gsap.utils.toArray(".arc");
-    gsap.set(arcs, { yPercent: 18, scale: 0.86, opacity: 0, transformOrigin: "50% 50%" });
+    /* Sunrise. One timeline scrubbed over the dawn section, in progress units 0 to 1:
+       0 to .2 the copy leaves and the sky warms; .12 to .78 four halos rise through the camera;
+       .7 to .9 the sun settles on the horizon; the last screen is covered by the chapters. */
+    var halos = gsap.utils.toArray(".halo");
     var title = linesUp(".dawn .display");
     var lead = document.querySelector(".dawn .lead");
     gsap.set(lead, { y: 20, opacity: 0 });
-    gsap.to(".arcs", { yPercent: -10, scale: 1.25, opacity: 0.25, ease: "none", scrollTrigger: { trigger: ".dawn", start: "top top", end: "bottom top", scrub: 0.8 } });
+    gsap.set(".dawn-glow", { scaleY: 0.6, opacity: 0 });
+
+    var dawn = document.querySelector(".dawn");
+    /* the chapters cover the last 100vh, so the scene plays over the section height minus two screens */
+    var tl = gsap.timeline({ defaults: { ease: "none" }, scrollTrigger: {
+      trigger: dawn, start: "top top", end: function () { return "+=" + (dawn.offsetHeight - 2 * window.innerHeight); },
+      scrub: 0.6, invalidateOnRefresh: true } });
+    tl.to(".dawn-copy", { yPercent: -28, opacity: 0, duration: 0.2 }, 0)
+      .to(".dawn-glow", { scaleY: 2.4, duration: 0.22 }, 0)
+      .to(".dawn-sky", { opacity: 1, duration: 0.2 }, 0.04);
+    halos.forEach(function (h, i) {
+      var at = 0.12 + i * 0.12;
+      tl.fromTo(h, { scale: 0.08, opacity: 0 }, { scale: 1.9, duration: 0.42, ease: "power1.in" }, at)
+        .to(h, { opacity: 1, duration: 0.08 }, at)
+        .to(h, { opacity: 0, duration: 0.14 }, at + 0.28);
+    });
+    tl.to(".dawn-sky", { backgroundColor: "#FFFBF6", duration: 0.2 }, 0.66)
+      .to(".dawn-glow", { opacity: 0.55, duration: 0.2 }, 0.66)
+      .to(".sun-horizon", { scaleX: 1, duration: 0.12, ease: "power2.out" }, 0.7)
+      .to(".sun-disc", { yPercent: 0, y: 0, duration: 0.18, ease: "power2.out" }, 0.74)
+      .to(".sun-reflection", { scaleX: 1, duration: 0.12, ease: "power2.out" }, 0.8)
+      .to({}, { duration: 0.1 }, 0.9);
 
     gsap.utils.toArray(".chapter").forEach(function (ch) {
       var words = SplitText.create(ch.querySelector(".statement"), { type: "words" }).words;
@@ -716,7 +739,7 @@
     fadeUpOnEnter(".now-list", 0.1);
 
     return function intro() {
-      gsap.to(arcs, { yPercent: 0, scale: 1, opacity: 1, duration: 2.2, stagger: { each: 0.14, from: "end" } });
+      gsap.to(".dawn-glow", { scaleY: 1, opacity: 1, duration: 2, ease: "power2.out" });
       title(0.3);
       gsap.to(lead, { y: 0, opacity: 1, duration: 1, delay: 0.8 });
     };

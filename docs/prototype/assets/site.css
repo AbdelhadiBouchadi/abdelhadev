@@ -441,15 +441,49 @@ html.motion #build .stage { padding-block: 12vh; }
 .next-project:hover .display { color: var(--glow); }
 
 /* ================= ABOUT ================= */
-.dawn { position: relative; min-height: 100vh; min-height: 100svh; display: grid; align-items: end; overflow: clip; padding-top: calc(var(--header-h) + 40px); padding-bottom: clamp(40px, 8vh, 96px); isolation: isolate; }
-.arcs { position: absolute; left: 50%; bottom: -60vmin; width: 150vmax; aspect-ratio: 1; max-width: none; margin-left: -75vmax; z-index: -1; pointer-events: none; }
-.arc { position: absolute; inset: 0; border-radius: 50%; }
-.arc:nth-child(1) { background: radial-gradient(circle, transparent 60%, rgba(255, 180, 138, .55) 63%, rgba(243, 162, 143, .35) 66%, transparent 70%); }
-.arc:nth-child(2) { inset: 12%; background: radial-gradient(circle, transparent 58%, rgba(174, 183, 244, .55) 62%, rgba(174, 183, 244, .2) 66%, transparent 70%); }
-.arc:nth-child(3) { inset: 25%; background: radial-gradient(circle, transparent 54%, rgba(255, 180, 138, .7) 60%, rgba(255, 196, 160, .35) 66%, transparent 71%); }
-.arc:nth-child(4) { inset: 37%; background: radial-gradient(circle, rgba(255, 170, 120, .85), rgba(255, 186, 146, .5) 50%, rgba(255, 190, 150, 0) 71%); }
-.dawn-copy { display: grid; gap: 24px; }
-.dawn-copy .display { max-width: 13em; }
+/* Dawn: a pinned sunrise. The copy leaves, the sky warms, halos rise through the camera,
+   then the brand sun settles on the horizon and the chapters slide over it. */
+.dawn { position: relative; isolation: isolate; }
+html.motion .dawn { height: 420vh; height: 420svh; }
+.dawn-stage { position: relative; min-height: 100vh; min-height: 100svh; overflow: clip; display: grid; align-items: start; }
+html.motion .dawn-stage { position: sticky; top: 0; height: 100vh; height: 100svh; }
+.dawn-sky, .dawn-glow, .halos, .dawn-sun { position: absolute; inset: 0; pointer-events: none; }
+.dawn-glow { background: radial-gradient(120% 70% at 50% 118%, var(--glow) 0%, var(--sunset) 38%, rgba(241, 188, 156, 0) 72%); transform-origin: 50% 100%; }
+.dawn-sky { background: var(--sunset); opacity: 0; }
+.halos { overflow: clip; }
+.halo { position: absolute; left: 50%; top: calc(100% + 6vh); width: 150vmax; aspect-ratio: 1; margin: -75vmax 0 0 -75vmax; border-radius: 50%;
+  -webkit-mask: radial-gradient(closest-side, transparent 80%, #000 87%, #000 91%, transparent 98%);
+          mask: radial-gradient(closest-side, transparent 80%, #000 87%, #000 91%, transparent 98%);
+  transform: scale(.08); opacity: 0; }
+.halo:nth-child(1) { background: conic-gradient(from 240deg, var(--majorelle-soft), var(--sheet) 25%, var(--majorelle-soft) 50%); }
+.halo:nth-child(2) { background: conic-gradient(from 240deg, var(--sheet), var(--glow) 25%, var(--sheet) 50%); }
+.halo:nth-child(3) { background: conic-gradient(from 240deg, var(--majorelle-soft), #7f8ce6 25%, var(--majorelle-soft) 50%); }
+.halo:nth-child(4) { background: conic-gradient(from 240deg, var(--rose), var(--sheet) 25%, var(--rose) 50%); }
+.dawn-sun { display: grid; place-items: end center; padding-bottom: 14vh; }
+.sun-mark { position: relative; width: min(64vw, 620px); aspect-ratio: 52 / 34; }
+.sun-clip { position: absolute; left: 12%; right: 12%; top: 0; bottom: 42%; overflow: hidden; }
+.sun-disc { position: absolute; left: 0; right: 0; top: 0; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle at 50% 40%, #FFC8A6, var(--glow) 60%); }
+.sun-horizon { position: absolute; left: 0; right: 0; top: 60%; height: 7.4%; border-radius: 99px; background: var(--majorelle); }
+.sun-reflection { position: absolute; left: 23%; right: 23%; top: 74%; height: 6.6%; border-radius: 99px; background: var(--majorelle-soft); opacity: .7; }
+.dawn-copy { position: relative; display: grid; gap: 24px; padding-top: calc(var(--header-h) + 8vh); padding-bottom: 12vh; }
+.dawn-copy .display { max-width: 13em; font-size: clamp(42px, 6.6vw, 116px); }
+/* Without motion: one still composition, sun on the horizon, everything readable. */
+html:not(.motion) .dawn-stage { min-height: 100svh; }
+html:not(.motion) .dawn-copy { padding-bottom: 46vh; }
+html:not(.motion) .halo { opacity: .55; }
+html:not(.motion) .halo:nth-child(1) { transform: scale(.42); }
+html:not(.motion) .halo:nth-child(2) { transform: scale(.3); }
+html:not(.motion) .halo:nth-child(3), html:not(.motion) .halo:nth-child(4) { display: none; }
+html.motion .sun-disc { transform: translateY(100%); }
+html.motion .sun-horizon { transform: scaleX(0); }
+html.motion .sun-reflection { transform: scaleX(0); }
+@media (max-width: 760px) {
+  html.motion .dawn { height: 340vh; height: 340svh; }
+  .halo { width: 180vmin; margin: -90vmin 0 0 -90vmin; }
+  .dawn-sun { padding-bottom: 22vh; }
+}
+/* The chapters slide over the last screen of the sunrise, like a sheet of paper. */
+html.motion .dawn + .chapters { margin-top: -100vh; margin-top: -100svh; z-index: 1; background: var(--paper); border-radius: 32px 32px 0 0; box-shadow: 0 -30px 80px rgba(43, 29, 26, .10); }
 .chapters { position: relative; }
 .chapter { position: relative; }
 html.motion .chapter { height: 200vh; }

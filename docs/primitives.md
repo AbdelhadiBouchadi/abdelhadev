@@ -127,7 +127,7 @@ Scrubs one element between two sets of plain values over a range. For the simple
 
 - `ScrubVars` allows only `x`, `y`, `xPercent`, `yPercent`, `scale`, `scaleX`, `scaleY`, `rotation`, `opacity` (no layout properties). The values are plain objects, so a Server Component can pass them.
 - The wrapper is the element that moves, so its children keep their own transforms. Linear (`EASE.none`), `SCRUB`.
-- `SETTLE` holds the documented end states: `heroWord` (`yPercent -14`, `scale 0.92`), `heroMeta` (`opacity 0`, `y -30`), `arcs` (`yPercent -10`, `scale 1.25`, `opacity 0.25`).
+- `SETTLE` holds the documented end states: `heroWord` (`yPercent -14`, `scale 0.92`), `heroMeta` (`opacity 0`, `y -30`).
 - Reduced motion and no JavaScript: the element stays at its CSS state.
 
 ### LineDraw
@@ -224,12 +224,12 @@ The prototype's `.link` and `.back-link` as one component with a lucide-react ar
 | `SplitReveal` lines, `enter` | footer CTA, case-study next project (the home featured heading fades up with its copy, as in the prototype) |
 | `SplitReveal` lines, `scrub` | home dusk title |
 | `WordsLight` | home manifesto, case-study problem, the three about chapters |
-| `Reveal` `ready` | home hero meta and actions (not the intro paragraph: it is the LCP element, decision T7), work lead, case-study back link, lead and facts (`STAGGER.caseLater`), about lead, contact lead and cards |
+| `Reveal` `ready` | home hero meta and actions (not the intro paragraph: it is the LCP element, decision T7), work lead, case-study back link, lead and facts (`STAGGER.caseLater`), about lead and facts row (`self` targets, one stagger step apart), contact lead and cards |
 | `Reveal` `enter` | work project heads, case-study adaptation cards (`STAGGER.adapt`) and architecture list (`STAGGER.archList`), about chapter labels, services, process cards, timeline, stack groups and "right now" (`ABOUT.stagger`) |
 | `MediaReveal` scrub | work project media |
 | `MediaReveal` intro | case-study hero screenshot |
 | `StickyStage` | home manifesto, dusk and featured work, about chapters (not the case-study tour: as in the prototype, only its framed stage is sticky, inside the tour grid, `src/styles/case.css`) |
-| `Scrub` | home hero settle and meta fade, about arcs, home 3D layer dim |
+| `Scrub` | home hero settle and meta fade, home 3D layer dim (the about dawn is one pinned timeline of its own, `DawnMotion`) |
 | `LineDraw` | case-study architecture diagram |
 | `useScrollSpy` | work rail (`SPY.list`), case-study tour (`SPY.tour`, `TourMotion`: the active step and the stage crossfade) |
 | `Screen` | home featured work, work media, case-study hero, tour stage and inline tour screens |
