@@ -6,6 +6,7 @@ import { Process } from "@/components/sections/about/Process";
 import { RightNow } from "@/components/sections/about/RightNow";
 import { Services } from "@/components/sections/about/Services";
 import { Stack } from "@/components/sections/about/Stack";
+import { ThreadZone } from "@/components/sections/about/ThreadZone";
 import { resolveLocale } from "@/i18n/locale";
 import { pageMetadata } from "@/lib/seo";
 
@@ -21,11 +22,13 @@ export default async function AboutPage({ params }: PageProps<"/[locale]/about">
   return (
     <>
       <AboutHero />
-      <Chapters />
-      <Services />
-      <Process />
-      <Experience locale={locale} />
-      <Stack />
+      <ThreadZone>
+        <Chapters />
+        <Services />
+        <Process />
+        <Experience locale={locale} />
+        <Stack />
+      </ThreadZone>
       <RightNow />
     </>
   );

@@ -1,6 +1,7 @@
 // The about page at 1440 and 390, in both locales: end states after the loader and on scroll,
-// the dawn's scrub on its sticky stage and the chapters' hand-off, the footer and CV links, the
-// timeline and the public email, the server HTML, reduced motion, the ScrollTrigger baseline and axe.
+// the dawn's scrub on its sticky stage and the chapters' hand-off, the thread drawn through the
+// day sections, the footer and CV links, the timeline and the public email, the server HTML,
+// reduced motion, the ScrollTrigger baseline and axe.
 import AxeBuilder from "@axe-core/playwright";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { expect, test, type Locator, type Page } from "@playwright/test";
@@ -158,6 +159,51 @@ const STILL = { oneScreen: true, moved: [], sunBelowCopy: true, sunInside: true,
 
 const html = (text: string) => text.replaceAll("'", "&#x27;");
 
+/** The drawn share of the thread: 0 while CSS still hides it, 1 with no dash (no motion). */
+const drawnShare = (page: Page) =>
+  page.locator(".thread-path").evaluate((el) => {
+    if (!(el instanceof SVGPathElement)) return Number.NaN;
+    const s = getComputedStyle(el);
+    if (s.visibility === "hidden") return 0;
+    if (s.strokeDasharray === "none") return 1;
+    return Number.parseFloat(s.strokeDasharray) / el.getTotalLength();
+  });
+
+const sunState = (page: Page) =>
+  page.locator(".thread-sun").evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { transform: s.transform, opacity: Number(s.opacity), shown: s.display !== "none" };
+  });
+
+/** Every x of the route lies inside the page, and the page has no side scroll. */
+const routeInside = (page: Page) =>
+  page.evaluate(() => {
+    const svg = document.querySelector<SVGSVGElement>(".thread");
+    const path = svg?.querySelector(".thread-path");
+    const numbers = (path?.getAttribute("d")?.match(/-?\d+(?:\.\d+)?/g) ?? []).map(Number);
+    const [, , boxWidth = Number.NaN] = (svg?.getAttribute("viewBox") ?? "").split(" ").map(Number);
+    const scale = (svg?.clientWidth ?? Number.NaN) / boxWidth;
+    const xs = numbers.filter((_, i) => i % 2 === 0).map((x) => x * scale);
+    const width = document.documentElement.clientWidth;
+    return {
+      points: xs.length > 2,
+      outside: xs.filter((x) => x < 0 || x > width),
+      sideScroll: (document.scrollingElement?.scrollWidth ?? 0) - window.innerWidth,
+    };
+  });
+const INSIDE = { points: true, outside: [], sideScroll: 0 };
+
+/** Puts `share` of the thread zone at the trigger's end line (75 % of the viewport). */
+async function zoneAt(page: Page, share: number): Promise<void> {
+  const y = await page.evaluate((f) => {
+    const zone = document.querySelector<HTMLElement>(".thread-zone");
+    if (!zone) return 0;
+    const top = zone.getBoundingClientRect().top + window.scrollY;
+    return top + zone.offsetHeight * f - window.innerHeight * 0.75;
+  }, share);
+  await scrubTo(page, y);
+}
+
 test.describe("with motion", () => {
   test.beforeEach(async ({ page }) => {
     test.setTimeout(90_000);
@@ -289,6 +335,69 @@ test.describe("with motion", () => {
     expect(errors).toEqual([]);
   });
 
+  test("the thread is one hidden decoration in the zone, drawn by scroll with the sun on its tip", async ({
+    page,
+  }) => {
+    const errors = collectErrors(page);
+    await page.goto(PATHS.fr);
+    await shellIdle(page);
+    const thread = page.locator("svg.thread");
+    await expect(thread).toHaveCount(1);
+    await expect(thread).toHaveAttribute("aria-hidden", "true");
+    await expect(page.locator(".thread-zone > svg.thread")).toHaveCount(1);
+    await expect(page.locator(".thread-zone #now")).toHaveCount(0);
+    await expect(page.locator(".thread-zone + #now")).toHaveCount(1);
+    expect(await thread.evaluate((el) => getComputedStyle(el).pointerEvents)).toBe("none");
+
+    // The zone carries the paper; the day sections in it are transparent, Right now is not.
+    const backgrounds = await page.evaluate(() => ({
+      day: [...document.querySelectorAll(".thread-zone [data-tone='day']")].map(
+        (el) => getComputedStyle(el).backgroundColor,
+      ),
+      now: getComputedStyle(document.querySelector("#now") ?? document.body).backgroundColor,
+    }));
+    expect(new Set(backgrounds.day)).toEqual(new Set(["rgba(0, 0, 0, 0)"]));
+    expect(backgrounds.now).not.toBe("rgba(0, 0, 0, 0)");
+
+    let share = -1;
+    let transform = "";
+    for (const at of [0.25, 0.6, 1]) {
+      await zoneAt(page, at);
+      const drawn = await drawnShare(page);
+      const sun = await sunState(page);
+      expect(drawn, `drawn at ${String(at)}`).toBeGreaterThan(share);
+      expect(sun.transform, `sun at ${String(at)}`).not.toBe(transform);
+      share = drawn;
+      transform = sun.transform;
+      if (at === 1) {
+        expect(drawn).toBeCloseTo(1, 2);
+        expect(sun.opacity).toBe(0);
+      } else {
+        expect(sun.opacity).toBe(1);
+      }
+    }
+    expect(await routeInside(page)).toEqual(INSIDE);
+    expect(errors).toEqual([]);
+  });
+
+  test("ScrollTriggers return to their baseline after a viewport resize", async ({ page }) => {
+    const errors = collectErrors(page);
+    const settle = () => page.waitForTimeout(800);
+    await page.goto(PATHS.fr);
+    await shellIdle(page);
+    await settle();
+    const baseline = await liveScrollTriggers(page);
+    const size = page.viewportSize() ?? { width: 1440, height: 900 };
+    await page.setViewportSize({ width: Math.round(size.width * 0.8), height: size.height });
+    await settle();
+    expect(await routeInside(page)).toEqual(INSIDE);
+    await page.setViewportSize(size);
+    await settle();
+    expect(await liveScrollTriggers(page)).toBe(baseline);
+    expect(await routeInside(page)).toEqual(INSIDE);
+    expect(errors).toEqual([]);
+  });
+
   test("ScrollTriggers return to their baseline after leaving the about page and coming back", async ({
     page,
   }) => {
@@ -359,6 +468,10 @@ test.describe("with motion", () => {
     await run("top");
     await scrubTo(page, await sceneRange(page));
     await run("dawn-end");
+    await zoneAt(page, 0);
+    await run("thread-top");
+    await zoneAt(page, 1);
+    await run("thread-end");
     await bring(page, page.locator("#now"), 0.1);
     await page.waitForTimeout(1500);
     await run("now");
@@ -492,6 +605,13 @@ test.describe("without JavaScript", () => {
       expect(await stillDawn(page)).toEqual(STILL);
     });
   }
+
+  test("the thread is drawn and still, with no sun", async ({ page }) => {
+    await page.goto(PATHS.fr);
+    expect(await drawnShare(page)).toBe(1);
+    expect((await sunState(page)).shown).toBe(false);
+    expect(await routeInside(page)).toEqual(INSIDE);
+  });
 });
 
 test.describe("reduced motion", () => {
@@ -512,5 +632,17 @@ test.describe("reduced motion", () => {
     await beyond(page, page.locator("#now"));
     await page.waitForTimeout(800);
     expect(await complete(page)).toEqual(COMPLETE);
+  });
+
+  test("the thread is drawn and still, with no sun, at every scroll position", async ({ page }) => {
+    await visited(page);
+    await page.goto(PATHS.fr);
+    await shellIdle(page);
+    for (const at of [0.25, 1]) {
+      await zoneAt(page, at);
+      expect(await drawnShare(page)).toBe(1);
+      expect((await sunState(page)).shown).toBe(false);
+    }
+    expect(await routeInside(page)).toEqual(INSIDE);
   });
 });
