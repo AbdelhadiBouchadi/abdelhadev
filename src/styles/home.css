@@ -338,89 +338,166 @@
     }
   }
 
-  /* testimonials (night): the footer's own top padding closes the section */
+  /* testimonials (night): three windows that light once as they come into view. Lit is the default,
+     so without JavaScript or motion the finished picture shows; html.motion holds them unlit. */
+  .testimonials {
+    padding-block: clamp(96px, 16vh, 200px);
+    /* the outer halo of the side windows reaches past the page edge */
+    overflow-x: clip;
+  }
+  /* A gap, not a margin on the title: the display utility resets margins and wins over this layer. */
   .testimonials-inner {
     display: grid;
-    gap: clamp(36px, 6vh, 64px);
-    padding-top: clamp(72px, 12vh, 140px);
+    gap: clamp(40px, 8vh, 88px);
   }
   .testimonials-title {
-    margin: 0;
-    font-family: var(--display);
-    font-weight: 600;
-    font-size: 18px;
-    color: var(--glow);
-    font-variation-settings:
-      "wdth" 90,
-      "opsz" 24;
+    max-width: 12em;
   }
-  .testimonial-list {
+  .panes {
     display: grid;
-    gap: clamp(56px, 10vh, 112px);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(20px, 2.6vw, 40px);
+    align-items: start;
   }
-  .testimonial {
-    display: grid;
-    gap: 26px;
-    margin: 0;
-    max-width: 24em;
-    font-size: clamp(26px, 3vw, 46px);
-  }
-  .testimonial blockquote {
-    margin: 0;
-  }
-  .testimonial blockquote p {
+  .pane {
     position: relative;
+    isolation: isolate;
+    display: grid;
+    gap: 22px;
     margin: 0;
-    font-family: var(--display);
-    font-weight: 500;
-    font-size: 1em;
-    line-height: 1.14;
-    letter-spacing: -0.02em;
-    color: var(--moon);
-    font-variation-settings:
-      "wdth" 94,
-      "opsz" 72;
-    text-wrap: pretty;
-    quotes: "\201C" "\201D";
   }
-  .testimonial blockquote p:lang(fr) {
-    quotes: "\00AB\00A0" "\00A0\00BB";
-  }
-  /* The opening mark hangs in the margin so the text keeps its edge. */
-  .testimonial blockquote p::before {
-    content: open-quote;
+  .pane::before {
+    content: "";
     position: absolute;
-    inset-inline-end: 100%;
-    padding-inline-end: 0.12em;
-    color: var(--glow);
+    inset: -28px -20px 40px;
+    z-index: -1;
+    border-radius: 50% 50% 40px 40px / 200px 200px 40px 40px;
+    background: radial-gradient(
+      closest-side,
+      color-mix(in srgb, var(--glow) 26%, transparent),
+      transparent
+    );
+    pointer-events: none;
   }
-  .testimonial blockquote p::after {
-    content: close-quote;
-    color: var(--glow);
+  .pane-glass {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: grid;
+    align-content: start;
+    gap: 18px;
+    min-height: clamp(380px, 34vw, 500px);
+    padding: clamp(36px, 4vw, 56px) clamp(22px, 2.4vw, 34px) clamp(24px, 2.6vw, 34px);
+    border: 1px solid var(--line-night);
+    border-radius: 50% 50% 24px 24px / 190px 190px 24px 24px;
+    background: var(--night-2);
   }
-  .testimonial figcaption {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 6px 14px;
-    font-family: var(--text);
+  .pane-glass::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(
+        100% 75% at 50% 100%,
+        color-mix(in srgb, var(--glow) 34%, transparent),
+        color-mix(in srgb, var(--glow) 8%, transparent) 60%,
+        transparent 85%
+      ),
+      linear-gradient(
+        color-mix(in srgb, var(--glow) 5%, transparent),
+        color-mix(in srgb, var(--glow) 14%, transparent)
+      );
+    pointer-events: none;
+  }
+  .lamp {
+    justify-self: center;
+    width: 46px;
+    height: auto;
+  }
+  .pane blockquote {
+    margin: 0;
+  }
+  .pane blockquote p {
+    margin: 0;
+    font-size: clamp(16px, 1.3vw, 19px);
+    line-height: 1.55;
+    color: var(--moon);
+    text-wrap: pretty;
+  }
+  .pane figcaption {
+    display: grid;
+    gap: 4px;
+    padding-inline: 6px;
+  }
+  .pane-line {
+    display: block;
+    width: 44px;
+    height: 4px;
+    margin-bottom: 10px;
+    border-radius: var(--r-pill);
+    background: var(--majorelle);
+    transform-origin: 0 50%;
+  }
+  .pane-role {
+    font-weight: 600;
+    color: var(--moon);
+  }
+  .pane-org {
     font-size: 15px;
-    line-height: 1.4;
     color: var(--moon-soft);
   }
-  .testimonial figcaption span:first-child {
-    color: var(--moon);
-    font-weight: 600;
+  /* --d is the stagger, set per window by TestimonialsMotion. */
+  html.motion .pane {
+    --d: 0s;
   }
-  .testimonial figcaption span + span::before {
-    content: "";
-    display: inline-block;
-    width: 7px;
-    height: 7px;
-    margin-inline-end: 14px;
-    border-radius: 50%;
-    background: var(--glow);
-    vertical-align: 0.1em;
+  html.motion .pane:not(.is-lit)::before,
+  html.motion .pane:not(.is-lit) .pane-glass::before {
+    opacity: 0;
+  }
+  html.motion .pane:not(.is-lit) :is(.lamp, blockquote, figcaption) {
+    opacity: 0.22;
+    transform: translateY(12px);
+  }
+  html.motion .pane:not(.is-lit) .pane-line {
+    transform: scaleX(0);
+  }
+  html.motion .pane :is(.lamp, blockquote, figcaption) {
+    transition:
+      opacity var(--window-rise) var(--ease-warm) calc(var(--d) + var(--window-rise-at)),
+      transform var(--window-rise) var(--ease-warm) calc(var(--d) + var(--window-rise-at));
+  }
+  html.motion .pane .pane-line {
+    transition: transform var(--window-line) var(--ease-warm) calc(var(--d) + var(--window-line-at));
+  }
+  html.motion .pane.is-lit .pane-glass::before {
+    animation: lamp-on var(--window-lamp) linear var(--d) both;
+  }
+  html.motion .pane.is-lit::before {
+    animation: lamp-on var(--window-lamp) linear calc(var(--d) + var(--window-halo-at)) both;
+  }
+  @media (hover: hover) {
+    html.motion .pane-glass {
+      transition:
+        transform var(--dur-base) var(--ease-warm),
+        border-color var(--dur-base) var(--ease-warm);
+    }
+    html.motion .pane.is-lit:hover .pane-glass {
+      transform: translateY(-6px);
+      border-color: color-mix(in srgb, var(--glow) 40%, transparent);
+    }
+  }
+  @media (max-width: 900px) {
+    .panes {
+      grid-template-columns: minmax(0, 1fr);
+      max-width: 520px;
+      gap: 36px;
+    }
+    .pane-glass {
+      min-height: 0;
+      padding-top: 44px;
+      border-radius: 50% 50% 22px 22px / 120px 120px 22px 22px;
+    }
   }
 
   /* phones */
@@ -467,5 +544,22 @@
       gap: 2px;
       font-size: 12px;
     }
+  }
+}
+
+/* The lamp catches, dips once and holds. */
+@keyframes lamp-on {
+  0% {
+    opacity: 0;
+  }
+  16% {
+    opacity: 0.75;
+  }
+  28% {
+    opacity: 0.3;
+  }
+  52%,
+  100% {
+    opacity: 1;
   }
 }

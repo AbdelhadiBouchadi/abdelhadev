@@ -111,7 +111,7 @@ describe("Testimonials section", () => {
     expect(html).toContain('id="testimonials"');
     expect(html).toContain('data-tone="night"');
     expect(html).toMatch(
-      /<figure[^>]*><blockquote><p>Quote\.<\/p><\/blockquote><figcaption><span>Practice manager<\/span><span>SOS Dental Clinic, Agadir<\/span><\/figcaption><\/figure>/,
+      /<figure[^>]*data-testimonial="sos-dental"><div class="pane-glass"><svg[^>]*aria-hidden="true".*?<\/svg><blockquote><p>Quote\.<\/p><\/blockquote><\/div><figcaption><span class="pane-line" aria-hidden="true"><\/span><span class="pane-role">Practice manager<\/span><span class="pane-org">SOS Dental Clinic, Agadir<\/span><\/figcaption><\/figure>/,
     );
     expect(html.match(/<figure/g)).toHaveLength(1);
   });

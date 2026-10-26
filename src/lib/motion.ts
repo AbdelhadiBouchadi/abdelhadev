@@ -123,6 +123,19 @@ export const STAGGER = {
 
 export const LENIS = { lerp: 0.1 } as const;
 
+/** The home testimonials. Seconds, except `threshold` (a fraction of the window in view). The CSS
+    side is the --window-* tokens; only `stagger` and `threshold` are read here. */
+export const WINDOW = {
+  threshold: 0.35,
+  stagger: 0.26,
+  lamp: 1.5,
+  haloAt: 0.15,
+  rise: 1.1,
+  riseAt: 0.25,
+  line: 1.2,
+  lineAt: 0.7,
+} as const;
+
 /** Per frame at 60 fps; frame-rate independent in use. */
 export const CURSOR = { lerp: 0.16 } as const;
 

@@ -542,39 +542,153 @@ test.describe("reduced motion", () => {
     }
     expect(errors).toEqual([]);
   });
+  test("testimonials: every window lit and still before any scroll", async ({ page }) => {
+    await page.goto("/fr");
+    await shellIdle(page);
+    await expect(panes(page)).toHaveCount(3);
+    expect(await panesAtRest(page)).toBe(true);
+    expect(
+      await page
+        .locator("#testimonials")
+        .evaluate((el) => el.getAnimations({ subtree: true }).length),
+    ).toBe(0);
+  });
 });
 
-// A still of the testimonials at each width, to compare with the prototype; a long quote must
-// stay inside its column.
-test("testimonials: revealed, inside the page width, one still per locale", async ({
-  page,
-}, info) => {
-  for (const locale of LOCALES) {
-    await page.goto(`/${locale}`);
+// The testimonials: three windows that light once, one after another, as they come into view, never
+// before; inside the page width; axe at the section once lit. One clip per width, to compare with
+// the prototype.
+const panes = (page: Page) => page.locator("#testimonials figure");
+
+const panesAtRest = (page: Page) =>
+  panes(page).evaluateAll((figures) =>
+    figures.every((f) => {
+      const parts = [f, ...f.querySelectorAll(".lamp, blockquote, figcaption")];
+      const glows = [f, f.querySelector(".pane-glass")].map((el) =>
+        el ? getComputedStyle(el, "::before").opacity : "",
+      );
+      return (
+        parts.every((el) => {
+          const s = getComputedStyle(el);
+          return (
+            s.opacity === "1" &&
+            (s.transform === "none" || new DOMMatrixReadOnly(s.transform).m42 === 0)
+          );
+        }) &&
+        glows.every((o) => o === "1") &&
+        f.getAnimations({ subtree: true }).every((a) => a.playState === "finished")
+      );
+    }),
+  );
+
+// The halo reaches past each figure on purpose and is clipped by the section, so a figure is only
+// checked by its box and a quote by its own overflow.
+const noHorizontalScroll = (page: Page) =>
+  page.evaluate(() => {
+    const width = document.documentElement.clientWidth;
+    const outside = (node: Element) => {
+      const box = node.getBoundingClientRect();
+      return box.left < 0 || box.right > width + 0.5;
+    };
+    const figures = [...document.querySelectorAll("#testimonials figure")].filter(outside);
+    const quotes = [...document.querySelectorAll("#testimonials blockquote p")].filter(
+      (p) => outside(p) || p.scrollWidth > p.clientWidth + 1,
+    );
+    return {
+      scroll: document.documentElement.scrollWidth - width,
+      outside: figures.length + quotes.length,
+    };
+  });
+
+interface Lit {
+  id: string;
+  at: number;
+}
+
+test.describe("testimonials with motion", () => {
+  test("the windows light once on entering, one after another", async ({ browser }, info) => {
+    test.setTimeout(90_000);
+    // Its own context, so only this test records a clip.
+    const { baseURL, viewport, deviceScaleFactor, isMobile, hasTouch, userAgent } =
+      info.project.use;
+    const context = await browser.newContext({
+      baseURL,
+      viewport,
+      deviceScaleFactor,
+      isMobile,
+      hasTouch,
+      userAgent,
+      recordVideo: { dir: "test-results/artifacts/video", size: viewport ?? undefined },
+    });
+    const page = await context.newPage();
+    const errors = collectErrors(page);
+    await visited(page);
+    await page.goto("/fr");
     await shellIdle(page);
-    const section = page.locator("#testimonials");
-    await bring(page, section, 0.2);
-    const last = section.locator("figure").last();
-    await last.scrollIntoViewIfNeeded();
-    await expect
-      .poll(() =>
-        section
-          .locator(".testimonial-list > *")
-          .evaluateAll((els) => els.every((el) => getComputedStyle(el).opacity === "1")),
-      )
-      .toBe(true);
-    const overflow = await section.evaluate((el) => {
-      const width = document.documentElement.clientWidth;
-      return [...el.querySelectorAll("figure, blockquote p")].filter((node) => {
-        const box = node.getBoundingClientRect();
-        return box.left < 0 || box.right > width + 0.5 || node.scrollWidth > node.clientWidth + 1;
-      }).length;
+    await expect(panes(page)).toHaveCount(3);
+    await expect(page.locator("#testimonials figure.is-lit")).toHaveCount(0);
+    // When each window starts to light: the moment it is lit plus its stagger, in page time (ms).
+    await page.locator("#testimonials").evaluate((section) => {
+      const w = window as unknown as { __lit: Lit[] };
+      w.__lit = [];
+      new MutationObserver((records) => {
+        for (const { target } of records) {
+          if (!(target instanceof HTMLElement) || !target.classList.contains("is-lit")) continue;
+          const id = target.dataset.testimonial ?? "";
+          if (w.__lit.some((l) => l.id === id)) continue;
+          const stagger = parseFloat(target.style.getPropertyValue("--d") || "0") * 1000;
+          w.__lit.push({ id, at: performance.now() + stagger });
+        }
+      }).observe(section, { subtree: true, attributes: true, attributeFilter: ["class"] });
     });
-    expect(overflow, locale).toBe(0);
+
+    // Scrolled in steps, so the clip shows the windows arriving.
+    const from = (await docTop(page.locator("#testimonials"))) - 900;
+    const to = await docTop(panes(page).last());
+    for (let y = from; y < to; y += 90) {
+      await scrollToY(page, y);
+      await page.waitForTimeout(60);
+    }
+    await expect(page.locator("#testimonials figure.is-lit")).toHaveCount(3);
+    const lit = await page.evaluate(() => (window as unknown as { __lit: Lit[] }).__lit);
+    expect(lit.map((l) => l.id)).toEqual(["festival", "ophtachusm", "sos-dental"]);
+    const [first, second, third] = lit.map((l) => l.at);
+    expect(second).toBeGreaterThan(first ?? Infinity);
+    expect(third).toBeGreaterThan(second ?? Infinity);
+    await expect.poll(() => panesAtRest(page), { timeout: 6000 }).toBe(true);
+
+    // Lit, so the contrast check measures the glow behind the text.
+    const axe = await new AxeBuilder({ page })
+      .include("#testimonials")
+      .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa", "best-practice"])
+      .analyze();
+    const serious = axe.violations
+      .filter((v) => v.impact === "serious" || v.impact === "critical")
+      .map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(" ")).join(", ")}`);
+    expect(serious).toEqual([]);
+    expect(errors).toEqual([]);
+
+    const video = page.video();
+    await context.close();
     mkdirSync("test-results/home", { recursive: true });
-    await section.screenshot({
-      path: `test-results/home/testimonials-${locale}-${info.project.name}.png`,
-    });
+    await video?.saveAs(`test-results/home/testimonials-${info.project.name}.webm`);
+  });
+});
+
+test("testimonials: no horizontal scroll at 320, 390 and 1440", async ({ page }, info) => {
+  const widths = info.project.name === "390" ? [390, 320] : [1440];
+  for (const width of widths) {
+    await page.setViewportSize({ width, height: info.project.name === "390" ? 844 : 900 });
+    for (const locale of LOCALES) {
+      await page.goto(`/${locale}`);
+      await shellIdle(page);
+      await bring(page, panes(page).last(), 0.2);
+      await expect(page.locator("#testimonials figure.is-lit")).not.toHaveCount(0);
+      expect(await noHorizontalScroll(page), `${locale} at ${String(width)}`).toEqual({
+        scroll: 0,
+        outside: 0,
+      });
+    }
   }
 });
 
@@ -599,11 +713,17 @@ test.describe("without JavaScript", () => {
         expect(quote, id).toBeDefined();
         await expect(figure).toHaveAttribute("data-testimonial", id);
         await expect(figure.locator("blockquote")).toHaveText(quote?.text ?? "");
-        await expect(figure.locator("figcaption > span")).toHaveText([
-          quote?.role ?? "",
-          quote?.organisation ?? "",
-        ]);
+        await expect(figure.locator(".pane-role")).toHaveText(quote?.role ?? "");
+        await expect(figure.locator(".pane-org")).toHaveText(quote?.organisation ?? "");
+        // Nothing else: no name, no rating.
+        await expect(figure).toHaveText(
+          `${quote?.text ?? ""}${quote?.role ?? ""}${quote?.organisation ?? ""}`,
+        );
       }
+      await expect(page.locator("html")).toHaveAttribute("lang", locale);
+      expect(await panesAtRest(page)).toBe(true);
+      const jsonLd = await page.locator('script[type="application/ld+json"]').allTextContents();
+      expect(jsonLd.join("")).not.toMatch(/"(Review|reviewRating|aggregateRating|review)"/);
       expect(await page.content()).not.toContain("[TODO");
     });
   }
