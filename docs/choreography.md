@@ -62,15 +62,17 @@ The 3D layer: positions are fractions of the visible half-width and half-height 
 
 ## About — `Pages.about`
 
-- Dawn hero, one scene in three beats (`DawnMotion`, values in `ABOUT.dawn`):
+- Dawn hero, a sunrise in five beats (`DawnMotion`, values in `ABOUT.dawn`). The section is 420 svh (340 svh under 761 px) with a CSS sticky stage of one screen, not a GSAP pin. One timeline, `scrub 0.6` on top of Lenis, `invalidateOnRefresh`, runs from `"top top"` to the section height minus two screens; ranges are in its progress units:
 
 | Beat | Range | What happens |
 |---|---|---|
-| Arrival | time, after the loader | Four concentric arcs rise and settle (2.2 s, stagger 0.14 from the core outwards); heading lines rise (0.3 s); the lead, then the facts row, fade up (0.8 s, 0.88 s). It ends exactly where the rise starts: the scrub moves other layers (each arc's inner light, the arcs wrapper, the title and lead wrapper). |
-| Rise | 0 to 0.7 of the scrub | The arcs grow from the outside in (scale 1 → 1.32, 0.46 each, stagger 0.08), the sun climbs (`yPercent 0 → -14`), the colours mix 45 % of the chapters' `--paper` in from 0.1; the title and lead travel up 6 % of the viewport height and soften to 0.85. The facts row does not move. |
-| Hand-off | 0.7 to 1 | The arcs finish mixing into `--paper` and fade out, so the pin releases on plain paper and the chapters continue the same sky. |
+| Arrival | time, after the loader | The bottom glow rises in (`scaleY 0.6 → 1` from the bottom, opacity 0 → 1, 2 s `power2.out`); heading lines rise (0.3 s); the lead, then the facts row, fade up (0.8 s, 0.88 s). The scrub grows the glow's inner layer, so a scroll during the arrival composes with it. |
+| Copy leaves, sky warms | 0 to 0.24 | The copy block travels up (`yPercent -28`) and fades out (0 to 0.2); the glow grows to `scaleY 2.4` from the bottom (0 to 0.22); the sunset layer fades in over it (0.04 to 0.24). |
+| Halos | 0.12 to 0.9 | Four soft rings centred just below the bottom edge, 0.12 apart, each scale `0.08 → 1.9` over 0.42 (`power1.in`), fade in over 0.08 and out over 0.14 from 0.28 after their start. Each ring is one element: a conic gradient of two brand tones cut to a ring by a radial `mask`, no blur. `will-change` is on the halos only while the scene is active. |
+| Sun settles | 0.66 to 0.92 | The sky turns from `--sunset` to `--sheet` and the glow softens to 0.55 (0.66 to 0.86); the Majorelle horizon draws out (`scaleX 0 → 1`, 0.7), the half sun rises behind it from its clip (0.74 to 0.92), the reflection draws out (0.8). It is the brand mark at large size, in its own proportions. The timeline is held to 1. |
+| Hand-off | the last screen | The chapters have a top margin of minus one screen, the paper background, `--r-section` top corners and a soft shadow, so they slide over the still sunrise like a sheet of paper: no seam, no gap. |
 
-  From 768 px: the section is pinned (`start "top top"`, `end "+=200%"`, scrub 0.5 on top of Lenis, `invalidateOnRefresh`), and `will-change: transform` is on the four arc lights only while the pin is active. Under 768 px: no pin, the same beats scrubbed over the section's own height (`"top top"` to `"bottom top"`), lighter (scale 1.16, `yPercent -7`, title and lead up 3 % and to 0.92). Reduced motion and no JavaScript: the arcs at rest, everything visible, no pin.
+  Reduced motion and no JavaScript: no tall section, no sticky stage, no overlap. One still screen: the copy at the top, two small static halos, the sun mark set on its horizon below the copy.
 - Three chapters (200 vh each, sticky stage): the label fades in, the statement's words light up.
 - Experience, stack and "Right now" groups fade up on entry.
 

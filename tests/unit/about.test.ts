@@ -1,5 +1,5 @@
 // The about page's facts: the channels in site.ts, the CV placeholder gate, the banned words,
-// the placeholder PDFs, the data's order and the CSS start state of the arcs.
+// the placeholder PDFs, the data's order and the CSS start state of the dawn glow.
 import { spawnSync } from "node:child_process";
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -182,12 +182,11 @@ describe("copy", () => {
   });
 });
 
-describe("arcs start state", () => {
-  it("mirrors ABOUT.dawn.arcsFrom in about.css", () => {
+describe("dawn start state", () => {
+  it("mirrors ABOUT.dawn.glowFrom in about.css", () => {
     const css = readFileSync("src/styles/about.css", "utf8");
-    const { yPercent, scale } = ABOUT.dawn.arcsFrom;
     expect(css).toContain(
-      `html.motion .arc {\n    opacity: 0;\n    transform: translateY(${String(yPercent)}%) scale(${String(scale)});`,
+      `html.motion .dawn-glow {\n    opacity: 0;\n    transform: scaleY(${String(ABOUT.dawn.glowFrom.scaleY)});`,
     );
   });
 });

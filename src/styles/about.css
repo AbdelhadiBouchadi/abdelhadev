@@ -4,101 +4,215 @@
     padding-block: clamp(88px, 14vh, 180px);
   }
 
-  /* dawn (day) */
+  /* dawn (day): a sticky sunrise. Under html.motion the section is tall and its stage sticks;
+     without motion it is one still screen with the sun on the horizon below the copy. */
   .dawn {
+    position: relative;
+    isolation: isolate;
+  }
+  html.motion .dawn {
+    height: 420vh;
+    height: 420svh;
+  }
+  .dawn-stage {
     position: relative;
     min-height: 100vh;
     min-height: 100svh;
-    display: grid;
-    align-items: end;
     overflow: clip;
-    padding-top: calc(var(--header-h) + env(safe-area-inset-top, 0px) + 40px);
-    padding-bottom: clamp(40px, 8vh, 96px);
-    isolation: isolate;
+    display: grid;
+    align-items: start;
   }
-  .arcs {
-    position: absolute;
-    inset-inline-start: 50%;
-    bottom: -60vmin;
-    width: 150vmax;
-    aspect-ratio: 1;
-    max-width: none;
-    margin-inline-start: -75vmax;
-    z-index: -1;
-    pointer-events: none;
-    /* How far the arcs have mixed into the chapters' paper; scrubbed by DawnMotion. */
-    --arc-day: 0%;
+  html.motion .dawn-stage {
+    position: sticky;
+    inset-block-start: 0;
+    height: 100vh;
+    height: 100svh;
   }
-  .arc,
-  .arc-light {
+  .dawn-glow,
+  .dawn-glow-light,
+  .dawn-sky,
+  .halos,
+  .dawn-sun {
     position: absolute;
     inset: 0;
+    pointer-events: none;
+  }
+  .dawn-glow,
+  .dawn-glow-light {
+    transform-origin: 50% 100%;
+  }
+  .dawn-glow-light {
+    background: radial-gradient(
+      120% 70% at 50% 118%,
+      var(--glow) 0%,
+      var(--sunset) 38%,
+      transparent 72%
+    );
+  }
+  .dawn-sky {
+    background: var(--sunset);
+  }
+  .halos {
+    overflow: clip;
+  }
+  /* One element per ring: a conic gradient of two brand tones cut to a soft ring by the mask, which
+     reads alpha only. */
+  .halo {
+    position: absolute;
+    inset-inline-start: 50%;
+    inset-block-start: calc(100% + 6vh);
+    width: 150vmax;
+    aspect-ratio: 1;
+    margin-block-start: -75vmax;
+    margin-inline-start: -75vmax;
     border-radius: 50%;
-  }
-  /* The arrival moves each .arc; the scrubbed rise scales the .arc-light inside it. */
-  .arc {
-    --arc-glow: color-mix(in srgb, var(--glow), var(--paper) var(--arc-day));
-    --arc-rose: color-mix(in srgb, var(--rose), var(--paper) var(--arc-day));
-    --arc-blue: color-mix(in srgb, var(--majorelle-soft), var(--paper) var(--arc-day));
-    --arc-core: color-mix(in srgb, var(--sun-core), var(--paper) var(--arc-day));
-  }
-  .arc:nth-child(2) {
-    inset: 12%;
-  }
-  .arc:nth-child(3) {
-    inset: 25%;
-  }
-  .arc:nth-child(4) {
-    inset: 37%;
-  }
-  .arc:nth-child(1) > .arc-light {
-    background: radial-gradient(
-      circle,
-      transparent 60%,
-      color-mix(in srgb, var(--arc-glow) 55%, transparent) 63%,
-      color-mix(in srgb, var(--arc-rose) 35%, transparent) 66%,
-      transparent 70%
+    mask: radial-gradient(
+      closest-side,
+      transparent 80%,
+      var(--ink) 87%,
+      var(--ink) 91%,
+      transparent 98%
     );
   }
-  .arc:nth-child(2) > .arc-light {
-    background: radial-gradient(
-      circle,
-      transparent 58%,
-      color-mix(in srgb, var(--arc-blue) 55%, transparent) 62%,
-      color-mix(in srgb, var(--arc-blue) 20%, transparent) 66%,
-      transparent 70%
+  .halo:nth-child(1) {
+    background: conic-gradient(
+      from 240deg,
+      var(--majorelle-soft),
+      var(--sheet) 25%,
+      var(--majorelle-soft) 50%
     );
   }
-  .arc:nth-child(3) > .arc-light {
-    background: radial-gradient(
-      circle,
-      transparent 54%,
-      color-mix(in srgb, var(--arc-glow) 70%, transparent) 60%,
-      color-mix(in srgb, color-mix(in srgb, var(--arc-glow) 77%, var(--sheet)) 35%, transparent) 66%,
-      transparent 71%
+  .halo:nth-child(2) {
+    background: conic-gradient(from 240deg, var(--sheet), var(--glow) 25%, var(--sheet) 50%);
+  }
+  .halo:nth-child(3) {
+    background: conic-gradient(
+      from 240deg,
+      var(--majorelle-soft),
+      color-mix(in srgb, var(--majorelle-soft) 57%, var(--majorelle)) 25%,
+      var(--majorelle-soft) 50%
     );
   }
-  .arc:nth-child(4) > .arc-light {
+  .halo:nth-child(4) {
+    background: conic-gradient(from 240deg, var(--rose), var(--sheet) 25%, var(--rose) 50%);
+  }
+  .dawn-sun {
+    display: grid;
+    place-items: end center;
+    padding-block-end: 14vh;
+  }
+  /* Mark units: 52 wide (the horizon), 34 from the sun's top to the reflection's bottom. */
+  .sun-mark {
+    position: relative;
+    width: min(64vw, 620px);
+    aspect-ratio: 52 / 34;
+  }
+  .sun-clip {
+    position: absolute;
+    inset: 0 12% 42%;
+    overflow: hidden;
+  }
+  .sun-disc {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-start: 0;
+    aspect-ratio: 1;
+    border-radius: 50%;
     background: radial-gradient(
-      circle,
-      var(--arc-core),
-      color-mix(in srgb, var(--arc-glow) 50%, transparent) 50%,
-      var(--sun-edge) 71%
+      circle at 50% 40%,
+      color-mix(in srgb, var(--glow) 73%, var(--sheet)),
+      var(--glow) 60%
     );
   }
-  /* Mirrors ABOUT.dawn.arcsFrom in src/lib/motion.ts. */
-  html.motion .arc {
-    opacity: 0;
-    transform: translateY(18%) scale(0.86);
+  .sun-horizon,
+  .sun-reflection {
+    position: absolute;
+    border-radius: var(--r-pill);
   }
-  .dawn-copy,
-  .dawn-lift {
+  .sun-horizon {
+    inset-inline: 0;
+    inset-block-start: 60%;
+    height: 7.4%;
+    background: var(--majorelle);
+  }
+  .sun-reflection {
+    inset-inline: 23%;
+    inset-block-start: 74%;
+    height: 6.6%;
+    background: var(--majorelle-soft);
+    opacity: 0.7;
+  }
+  .dawn-copy {
+    position: relative;
     display: grid;
     gap: 24px;
+    padding-block: calc(var(--header-h) + env(safe-area-inset-top, 0px) + 8vh) 12vh;
   }
   .dawn-title {
     max-width: 13em;
+    font-size: clamp(42px, 6.6vw, 116px);
+    line-height: 0.92;
     outline: none;
+  }
+  /* The still composition: two small halos, the sun set on the horizon below the copy. The sun is
+     in flow and smaller than in the scene, so it never sits behind the facts row. */
+  html:not(.motion) .dawn-copy {
+    grid-row: 1;
+    padding-block-end: 6vh;
+  }
+  html:not(.motion) .dawn-sun {
+    position: relative;
+    grid-row: 2;
+    padding-block-end: 10vh;
+  }
+  html:not(.motion) .sun-mark {
+    width: min(56vw, 420px);
+  }
+  html:not(.motion) .dawn-sky,
+  html:not(.motion) .halo:nth-child(n + 3) {
+    display: none;
+  }
+  html:not(.motion) .halo {
+    opacity: 0.55;
+  }
+  html:not(.motion) .halo:nth-child(1) {
+    transform: scale(0.42);
+  }
+  html:not(.motion) .halo:nth-child(2) {
+    transform: scale(0.3);
+  }
+  /* Motion start states. The glow mirrors ABOUT.dawn.glowFrom in src/lib/motion.ts. */
+  html.motion .dawn-glow {
+    opacity: 0;
+    transform: scaleY(0.6);
+  }
+  html.motion .dawn-sky,
+  html.motion .halo {
+    opacity: 0;
+  }
+  html.motion .halo {
+    transform: scale(0.08);
+  }
+  html.motion .sun-disc {
+    transform: translateY(100%);
+  }
+  html.motion .sun-horizon,
+  html.motion .sun-reflection {
+    transform: scaleX(0);
+  }
+  @media (max-width: 760px) {
+    html.motion .dawn {
+      height: 340vh;
+      height: 340svh;
+    }
+    .halo {
+      width: 180vmin;
+      margin-block-start: -90vmin;
+      margin-inline-start: -90vmin;
+    }
+    .dawn-sun {
+      padding-block-end: 22vh;
+    }
   }
   .about-facts {
     display: grid;
@@ -111,7 +225,7 @@
     border-top: 1px solid var(--line);
     padding-top: 12px;
   }
-  /* --ink-soft measured 4.49:1 over the sun's glow at 13 px; --ink keeps AA under the arcs. */
+  /* --ink-soft measured 4.49:1 over the sun's glow at 13 px; --ink keeps AA over the glow and the sunset. */
   .about-facts dt {
     font-size: 13px;
     color: var(--ink);
@@ -126,7 +240,20 @@
     }
   }
 
-  /* chapters (day) */
+  /* chapters (day): they slide over the sunrise's last screen like a sheet of paper. */
+  html.motion .dawn + .chapters {
+    margin-block-start: -100vh;
+    margin-block-start: -100svh;
+    z-index: 1;
+    background: var(--paper);
+    border-radius: var(--r-section) var(--r-section) 0 0;
+    box-shadow: 0 -30px 80px color-mix(in srgb, var(--ink) 10%, transparent);
+    /* Clip, not hidden: no scroll container, so the chapters' stages still stick. */
+    overflow: clip;
+  }
+  .chapters {
+    position: relative;
+  }
   .chapter-stage {
     display: grid;
     grid-template-columns: minmax(0, 1fr);

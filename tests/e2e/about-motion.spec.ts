@@ -24,56 +24,38 @@ async function at(page: Page, selector: string, offset = 0) {
   await page.waitForTimeout(500);
 }
 
-/** The pin spacer's padding. */
+/** The sunrise's scroll range plus the screen the chapters slide over (DawnMotion). */
 const dawnRange = (page: Page) =>
   page.evaluate(() => {
-    const spacer = document.querySelector(".pin-spacer");
-    const dawn = document.querySelector(".dawn");
-    return spacer && dawn ? spacer.clientHeight - dawn.clientHeight : 0;
+    const dawn = document.querySelector<HTMLElement>(".dawn");
+    return dawn ? dawn.offsetHeight - window.innerHeight : 0;
   });
 
-test("about dawn: the arrival, then the rise and hand-off scrolled down", async ({ browser }) => {
-  await record(browser, "about-dawn-down-1440", DESKTOP, async (page) => {
-    await page.goto(ABOUT);
-    await shellIdle(page);
-    await page.mouse.move(700, 450);
-    await page.waitForTimeout(2800);
-    await wheel(page, (await dawnRange(page)) + 300, 60);
+for (const [name, size, phone] of [
+  ["about-dawn-1440", DESKTOP, false],
+  ["about-dawn-390", PHONE, true],
+] as const) {
+  test(`about dawn: the arrival, the sunrise and the chapters sliding over it (${name})`, async ({
+    browser,
+  }) => {
+    await record(
+      browser,
+      name,
+      size,
+      async (page) => {
+        await page.goto(ABOUT);
+        await shellIdle(page);
+        await page.mouse.move(size.width / 2, size.height / 2);
+        await page.waitForTimeout(2800);
+        // Wheel deltas scroll 1 / devicePixelRatio as far, so the phone's 2x would stop halfway.
+        const ratio = await page.evaluate(() => window.devicePixelRatio);
+        await wheel(page, (await dawnRange(page)) * ratio, 90);
+      },
+      { phone },
+    );
+    rmSync(`${MOTION_OUT}/${name}.png`, { force: true });
   });
-  rmSync(`${MOTION_OUT}/about-dawn-down-1440.png`, { force: true });
-});
-
-test("about dawn: scrolled back up from the chapters", async ({ browser }) => {
-  await record(browser, "about-dawn-up-1440", DESKTOP, async (page) => {
-    await page.goto(ABOUT);
-    await shellIdle(page);
-    const back = (await dawnRange(page)) + 300;
-    await scrollToY(page, back);
-    await page.mouse.move(700, 450);
-    await page.waitForTimeout(1200);
-    await wheel(page, -back, 60);
-  });
-  rmSync(`${MOTION_OUT}/about-dawn-up-1440.png`, { force: true });
-});
-
-test("about dawn at 390, part way through its scrub", async ({ browser }) => {
-  const context = await browser.newContext({
-    viewport: PHONE,
-    isMobile: true,
-    hasTouch: true,
-    deviceScaleFactor: 2,
-  });
-  const page = await context.newPage();
-  await visited(page);
-  await page.goto(ABOUT);
-  await shellIdle(page);
-  await page.waitForTimeout(2800);
-  const height = await page.locator(".dawn").evaluate((el) => el.clientHeight);
-  await scrollToY(page, height * 0.4);
-  await page.waitForTimeout(1200);
-  await page.screenshot({ path: `${MOTION_OUT}/about-dawn-390.png` });
-  await context.close();
-});
+}
 
 test("about chapters: the words light up on the sticky stage", async ({ browser }) => {
   await record(browser, "about-chapters-1440", DESKTOP, async (page) => {
@@ -93,7 +75,7 @@ test("about timeline into Right now", async ({ browser }) => {
     await at(page, "#experience", 900);
     await wheel(page, 2600, 50);
   });
-  // The dawn still at 390 and the two full-page stills make the three.
+  // The two full-page stills are the only ones kept.
   rmSync(`${MOTION_OUT}/about-timeline-now-1440.png`, { force: true });
 });
 

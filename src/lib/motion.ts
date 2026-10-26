@@ -9,6 +9,9 @@ export const EASE = {
   progress: "power2.out",
   sunset: "power2.in",
   liftOut: "power3.in",
+  /** The about halos accelerate as they pass the camera. */
+  halo: "power1.in",
+  settle: "power2.out",
   none: "none",
 } as const;
 
@@ -67,9 +70,6 @@ export const MEDIA = {
   mobile: "(max-width: 760px)",
   /** The `split` breakpoint in globals.css: the work rail and the tour stage show from here. */
   split: "(min-width: 901px)",
-  /** The about dawn is pinned from here; below it scrubs in flow. */
-  dawnPin: "(min-width: 768px)",
-  dawnFlow: "(max-width: 767px)",
 } as const;
 
 /** px unless noted. */
@@ -114,7 +114,6 @@ export const STAGGER = {
   heroLetters: 0.045,
   projectHead: 0.07,
   tiles: 0.32,
-  arcs: 0.14,
   reveal: 0.08,
   caseLetters: 0.05,
   caseLater: 0.07,
@@ -278,31 +277,44 @@ export const CASE = {
 
 export const ABOUT = {
   dawn: {
-    /** src/styles/about.css mirrors this start state (tests/unit/primitives.test.ts). */
-    arcsFrom: { yPercent: 18, scale: 0.86 },
     titleDelay: 0.3,
     laterY: 20,
     laterDelay: 0.8,
+    /** src/styles/about.css mirrors this start state (tests/unit/about.test.ts). */
+    glowFrom: { scaleY: 0.6 },
+    glowRise: 2,
     /** Lighter than SCRUB: Lenis already smooths the scroll under it. */
-    scrub: 0.5,
+    scrub: 0.6,
     start: "top top",
-    /** Two viewport heights of pinned scroll. */
-    pinEnd: "+=200%",
-    flowEnd: "bottom top",
-    /** The tone triggers further down are created before the pin, so it is measured first. */
-    refreshPriority: 1,
-    /** Timeline units over the range: the rise, then the hand-off to the chapters' paper. */
-    riseEnd: 0.7,
-    handOff: 0.3,
-    arcRise: 0.46,
-    /** Outside in: the last arc ends its rise at riseEnd. */
-    arcStagger: 0.08,
-    dayFrom: 0.1,
-    /** Percent of --paper mixed into the arcs' colours at the end of the rise. */
-    dayAtRise: 45,
-    /** liftVh: percent of the viewport height the title and lead travel up. */
-    pinned: { scale: 1.32, yPercent: -14, liftVh: 6, liftOpacity: 0.85 },
-    flow: { scale: 1.16, yPercent: -7, liftVh: 3, liftOpacity: 0.92 },
+    /** Screens at the end of the section with no scene: the sticky stage's own and the one the
+        chapters slide over. */
+    tailScreens: 2,
+    /** The rest is in timeline units: the scene runs from 0 to `end` over its scroll range. */
+    copy: { yPercent: -28, duration: 0.2 },
+    glow: { scaleY: 2.4, duration: 0.22 },
+    sky: { at: 0.04, duration: 0.2 },
+    /** Scale `from` to `to`; each halo fades in over `fadeIn` and out `fadeOutAt` after it starts. */
+    halos: {
+      at: 0.12,
+      step: 0.12,
+      from: 0.08,
+      to: 1.9,
+      rise: 0.42,
+      fadeIn: 0.08,
+      fadeOutAt: 0.28,
+      fadeOut: 0.14,
+    },
+    sun: {
+      dayAt: 0.66,
+      dayDuration: 0.2,
+      glowOpacity: 0.55,
+      horizonAt: 0.7,
+      discAt: 0.74,
+      reflectionAt: 0.8,
+      barDuration: 0.12,
+      discDuration: 0.18,
+    },
+    end: 1,
   },
   chapter: {
     labelY: 24,
