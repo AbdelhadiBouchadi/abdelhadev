@@ -327,13 +327,19 @@ export const ABOUT = {
   thread: {
     start: "top 55%",
     end: "bottom 75%",
-    scrub: 0.6,
+    /** Direct: Lenis already smooths the scroll, and a second smoothing on top makes the sun lag,
+        then catch up. On touch the scroll is native and needs none either. */
+    scrub: true,
     /** Timeline units: the line and the sun share the whole range. */
     draw: 1,
     sunIn: 0.02,
     sunOutAt: 0.96,
     sunOut: 0.04,
+    /** ms: a new size settles this long, then waits for the page to be still this long. */
     rebuildMs: 200,
+    quietMs: 180,
+    /** px: smaller changes of the zone's size keep the route. */
+    minChange: { width: 2, height: 4 },
     /** Fractions of the zone's width, in route order: three chapters, services, process, the top
         and bottom of the timeline, below the stack. */
     x: {

@@ -280,10 +280,11 @@
     stroke-linecap: round;
     stroke-linejoin: round;
   }
+  /* Solid: dashes along a path thousands of px long are all drawn again on every frame the line
+     moves. */
   .thread-ghost {
     stroke: var(--line);
-    stroke-width: 1.5;
-    stroke-dasharray: 1 10;
+    stroke-width: 1;
   }
   .thread-path {
     stroke-width: 2.5;
@@ -319,11 +320,6 @@
   }
   html:not(.motion) .thread-sun {
     display: none;
-  }
-  @media (max-width: 760px) {
-    .thread-ghost {
-      stroke-width: 1;
-    }
   }
   @media print {
     .thread {

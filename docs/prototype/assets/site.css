@@ -490,7 +490,7 @@ html.motion .dawn + .thread-zone { margin-top: -100vh; margin-top: -100svh; z-in
 .thread-zone > .chapters, .thread-zone > .pad { position: relative; z-index: 1; }
 .thread { position: absolute; left: 0; top: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; overflow: visible; }
 .thread-ghost, .thread-path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
-.thread-ghost { stroke: var(--line); stroke-width: 1.5; stroke-dasharray: 1 10; }
+.thread-ghost { stroke: var(--line); stroke-width: 1; }
 .thread-path { stroke: url(#thread-grad); stroke-width: 2.5; }
 html.motion .thread-sun { opacity: 0; }
 @media (max-width: 760px) { .thread-path { stroke-width: 2.5; } .thread-ghost { stroke-width: 1; } }

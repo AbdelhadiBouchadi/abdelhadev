@@ -17,6 +17,7 @@ export function DawnMotion() {
   useMotion(ref, (mm) => {
     const section = ref.current?.closest<HTMLElement>(".dawn");
     const q = (selector: string) => section?.querySelector<HTMLElement>(selector) ?? null;
+    const stage = q(".dawn-stage");
     const glow = q(".dawn-glow");
     const light = q(".dawn-glow-light");
     const sky = q(".dawn-sky");
@@ -25,7 +26,8 @@ export function DawnMotion() {
     const disc = q(".sun-disc");
     const reflection = q(".sun-reflection");
     const halos = section ? [...section.querySelectorAll<HTMLElement>(".halo")] : [];
-    if (!section || !glow || !light || !sky || !copy || !horizon || !disc || !reflection) return;
+    if (!section || !stage || !glow || !light || !sky || !copy || !horizon || !disc || !reflection)
+      return;
     const d = ABOUT.dawn;
     const later = { immediateRender: false };
 
@@ -46,8 +48,9 @@ export function DawnMotion() {
         scrollTrigger: {
           trigger: section,
           start: d.start,
-          // The chapters cover the last screen and the sticky stage holds one more.
-          end: () => `+=${String(section.offsetHeight - d.tailScreens * window.innerHeight)}`,
+          // The chapters cover the last screen and the sticky stage holds one more. A screen is the
+          // stage's 100svh: innerHeight changes while a phone's address bar moves.
+          end: () => `+=${String(section.offsetHeight - d.tailScreens * stage.offsetHeight)}`,
           scrub: d.scrub,
           invalidateOnRefresh: true,
           onToggle: (self) => {

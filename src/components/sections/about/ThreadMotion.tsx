@@ -1,14 +1,16 @@
 "use client";
 
-/* The route is measured from the real layout, so it follows any width and either language, and is
-   rebuilt when the zone changes size. Each rebuild kills the previous timeline and its trigger. */
+/* The route is measured from the real layout, so it follows any width and either language. It is
+   measured again only for a real change of the zone's size and only once the page is still: a
+   rebuild during a scroll shows as the line shaking. The timeline is refitted to the new path, not
+   recreated, so the line never restarts from zero and its trigger lives as long as the page. */
 import { useLocale } from "next-intl";
 import { useRef } from "react";
 import { useMotion } from "@/hooks/useMotion";
 import { motionAllowed } from "@/lib/css";
-import { gsap, loadDrawSVG, loadMotionPath } from "@/lib/gsap";
+import { gsap, loadDrawSVG, loadMotionPath, ScrollTrigger } from "@/lib/gsap";
 import { ABOUT, EASE, MEDIA } from "@/lib/motion";
-import { marginX, threadPath, type Point } from "@/lib/thread";
+import { marginX, resizeKind, threadPath, type Point, type ZoneSize } from "@/lib/thread";
 
 /** px: below it, the mobile band (MEDIA.mobile). */
 const NARROW = 761;
@@ -81,6 +83,30 @@ function measure({ zone, svg, gradient, ghost, path }: Parts): boolean {
   return true;
 }
 
+function sizeOf(zone: HTMLElement): ZoneSize {
+  return {
+    width: zone.clientWidth,
+    height: zone.clientHeight,
+    viewWidth: window.innerWidth,
+    viewHeight: window.innerHeight,
+  };
+}
+
+/** The same timeline on the new path: invalidated, DrawSVG and MotionPath read the path again. Only
+    this trigger is refreshed, and the line is drawn at once where the page is. */
+function refit(timeline: gsap.core.Timeline) {
+  const trigger = timeline.scrollTrigger;
+  trigger?.refresh();
+  const progress = trigger
+    ? gsap.utils.clamp(
+        0,
+        1,
+        (trigger.scroll() - trigger.start) / (trigger.end - trigger.start || 1),
+      )
+    : timeline.progress();
+  timeline.invalidate().progress(0, true).progress(progress, true);
+}
+
 export function ThreadMotion() {
   const ref = useRef<HTMLSpanElement>(null);
   const locale = useLocale();
@@ -92,31 +118,51 @@ export function ThreadMotion() {
       if (!p) return;
       const t = ABOUT.thread;
 
-      /** Measures now, then again on a resize of the zone, after fonts and after images. */
+      /** Measures now, then again when the zone changes size (fonts and images included), once
+          the page has been still for `quietMs`. */
       const watch = (build: () => void) => {
         let timer: ReturnType<typeof setTimeout> | undefined;
-        let size = "";
         let active = true;
-        const rebuild = () => {
-          size = `${String(p.zone.clientWidth)}x${String(p.zone.clientHeight)}`;
+        let built = sizeOf(p.zone);
+        let scrolled = 0;
+        const later = (delay: number = t.rebuildMs) => {
+          clearTimeout(timer);
+          if (active) timer = setTimeout(attempt, delay);
+        };
+        const attempt = () => {
+          const now = sizeOf(p.zone);
+          const kind = resizeKind(built, now, ScrollTrigger.isTouch === 1);
+          if (kind === "same") return;
+          if (kind === "viewport") {
+            built = now;
+            return;
+          }
+          const still = performance.now() - scrolled;
+          if (still < t.quietMs) {
+            later(t.quietMs - still);
+            return;
+          }
+          built = now;
           build();
         };
-        const later = () => {
-          clearTimeout(timer);
-          if (active) timer = setTimeout(rebuild, t.rebuildMs);
+        const onScroll = () => {
+          scrolled = performance.now();
         };
-        rebuild();
-        const observer = new ResizeObserver(() => {
-          if (`${String(p.zone.clientWidth)}x${String(p.zone.clientHeight)}` !== size) later();
-        });
+        const onChange = () => {
+          later();
+        };
+        build();
+        const observer = new ResizeObserver(onChange);
         observer.observe(p.zone);
-        void document.fonts.ready.then(later);
-        if (document.readyState !== "complete") window.addEventListener("load", later);
+        window.addEventListener("scroll", onScroll, { passive: true });
+        void document.fonts.ready.then(onChange);
+        if (document.readyState !== "complete") window.addEventListener("load", onChange);
         return () => {
           active = false;
           clearTimeout(timer);
           observer.disconnect();
-          window.removeEventListener("load", later);
+          window.removeEventListener("scroll", onScroll);
+          window.removeEventListener("load", onChange);
         };
       };
 
@@ -133,8 +179,14 @@ export function ThreadMotion() {
           if (!alive) return;
           stop = watch(() => {
             context.add(() => {
-              kill();
-              if (!measure(p)) return;
+              if (!measure(p)) {
+                kill();
+                return;
+              }
+              if (timeline) {
+                refit(timeline);
+                return;
+              }
               timeline = gsap.timeline({
                 defaults: { ease: EASE.none },
                 scrollTrigger: { trigger: p.zone, start: t.start, end: t.end, scrub: t.scrub },
