@@ -1,12 +1,11 @@
 // The about page at 1440 and 390, in both locales: end states after the loader and on scroll,
-// the dawn's scrub (pinned at 1440, in flow at 390), the footer and CV links, the timeline and the
-// public email, the server HTML, reduced motion, the ScrollTrigger baseline and axe.
+// the dawn's scrub on its sticky stage and the chapters' hand-off, the footer and CV links, the
+// timeline and the public email, the server HTML, reduced motion, the ScrollTrigger baseline and axe.
 import AxeBuilder from "@axe-core/playwright";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { expect, test, type Locator, type Page } from "@playwright/test";
 import { CHAPTERS, SERVICES } from "@/lib/content/about";
 import { CV } from "@/lib/content/cv";
-import { ABOUT } from "@/lib/motion";
 import { SITE } from "@/lib/site";
 import { beyond, bring, collectErrors, liveScrollTriggers } from "./page-helpers";
 import { LEGAL_NAME } from "./routes";
@@ -40,50 +39,42 @@ const PATHS = { fr: "/fr/a-propos", en: "/en/about" } as const;
 const LOCALES = ["fr", "en"] as const;
 const GROUPS = [".services", "#process .steps", ".timeline", ".stack-groups", ".now-list"];
 
-const arcsAtRest = (page: Page) =>
-  page.locator(".arc").evaluateAll((els) =>
-    els.every((el) => {
-      const s = getComputedStyle(el);
-      if (s.opacity !== "1") return false;
-      const light = el.querySelector(".arc-light");
-      const rise = light ? getComputedStyle(light).transform : "none";
-      if (rise !== "none" && Math.abs(new DOMMatrixReadOnly(rise).a - 1) > 0.001) return false;
-      if (s.transform === "none") return true;
-      const m = new DOMMatrixReadOnly(s.transform);
-      return Math.abs(m.a - 1) < 0.001 && Math.abs(m.f) < 0.5;
-    }),
-  );
-
-/** Each arc's arrival scale times its light's scrubbed scale. */
-const arcScales = (page: Page) =>
-  page.locator(".arc").evaluateAll((els) =>
-    els.map((el) => {
-      const scaleOf = (node: Element | null) => {
-        const t = node ? getComputedStyle(node).transform : "none";
-        return t === "none" ? 1 : new DOMMatrixReadOnly(t).a;
-      };
-      return scaleOf(el) * scaleOf(el.querySelector(".arc-light"));
-    }),
-  );
-
 const opacityOf = (locator: Locator) =>
   locator.evaluate((el) => Number(getComputedStyle(el).opacity));
 
-const pinSpacers = (page: Page) => page.locator(".pin-spacer").count();
-
-/** The dawn's pinned scroll distance (the spacer's padding), 0 without a pin. */
-const pinRange = (page: Page) =>
-  page.evaluate(() => {
-    const spacer = document.querySelector(".pin-spacer");
-    const dawn = document.querySelector(".dawn");
-    if (!spacer || !dawn) return 0;
-    return spacer.getBoundingClientRect().height - dawn.getBoundingClientRect().height;
+const transformOf = (locator: Locator) =>
+  locator.evaluate((el) => {
+    const t = getComputedStyle(el).transform;
+    const m = new DOMMatrixReadOnly(t === "none" ? undefined : t);
+    return { scaleX: m.a, scaleY: m.d, y: m.f };
   });
 
-/** The scrub catches up in 0.5 s. */
+const glowAtRest = async (page: Page) => {
+  const glow = page.locator(".dawn-glow");
+  const { scaleY } = await transformOf(glow);
+  return Math.abs(scaleY - 1) < 0.001 && (await opacityOf(glow)) === 1;
+};
+
+const haloScales = (page: Page) =>
+  page.locator(".halo").evaluateAll((els) =>
+    els.map((el) => {
+      const t = getComputedStyle(el).transform;
+      return t === "none" ? 1 : new DOMMatrixReadOnly(t).a;
+    }),
+  );
+
+/** The scene plays over the section minus the sticky stage's screen and the one the chapters
+    cover (DawnMotion). */
+const sceneRange = (page: Page) =>
+  page.evaluate(() => {
+    const dawn = document.querySelector<HTMLElement>(".dawn");
+    return dawn ? dawn.offsetHeight - 2 * window.innerHeight : 0;
+  });
+
+/** The scrub catches up in 0.6 s, on top of Lenis. */
 async function scrubTo(page: Page, y: number): Promise<void> {
   await scrollToY(page, y);
-  await page.waitForTimeout(1000);
+  await page.waitForTimeout(1200);
 }
 
 const linesAtRest = (locator: Locator) =>
@@ -121,27 +112,49 @@ const faintestWord = (locator: Locator) =>
     return Math.min(...all.map((w) => Number(getComputedStyle(w).opacity)));
   });
 
-/** Nothing in main is hidden, no chapter is sticky or taller than its content, no arc moved,
-    nothing pinned. */
+/** Nothing in main is hidden and no stage is sticky. The dawn's decor is aria-hidden and partly
+    translucent by design (the halos, the sun's reflection), so it only has to be visible. */
 async function complete(page: Page) {
   return page.evaluate(() => {
     const hidden = [...document.querySelectorAll("main *")].filter((el) => {
       // The mark's reflection is drawn at 0.55 by design (components/brand/Mark).
       if (el.closest("[hidden], svg")) return false;
       const s = getComputedStyle(el);
+      if (s.display === "none") return false;
+      if (el.closest(".dawn [aria-hidden]")) return s.visibility === "hidden" || s.opacity === "0";
       return s.visibility === "hidden" || Number(s.opacity) < 1;
     }).length;
-    const sticky = [...document.querySelectorAll("main [data-stage-pin]")].filter(
+    const sticky = [...document.querySelectorAll("main [data-stage-pin], .dawn-stage")].filter(
       (el) => getComputedStyle(el).position === "sticky",
     ).length;
-    const moved = [...document.querySelectorAll(".arcs, .arc, .arc-light")].filter(
-      (el) => getComputedStyle(el).transform !== "none",
-    ).length;
     const spacers = document.querySelectorAll(".pin-spacer").length;
-    return { hidden, sticky, moved, spacers };
+    return { hidden, sticky, spacers };
   });
 }
-const COMPLETE = { hidden: 0, sticky: 0, moved: 0, spacers: 0 };
+const COMPLETE = { hidden: 0, sticky: 0, spacers: 0 };
+
+/** The still sunrise: one screen, the sun set on its horizon below the copy, no overlap. */
+async function stillDawn(page: Page) {
+  return page.evaluate(() => {
+    const box = (selector: string) =>
+      document.querySelector(selector)?.getBoundingClientRect() ?? new DOMRect(Number.NaN);
+    const moved = [".sun-disc", ".sun-horizon", ".sun-reflection"].filter((selector) => {
+      const el = document.querySelector(selector);
+      return !el || getComputedStyle(el).transform !== "none";
+    });
+    const dawn = box(".dawn");
+    const sun = box(".sun-mark");
+    const chapters = document.querySelector(".chapters");
+    return {
+      oneScreen: dawn.height < 1.5 * window.innerHeight,
+      moved,
+      sunBelowCopy: sun.top >= box(".about-facts").bottom,
+      sunInside: sun.height > 0 && sun.bottom <= dawn.bottom,
+      overlap: chapters ? getComputedStyle(chapters).marginTop : "",
+    };
+  });
+}
+const STILL = { oneScreen: true, moved: [], sunBelowCopy: true, sunInside: true, overlap: "0px" };
 
 const html = (text: string) => text.replaceAll("'", "&#x27;");
 
@@ -152,7 +165,7 @@ test.describe("with motion", () => {
   });
 
   for (const locale of LOCALES) {
-    test(`${locale}: the arcs and the title reach their end state after the loader`, async ({
+    test(`${locale}: the glow and the copy reach their end state after the loader`, async ({
       page,
     }) => {
       const errors = collectErrors(page);
@@ -162,7 +175,7 @@ test.describe("with motion", () => {
       const h1 = page.getByRole("heading", { level: 1 });
       await expect(h1).toHaveAccessibleName(m.title);
       await expect.poll(() => linesAtRest(h1), { timeout: 5000 }).toBe(true);
-      await expect.poll(() => arcsAtRest(page), { timeout: 5000 }).toBe(true);
+      await expect.poll(() => glowAtRest(page), { timeout: 5000 }).toBe(true);
       for (const group of await page.locator(".dawn-copy [data-reveal]").all()) {
         await expect.poll(() => selfAtRest(group)).toBe(true);
       }
@@ -170,69 +183,55 @@ test.describe("with motion", () => {
     });
   }
 
-  test("the dawn is pinned and scrubbed: the arcs rise, then hand off to the chapters", async ({
+  test("the sunrise scrubs on its sticky stage, then the chapters slide over it", async ({
     page,
-  }, info) => {
-    test.skip(info.project.name !== "1440", "pinned from 768 px");
+  }) => {
     const errors = collectErrors(page);
     await page.goto(PATHS.fr);
     await shellIdle(page);
-    await expect.poll(() => arcsAtRest(page), { timeout: 5000 }).toBe(true);
+    await expect.poll(() => glowAtRest(page), { timeout: 5000 }).toBe(true);
     const vh = await page.evaluate(() => window.innerHeight);
-    const range = await pinRange(page);
-    expect(range).toBeGreaterThanOrEqual(vh * 1.8);
-    expect(range).toBeLessThanOrEqual(vh * 2.2);
+    const range = await sceneRange(page);
+    expect(range).toBeGreaterThan(vh);
+    expect(await page.locator(".pin-spacer").count()).toBe(0);
 
     await scrubTo(page, range * 0.25);
-    const quarter = await arcScales(page);
-    await scrubTo(page, range * 0.6);
-    const middle = await arcScales(page);
-    expect(await page.locator(".dawn").evaluate((el) => el.getBoundingClientRect().top)).toBe(0);
-    await scrubTo(page, range);
-    const end = await arcScales(page);
-    quarter.forEach((scale, i) => {
-      expect(middle[i] ?? 0, `arc ${String(i)}`).toBeGreaterThanOrEqual(scale);
-      expect(end[i] ?? 0, `arc ${String(i)}`).toBeGreaterThan(scale);
-    });
-    // The arcs have dissolved into the paper; the facts row is still fully readable.
-    expect(await opacityOf(page.locator(".arcs"))).toBeLessThan(0.02);
-    expect(await opacityOf(page.locator(".about-facts"))).toBe(1);
+    const quarter = await haloScales(page);
+    await scrubTo(page, range * 0.5);
+    const half = await haloScales(page);
+    expect(half[0] ?? 0).toBeGreaterThan(quarter[0] ?? 0);
+    expect(half[1] ?? 0).toBeGreaterThan(quarter[1] ?? 0);
+    const stageTop = () =>
+      page.locator(".dawn-stage").evaluate((el) => el.getBoundingClientRect().top);
+    expect(await stageTop()).toBe(0);
+    // The copy has left the screen but stays in the DOM, still the first heading.
+    expect(await opacityOf(page.locator(".dawn-copy"))).toBe(0);
+    await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
 
-    // Released: the chapters follow the section with no seam and no horizontal scroll.
+    await scrubTo(page, range);
+    expect((await transformOf(page.locator(".sun-horizon"))).scaleX).toBeCloseTo(1, 3);
+    expect((await transformOf(page.locator(".sun-reflection"))).scaleX).toBeCloseTo(1, 3);
+    expect((await transformOf(page.locator(".sun-disc"))).y).toBeCloseTo(0, 1);
+    for (const halo of await page.locator(".halo").all()) {
+      expect(await opacityOf(halo)).toBeLessThan(0.02);
+    }
+
+    // The chapters' sheet slides over the stage's last screen: no seam, no gap, no side scroll.
     await scrubTo(page, range + vh / 2);
     const seam = await page.evaluate(() => {
-      const dawn = document.querySelector(".dawn")?.getBoundingClientRect();
+      const stage = document.querySelector(".dawn-stage")?.getBoundingClientRect();
       const chapters = document.querySelector(".chapters")?.getBoundingClientRect();
       return {
-        gap: (chapters?.top ?? Number.NaN) - (dawn?.bottom ?? Number.NaN),
+        gap: (chapters?.top ?? Number.NaN) - (stage?.bottom ?? Number.NaN),
         overflow: document.documentElement.scrollWidth - window.innerWidth,
       };
     });
-    expect(Math.abs(seam.gap)).toBeLessThan(1);
+    expect(await stageTop()).toBe(0);
+    expect(seam.gap).toBeLessThan(0);
     expect(seam.overflow).toBeLessThanOrEqual(0);
-    await bring(page, page.locator(".chapters"), 0);
-    await expect
-      .poll(() => page.locator(".chapters").evaluate((el) => el.getBoundingClientRect().top))
-      .toBeCloseTo(0, 0);
-    expect(errors).toEqual([]);
-  });
-
-  test("the dawn scrubs in flow under 768 px and ends in its final state", async ({
-    page,
-  }, info) => {
-    test.skip(info.project.name !== "390", "in flow under 768 px");
-    const errors = collectErrors(page);
-    await page.goto(PATHS.fr);
-    await shellIdle(page);
-    await expect.poll(() => arcsAtRest(page), { timeout: 5000 }).toBe(true);
-    expect(await pinSpacers(page)).toBe(0);
-    const height = await page.locator(".dawn").evaluate((el) => el.getBoundingClientRect().height);
-    await scrubTo(page, height + 10);
-    expect(await opacityOf(page.locator(".arcs"))).toBeLessThan(0.02);
-    for (const scale of await arcScales(page)) {
-      expect(scale).toBeCloseTo(ABOUT.dawn.flow.scale, 2);
-    }
-    expect(await pinSpacers(page)).toBe(0);
+    const label = page.locator(".chapter-label").first();
+    await bring(page, label, 0.4);
+    await expect(label).toBeInViewport();
     expect(errors).toEqual([]);
   });
 
@@ -292,7 +291,7 @@ test.describe("with motion", () => {
 
   test("ScrollTriggers return to their baseline after leaving the about page and coming back", async ({
     page,
-  }, info) => {
+  }) => {
     const errors = collectErrors(page);
     const settle = () => page.waitForTimeout(800);
     await page.goto(PATHS.fr);
@@ -312,11 +311,11 @@ test.describe("with motion", () => {
     await shellIdle(page);
     await settle();
     expect(await liveScrollTriggers(page)).toBe(baseline);
-    expect(await pinSpacers(page)).toBe(info.project.name === "1440" ? 1 : 0);
+    expect(await page.locator(".pin-spacer").count()).toBe(0);
     expect(errors).toEqual([]);
   });
 
-  test("axe at the top, at the end of the dawn's pin and at Right now: no serious or critical issue", async ({
+  test("axe at the top, at the end of the sunrise and at Right now: no serious or critical issue", async ({
     page,
   }, info) => {
     await page.goto(PATHS.fr);
@@ -358,11 +357,8 @@ test.describe("with motion", () => {
       }
     };
     await run("top");
-    const range = await pinRange(page);
-    if (range > 0) {
-      await scrubTo(page, range);
-      await run("dawn-end");
-    }
+    await scrubTo(page, await sceneRange(page));
+    await run("dawn-end");
     await bring(page, page.locator("#now"), 0.1);
     await page.waitForTimeout(1500);
     await run("now");
@@ -493,6 +489,7 @@ test.describe("without JavaScript", () => {
       await page.goto(PATHS[locale]);
       await expect(page.locator("h1")).toHaveText(m.title);
       expect(await complete(page)).toEqual(COMPLETE);
+      expect(await stillDawn(page)).toEqual(STILL);
     });
   }
 });
@@ -506,6 +503,7 @@ test.describe("reduced motion", () => {
     await shellIdle(page);
     await page.waitForTimeout(500);
     expect(await complete(page)).toEqual(COMPLETE);
+    expect(await stillDawn(page)).toEqual(STILL);
     for (const key of CHAPTERS) {
       await bring(page, page.locator(`#chapter-${key}`), 0.3);
       await page.waitForTimeout(400);

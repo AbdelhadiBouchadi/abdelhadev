@@ -229,7 +229,7 @@ The prototype's `.link` and `.back-link` as one component with a lucide-react ar
 | `MediaReveal` scrub | work project media |
 | `MediaReveal` intro | case-study hero screenshot |
 | `StickyStage` | home manifesto, dusk and featured work, about chapters (not the case-study tour: as in the prototype, only its framed stage is sticky, inside the tour grid, `src/styles/case.css`) |
-| `Scrub` | home hero settle and meta fade, home 3D layer dim (the about dawn is one pinned timeline of its own, `DawnMotion`) |
+| `Scrub` | home hero settle and meta fade, home 3D layer dim (the about dawn is one scrubbed timeline of its own on a CSS sticky stage, `DawnMotion`) |
 | `LineDraw` | case-study architecture diagram |
 | `useScrollSpy` | work rail (`SPY.list`), case-study tour (`SPY.tour`, `TourMotion`: the active step and the stage crossfade) |
 | `Screen` | home featured work, work media, case-study hero, tour stage and inline tour screens |

@@ -1,59 +1,14 @@
 "use client";
 
-/* The arrival animates each .arc; the scrub animates other layers (the .arc-light inside each arc,
-   the .arcs wrapper, .dawn-lift), so a scroll during the arrival composes with it instead of
-   fighting it, and the scrub starts from the arrival's end state. The last arc in the markup is
-   the innermost: the dawn opens from the core outwards (`from: "end"`) and rises from the outside
-   in. */
+/* The arrival grows the .dawn-glow wrapper and the scrub the .dawn-glow-light inside it, so a
+   scroll during the arrival composes with it instead of fighting it. Every scrubbed tween is a
+   fromTo, so a refresh mid-scene (invalidateOnRefresh) never records a scrolled state as a start. */
 import { useRef } from "react";
 import { useMotion } from "@/hooks/useMotion";
 import { useReadyGate } from "@/hooks/useReadyGate";
-import { motionAllowed } from "@/lib/css";
+import { motionAllowed, readToken } from "@/lib/css";
 import { gsap } from "@/lib/gsap";
-import { ABOUT, DURATION, EASE, MEDIA, STAGGER } from "@/lib/motion";
-
-type Amplitude = (typeof ABOUT.dawn)["pinned" | "flow"];
-
-interface Layers {
-  lights: HTMLElement[];
-  sky: HTMLElement;
-  lift: HTMLElement;
-}
-
-function rise(timeline: gsap.core.Timeline, { lights, sky, lift }: Layers, amp: Amplitude) {
-  const d = ABOUT.dawn;
-  timeline
-    .fromTo(
-      lights,
-      { scale: 1 },
-      { scale: amp.scale, duration: d.arcRise, stagger: d.arcStagger },
-      0,
-    )
-    .fromTo(sky, { yPercent: 0 }, { yPercent: amp.yPercent, duration: d.riseEnd }, 0)
-    .fromTo(
-      sky,
-      { "--arc-day": "0%" },
-      { "--arc-day": `${String(d.dayAtRise)}%`, duration: d.riseEnd - d.dayFrom },
-      d.dayFrom,
-    )
-    .fromTo(
-      lift,
-      { y: 0, opacity: 1 },
-      {
-        y: () => (-window.innerHeight * amp.liftVh) / 100,
-        opacity: amp.liftOpacity,
-        duration: d.riseEnd,
-      },
-      0,
-    )
-    // Not rendered at creation, or it would overwrite the rise's start values.
-    .fromTo(
-      sky,
-      { "--arc-day": `${String(d.dayAtRise)}%`, opacity: 1 },
-      { "--arc-day": "100%", opacity: 0, duration: d.handOff, immediateRender: false },
-      d.riseEnd,
-    );
-}
+import { ABOUT, EASE, MEDIA } from "@/lib/motion";
 
 export function DawnMotion() {
   const ref = useRef<HTMLSpanElement>(null);
@@ -61,74 +16,126 @@ export function DawnMotion() {
 
   useMotion(ref, (mm) => {
     const section = ref.current?.closest<HTMLElement>(".dawn");
-    const sky = section?.querySelector<HTMLElement>(".arcs");
-    const lift = section?.querySelector<HTMLElement>(".dawn-lift");
-    if (!section || !sky || !lift) return;
-    const arcs = [...sky.querySelectorAll<HTMLElement>(".arc")];
-    const lights = [...sky.querySelectorAll<HTMLElement>(".arc-light")];
-    if (arcs.length === 0 || lights.length === 0) return;
-    const layers = { lights, sky, lift };
+    const q = (selector: string) => section?.querySelector<HTMLElement>(selector) ?? null;
+    const glow = q(".dawn-glow");
+    const light = q(".dawn-glow-light");
+    const sky = q(".dawn-sky");
+    const copy = q(".dawn-copy");
+    const horizon = q(".sun-horizon");
+    const disc = q(".sun-disc");
+    const reflection = q(".sun-reflection");
+    const halos = section ? [...section.querySelectorAll<HTMLElement>(".halo")] : [];
+    if (!section || !glow || !light || !sky || !copy || !horizon || !disc || !reflection) return;
     const d = ABOUT.dawn;
-    // `y: 0` too: GSAP reads the CSS start state's translateY(18%) as a pixel `y`, which the
-    // yPercent tween alone would leave in place.
-    const rest = { y: 0, yPercent: 0, scale: 1, opacity: 1 };
+    const later = { immediateRender: false };
 
     mm.add(MEDIA.motion, () => {
       gate(
         gsap.fromTo(
-          arcs,
-          { ...d.arcsFrom, y: 0, opacity: 0, transformOrigin: "50% 50%" },
-          {
-            ...rest,
-            duration: DURATION.intro,
-            stagger: { each: STAGGER.arcs, from: "end" },
-            paused: true,
-          },
+          glow,
+          { ...d.glowFrom, opacity: 0 },
+          { scaleY: 1, opacity: 1, duration: d.glowRise, ease: EASE.settle, paused: true },
         ),
       );
-    });
 
-    mm.add(`${MEDIA.motion} and ${MEDIA.dawnPin}`, () => {
       const willChange = (on: boolean) => {
-        for (const light of lights) light.style.willChange = on ? "transform" : "";
+        for (const halo of halos) halo.style.willChange = on ? "transform, opacity" : "";
       };
       const timeline = gsap.timeline({
         defaults: { ease: EASE.none },
         scrollTrigger: {
           trigger: section,
-          pin: true,
           start: d.start,
-          end: d.pinEnd,
+          // The chapters cover the last screen and the sticky stage holds one more.
+          end: () => `+=${String(section.offsetHeight - d.tailScreens * window.innerHeight)}`,
           scrub: d.scrub,
           invalidateOnRefresh: true,
-          refreshPriority: d.refreshPriority,
           onToggle: (self) => {
             willChange(self.isActive);
           },
         },
       });
-      rise(timeline, layers, d.pinned);
+
+      timeline
+        .fromTo(
+          copy,
+          { yPercent: 0, opacity: 1 },
+          { yPercent: d.copy.yPercent, opacity: 0, duration: d.copy.duration },
+          0,
+        )
+        .fromTo(
+          light,
+          { scaleY: 1, opacity: 1 },
+          { scaleY: d.glow.scaleY, duration: d.glow.duration },
+          0,
+        )
+        .fromTo(sky, { opacity: 0 }, { opacity: 1, duration: d.sky.duration }, d.sky.at);
+
+      const h = d.halos;
+      halos.forEach((halo, i) => {
+        const at = h.at + i * h.step;
+        timeline
+          .fromTo(
+            halo,
+            { scale: h.from },
+            { scale: h.to, duration: h.rise, ease: EASE.halo, ...later },
+            at,
+          )
+          .fromTo(halo, { opacity: 0 }, { opacity: 1, duration: h.fadeIn, ...later }, at)
+          .fromTo(
+            halo,
+            { opacity: 1 },
+            { opacity: 0, duration: h.fadeOut, ...later },
+            at + h.fadeOutAt,
+          );
+      });
+
+      const s = d.sun;
+      timeline
+        .fromTo(
+          sky,
+          { backgroundColor: readToken("sunset") },
+          { backgroundColor: readToken("sheet"), duration: s.dayDuration, ...later },
+          s.dayAt,
+        )
+        .fromTo(
+          light,
+          { opacity: 1 },
+          { opacity: s.glowOpacity, duration: s.dayDuration, ...later },
+          s.dayAt,
+        )
+        .fromTo(
+          horizon,
+          { scaleX: 0 },
+          { scaleX: 1, duration: s.barDuration, ease: EASE.settle, ...later },
+          s.horizonAt,
+        )
+        // `y: 0` too: GSAP reads the CSS start state's translateY(100%) as a pixel `y`.
+        .fromTo(
+          disc,
+          { yPercent: 100, y: 0 },
+          { yPercent: 0, y: 0, duration: s.discDuration, ease: EASE.settle, ...later },
+          s.discAt,
+        )
+        .fromTo(
+          reflection,
+          { scaleX: 0 },
+          { scaleX: 1, duration: s.barDuration, ease: EASE.settle, ...later },
+          s.reflectionAt,
+        )
+        .set({}, {}, d.end);
+
       return () => {
         willChange(false);
       };
     });
 
-    mm.add(`${MEDIA.motion} and ${MEDIA.dawnFlow}`, () => {
-      const timeline = gsap.timeline({
-        defaults: { ease: EASE.none },
-        scrollTrigger: {
-          trigger: section,
-          start: d.start,
-          end: d.flowEnd,
-          scrub: d.scrub,
-          invalidateOnRefresh: true,
-        },
-      });
-      rise(timeline, layers, d.flow);
-    });
-
+    // The preference changed after the boot script set html.motion: show the still sunrise.
     mm.add(MEDIA.reduce, () => {
-      if (motionAllowed()) gsap.set(arcs, rest);
+      if (!motionAllowed()) return;
+      gsap.set([glow, light], { scaleY: 1, opacity: 1 });
+      gsap.set([horizon, reflection], { scaleX: 1 });
+      gsap.set(disc, { yPercent: 0, y: 0 });
     });
   });
 
