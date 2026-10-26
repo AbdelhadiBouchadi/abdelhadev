@@ -198,23 +198,28 @@
       "steps": {
         "listen": {
           "title": "Écoute",
-          "text": "Vous m'expliquez votre besoin, je prends des notes."
+          "text": "Vous m'expliquez votre besoin, je prends des notes.",
+          "time": "Premier échange"
         },
         "scope": {
           "title": "Cadrage",
-          "text": "Sous 24 heures, je transforme vos besoins en plan technique, je modélise les données et je découpe le projet en tâches."
+          "text": "Sous 24 heures, je transforme vos besoins en plan technique, je modélise les données et je découpe le projet en tâches.",
+          "time": "Sous 24 heures"
         },
         "quote": {
           "title": "Devis",
-          "text": "Vous recevez un devis 24 à 48 heures après notre premier échange."
+          "text": "Vous recevez un devis 24 à 48 heures après notre premier échange.",
+          "time": "24 à 48 heures"
         },
         "build": {
           "title": "Développement",
-          "text": "Une fois le devis accepté et signé, je vous envoie la facture d'acompte, puis je commence le développement."
+          "text": "Une fois le devis accepté et signé, je vous envoie la facture d'acompte, puis je commence le développement.",
+          "time": "Développement"
         },
         "deliver": {
           "title": "Livraison",
-          "text": "Juste avant la mise en ligne, je vous envoie la facture de solde, puis je vous remets l'ensemble du projet."
+          "text": "Juste avant la mise en ligne, je vous envoie la facture de solde, puis je vous remets l'ensemble du projet.",
+          "time": "Mise en ligne"
         }
       }
     },

@@ -322,41 +322,7 @@ export const ABOUT = {
     wordsStart: "top 20%",
     wordsEnd: "bottom bottom",
   },
-  stagger: { services: 0.08, process: 0.09, timeline: 0.08, stack: 0.08, now: 0.1 },
-  /** The line drawn through the day sections (ThreadMotion). */
-  thread: {
-    start: "top 55%",
-    end: "bottom 75%",
-    /** Direct: Lenis already smooths the scroll, and a second smoothing on top makes the sun lag,
-        then catch up. On touch the scroll is native and needs none either. */
-    scrub: true,
-    /** Timeline units: the line and the sun share the whole range. */
-    draw: 1,
-    sunIn: 0.02,
-    sunOutAt: 0.96,
-    sunOut: 0.04,
-    /** ms: a new size settles this long, then waits for the page to be still this long. */
-    rebuildMs: 200,
-    quietMs: 180,
-    /** px: smaller changes of the zone's size keep the route. */
-    minChange: { width: 2, height: 4 },
-    /** Fractions of the zone's width, in route order: three chapters, services, process, the top
-        and bottom of the timeline, below the stack. */
-    x: {
-      desktop: [0.96, 0.945, 0.97, 0.975, 0.965, 0.98, 0.972, 0.98],
-      mobile: [0.972, 0.958, 0.972, 0.958, 0.972, 0.958, 0.972, 0.958],
-    },
-    /** Fractions of each anchor's height. */
-    firstChapterAt: 0.3,
-    chapterAt: 0.55,
-    sectionAt: 0.5,
-    /** px below the stack. */
-    stackGap: 24,
-    /** Share of the right margin kept clear between the content and the line, and the most the
-        line keeps from the page edge (px), so the sun stays inside the page. */
-    clear: 0.4,
-    edge: 16,
-  },
+  stagger: { services: 0.08, timeline: 0.08, stack: 0.08, now: 0.1 },
 } as const;
 
 export const CONTACT = {

@@ -198,23 +198,28 @@
       "steps": {
         "listen": {
           "title": "Listen",
-          "text": "You talk, I take notes on your needs."
+          "text": "You talk, I take notes on your needs.",
+          "time": "First call"
         },
         "scope": {
           "title": "Scoping",
-          "text": "Within 24 hours I turn your needs into a technical plan, model the data and split the project into tasks."
+          "text": "Within 24 hours I turn your needs into a technical plan, model the data and split the project into tasks.",
+          "time": "Within 24 hours"
         },
         "quote": {
           "title": "Quote",
-          "text": "You receive a quote 24 to 48 hours after our first conversation."
+          "text": "You receive a quote 24 to 48 hours after our first conversation.",
+          "time": "24 to 48 hours"
         },
         "build": {
           "title": "Build",
-          "text": "Once you accept and sign, an advance invoice, then I build."
+          "text": "Once you accept and sign, an advance invoice, then I build.",
+          "time": "Development"
         },
         "deliver": {
           "title": "Delivery",
-          "text": "Just before launch, the balance invoice, then I hand over everything."
+          "text": "Just before launch, the balance invoice, then I hand over everything.",
+          "time": "Launch"
         }
       }
     },

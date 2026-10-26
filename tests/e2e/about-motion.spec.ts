@@ -80,10 +80,10 @@ test("about timeline into Right now", async ({ browser }) => {
 });
 
 for (const [name, size, phone] of [
-  ["about-thread-1440", DESKTOP, false],
-  ["about-thread-390", PHONE, true],
+  ["about-deck-1440", DESKTOP, false],
+  ["about-deck-390", PHONE, true],
 ] as const) {
-  test(`about thread: the line draws through the day sections (${name})`, async ({ browser }) => {
+  test(`about process: the cards stack as they scroll (${name})`, async ({ browser }) => {
     await record(
       browser,
       name,
@@ -91,12 +91,12 @@ for (const [name, size, phone] of [
       async (page) => {
         await page.goto(ABOUT);
         await shellIdle(page);
-        await at(page, ".thread-zone", size.height * 0.5);
+        await at(page, "#process", 0);
         const range = await page
-          .locator(".thread-zone")
+          .locator(".deck")
           .evaluate((el) => (el instanceof HTMLElement ? el.offsetHeight : 0));
         const ratio = await page.evaluate(() => window.devicePixelRatio);
-        await wheel(page, range * ratio, 160);
+        await wheel(page, range * ratio, 120);
       },
       { phone },
     );

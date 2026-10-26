@@ -44,7 +44,7 @@ Status: **Fixed**, **Provisional** (fixed unless the named spike fails), **Open*
 | D8 | Desktop navigation: wordmark left, pill nav centre (Home, Work, About), Agadir clock and Contact button right. Mobile: wordmark and Contact button on top, floating pill at the bottom (Work, home mark, About). | Fixed |
 | D9 | Every primary call to action says "Contact" (FR: "Contact") and goes to the contact page. The contact page offers the email form and WhatsApp. | Fixed |
 | D10 | Word light floor: WordsLight's unlit words wait at opacity 0.14 (`REVEAL.wordsFrom`), the prototype value. 0.14 fails color contrast (1.32:1 on paper), which is accepted because the words are scrolled to full opacity before they are read and are plain, fully opaque text under reduced motion and without JavaScript (asserted in Playwright). The a11y spec excludes only `[data-words-light]` from axe's color-contrast rule. | Fixed |
-| D11 | The about page's thread runs in the right margin and never across the text. A zigzag and a route across the full width were tried in the prototype and rejected. | Fixed |
+| D11 | The about page has no scroll-drawn line. It was removed after repeated jitter on phones. On touch, new scroll motion is native (sticky, CSS scroll-driven animations) or plays once; no JavaScript scrub. | Fixed |
 
 ## Technical
 

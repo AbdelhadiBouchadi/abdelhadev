@@ -13,7 +13,6 @@ import { CV, CV_ACTION, todoReport } from "@/lib/content/cv";
 import { cvBytes, formatFileSize } from "@/lib/content/cv-file";
 import { ABOUT } from "@/lib/motion";
 import { SITE } from "@/lib/site";
-import { resizeKind } from "@/lib/thread";
 
 describe("site channels", () => {
   it("links LinkedIn and GitHub over https", () => {
@@ -189,23 +188,5 @@ describe("dawn start state", () => {
     expect(css).toContain(
       `html.motion .dawn-glow {\n    opacity: 0;\n    transform: scaleY(${String(ABOUT.dawn.glowFrom.scaleY)});`,
     );
-  });
-});
-
-describe("thread resize", () => {
-  const built = { width: 390, height: 9000, viewWidth: 390, viewHeight: 844 };
-
-  it("keeps the route for changes under 2 px wide and 4 px tall", () => {
-    expect(resizeKind(built, { ...built, width: 391, height: 9003 }, false)).toBe("same");
-    expect(resizeKind(built, { ...built, width: 392 }, false)).toBe("rebuild");
-    expect(resizeKind(built, { ...built, height: 9004 }, false)).toBe("rebuild");
-  });
-
-  it("takes a height-only change of the window on a touch device as the address bar", () => {
-    const bar = { ...built, height: 9168, viewHeight: 788 };
-    expect(resizeKind(built, bar, true)).toBe("viewport");
-    expect(resizeKind(built, bar, false)).toBe("rebuild");
-    expect(resizeKind(built, { ...built, height: 9100 }, true)).toBe("rebuild");
-    expect(resizeKind(built, { ...bar, width: 360, viewWidth: 360 }, true)).toBe("rebuild");
   });
 });

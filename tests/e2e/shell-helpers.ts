@@ -102,9 +102,12 @@ export async function scrollToY(page: Page, y: number): Promise<void> {
   }, y);
 }
 
-/** Tone colours take 0.6 s. */
+/** Tone colours take 0.6 s. Scroll-driven animations (the about deck) run for as long as they
+    exist, so only those on the document's clock are waited for. */
 export async function transitionsSettled(page: Page): Promise<void> {
   await page.waitForFunction(() =>
-    document.getAnimations().every((a) => a.playState !== "running"),
+    document
+      .getAnimations()
+      .every((a) => a.playState !== "running" || !(a.timeline instanceof DocumentTimeline)),
   );
 }
