@@ -24,12 +24,55 @@ async function at(page: Page, selector: string, offset = 0) {
   await page.waitForTimeout(500);
 }
 
-test("about dawn intro after the loader", async ({ browser }) => {
-  await record(browser, "about-dawn-1440", DESKTOP, async (page) => {
+/** The pin spacer's padding. */
+const dawnRange = (page: Page) =>
+  page.evaluate(() => {
+    const spacer = document.querySelector(".pin-spacer");
+    const dawn = document.querySelector(".dawn");
+    return spacer && dawn ? spacer.clientHeight - dawn.clientHeight : 0;
+  });
+
+test("about dawn: the arrival, then the rise and hand-off scrolled down", async ({ browser }) => {
+  await record(browser, "about-dawn-down-1440", DESKTOP, async (page) => {
     await page.goto(ABOUT);
     await shellIdle(page);
+    await page.mouse.move(700, 450);
     await page.waitForTimeout(2800);
+    await wheel(page, (await dawnRange(page)) + 300, 60);
   });
+  rmSync(`${MOTION_OUT}/about-dawn-down-1440.png`, { force: true });
+});
+
+test("about dawn: scrolled back up from the chapters", async ({ browser }) => {
+  await record(browser, "about-dawn-up-1440", DESKTOP, async (page) => {
+    await page.goto(ABOUT);
+    await shellIdle(page);
+    const back = (await dawnRange(page)) + 300;
+    await scrollToY(page, back);
+    await page.mouse.move(700, 450);
+    await page.waitForTimeout(1200);
+    await wheel(page, -back, 60);
+  });
+  rmSync(`${MOTION_OUT}/about-dawn-up-1440.png`, { force: true });
+});
+
+test("about dawn at 390, part way through its scrub", async ({ browser }) => {
+  const context = await browser.newContext({
+    viewport: PHONE,
+    isMobile: true,
+    hasTouch: true,
+    deviceScaleFactor: 2,
+  });
+  const page = await context.newPage();
+  await visited(page);
+  await page.goto(ABOUT);
+  await shellIdle(page);
+  await page.waitForTimeout(2800);
+  const height = await page.locator(".dawn").evaluate((el) => el.clientHeight);
+  await scrollToY(page, height * 0.4);
+  await page.waitForTimeout(1200);
+  await page.screenshot({ path: `${MOTION_OUT}/about-dawn-390.png` });
+  await context.close();
 });
 
 test("about chapters: the words light up on the sticky stage", async ({ browser }) => {
@@ -50,7 +93,7 @@ test("about timeline into Right now", async ({ browser }) => {
     await at(page, "#experience", 900);
     await wheel(page, 2600, 50);
   });
-  // The dawn still and the 390 still make the three.
+  // The dawn still at 390 and the two full-page stills make the three.
   rmSync(`${MOTION_OUT}/about-timeline-now-1440.png`, { force: true });
 });
 

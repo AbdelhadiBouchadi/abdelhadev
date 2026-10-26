@@ -1,11 +1,12 @@
 // The about page at 1440 and 390, in both locales: end states after the loader and on scroll,
-// the footer and CV links, the timeline and the public email, the server HTML, reduced motion,
-// the ScrollTrigger baseline and axe.
+// the dawn's scrub (pinned at 1440, in flow at 390), the footer and CV links, the timeline and the
+// public email, the server HTML, reduced motion, the ScrollTrigger baseline and axe.
 import AxeBuilder from "@axe-core/playwright";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { expect, test, type Locator, type Page } from "@playwright/test";
 import { CHAPTERS, SERVICES } from "@/lib/content/about";
 import { CV } from "@/lib/content/cv";
+import { ABOUT } from "@/lib/motion";
 import { SITE } from "@/lib/site";
 import { beyond, bring, collectErrors, liveScrollTriggers } from "./page-helpers";
 import { LEGAL_NAME } from "./routes";
@@ -44,11 +45,46 @@ const arcsAtRest = (page: Page) =>
     els.every((el) => {
       const s = getComputedStyle(el);
       if (s.opacity !== "1") return false;
+      const light = el.querySelector(".arc-light");
+      const rise = light ? getComputedStyle(light).transform : "none";
+      if (rise !== "none" && Math.abs(new DOMMatrixReadOnly(rise).a - 1) > 0.001) return false;
       if (s.transform === "none") return true;
       const m = new DOMMatrixReadOnly(s.transform);
       return Math.abs(m.a - 1) < 0.001 && Math.abs(m.f) < 0.5;
     }),
   );
+
+/** Each arc's arrival scale times its light's scrubbed scale. */
+const arcScales = (page: Page) =>
+  page.locator(".arc").evaluateAll((els) =>
+    els.map((el) => {
+      const scaleOf = (node: Element | null) => {
+        const t = node ? getComputedStyle(node).transform : "none";
+        return t === "none" ? 1 : new DOMMatrixReadOnly(t).a;
+      };
+      return scaleOf(el) * scaleOf(el.querySelector(".arc-light"));
+    }),
+  );
+
+const opacityOf = (locator: Locator) =>
+  locator.evaluate((el) => Number(getComputedStyle(el).opacity));
+
+const pinSpacers = (page: Page) => page.locator(".pin-spacer").count();
+
+/** The dawn's pinned scroll distance (the spacer's padding), 0 without a pin. */
+const pinRange = (page: Page) =>
+  page.evaluate(() => {
+    const spacer = document.querySelector(".pin-spacer");
+    const dawn = document.querySelector(".dawn");
+    if (!spacer || !dawn) return 0;
+    return spacer.getBoundingClientRect().height - dawn.getBoundingClientRect().height;
+  });
+
+/** The scrub catches up in 0.5 s. */
+async function scrubTo(page: Page, y: number): Promise<void> {
+  await scrollToY(page, y);
+  await page.waitForTimeout(1000);
+}
 
 const linesAtRest = (locator: Locator) =>
   locator.evaluate((el) =>
@@ -85,7 +121,8 @@ const faintestWord = (locator: Locator) =>
     return Math.min(...all.map((w) => Number(getComputedStyle(w).opacity)));
   });
 
-/** Nothing in main is hidden, no chapter is sticky or taller than its content, no arc moved. */
+/** Nothing in main is hidden, no chapter is sticky or taller than its content, no arc moved,
+    nothing pinned. */
 async function complete(page: Page) {
   return page.evaluate(() => {
     const hidden = [...document.querySelectorAll("main *")].filter((el) => {
@@ -97,13 +134,14 @@ async function complete(page: Page) {
     const sticky = [...document.querySelectorAll("main [data-stage-pin]")].filter(
       (el) => getComputedStyle(el).position === "sticky",
     ).length;
-    const moved = [...document.querySelectorAll(".arc, .arcs")].filter(
+    const moved = [...document.querySelectorAll(".arcs, .arc, .arc-light")].filter(
       (el) => getComputedStyle(el).transform !== "none",
     ).length;
-    return { hidden, sticky, moved };
+    const spacers = document.querySelectorAll(".pin-spacer").length;
+    return { hidden, sticky, moved, spacers };
   });
 }
-const COMPLETE = { hidden: 0, sticky: 0, moved: 0 };
+const COMPLETE = { hidden: 0, sticky: 0, moved: 0, spacers: 0 };
 
 const html = (text: string) => text.replaceAll("'", "&#x27;");
 
@@ -125,10 +163,78 @@ test.describe("with motion", () => {
       await expect(h1).toHaveAccessibleName(m.title);
       await expect.poll(() => linesAtRest(h1), { timeout: 5000 }).toBe(true);
       await expect.poll(() => arcsAtRest(page), { timeout: 5000 }).toBe(true);
-      await expect.poll(() => atRest(page.locator(".dawn-copy > [data-reveal]"))).toBe(true);
+      for (const group of await page.locator(".dawn-copy [data-reveal]").all()) {
+        await expect.poll(() => selfAtRest(group)).toBe(true);
+      }
       expect(errors).toEqual([]);
     });
   }
+
+  test("the dawn is pinned and scrubbed: the arcs rise, then hand off to the chapters", async ({
+    page,
+  }, info) => {
+    test.skip(info.project.name !== "1440", "pinned from 768 px");
+    const errors = collectErrors(page);
+    await page.goto(PATHS.fr);
+    await shellIdle(page);
+    await expect.poll(() => arcsAtRest(page), { timeout: 5000 }).toBe(true);
+    const vh = await page.evaluate(() => window.innerHeight);
+    const range = await pinRange(page);
+    expect(range).toBeGreaterThanOrEqual(vh * 1.8);
+    expect(range).toBeLessThanOrEqual(vh * 2.2);
+
+    await scrubTo(page, range * 0.25);
+    const quarter = await arcScales(page);
+    await scrubTo(page, range * 0.6);
+    const middle = await arcScales(page);
+    expect(await page.locator(".dawn").evaluate((el) => el.getBoundingClientRect().top)).toBe(0);
+    await scrubTo(page, range);
+    const end = await arcScales(page);
+    quarter.forEach((scale, i) => {
+      expect(middle[i] ?? 0, `arc ${String(i)}`).toBeGreaterThanOrEqual(scale);
+      expect(end[i] ?? 0, `arc ${String(i)}`).toBeGreaterThan(scale);
+    });
+    // The arcs have dissolved into the paper; the facts row is still fully readable.
+    expect(await opacityOf(page.locator(".arcs"))).toBeLessThan(0.02);
+    expect(await opacityOf(page.locator(".about-facts"))).toBe(1);
+
+    // Released: the chapters follow the section with no seam and no horizontal scroll.
+    await scrubTo(page, range + vh / 2);
+    const seam = await page.evaluate(() => {
+      const dawn = document.querySelector(".dawn")?.getBoundingClientRect();
+      const chapters = document.querySelector(".chapters")?.getBoundingClientRect();
+      return {
+        gap: (chapters?.top ?? Number.NaN) - (dawn?.bottom ?? Number.NaN),
+        overflow: document.documentElement.scrollWidth - window.innerWidth,
+      };
+    });
+    expect(Math.abs(seam.gap)).toBeLessThan(1);
+    expect(seam.overflow).toBeLessThanOrEqual(0);
+    await bring(page, page.locator(".chapters"), 0);
+    await expect
+      .poll(() => page.locator(".chapters").evaluate((el) => el.getBoundingClientRect().top))
+      .toBeCloseTo(0, 0);
+    expect(errors).toEqual([]);
+  });
+
+  test("the dawn scrubs in flow under 768 px and ends in its final state", async ({
+    page,
+  }, info) => {
+    test.skip(info.project.name !== "390", "in flow under 768 px");
+    const errors = collectErrors(page);
+    await page.goto(PATHS.fr);
+    await shellIdle(page);
+    await expect.poll(() => arcsAtRest(page), { timeout: 5000 }).toBe(true);
+    expect(await pinSpacers(page)).toBe(0);
+    const height = await page.locator(".dawn").evaluate((el) => el.getBoundingClientRect().height);
+    await scrubTo(page, height + 10);
+    expect(await opacityOf(page.locator(".arcs"))).toBeLessThan(0.02);
+    for (const scale of await arcScales(page)) {
+      expect(scale).toBeCloseTo(ABOUT.dawn.flow.scale, 2);
+    }
+    expect(await pinSpacers(page)).toBe(0);
+    expect(errors).toEqual([]);
+  });
 
   test("each chapter's statement lights up as it is scrolled through", async ({ page }) => {
     const errors = collectErrors(page);
@@ -186,7 +292,7 @@ test.describe("with motion", () => {
 
   test("ScrollTriggers return to their baseline after leaving the about page and coming back", async ({
     page,
-  }) => {
+  }, info) => {
     const errors = collectErrors(page);
     const settle = () => page.waitForTimeout(800);
     await page.goto(PATHS.fr);
@@ -206,10 +312,11 @@ test.describe("with motion", () => {
     await shellIdle(page);
     await settle();
     expect(await liveScrollTriggers(page)).toBe(baseline);
+    expect(await pinSpacers(page)).toBe(info.project.name === "1440" ? 1 : 0);
     expect(errors).toEqual([]);
   });
 
-  test("axe at the top and at Right now: no serious or critical issue, contrast named", async ({
+  test("axe at the top, at the end of the dawn's pin and at Right now: no serious or critical issue", async ({
     page,
   }, info) => {
     await page.goto(PATHS.fr);
@@ -251,6 +358,11 @@ test.describe("with motion", () => {
       }
     };
     await run("top");
+    const range = await pinRange(page);
+    if (range > 0) {
+      await scrubTo(page, range);
+      await run("dawn-end");
+    }
     await bring(page, page.locator("#now"), 0.1);
     await page.waitForTimeout(1500);
     await run("now");

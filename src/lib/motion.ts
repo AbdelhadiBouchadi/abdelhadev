@@ -67,6 +67,9 @@ export const MEDIA = {
   mobile: "(max-width: 760px)",
   /** The `split` breakpoint in globals.css: the work rail and the tour stage show from here. */
   split: "(min-width: 901px)",
+  /** The about dawn is pinned from here; below it scrubs in flow. */
+  dawnPin: "(min-width: 768px)",
+  dawnFlow: "(max-width: 767px)",
 } as const;
 
 /** px unless noted. */
@@ -196,7 +199,6 @@ export const SPY = { list: 0.45, tour: 0.55 } as const;
 export const SETTLE = {
   heroWord: { yPercent: -14, scale: 0.92 },
   heroMeta: { opacity: 0, y: -30 },
-  arcs: { yPercent: -10, scale: 1.25, opacity: 0.25 },
 } as const;
 
 /** Scrubbed stage positions and durations are in timeline units: a scrubbed timeline is
@@ -281,8 +283,26 @@ export const ABOUT = {
     titleDelay: 0.3,
     laterY: 20,
     laterDelay: 0.8,
-    scrubStart: "top top",
-    scrubEnd: "bottom top",
+    /** Lighter than SCRUB: Lenis already smooths the scroll under it. */
+    scrub: 0.5,
+    start: "top top",
+    /** Two viewport heights of pinned scroll. */
+    pinEnd: "+=200%",
+    flowEnd: "bottom top",
+    /** The tone triggers further down are created before the pin, so it is measured first. */
+    refreshPriority: 1,
+    /** Timeline units over the range: the rise, then the hand-off to the chapters' paper. */
+    riseEnd: 0.7,
+    handOff: 0.3,
+    arcRise: 0.46,
+    /** Outside in: the last arc ends its rise at riseEnd. */
+    arcStagger: 0.08,
+    dayFrom: 0.1,
+    /** Percent of --paper mixed into the arcs' colours at the end of the rise. */
+    dayAtRise: 45,
+    /** liftVh: percent of the viewport height the title and lead travel up. */
+    pinned: { scale: 1.32, yPercent: -14, liftVh: 6, liftOpacity: 0.85 },
+    flow: { scale: 1.16, yPercent: -7, liftVh: 3, liftOpacity: 0.92 },
   },
   chapter: {
     labelY: 24,
