@@ -54,7 +54,6 @@
 
   gsap.registerPlugin(ScrollTrigger, SplitText, CustomEase);
   if (window.DrawSVGPlugin) gsap.registerPlugin(DrawSVGPlugin);
-  if (window.MotionPathPlugin) gsap.registerPlugin(MotionPathPlugin);
   CustomEase.create("warm", "0.625, 0.05, 0, 1");
   gsap.defaults({ ease: "warm", duration: 0.6 });
   ScrollTrigger.config({ ignoreMobileResize: true });
@@ -739,56 +738,6 @@
     fadeUpOnEnter(".stack-groups", 0.08);
     fadeUpOnEnter(".now-list", 0.1);
 
-    /* The thread: a line that weaves through the day sections and draws as you scroll,
-       with a small sun on its tip. The route is measured from the real layout. */
-    (function thread() {
-      var zone = document.querySelector(".thread-zone");
-      if (!zone || !window.DrawSVGPlugin || !window.MotionPathPlugin) return;
-      var svg = zone.querySelector(".thread"), path = svg.querySelector(".thread-path"), ghost = svg.querySelector(".thread-ghost"), sun = svg.querySelector(".thread-sun");
-      var grad = svg.querySelector("#thread-grad"), tl = null, built = false;
-      function rel(el, f) { var z = zone.getBoundingClientRect(), r = el.getBoundingClientRect(); return (r.top - z.top) + r.height * (f == null ? 0.5 : f); }
-      function build() {
-        var W = zone.clientWidth, H = zone.clientHeight, narrow = W < 761;
-        svg.setAttribute("viewBox", "0 0 " + W + " " + H);
-        grad.setAttribute("y2", H);
-        var chapters = zone.querySelectorAll(".chapter");
-        /* the line travels in the right gutter, so it never crosses the text */
-        var xs = narrow ? [0.972, 0.958, 0.972, 0.958, 0.972, 0.958] : [0.96, 0.945, 0.97, 0.98, 0.972, 0.98];
-        var pts = [{ x: W * 0.5, y: 0 }];
-        chapters.forEach(function (c, i) { pts.push({ x: W * xs[i], y: c.offsetTop + c.offsetHeight * (i ? 0.55 : 0.3) }); });
-        var exp = zone.querySelector(".timeline"), stack = zone.querySelector(".stack-groups");
-        pts.push({ x: W * xs[3], y: rel(exp, 0.0) });
-        pts.push({ x: W * xs[4], y: rel(exp, 1) });
-        pts.push({ x: W * xs[5], y: rel(stack, 1) + 24 });
-        pts.push({ x: W * 0.5, y: H });
-        var d = "M" + pts[0].x.toFixed(1) + " " + pts[0].y.toFixed(1);
-        for (var i = 1; i < pts.length; i++) {
-          var a = pts[i - 1], b = pts[i], m = (b.y - a.y) * 0.5;
-          d += " C" + a.x.toFixed(1) + " " + (a.y + m).toFixed(1) + " " + b.x.toFixed(1) + " " + (b.y - m).toFixed(1) + " " + b.x.toFixed(1) + " " + b.y.toFixed(1);
-        }
-        path.setAttribute("d", d); ghost.setAttribute("d", d);
-        if (tl) { tl.scrollTrigger.kill(); tl.kill(); }
-        gsap.set(path, { drawSVG: "0% 0%" }); gsap.set(sun, { opacity: 0 });
-        tl = gsap.timeline({ defaults: { ease: "none" }, scrollTrigger: { trigger: zone, start: "top 55%", end: "bottom 75%", scrub: 0.6 } });
-        tl.to(path, { drawSVG: "0% 100%" }, 0)
-          .to(sun, { opacity: 1, duration: 0.02 }, 0)
-          .to(sun, { motionPath: { path: path, align: path, alignOrigin: [0.5, 0.5], autoRotate: false }, duration: 1 }, 0)
-          .to(sun, { opacity: 0, duration: 0.04 }, 0.96);
-        built = true;
-      }
-      var lastW = 0, lastH = 0, busy = false, quiet = true, qt;
-      /* a rebuild never happens while the page is moving, and never for a height-only change of the window */
-      function rebuild(force) {
-        var W = zone.clientWidth, H = zone.clientHeight;
-        if (!force && Math.abs(W - lastW) < 2 && Math.abs(H - lastH) < 4) return;
-        if (!quiet) { clearTimeout(qt); qt = setTimeout(function () { quiet = true; rebuild(force); }, 180); return; }
-        lastW = W; lastH = H; build(); ScrollTrigger.refresh();
-      }
-      window.addEventListener("scroll", function () { quiet = false; clearTimeout(qt); qt = setTimeout(function () { quiet = true; }, 180); }, { passive: true });
-      build(); lastW = zone.clientWidth; lastH = zone.clientHeight;
-      var rt; window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(function () { rebuild(false); }, 260); });
-      window.addEventListener("load", function () { setTimeout(function () { rebuild(false); }, 300); });
-    })();
 
     return function intro() {
       gsap.to(".dawn-glow", { scaleY: 1, opacity: 1, duration: 2, ease: "power2.out" });
