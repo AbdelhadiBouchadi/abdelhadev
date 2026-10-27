@@ -552,6 +552,25 @@
     };
   }
 
+
+  /* Lit windows: each testimonial lights once, when it comes into view. Windows that appear together
+     light one after another. No scroll position is read. */
+  function litWindows() {
+    var panes = gsap.utils.toArray(".pane");
+    if (!panes.length) return;
+    if (reduce || !("IntersectionObserver" in window)) { panes.forEach(function (p) { p.classList.add("is-lit"); }); return; }
+    var io = new IntersectionObserver(function (entries) {
+      var k = 0;
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.style.setProperty("--d", (k++ * 260) + "ms");
+        e.target.classList.add("is-lit");
+        io.unobserve(e.target);
+      });
+    }, { threshold: 0.35 });
+    panes.forEach(function (p) { io.observe(p); });
+  }
+
   /* ================= PAGES ================= */
   var Pages = {};
 
@@ -774,6 +793,7 @@
       if (page === "home") Pages.home();
       initTone();
     }
+    litWindows();
     onReady(function () { intro(); });
     Loader.run();
     var rt;

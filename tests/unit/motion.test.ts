@@ -1,6 +1,14 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { DURATION, LENIS, LOADER, LOADER_EXIT_TOTAL, SCRUB, WARM_CURVE } from "@/lib/motion";
+import {
+  DURATION,
+  LENIS,
+  LOADER,
+  LOADER_EXIT_TOTAL,
+  SCRUB,
+  WARM_CURVE,
+  WINDOW,
+} from "@/lib/motion";
 
 const tokens = readFileSync(new URL("../../src/styles/tokens.css", import.meta.url), "utf8");
 
@@ -25,6 +33,16 @@ describe("motion.ts mirrors the CSS motion tokens", () => {
       const key = camel(name);
       expect(Object.hasOwn(DURATION, key), `DURATION.${key} for --dur-${name}`).toBe(true);
       expect(DURATION[key as keyof typeof DURATION]).toBe(Number(seconds)); // key checked just above
+    }
+  });
+
+  it("every --window-* token equals the WINDOW entry of the same name", () => {
+    const windows = [...tokens.matchAll(/--window-([\w-]+):\s*([\d.]+)s;/g)];
+    expect(windows).toHaveLength(6);
+    for (const [, name = "", seconds = ""] of windows) {
+      const key = camel(name);
+      expect(Object.hasOwn(WINDOW, key), `WINDOW.${key} for --window-${name}`).toBe(true);
+      expect(WINDOW[key as keyof typeof WINDOW]).toBe(Number(seconds)); // key checked just above
     }
   });
 
