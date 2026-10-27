@@ -123,17 +123,17 @@ export const STAGGER = {
 
 export const LENIS = { lerp: 0.1 } as const;
 
-/** The home testimonials. Seconds, except `threshold` (a fraction of the window in view). The CSS
-    side is the --window-* tokens; only `stagger` and `threshold` are read here. */
-export const WINDOW = {
-  threshold: 0.35,
-  stagger: 0.26,
-  lamp: 1.5,
-  haloAt: 0.15,
-  rise: 1.1,
-  riseAt: 0.25,
-  line: 1.2,
-  lineAt: 0.7,
+/** The home testimonials, in percent of the track's `cover` range. Quote i starts at `starts[i]`
+    and, unless it is the last, fades out from `fades[i]`. Each word slides in over `word`, words
+    start `stagger` apart at most, and the last word lands `hold` before the fade (or before `end`,
+    where the bar fills, for the last quote). `word` mirrors the q-word range in home.css. */
+export const QUOTES = {
+  starts: [14, 38, 58],
+  fades: [32, 52],
+  word: 5,
+  stagger: 0.16,
+  hold: 3,
+  end: 80,
 } as const;
 
 /** Per frame at 60 fps; frame-rate independent in use. */
