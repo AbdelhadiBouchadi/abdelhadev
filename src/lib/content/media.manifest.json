@@ -509,6 +509,58 @@
           }
         ],
         "width": 1900
+      },
+      "10-whatsapp.png": {
+        "avif": [
+          {
+            "bytes": 15861,
+            "src": "/work/dentaflow/10-whatsapp-640.avif",
+            "width": 640
+          },
+          {
+            "bytes": 32489,
+            "src": "/work/dentaflow/10-whatsapp-960.avif",
+            "width": 960
+          },
+          {
+            "bytes": 63719,
+            "src": "/work/dentaflow/10-whatsapp-1440.avif",
+            "width": 1440
+          },
+          {
+            "bytes": 87267,
+            "src": "/work/dentaflow/10-whatsapp-1900.avif",
+            "width": 1900
+          }
+        ],
+        "blur": "data:image/webp;base64,UklGRiwAAABXRUJQVlA4ICAAAAAwAQCdASoQAAwAA4BaJZwAA3AA/vR1S3aaRoNAYYAAAA==",
+        "hash": "2f9931412cce85ef",
+        "height": 1436,
+        "kind": "image",
+        "pipeline": "47a8130249c5",
+        "webp": [
+          {
+            "bytes": 15876,
+            "src": "/work/dentaflow/10-whatsapp-640.webp",
+            "width": 640
+          },
+          {
+            "bytes": 31042,
+            "src": "/work/dentaflow/10-whatsapp-960.webp",
+            "width": 960
+          },
+          {
+            "bytes": 59478,
+            "src": "/work/dentaflow/10-whatsapp-1440.webp",
+            "width": 1440
+          },
+          {
+            "bytes": 89122,
+            "src": "/work/dentaflow/10-whatsapp-1900.webp",
+            "width": 1900
+          }
+        ],
+        "width": 1900
       }
     },
     "hms": {

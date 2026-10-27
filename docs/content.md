@@ -49,9 +49,10 @@ The sheet has six slots (name, kind, status chip, « L'enjeu » / "The challenge
 
 Agenda, patients and their records, treatments (« actes ») and the dental chart (an odontogram with an initial and a current layer), quotes and invoices, payments, statistics. There is no treatment-plan module, so "treatment plans" is never claimed (P21). The home feature list (`home.featured.features`): agenda, records, treatments, invoices.
 
+- Automatic WhatsApp reminders (added 28 October 2026), tour step 2 `projects.dentaflow.case.tour.reminders`, right after the agenda: a message before each appointment and another when it is moved or cancelled; the clinic sets the wording, sending hours, the delay before the appointment and which patients agreed; messages are written in the app with a live preview and sent to WhatsApp for approval; staff follow each message's status on one page and failures are flagged. Never claim a clinic uses it in production, message counts, delivery rates or compliance. Stack chip: "WhatsApp (Twilio)" (chips are not translated).
 - Adapted per clinic before launch: its own name, database and deployment, and its own setup (logo, letterhead, staff accounts, acts catalogue, practitioner schedules) in `projects.dentaflow.case.adapt.fourth`.
 - Access (`projects.dentaflow.case.arch.access`): four roles checked on the server (administrator, dentist, assistant, secretary); statistics and expenses for the administrator, prescriptions and certificates for the dentist and the administrator.
-- Next.js, TypeScript, tRPC, Drizzle, PostgreSQL (Neon), Better Auth. WhatsApp reminders are not live (P8).
+- Next.js, TypeScript, tRPC, Drizzle, PostgreSQL (Neon), Better Auth, WhatsApp (Twilio).
 
 ### MeetAI
 

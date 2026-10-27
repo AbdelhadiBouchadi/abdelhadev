@@ -22,7 +22,15 @@ const INPUT: ProjectInput[] = [
     status: "ready",
     permission: "confirmed",
     caseStudy: true,
-    stack: ["Next.js", "TypeScript", "tRPC", "Drizzle", "PostgreSQL (Neon)", "Better Auth"],
+    stack: [
+      "Next.js",
+      "TypeScript",
+      "tRPC",
+      "Drizzle",
+      "PostgreSQL (Neon)",
+      "Better Auth",
+      "WhatsApp (Twilio)",
+    ],
     media: media(
       { span: 7, tone: "warm", skeleton: "agenda" },
       { span: 5, tone: "plain", skeleton: "record" },
