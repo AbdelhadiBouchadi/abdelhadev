@@ -338,165 +338,179 @@
     }
   }
 
-  /* testimonials (night): three windows that light once as they come into view. Lit is the default,
-     so without JavaScript or motion the finished picture shows; html.motion holds them unlit. */
-  .testimonials {
-    padding-block: clamp(96px, 16vh, 200px);
-    /* the outer halo of the side windows reaches past the page edge */
-    overflow-x: clip;
+  /* testimonials (night): a plain list of the quotes by default. With motion and scroll-driven
+     animations the track is tall, the stage sticks, and the quotes replace each other on the
+     track's view timeline, so nothing runs in JavaScript on scroll. Only opacity and transform
+     change. --a, --o and --s come from quoteTiming (lib/quotes.ts), --w is the word's index. */
+  .quotes {
+    padding-block: clamp(96px, 16vh, 200px) 0;
   }
-  /* A gap, not a margin on the title: the display utility resets margins and wins over this layer. */
-  .testimonials-inner {
+  .quotes-head {
+    margin-bottom: clamp(32px, 6vh, 64px);
+  }
+  .quotes-list {
     display: grid;
-    gap: clamp(40px, 8vh, 88px);
+    gap: clamp(48px, 9vh, 96px);
+    max-width: min(1200px, 100% - 2 * var(--gutter));
+    margin-inline: auto;
+    padding-bottom: clamp(48px, 9vh, 96px);
   }
-  .testimonials-title {
-    max-width: 12em;
-  }
-  .panes {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: clamp(20px, 2.6vw, 40px);
-    align-items: start;
-  }
-  .pane {
+  .q {
     position: relative;
-    isolation: isolate;
     display: grid;
-    gap: 22px;
+    gap: 28px;
     margin: 0;
   }
-  .pane::before {
-    content: "";
-    position: absolute;
-    inset: -28px -20px 40px;
-    z-index: -1;
-    border-radius: 50% 50% 40px 40px / 200px 200px 40px 40px;
-    background: radial-gradient(
-      closest-side,
-      color-mix(in srgb, var(--glow) 26%, transparent),
-      transparent
-    );
-    pointer-events: none;
-  }
-  .pane-glass {
-    position: relative;
-    isolation: isolate;
-    overflow: hidden;
-    display: grid;
-    align-content: start;
-    gap: 18px;
-    min-height: clamp(380px, 34vw, 500px);
-    padding: clamp(36px, 4vw, 56px) clamp(22px, 2.4vw, 34px) clamp(24px, 2.6vw, 34px);
-    border: 1px solid var(--line-night);
-    border-radius: 50% 50% 24px 24px / 190px 190px 24px 24px;
-    background: var(--night-2);
-  }
-  .pane-glass::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background:
-      radial-gradient(
-        100% 75% at 50% 100%,
-        color-mix(in srgb, var(--glow) 34%, transparent),
-        color-mix(in srgb, var(--glow) 8%, transparent) 60%,
-        transparent 85%
-      ),
-      linear-gradient(
-        color-mix(in srgb, var(--glow) 5%, transparent),
-        color-mix(in srgb, var(--glow) 14%, transparent)
-      );
-    pointer-events: none;
-  }
-  .lamp {
-    justify-self: center;
-    width: 46px;
-    height: auto;
-  }
-  .pane blockquote {
+  .q blockquote {
     margin: 0;
   }
-  .pane blockquote p {
+  .q p {
+    max-width: 24em;
     margin: 0;
-    font-size: clamp(16px, 1.3vw, 19px);
-    line-height: 1.55;
+    font: 500 clamp(22px, 3vw, 46px) / 1.2 var(--display);
+    letter-spacing: -0.01em;
     color: var(--moon);
-    text-wrap: pretty;
   }
-  .pane figcaption {
-    display: grid;
-    gap: 4px;
-    padding-inline: 6px;
-  }
-  .pane-line {
+  .q-mark {
     display: block;
-    width: 44px;
-    height: 4px;
-    margin-bottom: 10px;
-    border-radius: var(--r-pill);
-    background: var(--majorelle);
-    transform-origin: 0 50%;
+    height: 0.45em;
+    font: 700 clamp(96px, 14vw, 200px) / 0.6 var(--display);
+    color: var(--glow);
+    opacity: 0.9;
   }
-  .pane-role {
+  .q figcaption {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 14px;
+  }
+  .q-no {
+    margin-right: 8px;
+    font: 600 12px / 1 var(--text);
+    letter-spacing: 0.08em;
+    color: var(--moon-soft);
+  }
+  .q-role {
     font-weight: 600;
     color: var(--moon);
   }
-  .pane-org {
+  .q-org {
     font-size: 15px;
     color: var(--moon-soft);
   }
-  /* --d is the stagger, set per window by TestimonialsMotion. */
-  html.motion .pane {
-    --d: 0s;
+  .q-bar {
+    display: none;
   }
-  html.motion .pane:not(.is-lit)::before,
-  html.motion .pane:not(.is-lit) .pane-glass::before {
-    opacity: 0;
-  }
-  html.motion .pane:not(.is-lit) :is(.lamp, blockquote, figcaption) {
-    opacity: 0.22;
-    transform: translateY(12px);
-  }
-  html.motion .pane:not(.is-lit) .pane-line {
-    transform: scaleX(0);
-  }
-  html.motion .pane :is(.lamp, blockquote, figcaption) {
-    transition:
-      opacity var(--window-rise) var(--ease-warm) calc(var(--d) + var(--window-rise-at)),
-      transform var(--window-rise) var(--ease-warm) calc(var(--d) + var(--window-rise-at));
-  }
-  html.motion .pane .pane-line {
-    transition: transform var(--window-line) var(--ease-warm) calc(var(--d) + var(--window-line-at));
-  }
-  html.motion .pane.is-lit .pane-glass::before {
-    animation: lamp-on var(--window-lamp) linear var(--d) both;
-  }
-  html.motion .pane.is-lit::before {
-    animation: lamp-on var(--window-lamp) linear calc(var(--d) + var(--window-halo-at)) both;
-  }
-  @media (hover: hover) {
-    html.motion .pane-glass {
-      transition:
-        transform var(--dur-base) var(--ease-warm),
-        border-color var(--dur-base) var(--ease-warm);
-    }
-    html.motion .pane.is-lit:hover .pane-glass {
-      transform: translateY(-6px);
-      border-color: color-mix(in srgb, var(--glow) 40%, transparent);
-    }
-  }
-  @media (max-width: 900px) {
-    .panes {
-      grid-template-columns: minmax(0, 1fr);
-      max-width: 520px;
-      gap: 36px;
-    }
-    .pane-glass {
-      min-height: 0;
-      padding-top: 44px;
-      border-radius: 50% 50% 22px 22px / 120px 120px 22px 22px;
+  @supports (animation-timeline: view()) and (timeline-scope: --a) {
+    @media (prefers-reduced-motion: no-preference) {
+      html.motion .quotes {
+        padding-block: 0;
+      }
+      html.motion .quotes-track {
+        height: 420svh;
+        view-timeline-name: --qt;
+        view-timeline-axis: block;
+      }
+      html.motion .quotes-stage {
+        position: sticky;
+        top: 0;
+        height: 100svh;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        padding-top: calc(var(--header-h) + env(safe-area-inset-top, 0px) + 8px);
+        overflow: clip;
+      }
+      html.motion .quotes-head {
+        margin-bottom: 0;
+      }
+      html.motion .quotes-list {
+        position: relative;
+        display: block;
+        width: 100%;
+        max-width: none;
+        padding: 0;
+      }
+      html.motion .q {
+        position: absolute;
+        inset: 0;
+        align-content: center;
+        gap: clamp(18px, 3vh, 32px);
+        max-width: 1200px;
+        margin-inline: auto;
+        padding-inline: var(--gutter);
+      }
+      /* On a short screen the text shrinks with the height, so the longest quote fits the stage:
+         4.8svh caps landscape phones, the second term small phones (19.9px at 320x568). Neither
+         applies from 360x640 or at 1440x900. */
+      html.motion .q p {
+        font-size: clamp(16px, min(4.8svh, 3.5svh + 10vw - 32px), clamp(22px, 3vw, 46px));
+      }
+      html.motion .q-mark {
+        position: absolute;
+        left: calc(var(--gutter) - 0.04em);
+        top: clamp(-8px, 2vh, 24px);
+        z-index: 0;
+        height: auto;
+        line-height: 0.8;
+        opacity: 0.2;
+      }
+      html.motion .q blockquote,
+      html.motion .q figcaption {
+        position: relative;
+        z-index: 1;
+      }
+      /* Each word slides up out of its own mask. */
+      html.motion .w {
+        display: inline-block;
+        overflow: hidden;
+        vertical-align: top;
+        padding-bottom: 0.14em;
+        margin-bottom: -0.14em;
+      }
+      html.motion .w > span {
+        display: inline-block;
+        transform: translateY(110%);
+        animation: q-word linear both;
+        animation-timeline: --qt;
+        animation-range: cover calc(var(--a) + var(--w) * var(--s)) cover
+          calc(var(--a) + var(--w) * var(--s) + 5%);
+      }
+      html.motion .q-mark,
+      html.motion .q figcaption {
+        opacity: 0;
+        animation: q-fadein linear both;
+        animation-timeline: --qt;
+        animation-range: cover var(--a) cover calc(var(--a) + 8%);
+      }
+      html.motion .q-mark {
+        animation-name: q-markin;
+      }
+      html.motion .q-fade {
+        animation: q-out linear both;
+        animation-timeline: --qt;
+        animation-range: cover var(--o) cover calc(var(--o) + 4%);
+      }
+      html.motion .q-bar {
+        display: block;
+        height: 2px;
+        margin: 0 var(--gutter) clamp(20px, 4vh, 40px);
+        background: var(--line-night);
+      }
+      html.motion .q-bar span {
+        display: block;
+        height: 100%;
+        background: var(--glow);
+        transform: scaleX(0);
+        transform-origin: left;
+        animation: q-progress linear both;
+        animation-timeline: --qt;
+        animation-range: cover 20% cover 80%;
+      }
+      @media (max-width: 760px) {
+        html.motion .quotes-track {
+          height: 380svh;
+        }
+      }
     }
   }
 
@@ -547,19 +561,34 @@
   }
 }
 
-/* The lamp catches, dips once and holds. */
-@keyframes lamp-on {
-  0% {
-    opacity: 0;
+@keyframes q-word {
+  to {
+    transform: none;
   }
-  16% {
-    opacity: 0.75;
-  }
-  28% {
-    opacity: 0.3;
-  }
-  52%,
-  100% {
+}
+@keyframes q-fadein {
+  to {
     opacity: 1;
+  }
+}
+@keyframes q-markin {
+  from {
+    opacity: 0;
+    transform: scale(0.7) translateY(24px);
+  }
+  to {
+    opacity: 0.2;
+    transform: none;
+  }
+}
+@keyframes q-out {
+  to {
+    opacity: 0;
+    transform: translateY(-28px);
+  }
+}
+@keyframes q-progress {
+  to {
+    transform: scaleX(1);
   }
 }

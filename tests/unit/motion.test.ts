@@ -5,9 +5,9 @@ import {
   LENIS,
   LOADER,
   LOADER_EXIT_TOTAL,
+  QUOTES,
   SCRUB,
   WARM_CURVE,
-  WINDOW,
 } from "@/lib/motion";
 
 const tokens = readFileSync(new URL("../../src/styles/tokens.css", import.meta.url), "utf8");
@@ -36,14 +36,11 @@ describe("motion.ts mirrors the CSS motion tokens", () => {
     }
   });
 
-  it("every --window-* token equals the WINDOW entry of the same name", () => {
-    const windows = [...tokens.matchAll(/--window-([\w-]+):\s*([\d.]+)s;/g)];
-    expect(windows).toHaveLength(6);
-    for (const [, name = "", seconds = ""] of windows) {
-      const key = camel(name);
-      expect(Object.hasOwn(WINDOW, key), `WINDOW.${key} for --window-${name}`).toBe(true);
-      expect(WINDOW[key as keyof typeof WINDOW]).toBe(Number(seconds)); // key checked just above
-    }
+  it("the testimonial word range in home.css lasts QUOTES.word", () => {
+    const home = readFileSync(new URL("../../src/styles/home.css", import.meta.url), "utf8");
+    expect(home.replace(/\s+/g, " ")).toContain(
+      `cover calc(var(--a) + var(--w) * var(--s) + ${String(QUOTES.word)}%)`,
+    );
   });
 
   it("keeps the documented system values", () => {

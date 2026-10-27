@@ -675,3 +675,55 @@ html.motion .pane.is-lit::before { animation: lamp-on 1.5s linear calc(var(--d) 
   .panes { grid-template-columns: 1fr; max-width: 520px; gap: 36px; }
   .pane-glass { min-height: 0; border-radius: 50% 50% 22px 22px / 120px 120px 22px 22px; padding-top: 44px; }
 }
+
+/* ================= TESTIMONIALS: ONE QUOTE AT A TIME =================
+   Default (no motion, no scroll-driven animation support): a plain list of three quotes.
+   Enhanced: the section is tall, a sticky stage holds still, and the quotes replace each other
+   as you scroll. Every motion is a CSS scroll-driven animation on one named view timeline,
+   so it runs on the browser's scroll thread (no JavaScript on scroll). Only opacity and transform change. */
+.proto-tag { font: 600 11px/1 var(--text); letter-spacing: .08em; text-transform: uppercase; color: var(--moon-soft);
+  border: 1px solid var(--line-night); border-radius: 99px; padding: 7px 11px; white-space: nowrap; align-self: start; }
+.quotes { padding-block: clamp(96px, 16vh, 200px) 0; }
+.quotes-head { display: flex; justify-content: space-between; align-items: start; gap: 16px; margin-bottom: clamp(32px, 6vh, 64px); }
+.quotes-list { display: grid; gap: clamp(48px, 9vh, 96px); padding-bottom: clamp(48px, 9vh, 96px); max-width: min(1200px, 100% - 2 * var(--gutter)); margin-inline: auto; }
+.q { position: relative; margin: 0; display: grid; gap: 28px; }
+.q blockquote { margin: 0; }
+.q p { margin: 0; font: 500 clamp(22px, 3vw, 46px) / 1.2 var(--display); letter-spacing: -.01em; color: var(--moon); max-width: 24em; }
+.q-mark { font: 700 clamp(96px, 14vw, 200px) / .6 var(--display); color: var(--glow); opacity: .9; height: .45em; display: block; }
+.q figcaption { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; }
+.q-no { font: 600 12px/1 var(--text); letter-spacing: .08em; color: var(--moon-soft); margin-right: 8px; }
+.q .pane-role { font-weight: 600; color: var(--moon); }
+.q .pane-org { color: var(--moon-soft); }
+.q-bar { display: none; }
+
+@supports (animation-timeline: view()) and (timeline-scope: --a) {
+@media (prefers-reduced-motion: no-preference) {
+  html.motion .quotes { padding-block: 0; }
+  html.motion .quotes-track { height: 420svh; view-timeline-name: --qt; view-timeline-axis: block; }
+  html.motion .quotes-stage { position: sticky; top: 0; height: 100svh; display: grid; grid-template-rows: auto 1fr auto; padding-top: calc(var(--header-h) + 8px); overflow: clip; }
+  html.motion .quotes-head { margin-bottom: 0; }
+  html.motion .quotes-list { display: block; position: relative; width: 100%; max-width: none; padding: 0; }
+  html.motion .q { position: absolute; inset: 0; display: grid; align-content: center; gap: clamp(18px, 3vh, 32px);
+    padding-inline: var(--gutter); max-width: 1200px; margin-inline: auto; }
+  html.motion .q-mark { position: absolute; left: calc(var(--gutter) - .04em); top: clamp(-8px, 2vh, 24px); height: auto; line-height: .8; opacity: .2; z-index: 0; }
+  html.motion .q blockquote, html.motion .q figcaption { position: relative; z-index: 1; }
+  /* each word slides up out of its own mask; --a is where the quote starts, --w the word's index */
+  html.motion .w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .14em; margin-bottom: -.14em; }
+  html.motion .w > span { display: inline-block; transform: translateY(110%);
+    animation: q-word linear both; animation-timeline: --qt;
+    animation-range: cover calc(var(--a) + var(--w) * .16%) cover calc(var(--a) + var(--w) * .16% + 5%); }
+  html.motion .q-mark, html.motion .q figcaption { opacity: 0;
+    animation: q-fadein linear both; animation-timeline: --qt; animation-range: cover var(--a) cover calc(var(--a) + 8%); }
+  html.motion .q-mark { animation-name: q-markin; }
+  html.motion .q-fade { animation: q-out linear both; animation-timeline: --qt; animation-range: cover var(--o) cover calc(var(--o) + 4%); }
+  html.motion .q-bar { display: block; height: 2px; background: var(--line-night); margin: 0 var(--gutter) clamp(20px, 4vh, 40px); }
+  html.motion .q-bar span { display: block; height: 100%; background: var(--glow); transform-origin: left; transform: scaleX(0);
+    animation: q-progress linear both; animation-timeline: --qt; animation-range: cover 20% cover 80%; }
+}
+}
+@keyframes q-word { to { transform: none; } }
+@keyframes q-fadein { to { opacity: 1; } }
+@keyframes q-markin { from { opacity: 0; transform: scale(.7) translateY(24px); } to { opacity: .2; transform: none; } }
+@keyframes q-out { to { opacity: 0; transform: translateY(-28px); } }
+@keyframes q-progress { to { transform: scaleX(1); } }
+@media (max-width: 760px) { html.motion .quotes-track { height: 380svh; } }

@@ -7,7 +7,7 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { expect, test, type Locator, type Page } from "@playwright/test";
 import { publicTestimonials } from "@/lib/content/testimonials";
 import { heroMedia, mediaCopy } from "@/lib/media";
-import { beyond, bring, collectErrors, docTop, liveScrollTriggers } from "./page-helpers";
+import { beyond, collectErrors, docTop, liveScrollTriggers } from "./page-helpers";
 import { LEGAL_NAME } from "./routes";
 import { scrollToY, shellIdle, transitionsSettled, visited } from "./shell-helpers";
 
@@ -542,71 +542,103 @@ test.describe("reduced motion", () => {
     }
     expect(errors).toEqual([]);
   });
-  test("testimonials: every window lit and still before any scroll", async ({ page }) => {
+  test("testimonials: a plain list, every quote visible and still", async ({ page }) => {
     await page.goto("/fr");
     await shellIdle(page);
-    await expect(panes(page)).toHaveCount(3);
-    expect(await panesAtRest(page)).toBe(true);
-    expect(
-      await page
-        .locator("#testimonials")
-        .evaluate((el) => el.getAnimations({ subtree: true }).length),
-    ).toBe(0);
+    expect(await plainList(page)).toEqual(PLAIN_LIST);
   });
 });
 
-// The testimonials: three windows that light once, one after another, as they come into view, never
-// before; inside the page width; axe at the section once lit. One clip per width, to compare with
-// the prototype.
-const panes = (page: Page) => page.locator("#testimonials figure");
+// The testimonials: with scroll-driven animation support and motion, one sticky stage where the
+// quotes replace each other on scroll; otherwise a plain list. One clip per width, to compare
+// with the prototype.
+const quotes = (page: Page) => page.locator("#testimonials figure");
 
-const panesAtRest = (page: Page) =>
-  panes(page).evaluateAll((figures) =>
-    figures.every((f) => {
-      const parts = [f, ...f.querySelectorAll(".lamp, blockquote, figcaption")];
-      const glows = [f, f.querySelector(".pane-glass")].map((el) =>
-        el ? getComputedStyle(el, "::before").opacity : "",
-      );
-      return (
-        parts.every((el) => {
-          const s = getComputedStyle(el);
-          return (
-            s.opacity === "1" &&
-            (s.transform === "none" || new DOMMatrixReadOnly(s.transform).m42 === 0)
-          );
-        }) &&
-        glows.every((o) => o === "1") &&
-        f.getAnimations({ subtree: true }).every((a) => a.playState === "finished")
-      );
-    }),
-  );
+const PLAIN_LIST = { figures: 3, visible: true, sticky: false, animations: 0, apart: true };
 
-// The halo reaches past each figure on purpose and is clipped by the section, so a figure is only
-// checked by its box and a quote by its own overflow.
-const noHorizontalScroll = (page: Page) =>
-  page.evaluate(() => {
-    const width = document.documentElement.clientWidth;
-    const outside = (node: Element) => {
-      const box = node.getBoundingClientRect();
-      return box.left < 0 || box.right > width + 0.5;
-    };
-    const figures = [...document.querySelectorAll("#testimonials figure")].filter(outside);
-    const quotes = [...document.querySelectorAll("#testimonials blockquote p")].filter(
-      (p) => outside(p) || p.scrollWidth > p.clientWidth + 1,
-    );
+/** Every quote fully visible and still, nothing sticky or animated, each 48 to 96 px below the one
+    before, so none overlaps. */
+const plainList = (page: Page) =>
+  page.locator("#testimonials").evaluate((section) => {
+    const figures = [...section.querySelectorAll("figure")];
+    const parts = figures.flatMap((f) => [
+      f,
+      ...f.querySelectorAll("blockquote, figcaption, .w, .w > span"),
+    ]);
+    const boxes = figures.map((f) => f.getBoundingClientRect());
     return {
-      scroll: document.documentElement.scrollWidth - width,
-      outside: figures.length + quotes.length,
+      figures: figures.length,
+      visible: parts.every((el) => {
+        const s = getComputedStyle(el);
+        return s.opacity === "1" && s.transform === "none";
+      }),
+      sticky: [...section.querySelectorAll("*")].some(
+        (el) => getComputedStyle(el).position === "sticky",
+      ),
+      animations: section.getAnimations({ subtree: true }).length,
+      apart: boxes.slice(1).every((box, i) => {
+        const gap = box.top - (boxes[i]?.bottom ?? Infinity);
+        return gap >= 47.5 && gap <= 96.5;
+      }),
     };
   });
 
-interface Lit {
-  id: string;
-  at: number;
+/** Scrolls to a fraction of the track's cover range, the range its CSS animations use. */
+async function toCover(page: Page, progress: number): Promise<void> {
+  const { top, height, vh } = await page.locator(".quotes-track").evaluate((el) => ({
+    top: el.getBoundingClientRect().top + window.scrollY,
+    height: el.getBoundingClientRect().height,
+    vh: window.innerHeight,
+  }));
+  await scrollToY(page, top - vh + progress * (height + vh));
 }
 
+/** Per quote: "shown" when it and its caption are opaque and every word has risen, "hidden" when
+    it has faded out or no word has risen yet, "between" otherwise. */
+const quoteStates = (page: Page) =>
+  quotes(page).evaluateAll((figures) =>
+    figures.map((f) => {
+      const opacity = (el: Element | null) => {
+        let o = 1;
+        for (let n = el; n; n = n.parentElement) o *= Number(getComputedStyle(n).opacity);
+        return el ? o : 0;
+      };
+      const words = [...f.querySelectorAll(".w > span")];
+      const risen = words.filter((w) => {
+        const t = getComputedStyle(w).transform;
+        return t === "none" || Math.abs(new DOMMatrixReadOnly(t).m42) < 0.5;
+      }).length;
+      const figure = opacity(f);
+      const caption = opacity(f.querySelector("figcaption"));
+      if (figure > 0.99 && caption > 0.99 && risen === words.length) return "shown";
+      if (figure < 0.01 || (risen === 0 && caption < 0.01)) return "hidden";
+      return "between";
+    }),
+  );
+
+/** The shown quote sits between the heading and the bar, and the heading clears the header. The
+    header's layout height is used, not its box, which slides up while scrolling down. */
+const stageFits = (page: Page) =>
+  page.locator(".quotes-stage").evaluate((stage) => {
+    const box = (el: Element | null | undefined) => el?.getBoundingClientRect();
+    const heading = box(stage.querySelector("h2"));
+    const bar = box(stage.querySelector(".q-bar"));
+    const header = document.querySelector<HTMLElement>("header.site-header");
+    const shown = [...stage.querySelectorAll("figure")].find(
+      (f) => Number(getComputedStyle(f).opacity) > 0.99,
+    );
+    const quote = box(shown?.querySelector("blockquote"));
+    const caption = box(shown?.querySelector("figcaption"));
+    if (!heading || !bar || !header || !quote || !caption) return false;
+    return (
+      heading.top >= header.offsetHeight - 0.5 &&
+      quote.top >= heading.bottom - 0.5 &&
+      caption.bottom <= bar.top + 0.5
+    );
+  });
+
 test.describe("testimonials with motion", () => {
-  test("the windows light once on entering, one after another", async ({ browser }, info) => {
+  test("the quotes replace each other on scroll, and back", async ({ browser }, info) => {
     test.setTimeout(90_000);
     // Its own context, so only this test records a clip.
     const { baseURL, viewport, deviceScaleFactor, isMobile, hasTouch, userAgent } =
@@ -625,39 +657,34 @@ test.describe("testimonials with motion", () => {
     await visited(page);
     await page.goto("/fr");
     await shellIdle(page);
-    await expect(panes(page)).toHaveCount(3);
-    await expect(page.locator("#testimonials figure.is-lit")).toHaveCount(0);
-    // When each window starts to light: the moment it is lit plus its stagger, in page time (ms).
-    await page.locator("#testimonials").evaluate((section) => {
-      const w = window as unknown as { __lit: Lit[] };
-      w.__lit = [];
-      new MutationObserver((records) => {
-        for (const { target } of records) {
-          if (!(target instanceof HTMLElement) || !target.classList.contains("is-lit")) continue;
-          const id = target.dataset.testimonial ?? "";
-          if (w.__lit.some((l) => l.id === id)) continue;
-          const stagger = parseFloat(target.style.getPropertyValue("--d") || "0") * 1000;
-          w.__lit.push({ id, at: performance.now() + stagger });
-        }
-      }).observe(section, { subtree: true, attributes: true, attributeFilter: ["class"] });
-    });
+    await expect(quotes(page)).toHaveCount(3);
+    const supported = await page.evaluate(() => CSS.supports("animation-timeline", "view()"));
+    test.skip(!supported, "no CSS scroll-driven animations; the plain list is covered elsewhere");
 
-    // Scrolled in steps, so the clip shows the windows arriving.
-    const from = (await docTop(page.locator("#testimonials"))) - 900;
-    const to = await docTop(panes(page).last());
-    for (let y = from; y < to; y += 90) {
-      await scrollToY(page, y);
+    expect(
+      await page.locator(".quotes-stage").evaluate((el) => getComputedStyle(el).position),
+    ).toBe("sticky");
+    // Scrolled through in steps, so the clip shows the quotes arriving.
+    for (let p = 0; p <= 1; p += 0.02) {
+      await toCover(page, p);
       await page.waitForTimeout(60);
     }
-    await expect(page.locator("#testimonials figure.is-lit")).toHaveCount(3);
-    const lit = await page.evaluate(() => (window as unknown as { __lit: Lit[] }).__lit);
-    expect(lit.map((l) => l.id)).toEqual(["festival", "ophtachusm", "sos-dental"]);
-    const [first, second, third] = lit.map((l) => l.at);
-    expect(second).toBeGreaterThan(first ?? Infinity);
-    expect(third).toBeGreaterThan(second ?? Infinity);
-    await expect.poll(() => panesAtRest(page), { timeout: 6000 }).toBe(true);
+    const at = async (progress: number, states: string[]) => {
+      await toCover(page, progress);
+      await expect
+        .poll(() => quoteStates(page), { message: `at ${String(progress)}` })
+        .toEqual(states);
+      expect(await stageFits(page), `fits at ${String(progress)}`).toBe(true);
+    };
+    // The second quote starts fading at 52 % (QUOTES.fades), so it is checked at 50 %; the stage
+    // unsticks at 79 % of cover on phones, so the end is checked at 78 %.
+    await at(0.3, ["shown", "hidden", "hidden"]);
+    await at(0.5, ["hidden", "shown", "hidden"]);
+    await at(0.78, ["hidden", "hidden", "shown"]);
+    await at(0.5, ["hidden", "shown", "hidden"]);
+    await at(0.3, ["shown", "hidden", "hidden"]);
 
-    // Lit, so the contrast check measures the glow behind the text.
+    await toCover(page, 0.5);
     const axe = await new AxeBuilder({ page })
       .include("#testimonials")
       .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa", "best-practice"])
@@ -682,46 +709,82 @@ test("testimonials: no horizontal scroll at 320, 390 and 1440", async ({ page },
     for (const locale of LOCALES) {
       await page.goto(`/${locale}`);
       await shellIdle(page);
-      await bring(page, panes(page).last(), 0.2);
-      await expect(page.locator("#testimonials figure.is-lit")).not.toHaveCount(0);
-      expect(await noHorizontalScroll(page), `${locale} at ${String(width)}`).toEqual({
-        scroll: 0,
-        outside: 0,
-      });
+      for (const progress of [0.3, 0.5, 0.8]) {
+        await toCover(page, progress);
+        const overflow = await page.evaluate(() => ({
+          page: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+          quotes: [...document.querySelectorAll("#testimonials blockquote p")].filter(
+            (p) => p.scrollWidth > p.clientWidth + 1,
+          ).length,
+        }));
+        expect(overflow, `${locale} at ${String(width)}, ${String(progress)}`).toEqual({
+          page: 0,
+          quotes: 0,
+        });
+      }
     }
   }
+});
+
+test("testimonials: nothing focusable inside, and Tab goes on to the footer", async ({ page }) => {
+  await page.goto("/fr");
+  await shellIdle(page);
+  expect(
+    await page
+      .locator("#testimonials")
+      .locator("a, button, input, select, textarea, [tabindex]")
+      .count(),
+  ).toBe(0);
+  const next = page.locator("footer").locator("a, button").first();
+  // From the last focusable element before the section, one Tab lands in the footer.
+  await page.evaluate(() => {
+    const section = document.querySelector("#testimonials");
+    const before = [...document.querySelectorAll<HTMLElement>("main a, main button")].filter(
+      (el) =>
+        section !== null &&
+        (el.compareDocumentPosition(section) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0,
+    );
+    before.at(-1)?.focus();
+  });
+  await page.keyboard.press("Tab");
+  await expect(next).toBeFocused();
+  // And on through the footer to its last control.
+  const count = await page.locator("footer").locator("a, button").count();
+  for (let i = 1; i < count; i++) await page.keyboard.press("Tab");
+  await expect(page.locator("footer").locator("a, button").last()).toBeFocused();
 });
 
 test.describe("without JavaScript", () => {
   test.use({ javaScriptEnabled: false });
 
   // The three confirmed testimonials, in order: the quote, then the role and the organisation,
-  // nothing else (no field exists for a person's name).
+  // nothing else (no field exists for a person's name). The quote, split into words, still reads
+  // as the exact message text.
   for (const locale of LOCALES) {
     test(`${locale}: three testimonials in order with their role and organisation`, async ({
       page,
     }) => {
-      const quotes = MESSAGES[locale].testimonials;
+      const messages = MESSAGES[locale].testimonials;
       const ids = publicTestimonials().map((t) => t.id);
       expect(ids).toEqual(["festival", "ophtachusm", "sos-dental"]);
       await page.goto(`/${locale}`);
-      const figures = page.locator("#testimonials figure");
-      await expect(figures).toHaveCount(3);
+      await expect(quotes(page)).toHaveCount(3);
       for (const [i, id] of ids.entries()) {
-        const figure = figures.nth(i);
-        const quote = quotes[id];
+        const figure = quotes(page).nth(i);
+        const quote = messages[id];
         expect(quote, id).toBeDefined();
         await expect(figure).toHaveAttribute("data-testimonial", id);
-        await expect(figure.locator("blockquote")).toHaveText(quote?.text ?? "");
-        await expect(figure.locator(".pane-role")).toHaveText(quote?.role ?? "");
-        await expect(figure.locator(".pane-org")).toHaveText(quote?.organisation ?? "");
+        expect(await figure.locator("blockquote").textContent()).toBe(quote?.text);
+        await expect(figure.locator(".q-role")).toHaveText(quote?.role ?? "");
+        await expect(figure.locator(".q-org")).toHaveText(quote?.organisation ?? "");
+        await expect(figure.locator("[aria-hidden]")).toHaveText(["“", `0${String(i + 1)} / 03`]);
         // Nothing else: no name, no rating.
         await expect(figure).toHaveText(
-          `${quote?.text ?? ""}${quote?.role ?? ""}${quote?.organisation ?? ""}`,
+          `“${quote?.text ?? ""}0${String(i + 1)} / 03${quote?.role ?? ""}${quote?.organisation ?? ""}`,
         );
       }
       await expect(page.locator("html")).toHaveAttribute("lang", locale);
-      expect(await panesAtRest(page)).toBe(true);
+      expect(await plainList(page)).toEqual(PLAIN_LIST);
       const jsonLd = await page.locator('script[type="application/ld+json"]').allTextContents();
       expect(jsonLd.join("")).not.toMatch(/"(Review|reviewRating|aggregateRating|review)"/);
       expect(await page.content()).not.toContain("[TODO");

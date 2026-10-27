@@ -14,6 +14,8 @@ import {
   todoReport,
   type Testimonial,
 } from "@/lib/content/testimonials";
+import { QUOTES } from "@/lib/motion";
+import { quoteTiming, type QuoteTiming } from "@/lib/quotes";
 
 const fixture = (id: Testimonial["id"], confirmed: boolean): Testimonial => ({
   id,
@@ -94,7 +96,7 @@ describe("Testimonials section", () => {
     expect(renderToStaticMarkup(createElement(Testimonials, { title: "T", items: [] }))).toBe("");
   });
 
-  it("renders a figure with the quote, the role and the organisation", () => {
+  it("renders a figure with the quote split into words, the role and the organisation", () => {
     const html = renderToStaticMarkup(
       createElement(Testimonials, {
         title: "What clients say",
@@ -103,7 +105,7 @@ describe("Testimonials section", () => {
             id: "sos-dental",
             role: "Practice manager",
             organisation: "SOS Dental Clinic, Agadir",
-            text: "Quote.",
+            text: "Truly\u00a0great work.",
           },
         ],
       }),
@@ -111,8 +113,53 @@ describe("Testimonials section", () => {
     expect(html).toContain('id="testimonials"');
     expect(html).toContain('data-tone="night"');
     expect(html).toMatch(
-      /<figure[^>]*data-testimonial="sos-dental"><div class="pane-glass"><svg[^>]*aria-hidden="true".*?<\/svg><blockquote><p>Quote\.<\/p><\/blockquote><\/div><figcaption><span class="pane-line" aria-hidden="true"><\/span><span class="pane-role">Practice manager<\/span><span class="pane-org">SOS Dental Clinic, Agadir<\/span><\/figcaption><\/figure>/,
+      /<figure class="q" data-testimonial="sos-dental" style="--a:14%;--s:0.16%"><span class="q-mark" aria-hidden="true">“<\/span><blockquote><p><span class="w" style="--w:0"><span>Truly\u00a0great<\/span><\/span> <span class="w" style="--w:1"><span>work\.<\/span><\/span><\/p><\/blockquote><figcaption><span class="q-no" aria-hidden="true">01 \/ 01<\/span><span class="q-role">Practice manager<\/span><span class="q-org">SOS Dental Clinic, Agadir<\/span><\/figcaption><\/figure>/,
     );
     expect(html.match(/<figure/g)).toHaveLength(1);
+  });
+
+  it("fades every quote but the last", () => {
+    const items = ["festival", "ophtachusm", "sos-dental"].map((id) => ({
+      id,
+      role: "R",
+      organisation: "O",
+      text: "A b c.",
+    }));
+    const html = renderToStaticMarkup(createElement(Testimonials, { title: "T", items }));
+    expect(html.match(/class="q q-fade"/g)).toHaveLength(2);
+    expect(html.match(/--o:/g)).toHaveLength(2);
+    expect(html).toContain("03 / 03");
+  });
+});
+
+describe("quote timing", () => {
+  const done = ({ start, stagger }: QuoteTiming, words: number) =>
+    start + (words - 1) * stagger + QUOTES.word;
+
+  it("keeps the prototype's stagger when the quote is short enough", () => {
+    expect(quoteTiming(0, 3, 48)).toEqual({ start: 14, fade: 32, stagger: 0.16 });
+    expect(quoteTiming(2, 3, 44)).toEqual({ start: 58, fade: null, stagger: 0.16 });
+  });
+
+  it("tightens the stagger so the last word lands before the hold", () => {
+    const t = quoteTiming(1, 3, 61);
+    expect(t.stagger).toBeLessThan(0.16);
+    expect(done(t, 61)).toBeLessThanOrEqual(52 - QUOTES.hold);
+  });
+
+  it("lands every shipped quote in time, in both locales", () => {
+    for (const messages of [fr, en]) {
+      const ids = publicTestimonials().map((t) => t.id);
+      for (const [i, id] of ids.entries()) {
+        const words = messages.testimonials[id].text.trim().split(/ +/).length;
+        const t = quoteTiming(i, ids.length, words);
+        expect(done(t, words)).toBeLessThanOrEqual((t.fade ?? QUOTES.end) - QUOTES.hold);
+      }
+    }
+  });
+
+  it("never fades the last quote, even when fewer than three are confirmed", () => {
+    expect(quoteTiming(1, 2, 10).fade).toBeNull();
+    expect(quoteTiming(0, 1, 10).fade).toBeNull();
   });
 });

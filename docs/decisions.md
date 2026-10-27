@@ -45,7 +45,7 @@ Status: **Fixed**, **Provisional** (fixed unless the named spike fails), **Open*
 | D9 | Every primary call to action says "Contact" (FR: "Contact") and goes to the contact page. The contact page offers the email form and WhatsApp. | Fixed |
 | D10 | Word light floor: WordsLight's unlit words wait at opacity 0.14 (`REVEAL.wordsFrom`), the prototype value. 0.14 fails color contrast (1.32:1 on paper), which is accepted because the words are scrolled to full opacity before they are read and are plain, fully opaque text under reduced motion and without JavaScript (asserted in Playwright). The a11y spec excludes only `[data-words-light]` from axe's color-contrast rule. | Fixed |
 | D11 | The about page has no scroll-drawn line. It was removed after repeated jitter on phones. On touch, new scroll motion is native (sticky, CSS scroll-driven animations) or plays once; no JavaScript scrub. | Fixed |
-| D12 | Testimonials light up once on entering the screen (IntersectionObserver, no scrub), per the touch-motion rule. | Fixed |
+| D12 | Testimonials are one tall sticky section where the quotes replace each other, driven only by CSS scroll-driven animations; the plain list is the fallback. No JavaScript scrub, per the touch-motion rule. | Fixed |
 
 ## Technical
 
