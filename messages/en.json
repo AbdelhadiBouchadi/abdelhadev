@@ -404,6 +404,9 @@
         },
         "9": {
           "alt": "The acts catalogue in DentaFlow settings: codes, categories, durations and the NGAP nomenclature import"
+        },
+        "10": {
+          "alt": "WhatsApp settings in DentaFlow: automatic sending, sending hours, a test message and patient consent"
         }
       }
     },
@@ -514,6 +517,10 @@
           "agenda": {
             "title": "The clinic agenda",
             "text": "The day's and week's appointments, with their type."
+          },
+          "reminders": {
+            "title": "Automatic WhatsApp reminders",
+            "text": "Reminders go out on WhatsApp by themselves, with the wording and timing set by the clinic."
           },
           "patients": {
             "title": "Every patient",

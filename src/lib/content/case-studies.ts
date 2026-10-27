@@ -7,6 +7,7 @@ export const CASE_STUDIES: Readonly<Record<string, CaseStudy>> = caseStudies.par
     hero: { tone: "dark", skeleton: "agenda" },
     tour: [
       { key: "agenda", tone: "plain", skeleton: "agenda" },
+      { key: "reminders", tone: "plain", skeleton: "chat" },
       { key: "patients", tone: "plain", skeleton: "list" },
       { key: "record", tone: "plain", skeleton: "record" },
       { key: "odontogram", tone: "plain", skeleton: "plan" },

@@ -47,7 +47,7 @@ describe("caseStudyProjects", () => {
 
 describe("the screen count", () => {
   it("counts the tour's real screens, so DentaFlow's sheet links to the case study", () => {
-    expect(study.tour).toHaveLength(7);
+    expect(study.tour).toHaveLength(8);
     expect(screenCount(dentaflow)).toBe(tourMedia("dentaflow").size);
     expect(screenCount(dentaflow)).toBeGreaterThan(sheetMedia(dentaflow).length);
     expect(hasMoreScreens(dentaflow)).toBe(true);
@@ -64,6 +64,7 @@ describe("the case study schema", () => {
   it("ports the DentaFlow tour in the prompt's order and skeletons", () => {
     expect(study.tour.map((s) => `${s.key} ${s.skeleton}`)).toEqual([
       "agenda agenda",
+      "reminders chat",
       "patients list",
       "record record",
       "odontogram plan",

@@ -1,5 +1,5 @@
 {
-  "readme": "Which of the owner's files is shown where (08b). Edit by hand, then run pnpm media. role: work (the work page sheet, in this order, up to its slots), tour (the case study tour, step 1 to 7), hero (place case: the case study hero; place home: the home featured tiles, in this order) or spare (never published, with the reason). key: messages work.<slug>.media.<n> holds alt (and label for a video) in both locales. A file may appear twice (work and tour) with the same key. This is the only place the file names are written.",
+  "readme": "Which of the owner's files is shown where (08b). Edit by hand, then run pnpm media. role: work (the work page sheet, in this order, up to its slots), tour (the case study tour, step 1 to 8), hero (place case: the case study hero; place home: the home featured tiles, in this order) or spare (never published, with the reason). key: messages work.<slug>.media.<n> holds alt (and label for a video) in both locales. A file may appear twice (work and tour) with the same key. This is the only place the file names are written.",
   "projects": {
     "dentaflow": [
       {
@@ -34,39 +34,45 @@
         "key": "work.dentaflow.media.2"
       },
       {
-        "file": "03-patients.png",
+        "file": "10-whatsapp.png",
         "role": "tour",
         "step": 2,
+        "key": "work.dentaflow.media.10"
+      },
+      {
+        "file": "03-patients.png",
+        "role": "tour",
+        "step": 3,
         "key": "work.dentaflow.media.3"
       },
       {
         "file": "06-patient-file.png",
         "role": "tour",
-        "step": 3,
+        "step": 4,
         "key": "work.dentaflow.media.6"
       },
       {
         "file": "04-odontogram.png",
         "role": "tour",
-        "step": 4,
+        "step": 5,
         "key": "work.dentaflow.media.4"
       },
       {
         "file": "09-settings-acts.png",
         "role": "tour",
-        "step": 5,
+        "step": 6,
         "key": "work.dentaflow.media.9"
       },
       {
         "file": "08-documents.png",
         "role": "tour",
-        "step": 6,
+        "step": 7,
         "key": "work.dentaflow.media.8"
       },
       {
         "file": "05-statistics.png",
         "role": "tour",
-        "step": 7,
+        "step": 8,
         "key": "work.dentaflow.media.5"
       },
       {

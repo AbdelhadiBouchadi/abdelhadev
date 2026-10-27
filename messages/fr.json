@@ -404,6 +404,9 @@
         },
         "9": {
           "alt": "Catalogue des actes dans les paramètres de DentaFlow\u00a0: codes, catégories, durées et import de la nomenclature NGAP"
+        },
+        "10": {
+          "alt": "Paramètres WhatsApp de DentaFlow : envois automatiques, heures d'envoi, message de test et consentement des patients"
         }
       }
     },
@@ -514,6 +517,10 @@
           "agenda": {
             "title": "L'agenda du cabinet",
             "text": "Les rendez-vous du jour et de la semaine, avec leur type."
+          },
+          "reminders": {
+            "title": "Rappels WhatsApp automatiques",
+            "text": "Les rappels WhatsApp partent seuls, avec le texte et le délai choisis par le cabinet."
           },
           "patients": {
             "title": "Tous les patients",
