@@ -5,6 +5,7 @@ import { ContactForm, type ContactFormCopy } from "@/components/sections/contact
 import { getPathname } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { CONTACT_FORM_ID, mapFields, TOPICS } from "@/lib/contact-schema";
+import { SITE } from "@/lib/site";
 
 export interface ContactFormCardProps {
   locale: Locale;
@@ -25,7 +26,20 @@ export async function ContactFormCard({ locale }: ContactFormCardProps) {
     submit: t("submit"),
     sending: t("sending"),
     success: { title: t("success.title"), text: t("success.text"), again: t("success.again") },
-    failed: { send: t("failed.send"), rateLimit: t("failed.rateLimit") },
+    failed: {
+      send: t("failed.send"),
+      rateLimit: t("failed.rateLimit"),
+      refused: t("failed.refused"),
+      direct: t.rich("failed.direct", {
+        email: SITE.email,
+        mail: (chunks) => <a href={`mailto:${SITE.email}`}>{chunks}</a>,
+        linkedin: (chunks) => (
+          <a href={SITE.linkedin} target="_blank" rel="noopener noreferrer">
+            {chunks}
+          </a>
+        ),
+      }),
+    },
     toast: {
       region: t("toast.region"),
       close: t("toast.close"),

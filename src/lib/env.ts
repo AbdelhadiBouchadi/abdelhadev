@@ -3,9 +3,13 @@
    message. */
 import "server-only";
 import { z } from "zod";
+import { SITE } from "@/lib/site";
 
-/** Resend's own domain until abdelhadev.me is verified there. */
-export const DEFAULT_CONTACT_FROM = "Abdelhadev <onboarding@resend.dev>";
+/** The domain verified in Resend. */
+const MAIL_DOMAIN = new URL(SITE.url).hostname;
+
+/** "Name <address>" or a bare address. */
+const addressOf = (from: string) => (/<([^<>]+)>\s*$/.exec(from)?.[1] ?? from).trim();
 
 const schema = z
   .object({
@@ -15,8 +19,12 @@ const schema = z
     // Contact form: required in production (below), optional elsewhere.
     RESEND_API_KEY: z.string().min(1).optional(),
     CONTACT_TO: z.email().optional(),
-    /** "Name <address>", as Resend expects it. */
-    CONTACT_FROM: z.string().min(3).default(DEFAULT_CONTACT_FROM),
+    /** "Name <address>", as Resend expects it. One line: it becomes a mail header. */
+    CONTACT_FROM: z
+      .string()
+      .min(3)
+      .regex(/^[^\r\n]+$/)
+      .optional(),
     ARCJET_KEY: z.string().min(1).optional(),
     /** 1: validate and report success without calling Resend or Arcjet (tests only). */
     CONTACT_DRY_RUN: z.enum(["0", "1"]).default("0"),
@@ -31,7 +39,7 @@ const schema = z
           "CONTACT_DRY_RUN=1 is not allowed in production: the contact form would report success without sending anything. Remove the variable from the production environment.",
       });
     }
-    for (const name of ["RESEND_API_KEY", "CONTACT_TO", "ARCJET_KEY"] as const) {
+    for (const name of ["RESEND_API_KEY", "CONTACT_TO", "CONTACT_FROM", "ARCJET_KEY"] as const) {
       if (value[name] === undefined) {
         ctx.addIssue({
           code: "custom",
@@ -39,6 +47,13 @@ const schema = z
           message: `${name} is required in production (the contact form cannot run without it).`,
         });
       }
+    }
+    if (value.CONTACT_FROM && !addressOf(value.CONTACT_FROM).endsWith(`@${MAIL_DOMAIN}`)) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["CONTACT_FROM"],
+        message: `CONTACT_FROM must be an address on ${MAIL_DOMAIN} in production (the domain verified in Resend).`,
+      });
     }
   });
 

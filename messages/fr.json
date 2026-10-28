@@ -308,7 +308,7 @@
         "other": "Autre chose"
       },
       "hint": "Expliquez comment votre équipe travaille aujourd'hui et ce qui vous fait perdre du temps\u00a0: c'est un très bon point de départ.",
-      "honeypot": "Société",
+      "honeypot": "Ne pas remplir",
       "errors": {
         "name": "Indiquez votre nom pour que je sache à qui répondre.",
         "email": "Indiquez une adresse e-mail valide, par exemple nom@exemple.ma.",
@@ -325,7 +325,9 @@
       },
       "failed": {
         "send": "Le message n'a pas pu être envoyé. Votre texte est conservé\u00a0: réessayez, ou écrivez-moi sur WhatsApp.",
-        "rateLimit": "Trop de messages envoyés en peu de temps. Réessayez un peu plus tard, ou écrivez-moi sur WhatsApp."
+        "rateLimit": "Trop de messages envoyés en peu de temps. Réessayez un peu plus tard, ou écrivez-moi sur WhatsApp.",
+        "refused": "Je n'ai pas pu transmettre votre message depuis ce formulaire. Votre texte est conservé.",
+        "direct": "Vous pouvez m'écrire directement à <mail>{email}</mail> ou sur <linkedin>LinkedIn</linkedin>."
       },
       "toast": {
         "region": "Notifications",

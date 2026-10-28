@@ -308,7 +308,7 @@
         "other": "Something else"
       },
       "hint": "How your team works today and what slows you down is a perfect start.",
-      "honeypot": "Company",
+      "honeypot": "Leave this empty",
       "errors": {
         "name": "Enter your name so I know who to reply to.",
         "email": "Enter an email address like name@example.com.",
@@ -325,7 +325,9 @@
       },
       "failed": {
         "send": "The message could not be sent. Your words are kept: try again, or write to me on WhatsApp.",
-        "rateLimit": "Too many messages in a short time. Try again later or write to me on WhatsApp."
+        "rateLimit": "Too many messages in a short time. Try again later or write to me on WhatsApp.",
+        "refused": "I could not pass your message on from this form. Your words are kept.",
+        "direct": "You can write to me directly at <mail>{email}</mail> or on <linkedin>LinkedIn</linkedin>."
       },
       "toast": {
         "region": "Notifications",

@@ -7,7 +7,12 @@ import type { ArcjetMode } from "@/lib/env";
 /** About five messages an hour per IP address. */
 export const CONTACT_RATE = { max: 5, interval: "1h" } as const;
 
-export type GuardVerdict = "allow" | "rateLimit" | "bot";
+/**
+ * `other` is a denial from neither rule below, such as a rule set in the Arcjet dashboard.
+ * `detail` holds Arcjet's reason type, conclusion, denied bot names and decision id, never the IP.
+ */
+export type GuardVerdict =
+  { verdict: "allow" } | { verdict: "rateLimit" | "bot" | "other"; detail: string };
 
 export interface Guard {
   check(): Promise<GuardVerdict>;
@@ -33,14 +38,21 @@ export function createArcjetGuard(
         const decision = await aj.protect(await request());
         if (decision.isErrored()) {
           log("contact: arcjet errored, failing open");
-          return "allow";
+          return { verdict: "allow" };
         }
-        if (!decision.isDenied()) return "allow";
-        // Only the two rules above can deny; anything else is treated as automated.
-        return decision.reason.isRateLimit() ? "rateLimit" : "bot";
+        if (!decision.isDenied()) return { verdict: "allow" };
+        const { reason } = decision;
+        const detail = [`arcjet=${reason.type ?? "UNKNOWN"}`, `conclusion=${decision.conclusion}`];
+        if (reason.isBot()) {
+          detail.push(`denied=${reason.denied.join(",") || "none"}`, `spoofed=${reason.spoofed}`);
+        }
+        // Finds the request in the Arcjet dashboard.
+        detail.push(`id=${decision.id}`);
+        const verdict = reason.isRateLimit() ? "rateLimit" : reason.isBot() ? "bot" : "other";
+        return { verdict, detail: detail.join(" ") };
       } catch {
         log("contact: arcjet threw, failing open");
-        return "allow";
+        return { verdict: "allow" };
       }
     },
   };

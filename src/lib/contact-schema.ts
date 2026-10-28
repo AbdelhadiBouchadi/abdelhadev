@@ -27,7 +27,8 @@ export const contactSchema = z.object({
   email: z.string().trim().max(LIMITS.email.max, "email").pipe(z.email("email")),
   topic: z.enum(TOPICS, "topic"),
   message: z.string().trim().min(LIMITS.message.min, "message").max(LIMITS.message.max, "message"),
-  company: z.string().max(0),
+  // The honeypot. Its name and label are ones autofill and password managers do not recognise.
+  extra: z.string().max(0),
   locale: z.enum(routing.locales),
 });
 
@@ -41,7 +42,7 @@ export type ContactErrors = Partial<Record<ContactField, ContactErrorKey>>;
 export type ContactState =
   | { status: "idle" }
   | { status: "invalid"; errors: ContactErrors; values: ContactValues }
-  | { status: "failed"; reason: "send" | "rateLimit"; values: ContactValues }
+  | { status: "failed"; reason: "send" | "rateLimit" | "refused"; values: ContactValues }
   | { status: "sent" };
 
 export const INITIAL_CONTACT_STATE: ContactState = { status: "idle" };
@@ -58,7 +59,7 @@ export function readContactForm(data: FormData) {
     email: text(data, "email"),
     topic: text(data, "topic"),
     message: text(data, "message"),
-    company: text(data, "company"),
+    extra: text(data, "extra"),
     locale: text(data, "locale"),
   };
 }

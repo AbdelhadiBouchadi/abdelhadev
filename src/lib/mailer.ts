@@ -1,8 +1,7 @@
-/* Resend's message text never leaves this module: a failure comes back with a provider code only. */
+/* Resend's message text never leaves this module: a failure comes back with a provider code only.
+   Plain text only: no HTML part means no layout, no images and no tracking pixel. */
 import "server-only";
-import { createElement } from "react";
 import { Resend } from "resend";
-import { ContactFormEmail, type ContactEmailProps } from "@/emails/contact-form";
 
 export interface Mail {
   from: string;
@@ -10,7 +9,6 @@ export interface Mail {
   replyTo: string;
   subject: string;
   text: string;
-  content: ContactEmailProps;
 }
 
 export type MailResult = { ok: true } | { ok: false; code: string };
@@ -29,7 +27,6 @@ export function createResendMailer(apiKey: string): Mailer {
           to: [mail.to],
           replyTo: mail.replyTo,
           subject: mail.subject,
-          react: createElement(ContactFormEmail, mail.content),
           text: mail.text,
         });
         if (error)

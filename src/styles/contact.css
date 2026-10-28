@@ -99,6 +99,11 @@
   .form-failed {
     margin: 0;
   }
+  .form-failed a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
   .field.has-error input,
   .field.has-error select,
   .field.has-error textarea {

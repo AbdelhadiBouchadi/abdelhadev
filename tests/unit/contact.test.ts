@@ -1,16 +1,13 @@
 // The schema and its error keys in both locales, the handler's branches with a fake mailer and
 // guard, no personal data in any log line, the WhatsApp composer and the environment rules.
-import { render } from "@react-email/render";
-import { createElement } from "react";
 import { describe, expect, it, vi } from "vitest";
 import en from "@messages/en.json";
 import fr from "@messages/fr.json";
-import { ContactFormEmail } from "@/emails/contact-form";
 import {
   contactBody,
-  contactContent,
   contactSubject,
   handleContact,
+  subjectName,
   type ContactDeps,
 } from "@/lib/contact-handler";
 import {
@@ -20,7 +17,7 @@ import {
   readContactForm,
   type ContactInput,
 } from "@/lib/contact-schema";
-import { arcjetMode, DEFAULT_CONTACT_FROM, parseEnv } from "@/lib/env";
+import { arcjetMode, parseEnv } from "@/lib/env";
 import type { Guard, GuardVerdict } from "@/lib/guard";
 import type { Mail, Mailer, MailResult } from "@/lib/mailer";
 import { composeWhatsApp, whatsAppHref } from "@/lib/whatsapp";
@@ -30,7 +27,7 @@ const VALID: ContactInput = {
   email: "amina@clinique-exemple.ma",
   topic: "clinic",
   message: "Nous gérons nos rendez-vous sur papier et nous perdons du temps chaque jour.",
-  company: "",
+  extra: "",
   locale: "fr",
 };
 
@@ -74,7 +71,7 @@ describe("contact schema", () => {
 
   it("reports a filled honeypot or an unknown locale as tampering, not a field error", () => {
     for (const input of [
-      { ...VALID, company: "ACME" },
+      { ...VALID, extra: "ACME" },
       { ...VALID, locale: "de" },
     ]) {
       const result = validateContact(input);
@@ -100,9 +97,11 @@ describe("contact schema", () => {
   it("reads a file field or a missing field as empty", () => {
     const data = new FormData();
     data.set("name", new Blob(["x"]));
-    expect(readContactForm(data)).toMatchObject({ name: "", email: "", company: "" });
+    expect(readContactForm(data)).toMatchObject({ name: "", email: "", extra: "" });
   });
 });
+
+const FROM = "Abdelhadev <contact@abdelhadev.me>";
 
 function setup(options: { dryRun?: boolean; verdict?: GuardVerdict; result?: MailResult } = {}) {
   const sent: Mail[] = [];
@@ -114,16 +113,15 @@ function setup(options: { dryRun?: boolean; verdict?: GuardVerdict; result?: Mai
     }),
   };
   const guard: Guard = {
-    check: vi.fn(async (): Promise<GuardVerdict> => options.verdict ?? "allow"),
+    check: vi.fn(async (): Promise<GuardVerdict> => options.verdict ?? { verdict: "allow" }),
   };
   const deps: ContactDeps = {
     dryRun: options.dryRun ?? false,
     mailer,
     guard,
-    from: DEFAULT_CONTACT_FROM,
+    from: FROM,
     to: "inbox@example.test",
     topicLabel: async ({ topic }) => fr.contact.form.topics[topic],
-    now: () => new Date("2026-10-18T09:30:00Z"),
     log: (line) => lines.push(line),
   };
   return { deps, sent, lines, mailer, guard };
@@ -156,28 +154,50 @@ describe("contact handler", () => {
     expect(mailer.send).not.toHaveBeenCalled();
   });
 
-  it("honeypot: reports success and sends nothing", async () => {
+  it("honeypot: refused with its own reason, the words kept, nothing sent", async () => {
     const { deps, guard, mailer, lines } = setup();
-    expect(await handleContact(form({ company: "ACME" }), deps)).toEqual({ status: "sent" });
+    const state = await handleContact(form({ extra: "ACME" }), deps);
+    expect(state).toMatchObject({ status: "failed", reason: "refused" });
+    expect(state.status === "failed" && state.values.message).toBe(VALID.message);
     expect(guard.check).not.toHaveBeenCalled();
     expect(mailer.send).not.toHaveBeenCalled();
+    expect(lines).toEqual(["contact: refused reason=honeypot"]);
+    expect(lines.join("\n")).not.toContain("ACME");
     expectNoPersonalData(lines);
   });
 
+  it("honeypot: an empty one is not a refusal", async () => {
+    const { deps, lines } = setup();
+    expect(await handleContact(form({ extra: "" }), deps)).toEqual({ status: "sent" });
+    expect(lines.join("\n")).not.toContain("refused");
+  });
+
   it("rate limited: the translated error key, the words kept, nothing sent", async () => {
-    const { deps, mailer, lines } = setup({ verdict: "rateLimit" });
+    const detail = "arcjet=RATE_LIMIT conclusion=DENY id=lreq_1";
+    const { deps, mailer, lines } = setup({ verdict: { verdict: "rateLimit", detail } });
     const state = await handleContact(form(), deps);
     expect(state).toMatchObject({ status: "failed", reason: "rateLimit" });
     expect(state.status === "failed" && state.values.message).toBe(VALID.message);
     expect(mailer.send).not.toHaveBeenCalled();
+    expect(lines).toEqual([`contact: refused reason=arcjet_rate ${detail}`]);
     expectNoPersonalData(lines);
   });
 
-  it("bot: a silent success, nothing sent", async () => {
-    const { deps, mailer } = setup({ verdict: "bot" });
-    expect(await handleContact(form(), deps)).toEqual({ status: "sent" });
-    expect(mailer.send).not.toHaveBeenCalled();
-  });
+  it.each([
+    ["bot", "arcjet_bot", "arcjet=BOT conclusion=DENY denied=CURL spoofed=false id=lreq_2"],
+    ["other", "arcjet_other", "arcjet=FILTER conclusion=DENY id=lreq_3"],
+  ] as const)(
+    "arcjet %s: a visible refusal with its own reason code, nothing sent",
+    async (verdict, code, detail) => {
+      const { deps, mailer, lines } = setup({ verdict: { verdict, detail } });
+      const state = await handleContact(form(), deps);
+      expect(state).toMatchObject({ status: "failed", reason: "refused" });
+      expect(state.status === "failed" && state.values.message).toBe(VALID.message);
+      expect(mailer.send).not.toHaveBeenCalled();
+      expect(lines).toEqual([`contact: refused reason=${code} ${detail}`]);
+      expectNoPersonalData(lines);
+    },
+  );
 
   it("mailer failure: the send error, never the provider's text", async () => {
     const { deps, lines } = setup({ result: { ok: false, code: "validation_error 422" } });
@@ -193,32 +213,36 @@ describe("contact handler", () => {
     const state = await handleContact(form(), { ...deps, mailer: null, guard: null });
     expect(state).toMatchObject({ status: "failed", reason: "send" });
     expect(lines.join("\n")).toMatch(/ARCJET_KEY not set/);
-    expect(lines.join("\n")).toMatch(/RESEND_API_KEY or CONTACT_TO not set/);
+    expect(lines.join("\n")).toMatch(/RESEND_API_KEY, CONTACT_TO or CONTACT_FROM not set/);
     expectNoPersonalData(lines);
   });
 
-  it("sends one email (template and text) to the inbox, replying to the visitor", async () => {
+  it("sends one plain-text email from my domain to the inbox, replying to the visitor", async () => {
     const { deps, sent, lines } = setup();
     expect(await handleContact(form(), deps)).toEqual({ status: "sent" });
     expect(sent).toHaveLength(1);
     const [mail] = sent;
-    const topic = fr.contact.form.topics.clinic;
-    expect(mail).toMatchObject({
-      from: DEFAULT_CONTACT_FROM,
+    expect(mail).toEqual({
+      from: FROM,
       to: "inbox@example.test",
       replyTo: VALID.email,
-      subject: `[Abdelhadev] ${topic} - ${VALID.name}`,
-      content: { name: VALID.name, email: VALID.email, topic, message: VALID.message },
+      subject: `Nouveau message de ${VALID.name}`,
+      text: expect.any(String),
     });
+    // Only these keys reach Resend: no html and no react part.
+    expect(Object.keys(mail ?? {}).sort()).toEqual(["from", "replyTo", "subject", "text", "to"]);
     expect(mail?.text).toContain(VALID.message);
-    expect(mail?.text).toContain("Langue de la page : fr");
-    expect(mail?.content.sentAt).toContain("18 octobre 2026");
+    expect(mail?.text).toContain("Langue de la page : fr");
+    expect(mail?.text).not.toMatch(/<[a-z][\s\S]*>/i);
     expect(mail?.text).not.toMatch(/\b\d{1,3}(?:\.\d{1,3}){3}\b/);
     expect(lines).toEqual(["contact: sent"]);
   });
 
-  it("builds the subject from the topic and the name", () => {
-    expect(contactSubject("Autre chose", "Sami")).toBe("[Abdelhadev] Autre chose - Sami");
+  it("missing sender: nothing sent, a send error", async () => {
+    const { deps, mailer } = setup();
+    const state = await handleContact(form(), { ...deps, from: null });
+    expect(state).toMatchObject({ status: "failed", reason: "send" });
+    expect(mailer.send).not.toHaveBeenCalled();
   });
 });
 
@@ -229,38 +253,30 @@ describe("contact email", () => {
     return result.data;
   })();
   const topic = fr.contact.form.topics.other;
-  const at = new Date("2026-10-18T09:30:00Z");
 
-  it("renders the name, the email as a mailto link, the topic and the message", async () => {
-    const html = await render(createElement(ContactFormEmail, contactContent(data, topic, at)));
-    expect(html).toContain("Nouveau message depuis abdelhadev.me");
-    expect(html).toContain(VALID.name);
-    expect(html).toContain(`href="mailto:${VALID.email}"`);
-    expect(html).toContain(topic);
-    expect(html).toContain(VALID.message);
-    expect(html).toContain("Répondre");
-    expect(html).toContain("white-space:pre-wrap");
+  it("writes the subject in the visitor's language", () => {
+    expect(contactSubject("Sami", "fr")).toBe("Nouveau message de Sami");
+    expect(contactSubject("Sami", "en")).toBe("New message from Sami");
   });
 
-  it("escapes HTML in the visitor's words", async () => {
-    const hostile = {
-      ...contactContent(data, topic, at),
-      name: '<img src=x onerror="alert(1)">',
-      message: '<script>alert("x")</script>\n<b>bold</b>',
-    };
-    const html = await render(createElement(ContactFormEmail, hostile));
-    expect(html).not.toContain("<script>");
-    expect(html).not.toContain("<b>bold</b>");
-    expect(html).not.toContain("<img src=x");
-    expect(html).toContain("&lt;script&gt;");
+  it("keeps line breaks and control characters out of the subject", () => {
+    const subject = contactSubject("Sami\r\nBcc: victim@example.test\u0000\u2028x", "en");
+    expect(subject).not.toMatch(/[\r\n\u0000\u2028]/);
+    expect(subject).toBe("New message from Sami Bcc: victim@example.test x");
   });
 
-  it("writes the same data in the text version", () => {
-    const text = contactBody(data, topic, at);
-    for (const value of [VALID.name, VALID.email, topic, VALID.message]) {
+  it("trims a long name to a safe length", () => {
+    const name = subjectName("x".repeat(80));
+    expect(Array.from(name)).toHaveLength(60);
+    expect(name.endsWith("…")).toBe(true);
+    expect(subjectName("  Amina   Haddad ")).toBe("Amina Haddad");
+  });
+
+  it("writes the name, email, topic, message and page language as plain text", () => {
+    const text = contactBody(data, topic);
+    for (const value of [VALID.name, VALID.email, topic, VALID.message, "Langue de la page : fr"]) {
       expect(text).toContain(value);
     }
-    expect(text).toContain(contactContent(data, topic, at).sentAt);
   });
 });
 
@@ -303,14 +319,24 @@ describe("contact environment", () => {
     VERCEL_ENV: "production",
     RESEND_API_KEY: "re_test",
     CONTACT_TO: "inbox@example.test",
+    CONTACT_FROM: FROM,
     ARCJET_KEY: "ajkey_test",
   };
 
-  it("accepts a complete production configuration with the default sender", () => {
-    expect(parseEnv(production)).toMatchObject({
-      CONTACT_FROM: DEFAULT_CONTACT_FROM,
-      CONTACT_DRY_RUN: "0",
-    });
+  it("accepts a complete production configuration", () => {
+    expect(parseEnv(production)).toMatchObject({ CONTACT_FROM: FROM, CONTACT_DRY_RUN: "0" });
+    expect(parseEnv({ ...production, CONTACT_FROM: "contact@abdelhadev.me" }).CONTACT_FROM).toBe(
+      "contact@abdelhadev.me",
+    );
+  });
+
+  it("refuses a sender off my domain in production, and any sender over two lines", () => {
+    expect(() =>
+      parseEnv({ ...production, CONTACT_FROM: "Abdelhadev <onboarding@resend.dev>" }),
+    ).toThrow(/CONTACT_FROM must be an address on abdelhadev\.me/);
+    expect(() => parseEnv({ CONTACT_FROM: "A <a@abdelhadev.me>\nBcc: x@y.z" })).toThrow(
+      /CONTACT_FROM/,
+    );
   });
 
   it("refuses a dry run in production, with a clear message", () => {
@@ -319,9 +345,9 @@ describe("contact environment", () => {
     );
   });
 
-  it("requires the key, the inbox and Arcjet in production, naming each", () => {
+  it("requires the key, the inbox, the sender and Arcjet in production, naming each", () => {
     expect(() => parseEnv({ VERCEL_ENV: "production" })).toThrow(
-      /RESEND_API_KEY[\s\S]*CONTACT_TO[\s\S]*ARCJET_KEY/,
+      /RESEND_API_KEY[\s\S]*CONTACT_TO[\s\S]*CONTACT_FROM[\s\S]*ARCJET_KEY/,
     );
   });
 

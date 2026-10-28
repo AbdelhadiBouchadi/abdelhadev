@@ -4,7 +4,7 @@ import fr from "@messages/fr.json";
 import { readFileSync } from "node:fs";
 import { PROJECTS, PROJECT_SLUGS } from "@/lib/content/projects";
 import { project } from "@/lib/content/schema";
-import { DEFAULT_CONTACT_FROM, parseEnv } from "@/lib/env";
+import { parseEnv } from "@/lib/env";
 import { SITE, todoReport } from "@/lib/site";
 import { isTodo } from "@/lib/todo";
 
@@ -93,7 +93,6 @@ describe("env", () => {
   it("treats empty values as unset and keeps Resend optional", () => {
     expect(parseEnv({ VERCEL_ENV: "", RESEND_API_KEY: "" })).toEqual({
       NODE_ENV: "development",
-      CONTACT_FROM: DEFAULT_CONTACT_FROM,
       CONTACT_DRY_RUN: "0",
     });
   });
