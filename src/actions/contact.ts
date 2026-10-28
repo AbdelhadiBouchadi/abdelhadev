@@ -23,14 +23,13 @@ export async function sendContact(_previous: ContactState, data: FormData): Prom
     dryRun: env.CONTACT_DRY_RUN === "1",
     mailer,
     guard,
-    from: env.CONTACT_FROM,
+    from: env.CONTACT_FROM ?? null,
     to: env.CONTACT_TO ?? null,
     // The email is only for me, so its topic label is always French (docs/decisions.md).
     topicLabel: async ({ topic }) => {
       const t = await getTranslations({ locale: "fr", namespace: "contact.form.topics" });
       return t(topic);
     },
-    now: () => new Date(),
     log,
   });
 }

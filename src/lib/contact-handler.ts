@@ -1,5 +1,5 @@
-/* The outside world (mailer, guard, clock, log) comes in as arguments, so every branch is
-   unit-tested without the network. Logs hold fixed phrases and provider codes, never what the
+/* The outside world (mailer, guard, log) comes in as arguments, so every branch is unit-tested
+   without the network. Logs hold fixed phrases, reason codes and provider codes, never what the
    visitor typed. */
 import "server-only";
 import {
@@ -7,73 +7,82 @@ import {
   validateContact,
   valuesOf,
   type ContactData,
+  type ContactInput,
   type ContactState,
   type Topic,
 } from "@/lib/contact-schema";
-import type { ContactEmailProps } from "@/emails/contact-form";
 import type { Guard } from "@/lib/guard";
 import type { Mailer } from "@/lib/mailer";
-import { SITE } from "@/lib/site";
+import type { Locale } from "@/i18n/routing";
 
 export interface ContactDeps {
   dryRun: boolean;
   /** null outside production when the key is missing (src/lib/env.ts). */
   mailer: Mailer | null;
   guard: Guard | null;
-  from: string;
+  from: string | null;
   to: string | null;
   /** In French whatever the page language: the email is only for me. */
   topicLabel: (data: ContactData) => Promise<string>;
-  now: () => Date;
   log: (line: string) => void;
 }
 
-/** "[Abdelhadev] Une boutique en ligne - Amina" */
-export const contactSubject = (topic: string, name: string) => `[Abdelhadev] ${topic} - ${name}`;
+/** One per check that can turn a visitor away, so the log tells them apart. */
+export type RefusalReason = "honeypot" | "arcjet_rate" | "arcjet_bot" | "arcjet_other";
 
-/** French, Agadir time. */
-export const sentAt = (at: Date) =>
-  new Intl.DateTimeFormat("fr-FR", {
-    dateStyle: "long",
-    timeStyle: "short",
-    timeZone: SITE.timeZone,
-  }).format(at);
+const SUBJECT_NAME_MAX = 60;
 
-export function contactContent(data: ContactData, topic: string, at: Date): ContactEmailProps {
-  return {
-    name: data.name,
-    email: data.email,
-    topic,
-    message: data.message,
-    locale: data.locale,
-    sentAt: sentAt(at),
-  };
+const SUBJECTS: Record<Locale, (name: string) => string> = {
+  fr: (name) => `Nouveau message de ${name}`,
+  en: (name) => `New message from ${name}`,
+};
+
+/** Control and format characters (line breaks included) would let a name write mail headers. */
+export function subjectName(name: string): string {
+  const flat = name
+    .replace(/[\p{Cc}\p{Cf}\p{Zl}\p{Zp}]+/gu, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  const chars = Array.from(flat);
+  if (chars.length <= SUBJECT_NAME_MAX) return flat;
+  return `${chars
+    .slice(0, SUBJECT_NAME_MAX - 1)
+    .join("")
+    .trimEnd()}…`;
 }
 
-export function contactBody(data: ContactData, topic: string, at: Date): string {
+/** In the language the visitor wrote in. */
+export const contactSubject = (name: string, locale: Locale) => SUBJECTS[locale](subjectName(name));
+
+export function contactBody(data: ContactData, topic: string): string {
   return [
-    "Nouveau message depuis abdelhadev.me",
+    `Nom : ${data.name}`,
+    `E-mail : ${data.email}`,
+    `Projet : ${topic} (${data.topic satisfies Topic})`,
+    `Langue de la page : ${data.locale}`,
     "",
-    `Nom : ${data.name}`,
-    `E-mail : ${data.email}`,
-    `Projet : ${topic} (${data.topic satisfies Topic})`,
-    "",
-    "Message :",
     data.message,
-    "",
-    "---",
-    `Langue de la page : ${data.locale}`,
-    `Envoyé le ${sentAt(at)}`,
   ].join("\n");
+}
+
+function refuse(
+  deps: ContactDeps,
+  input: ContactInput,
+  reason: RefusalReason,
+  detail?: string,
+): ContactState {
+  deps.log(`contact: refused reason=${reason}${detail ? ` ${detail}` : ""}`);
+  return {
+    status: "failed",
+    reason: reason === "arcjet_rate" ? "rateLimit" : "refused",
+    values: valuesOf(input),
+  };
 }
 
 export async function handleContact(data: FormData, deps: ContactDeps): Promise<ContactState> {
   const input = readContactForm(data);
 
-  if (input.company !== "") {
-    deps.log("contact: honeypot filled, nothing sent");
-    return { status: "sent" };
-  }
+  if (input.extra !== "") return refuse(deps, input, "honeypot");
 
   const checked = validateContact(input);
   if (!checked.ok) {
@@ -87,33 +96,27 @@ export async function handleContact(data: FormData, deps: ContactDeps): Promise<
   }
 
   if (deps.guard) {
-    const verdict = await deps.guard.check();
-    if (verdict === "rateLimit") {
-      deps.log("contact: rate limited");
-      return { status: "failed", reason: "rateLimit", values: valuesOf(input) };
-    }
-    if (verdict === "bot") {
-      deps.log("contact: bot refused, nothing sent");
-      return { status: "sent" };
-    }
+    const result = await deps.guard.check();
+    if (result.verdict === "rateLimit") return refuse(deps, input, "arcjet_rate", result.detail);
+    if (result.verdict === "bot") return refuse(deps, input, "arcjet_bot", result.detail);
+    if (result.verdict === "other") return refuse(deps, input, "arcjet_other", result.detail);
   } else {
     deps.log("contact: ARCJET_KEY not set, no rate limit (allowed outside production)");
   }
 
-  if (!deps.mailer || !deps.to) {
-    deps.log("contact: RESEND_API_KEY or CONTACT_TO not set, nothing sent (outside production)");
+  if (!deps.mailer || !deps.to || !deps.from) {
+    deps.log(
+      "contact: RESEND_API_KEY, CONTACT_TO or CONTACT_FROM not set, nothing sent (outside production)",
+    );
     return { status: "failed", reason: "send", values: valuesOf(input) };
   }
 
-  const topic = await deps.topicLabel(checked.data);
-  const at = deps.now();
   const result = await deps.mailer.send({
     from: deps.from,
     to: deps.to,
     replyTo: checked.data.email,
-    subject: contactSubject(topic, checked.data.name),
-    text: contactBody(checked.data, topic, at),
-    content: contactContent(checked.data, topic, at),
+    subject: contactSubject(checked.data.name, checked.data.locale),
+    text: contactBody(checked.data, await deps.topicLabel(checked.data)),
   });
   if (!result.ok) {
     deps.log(`contact: resend failed (${result.code})`);

@@ -8,7 +8,7 @@ const EXTENSIONS = /\.(?:ts|tsx|js|jsx|mjs|css)$/;
 // Generated path data has no colours or motion, and its numbers would only be noise.
 // Email clients ignore CSS variables and stylesheets, so the contact email inlines its values
 // (each one names its token).
-const SKIP = new Set(["src/components/brand/wordmark-paths.ts", "src/emails/contact-form.tsx"]);
+const SKIP = new Set(["src/components/brand/wordmark-paths.ts"]);
 
 function* walk(dir) {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {

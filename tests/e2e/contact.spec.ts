@@ -17,6 +17,7 @@ interface ContactMessages {
       errors: Record<string, string>;
       submit: string;
       success: { title: string; again: string };
+      failed: { refused: string };
       toast: { sent: string };
     };
     whatsapp: { greeting: string; name: string; topic: string; action: string };
@@ -140,6 +141,26 @@ for (const locale of LOCALES) {
       expect(page.url()).toContain(path);
     });
 
+    test("a filled honeypot is refused with the direct address and LinkedIn, words kept", async ({
+      page,
+    }) => {
+      await page.goto(path);
+      await shellIdle(page);
+      await fill(page);
+      await page.locator("#f-extra").evaluate((el) => {
+        if (el instanceof HTMLInputElement) el.value = "ACME";
+      });
+      await page.getByRole("button", { name: t.form.submit }).click();
+
+      const alert = page.locator(".form-failed");
+      await expect(alert).toContainText(t.form.failed.refused);
+      await expect(alert.locator(`a[href="mailto:${SITE.email}"]`)).toHaveText(SITE.email);
+      await expect(alert.locator(`a[href="${SITE.linkedin}"]`)).toBeVisible();
+      await expect(page.locator("#contact-form")).toBeVisible();
+      await expect(page.getByRole("heading", { name: t.form.success.title })).toBeHidden();
+      await expect(field(page, "message")).toHaveValue(VISITOR.message);
+    });
+
     test("complete and still under reduced motion, with no horizontal overflow", async ({
       browser,
     }, info) => {
@@ -175,7 +196,7 @@ for (const locale of LOCALES) {
       }) => {
         const html = await (await request.get(path)).text();
         expect(html).toContain('id="contact-form"');
-        for (const name of [...CONTACT_FIELDS, "company", "locale"]) {
+        for (const name of [...CONTACT_FIELDS, "extra", "locale"]) {
           expect(html).toContain(`name="${name}"`);
         }
         expect(html).toContain(`href="${SITE.whatsapp.href}"`);

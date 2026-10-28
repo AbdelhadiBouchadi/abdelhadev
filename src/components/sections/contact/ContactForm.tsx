@@ -10,6 +10,7 @@ import {
   useState,
   type FormEvent,
   type MouseEvent,
+  type ReactNode,
 } from "react";
 import { toast, Toaster } from "sonner";
 import { sendContact } from "@/actions/contact";
@@ -43,7 +44,8 @@ export interface ContactFormCopy {
   submit: string;
   sending: string;
   success: { title: string; text: string; again: string };
-  failed: { send: string; rateLimit: string };
+  /** `direct` follows every failure: the address and LinkedIn, so a refused visitor still reaches me. */
+  failed: { send: string; rateLimit: string; refused: string; direct: ReactNode };
   toast: { region: string; close: string; sent: string; failed: string; rateLimit: string };
   cursor: string;
 }
@@ -129,8 +131,8 @@ export function ContactForm({ id, copy, locale, againHref }: ContactFormProps) {
 
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     const input = readContactForm(new FormData(event.currentTarget));
-    // A filled honeypot goes to the server, which answers as if sent.
-    if (input.company !== "") return;
+    // A filled honeypot goes to the server, which refuses it.
+    if (input.extra !== "") return;
     const checked = validateContact(input);
     const field = checked.ok ? undefined : firstInvalid(checked.errors);
     if (!checked.ok && field) {
@@ -233,12 +235,12 @@ export function ContactForm({ id, copy, locale, againHref }: ContactFormProps) {
           {error("message")}
         </div>
         <div className="hp" aria-hidden="true">
-          <label htmlFor="f-company">{copy.honeypot}</label>
-          <input id="f-company" name="company" tabIndex={-1} autoComplete="off" />
+          <label htmlFor="f-extra">{copy.honeypot}</label>
+          <input id="f-extra" name="extra" tabIndex={-1} autoComplete="off" />
         </div>
         {state.status === "failed" ? (
           <p className="form-failed" role="alert">
-            {copy.failed[state.reason]}
+            {copy.failed[state.reason]} {copy.failed.direct}
           </p>
         ) : null}
         <div className="form-foot">
