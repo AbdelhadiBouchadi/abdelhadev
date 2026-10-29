@@ -20,7 +20,7 @@ export const SITE = {
   },
   /** Forwards to a private inbox that never appears in the repository. */
   email: "contact@abdelhadev.me",
-  linkedin: "https://www.linkedin.com/in/abdelhadi-bouchadi-904b5b359/",
+  linkedin: "https://www.linkedin.com/in/abdelhadev/",
   github: "https://github.com/AbdelhadiBouchadi",
   /** "pending" until the legal notice is reviewed; the build fails on it with REQUIRE_CONTENT=1. */
   legalReview: "pending" as "pending" | "done",
